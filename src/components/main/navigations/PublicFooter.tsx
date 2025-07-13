@@ -13,8 +13,8 @@ import { FiArrowRight } from 'react-icons/fi';
 
 const PublicFooter = () => {
   return (
-    <footer className="bg-[#FD6801] text-white py-8 px-4">
-      <div className="max-w-6xl mx-auto">
+    <footer className="max-w-[1440px] mx-auto bg-[#FD6801] text-white py-8 px-4 lg:px-10">
+      <div className="max-w-[1280px] mx-auto">
         <div className="flex flex-col lg:flex-row justify-between">
           {/* Newsletter Section */}
           <div className="mb-8 w-full lg:w-auto">

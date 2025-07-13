@@ -13,8 +13,8 @@ const PublicNav = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 border-b bg-[#FD6801] text-white">
-      <div className="max-w-[1440px] mx-auto w-full">
+    <header className="max-w-[1440px] mx-auto fixed top-0 left-0 right-0 z-50 border-b bg-[#FD6801] text-white ">
+      <div className="w-full lg:px-10">
         <div className="container mx-auto px-4">
           <div className="flex h-16 items-center justify-between">
             {/* Mobile Menu Button */}
