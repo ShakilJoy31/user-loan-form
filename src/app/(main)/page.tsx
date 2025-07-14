@@ -2,6 +2,8 @@
 
 import ScrollableButtonGroup from '@/components/main/home-components/CategoryButtons';
 import HomeBanner from '@/components/main/home-components/HomeBanner'
+import Promotion from '@/components/main/home-components/Promotion';
+import ShopLocationAndCategory from '@/components/main/home-components/ShopLocationAndCategory';
 import React, { useState } from 'react'
 
 const Home = () => {
@@ -35,8 +37,11 @@ const Home = () => {
       </div>
 
       {/* Rest of your content */}
-      <div className="max-w-[1288px] mx-auto px-4">
-       
+      <div className="max-w-[1288px] mx-auto px-4 mt-4">
+      <div className='flex gap-4'>
+         <Promotion></Promotion>
+       <ShopLocationAndCategory></ShopLocationAndCategory>
+      </div>
       </div>
     </div>
   )
