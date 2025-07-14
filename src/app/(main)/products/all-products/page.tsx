@@ -9,3 +9,15 @@
 //   const product = await getProductBySlug(params.slug);
 //   return <div>{product?.name}</div>;
 // }
+
+import React from 'react'
+
+const Products = () => {
+  return (
+    <div>
+      
+    </div>
+  )
+}
+
+export default Products
