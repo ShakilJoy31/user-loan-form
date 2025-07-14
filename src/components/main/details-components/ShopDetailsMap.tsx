@@ -1,12 +1,20 @@
+"use client"
 import Image from "next/image";
 import map from "../../../../assets/Home/map.png"
 import { FaStar } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa";
+import { useCustomTranslator } from "@/hooks/useCustomTranslator";
+import { Button } from "@/components/ui/button";
 
 const ShopDetailsMap = () => {
+    const { translate } = useCustomTranslator();
     return (
         <div>
-            <h2 className="text-3xl font-medium mb-[14px]">Shop Details</h2>
+            <h2 className="text-3xl font-medium mb-[14px]">
+                {
+                    translate("দোকান তথ্য", "Shop Details")
+                }
+            </h2>
             <div className="pr-[18px] mx-auto">
                 <Image 
                 width={614}
@@ -36,9 +44,9 @@ const ShopDetailsMap = () => {
                             <FaRegHeart />
                         </div>
                      <div className="max-w-[140px] max-h-[40px] mt-3 text-white bg-[#EE5A2C] font-medium rounded-lg">
-                         <button className="py-[8px] px-[15px]">
+                         <Button className="py-[8px] px-[15px]">
                         Shop Now →
-                    </button>
+                    </Button>
                      </div>
                 </div>
             </div>

@@ -1,10 +1,13 @@
+"use client"
 import Image from "next/image";
 import ElectroHub from "../../../../assets/Home/ElectroHub.png";
 import { FaFacebook, FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
 import ShopCard from "../home-components/ShopCard";
 import shopLogo from '../../../../assets/Logo/shop-logo.png'
+import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 
 const ShopDetailsInfo = () => {
+    const { translate } = useCustomTranslator();
     const shops = Array(3).fill({
   name: "FashionFiesta",
   location: "Banani",
@@ -15,7 +18,9 @@ const ShopDetailsInfo = () => {
   return (
     <div>
       <h2 className="text-3xl font-medium mb-3 sm:mb-[14px]">
-        Shop Information
+        {
+            translate("দোকানের তথ্য", "Shop Information")
+        }
       </h2>
 
       <div className="flex flex-col md:flex-row gap-4 mb-6">
@@ -99,28 +104,36 @@ const ShopDetailsInfo = () => {
       <hr className="border-gray-300 my-4" />
 
       <h3 className="text-lg sm:text-xl font-medium mb-4 sm:pl-[49px] sm:pr-[56px]">
-        What are we selling
+        {
+            translate("আমরা কি বিক্রি করছি", "What are we selling")
+        }
       </h3>
 
       <div className="overflow-x-auto sm:pl-[49px] sm:pr-[56px]">
         <table className="min-w-full border-collapse">
           <tbody>
             <tr>
-              <td className="font-semibold py-1">Accessories:</td>
+              <td className="font-semibold py-1">
+                {translate("অ্যাকসেসরিজ:", "Accessories:")}
+              </td>
               <td className="text-[#833218] py-1 pl-2 sm:pl-4">
-                Cables, Chargers, Power Banks
+                {translate("ক্যাবল, চার্জার, পাওয়ার ব্যাংক", "Cables, Chargers, Power Banks")}
               </td>
             </tr>
             <tr>
-              <td className="font-semibold py-1">Home Appliances:</td>
+              <td className="font-semibold py-1">
+                {translate("হোম অ্যাপ্লায়েন্স:", "Home Appliances:")}
+              </td>
               <td className="text-[#833218] py-1 pl-2 sm:pl-4">
-                Microwave, Blender, Fan
+                {translate("মাইক্রোওয়েভ, ব্লেন্ডার, ফ্যান","Microwave, Blender, Fan")}
               </td>
             </tr>
             <tr>
-              <td className="font-semibold py-1">Products:</td>
+              <td className="font-semibold py-1">
+                {translate("প্রোডাক্টস:", "Products:")}
+              </td>
               <td className="text-gray-400 py-1 pl-2 sm:pl-4">
-                Smartphones, Laptops & Tablets, Smartwatches
+                {translate(" স্মার্টফোন, ল্যাপটপ ও ট্যাবলেট, স্মার্টওয়াচ", "Smartphones, Laptops & Tablets, Smartwatches")}
               </td>
             </tr>
           </tbody>
@@ -129,7 +142,7 @@ const ShopDetailsInfo = () => {
 
         <hr className="border-gray-300 mt-16 mb-4" />
         <h2 className="text-3xl font-medium mb-3 sm:mb-[14px]">
-        Related Shop
+        {translate("সম্পর্কিত দোকান", "Related Shop")}
       </h2>
 
      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">

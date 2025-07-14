@@ -1,3 +1,4 @@
+"use client"
 import Image from "next/image";
 import cellingFan from "../../../../assets/Home/cellingFan.png";
 import wiring from "../../../../assets/Home/wiring.png";
@@ -6,6 +7,8 @@ import light from "../../../../assets/Home/light.png";
 import switch2 from "../../../../assets/Home/switch.png";
 import { ShoppingCart } from "lucide-react";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
+import { Button } from "@/components/ui/button";
+import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 
 // 1. Product Type
 type Product = {
@@ -89,9 +92,9 @@ const ProductCard = ({
       </p>
       <div className="flex justify-between items-center mt-1">
         <span>{product.price}</span>
-        <button className="p-2 rounded-full bg-orange-500 text-white hover:bg-orange-600 transition-colors">
+        <Button className="p-2 rounded-full bg-orange-500 text-white hover:bg-orange-600 transition-colors">
           <ShoppingCart size={20} />
-        </button>
+        </Button>
       </div>
     </div>
   </div>
@@ -99,9 +102,12 @@ const ProductCard = ({
 
 // 4. TopProduct Component
 const TopProduct = () => {
+    const { translate } = useCustomTranslator();
   return (
     <div className="mt-10 lg:mt-0 w-full lg:max-w-[343px] h-auto lg:max-h-[767px] shadow-lg rounded-[20px] pb-5 bg-white px-3">
-      <h2 className="text-xl font-semibold pt-8 pl-3">Top Products</h2>
+      <h2 className="text-xl font-semibold pt-8 pl-3">
+        {translate("শীর্ষ পণ্য", "Top Products")}
+      </h2>
 
       {/* For sm and lg devices — 1-column list layout */}
       <div className="mt-4 space-y-3 md:hidden lg:block">

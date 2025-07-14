@@ -48,7 +48,7 @@ const PublicFooter = () => {
         className="px-2 py-2 w-full focus:outline-none text-gray-800"
       />
       
-      {/* Submit button */}
+      {/* Submit Button */}
       <Button className="text-gray-700 -rotate-45 px-4 py-2 ">
         <FiArrowRight className="h-5 w-5" />
       </Button>

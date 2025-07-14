@@ -48,6 +48,16 @@ const ShopCard: React.FC<ShopCardProps> = ({ name, location, categories, logoUrl
       </div>
 
       <div className="flex justify-between mt-2 sm:mt-3">
+        {/* Need to use this reusable button */}
+         {/* <Button
+          variant="primary"
+          size="xs"
+          shape="rounded"
+          className="bg-[#EE5A2C] text-white text-[10px] sm:text-[12px] px-2 sm:px-3 py-1 font-medium"
+        >
+          Shop Now
+        </Button> */}
+        
         <button className="bg-[#EE5A2C] text-white text-[10px] sm:text-[12px] px-2 sm:px-3 py-1 rounded font-medium">
           Shop Now
         </button>

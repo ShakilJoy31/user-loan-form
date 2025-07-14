@@ -70,6 +70,7 @@ const Home = () => {
           <ShopLocationAndCategory />
         </div>
       </div>
+      
     </div>
   )
 }

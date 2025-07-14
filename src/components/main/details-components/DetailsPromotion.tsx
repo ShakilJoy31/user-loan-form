@@ -71,7 +71,7 @@ const DetailsPromotion = () => {
   return (
     <div className=" lg:max-w-[224px] lg:max-h-[1282px] w-full pl-[13px] pr-[36px] pb-[11.5px] shadow-lg rounded-[6px]">
       <h2 className="text-2xl font-semibold pt-[30px] mb-[13px]">
-       {translate("Promotions", "প্রচার")}
+       {translate("প্রচার", "Promotions")}
         </h2>
       
       {/* Main Promotion */}

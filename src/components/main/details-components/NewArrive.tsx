@@ -7,6 +7,8 @@ import toolBox from "../../../../assets/Home/toolBox.png";
 import { FaStar } from "react-icons/fa";
 import { ShoppingCart } from "lucide-react";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
+import { Button } from "@/components/ui/button";
+import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 
 interface Product {
   id: number;
@@ -91,9 +93,9 @@ const ProductCard = ({ product }: ProductCardProps) => {
               </span>
             )}
           </p>
-          <button className="text-gray-700 hover:text-[#EE5A2C] transition-colors">
+          <Button className="text-gray-700 hover:text-[#EE5A2C] transition-colors">
             <ShoppingCart size={20} />
-          </button>
+          </Button>
         </div>
       </div>
     </div>
@@ -101,9 +103,12 @@ const ProductCard = ({ product }: ProductCardProps) => {
 };
 
 const NewArrive = () => {
+    const { translate } = useCustomTranslator();
   return (
     <div className="lg:max-w-[343px] mt-[21px] h-auto lg:max-h-[724px] w-full shadow-lg rounded-[6px] pb-[19px] bg-[#F6F6F6] px-[12px]">
-      <h2 className="text-xl font-semibold pt-8 pl-6">New Arrivals</h2>
+      <h2 className="text-xl font-semibold pt-8 pl-6">
+        {translate("নতুন আগমন", "New Arrivals")}
+      </h2>
 
       <div className="mt-6 px-3 sm:px-4">
         {/* Flex layout for sm and lg (not md) */}
