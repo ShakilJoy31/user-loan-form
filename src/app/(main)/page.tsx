@@ -10,10 +10,37 @@ const Home = () => {
   const [activeButton, setActiveButton] = useState("all");
 
   const buttons = [
-    { id: "all", label: "All" },
-    { id: "category1", label: "Category 1" }, { id: "category1", label: "Category 1" }, { id: "category1", label: "Category 1" }, { id: "category1", label: "Category 1" }, { id: "category1", label: "Category 1" }, { id: "category1", label: "Category 1" }, { id: "category1", label: "Category 1" }, { id: "category1", label: "Category 1" }, { id: "category1", label: "Category 1" }, { id: "category1", label: "Category 1" }, { id: "category1", label: "Category 1" }, { id: "category1", label: "Category 1" }, { id: "category1", label: "Category 1" }, { id: "category1", label: "Category 1" }, { id: "category1", label: "Category 1" }, { id: "category1", label: "Category 1" }, { id: "category1", label: "Category 1" }, { id: "category1", label: "Category 1" }, { id: "category1", label: "Category 1" }, { id: "category1", label: "Category 1" }, { id: "category1", label: "Category 1" }, { id: "category1", label: "Category 1" }, { id: "category1", label: "Category 1" },
-
-  ];
+  { id: "all", label: "All Categories" },
+  { id: "electronics", label: "Electronics" },
+  { id: "smartphones", label: "Smartphones" },
+  { id: "laptops", label: "Laptops & Computers" },
+  { id: "tvs", label: "TVs & Home Theater" },
+  { id: "audio", label: "Audio & Headphones" },
+  { id: "cameras", label: "Cameras & Photography" },
+  { id: "appliances", label: "Home Appliances" },
+  { id: "furniture", label: "Furniture" },
+  { id: "living", label: "Living Room" },
+  { id: "bedroom", label: "Bedroom" },
+  { id: "kitchen", label: "Kitchen & Dining" },
+  { id: "home", label: "Home Decor" },
+  { id: "lighting", label: "Lighting" },
+  { id: "clothing", label: "Clothing" },
+  { id: "mens", label: "Men's Fashion" },
+  { id: "womens", label: "Women's Fashion" },
+  { id: "kids", label: "Kids & Baby" },
+  { id: "footwear", label: "Footwear" },
+  { id: "accessories", label: "Accessories" },
+  { id: "jewelry", label: "Jewelry & Watches" },
+  { id: "beauty", label: "Beauty & Personal Care" },
+  { id: "health", label: "Health & Wellness" },
+  { id: "groceries", label: "Groceries" },
+  { id: "toys", label: "Toys & Games" },
+  { id: "sports", label: "Sports & Outdoors" },
+  { id: "automotive", label: "Automotive" },
+  { id: "books", label: "Books & Media" },
+  { id: "office", label: "Office Supplies" },
+  { id: "pet", label: "Pet Supplies" }
+];
 
   return (
     <div className="">

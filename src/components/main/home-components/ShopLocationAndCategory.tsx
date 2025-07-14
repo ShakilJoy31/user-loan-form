@@ -158,6 +158,106 @@ const shops = [
     location: "Banani",
     categories: ["Clothing", "Accessories"],
     logoUrl: shopLogo.src,
+  },{
+    name: "FashionFiesta",
+    location: "Banani",
+    categories: ["Clothing", "Accessories"],
+    logoUrl: shopLogo.src,
+  },{
+    name: "FashionFiesta",
+    location: "Banani",
+    categories: ["Clothing", "Accessories"],
+    logoUrl: shopLogo.src,
+  },{
+    name: "FashionFiesta",
+    location: "Banani",
+    categories: ["Clothing", "Accessories"],
+    logoUrl: shopLogo.src,
+  },{
+    name: "FashionFiesta",
+    location: "Banani",
+    categories: ["Clothing", "Accessories"],
+    logoUrl: shopLogo.src,
+  },{
+    name: "FashionFiesta",
+    location: "Banani",
+    categories: ["Clothing", "Accessories"],
+    logoUrl: shopLogo.src,
+  },{
+    name: "FashionFiesta",
+    location: "Banani",
+    categories: ["Clothing", "Accessories"],
+    logoUrl: shopLogo.src,
+  },{
+    name: "FashionFiesta",
+    location: "Banani",
+    categories: ["Clothing", "Accessories"],
+    logoUrl: shopLogo.src,
+  },{
+    name: "FashionFiesta",
+    location: "Banani",
+    categories: ["Clothing", "Accessories"],
+    logoUrl: shopLogo.src,
+  },{
+    name: "FashionFiesta",
+    location: "Banani",
+    categories: ["Clothing", "Accessories"],
+    logoUrl: shopLogo.src,
+  },{
+    name: "FashionFiesta",
+    location: "Banani",
+    categories: ["Clothing", "Accessories"],
+    logoUrl: shopLogo.src,
+  },{
+    name: "FashionFiesta",
+    location: "Banani",
+    categories: ["Clothing", "Accessories"],
+    logoUrl: shopLogo.src,
+  },{
+    name: "FashionFiesta",
+    location: "Banani",
+    categories: ["Clothing", "Accessories"],
+    logoUrl: shopLogo.src,
+  },{
+    name: "FashionFiesta",
+    location: "Banani",
+    categories: ["Clothing", "Accessories"],
+    logoUrl: shopLogo.src,
+  },{
+    name: "FashionFiesta",
+    location: "Banani",
+    categories: ["Clothing", "Accessories"],
+    logoUrl: shopLogo.src,
+  },{
+    name: "FashionFiesta",
+    location: "Banani",
+    categories: ["Clothing", "Accessories"],
+    logoUrl: shopLogo.src,
+  },{
+    name: "FashionFiesta",
+    location: "Banani",
+    categories: ["Clothing", "Accessories"],
+    logoUrl: shopLogo.src,
+  },{
+    name: "FashionFiesta",
+    location: "Banani",
+    categories: ["Clothing", "Accessories"],
+    logoUrl: shopLogo.src,
+  },{
+    name: "FashionFiesta",
+    location: "Banani",
+    categories: ["Clothing", "Accessories"],
+    logoUrl: shopLogo.src,
+  },{
+    name: "FashionFiesta",
+    location: "Banani",
+    categories: ["Clothing", "Accessories"],
+    logoUrl: shopLogo.src,
+  },{
+    name: "FashionFiesta",
+    location: "Banani",
+    categories: ["Clothing", "Accessories"],
+    logoUrl: shopLogo.src,
   },
 ];
 
@@ -169,7 +269,7 @@ const ShopLocationAndCategory: React.FC = () => {
       </h2>
       <DropdownSearch />
 
-      <h2 className="text-[24px] mb-4 font-semibold mt-4">
+      <h2 className="text-[24px] my-4 font-semibold">
         Shop <span className="text-[12px]">104k result</span>
       </h2>
 
