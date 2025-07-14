@@ -28,21 +28,21 @@ const ThemeSwitcher = () => {
       <DropdownMenuContent align="end" className={cn(useFontShifter())}>
         <DropdownMenuItem
           className={cn(
-            theme === "light" && "bg-accent text-accent-foreground"
+            theme === "light" && "bg-white text-accent-foreground"
           )}
           onClick={() => setTheme("light")}
         >
           {translate("লাইট", "Light")}
         </DropdownMenuItem>
         <DropdownMenuItem
-          className={cn(theme === "dark" && "bg-accent text-accent-foreground")}
+          className={cn(theme === "dark" && "bg-white text-accent-foreground")}
           onClick={() => setTheme("dark")}
         >
           {translate("ডার্ক", "Dark")}
         </DropdownMenuItem>
         <DropdownMenuItem
           className={cn(
-            theme === "system" && "bg-accent text-accent-foreground"
+            theme === "system" && "bg-white text-accent-foreground"
           )}
           onClick={() => setTheme("system")}
         >

@@ -12,7 +12,6 @@ import { cn } from "@/lib/utils";
 
 const LocaleSwitcher = () => {
   const { locale } = useLocaleContext();
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -23,7 +22,7 @@ const LocaleSwitcher = () => {
       <DropdownMenuContent align="end" className={cn(useFontShifter())}>
         <DropdownMenuItem
           className={cn(
-            locale === "bn" && "bg-accent text-accent-foreground font-lato",
+            locale === "bn" && "bg-white text-accent-foreground font-lato",
             "cursor-pointer font-anek"
           )}
           onClick={() => i18n.changeLanguage("bn")}
@@ -32,7 +31,7 @@ const LocaleSwitcher = () => {
         </DropdownMenuItem>
         <DropdownMenuItem
           className={cn(
-            locale === "en" && "bg-accent text-accent-foreground font-open_sans",
+            locale === "en" && "bg-white text-accent-foreground font-open_sans",
             "cursor-pointer"
           )}
           onClick={() => i18n.changeLanguage("en")}
