@@ -1,5 +1,5 @@
 
-import { ILocaleContextProps, LocaleContext } from "@/contexts/LocaleContext";
+import { ILocaleContextProps, LocaleContext } from "@/app/lib/LocaleProvider";
 import { useContext } from "react";
 
 export const useLocaleContext = (): ILocaleContextProps => {
