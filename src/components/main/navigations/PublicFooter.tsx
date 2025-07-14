@@ -10,20 +10,32 @@ import {
 } from "react-icons/fa";
 import { MdHelp, MdInfo, MdStore } from "react-icons/md";
 import { FiArrowRight } from 'react-icons/fi';
+import footerLogo from "../../../../assets/Home/navbarLogo.png"
+import Image from "next/image";
 
 const PublicFooter = () => {
   return (
-    <footer className="max-w-[1440px] mx-auto bg-[#FD6801] text-white py-8 px-4 lg:px-10">
-      <div className="max-w-[1280px] mx-auto">
+    <footer className="bg-[#FD6801] text-white py-8 px-4 lg:px-10">
+      <div className="max-w-[1440px] mx-auto w-full">
         <div className="flex flex-col lg:flex-row justify-between">
           {/* Newsletter Section */}
           <div className="mb-8 w-full lg:w-auto">
-            <div className="flex flex-col sm:flex-row gap-4 sm:gap-10">
-              <h1 className="text-2xl font-bold text-blue-600 mb-2">Proydon</h1>
-              <p className="mb-4">
+            <div className="flex gap-4 md:mb-10">
+               <div className="text-lg font-semibold md:ml-0 mx-auto md:mx-0 mb-3">
+              <Image
+                width={100}
+                height={100}
+                src={footerLogo}
+                alt={"footerLogo"}
+                className="w-full h-full object-cover"
+              />
+            </div>
+              <div>
+                <p className="mb-4 sm:text-xs md:text-[14px]">
                 Experience Personalized Online/Offline <br /> Shopping in
                 Bangladesh with Proydon
               </p>
+              </div>
             </div>
            <div className="flex items-center max-w-md mx-auto bg-white rounded-lg overflow-hidden border border-gray-300 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent">
  

@@ -1,12 +1,10 @@
-import React from 'react';
 
-const Promotion: React.FC = () => {
+
+const Promotion = () => {
     return (
-        <section className="promotion">
-            <h2>Special Promotion</h2>
-            <p>Don't miss out on our exclusive deals!</p>
-            {/* Add more promotional content here */}
-        </section>
+        <div>
+            this is a promotion
+        </div>
     );
 };
 
