@@ -1,5 +1,5 @@
 
-import { fallback } from "@/utils/constant/fallback";
+import { fallback } from "@/utils/common/fallback";
 import { useLocaleContext } from "./useLocaleContext";
 
 export const useCustomTranslator = () => {
