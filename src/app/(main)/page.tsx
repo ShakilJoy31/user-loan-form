@@ -38,7 +38,7 @@ const Home = () => {
 
       {/* Rest of your content */}
       <div className="max-w-[1288px] mx-auto px-4 lg:px-0 mt-4">
-        <div className='md:flex gap-4 justify-between grid'>
+        <div className='md:flex gap-4 justify-between grid mb-[80px] '>
           <Promotion></Promotion>
           <ShopLocationAndCategory></ShopLocationAndCategory>
         </div>

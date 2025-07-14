@@ -174,7 +174,7 @@ const ShopLocationAndCategory: React.FC = () => {
       </h2>
 
       {/* Shop card grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {shops.map((shop, index) => (
           <ShopCard
             key={index}

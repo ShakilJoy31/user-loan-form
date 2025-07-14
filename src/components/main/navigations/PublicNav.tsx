@@ -7,14 +7,16 @@ import { Menu, X, Heart, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import { FaUser } from "react-icons/fa";
 import { MdLogout } from "react-icons/md";
+import navbarLogo from './../../../../assets/Home/navbarLogo.png';
+import avatar from './../../../../assets/Home/Square.png';
 
 const PublicNav = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   return (
-    <header className="max-w-[1440px] mx-auto fixed top-0 left-0 right-0 z-50 border-b bg-[#FD6801] text-white ">
-      <div className="w-full lg:px-10">
+    <header className="lg:px-10 fixed top-0 left-0 right-0 z-50 border-b bg-[#FD6801] text-white ">
+      <div className="w-full  max-w-[1440px] mx-auto">
         <div className="container mx-auto px-4">
           <div className="flex h-16 items-center justify-between">
             {/* Mobile Menu Button */}
@@ -27,7 +29,13 @@ const PublicNav = () => {
 
             {/* Logo */}
             <div className="text-lg font-semibold md:ml-0 mx-auto md:mx-0">
-              Proyojon
+              <Image
+                width={100}
+                height={100}
+                src={navbarLogo}
+                alt={""}
+                className="w-full h-full object-cover"
+              />
             </div>
 
             {/* Desktop Navigation */}
@@ -58,13 +66,13 @@ const PublicNav = () => {
                 <div className="relative inline-block mt-1">
                   {/* Avatar Button */}
                   <button
-                    className="rounded-full border-2 border-white overflow-hidden w-10 h-10 focus:outline-none"
+                    className="rounded-full border-2 border-white cursor-pointer overflow-hidden w-10 h-10 focus:outline-none"
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                   >
                     <Image
                       width={100}
                       height={100}
-                      src="/avatar.png"
+                      src={avatar}
                       alt="User Avatar"
                       className="w-full h-full object-cover"
                     />
@@ -79,7 +87,7 @@ const PublicNav = () => {
                       {/* User Info */}
                       <div className="flex items-center gap-3 mb-3">
                         <Image
-                          src="/avatar.png"
+                          src={avatar}
                           alt="User Avatar"
                           width={40}
                           height={40}
