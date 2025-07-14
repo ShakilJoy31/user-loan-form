@@ -1,6 +1,6 @@
 "use client";
 
-import { publicNavigations } from "@/utils/common/publicNavigationsLink";
+import { publicNavigations } from "@/utils/helper/publicNavigationsLink";
 import Link from "next/link";
 import { useState } from "react";
 import { Menu, X, Heart, ShoppingCart } from "lucide-react";
