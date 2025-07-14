@@ -8,10 +8,11 @@ import {
   FaTags,
   FaRobot,
 } from "react-icons/fa";
-import { MdHelp, MdInfo, MdStore } from "react-icons/md";
+import { MdHelp, MdInfo } from "react-icons/md";
 import { FiArrowRight } from 'react-icons/fi';
 import footerLogo from "../../../../assets/Home/navbarLogo.png"
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
 
 const PublicFooter = () => {
   return (
@@ -48,14 +49,14 @@ const PublicFooter = () => {
       />
       
       {/* Submit button */}
-      <button className="text-gray-700 -rotate-45 px-4 py-2 ">
+      <Button className="text-gray-700 -rotate-45 px-4 py-2 ">
         <FiArrowRight className="h-5 w-5" />
-      </button>
+      </Button>
     </div>
           </div>
 
           {/* Footer Links */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-8 w-full lg:w-auto">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-8 mb-8 w-full lg:w-auto">
             {/* SUPPORT Column */}
             <div>
               <h3 className="text-lg font-semibold mb-4 flex items-center">
@@ -101,7 +102,7 @@ const PublicFooter = () => {
                     href="#"
                     className="hover:text-blue-600 transition flex items-center"
                   >
-                    <MdStore className="mr-2" /> Stores
+                     Stores
                   </a>
                 </li>
                 <li>

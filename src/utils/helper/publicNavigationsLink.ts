@@ -21,4 +21,8 @@ export const publicNavigations: INavigations = {
     name: "About Us",
     path: "/about",
   },
+  details: {
+    name: "Details",
+    path: "/products/details",
+  },
 };
