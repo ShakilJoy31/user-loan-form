@@ -17,7 +17,7 @@ const Home = () => {
 
   return (
     <div className="">
-      <div className='max-w-[1288px] mx-auto px-4'>
+      <div className='max-w-[1288px] mx-auto px-4 lg:px-0'>
         <HomeBanner />
         <div className="mt-6">
           <h1 className='text-[30px] font-semibold mb-2'>Explore Your Type Around You</h1>
@@ -37,8 +37,8 @@ const Home = () => {
       </div>
 
       {/* Rest of your content */}
-      <div className="max-w-[1288px] mx-auto px-4 mt-4">
-        <div className='flex gap-4'>
+      <div className="max-w-[1288px] mx-auto px-4 lg:px-0 mt-4">
+        <div className='md:flex gap-4 justify-between grid'>
           <Promotion></Promotion>
           <ShopLocationAndCategory></ShopLocationAndCategory>
         </div>
