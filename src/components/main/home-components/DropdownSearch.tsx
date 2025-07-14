@@ -34,16 +34,17 @@ const DropdownSearch = () => {
     };
 
     return (
-        <div className="grid lg:flex justify-between items-center">
-            <div className="flex items-center gap-2">
+        <div className="flex flex-col md:flex-row gap-4 w-full">
+            {/* Dropdowns Row */}
+            <div className="flex flex-col sm:flex-row gap-2 w-full">
                 {/* City Dropdown */}
-                <div className="relative w-[118px]">
+                <div className="relative flex-1 min-w-[120px]">
                     <button
                         onClick={() => setCityDropdownOpen(!cityDropdownOpen)}
                         className="w-full flex justify-between items-center px-3 py-2 border border-gray-300 rounded bg-[#F9F9F9] text-gray-700 text-sm"
                     >
-                        <span>{selectedCity || "City"}</span>
-                        {cityDropdownOpen ? <FiChevronUp /> : <FiChevronDown />}
+                        <span className="truncate">{selectedCity || "City"}</span>
+                        {cityDropdownOpen ? <FiChevronUp size={16} /> : <FiChevronDown size={16} />}
                     </button>
 
                     {cityDropdownOpen && (
@@ -58,8 +59,9 @@ const DropdownSearch = () => {
                                 <li
                                     key={city}
                                     onClick={() => handleCitySelect(city)}
-                                    className={`px-3 py-2 hover:bg-gray-100 cursor-pointer ${selectedCity === city ? "bg-gray-100 font-medium" : ""
-                                        }`}
+                                    className={`px-3 py-2 hover:bg-gray-100 cursor-pointer truncate ${
+                                        selectedCity === city ? "bg-gray-100 font-medium" : ""
+                                    }`}
                                 >
                                     {city}
                                 </li>
@@ -69,17 +71,18 @@ const DropdownSearch = () => {
                 </div>
 
                 {/* Area Dropdown */}
-                <div className="relative w-[118px]">
+                <div className="relative flex-1 min-w-[120px]">
                     <button
                         onClick={() => selectedCity && setAreaDropdownOpen(!areaDropdownOpen)}
                         disabled={!selectedCity}
-                        className={`w-full flex justify-between items-center px-3 py-2 border rounded text-sm ${!selectedCity
+                        className={`w-full flex justify-between items-center px-3 py-2 border rounded text-sm ${
+                            !selectedCity
                                 ? "border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed"
                                 : "border-gray-300 bg-[#F9F9F9] text-gray-700"
-                            }`}
+                        }`}
                     >
-                        <span>{selectedArea || "Area"}</span>
-                        {areaDropdownOpen ? <FiChevronUp /> : <FiChevronDown />}
+                        <span className="truncate">{selectedArea || "Area"}</span>
+                        {areaDropdownOpen ? <FiChevronUp size={16} /> : <FiChevronDown size={16} />}
                     </button>
 
                     {areaDropdownOpen && selectedCity && (
@@ -94,8 +97,9 @@ const DropdownSearch = () => {
                                 <li
                                     key={area}
                                     onClick={() => handleAreaSelect(area)}
-                                    className={`px-3 py-2 hover:bg-gray-100 cursor-pointer ${selectedArea === area ? "bg-gray-100 font-medium" : ""
-                                        }`}
+                                    className={`px-3 py-2 hover:bg-gray-100 cursor-pointer truncate ${
+                                        selectedArea === area ? "bg-gray-100 font-medium" : ""
+                                    }`}
                                 >
                                     {area}
                                 </li>
@@ -105,15 +109,15 @@ const DropdownSearch = () => {
                 </div>
 
                 {/* Shop Category Dropdown */}
-                <div className="relative">
+                <div className="relative flex-1 min-w-[150px]">
                     <motion.button
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => setCategoryDropdownOpen(!categoryDropdownOpen)}
-                        className="w-[174px] flex justify-between items-center px-4 py-2 bg-[#EE5A2C] text-white rounded text-sm font-medium"
+                        className="w-full flex justify-between items-center px-4 py-2 bg-[#EE5A2C] text-white rounded text-sm font-medium"
                     >
-                        Shop Category
-                        {categoryDropdownOpen ? <FiChevronUp /> : <FiChevronDown />}
+                        <span className="truncate">Shop Category</span>
+                        {categoryDropdownOpen ? <FiChevronUp size={16} /> : <FiChevronDown size={16} />}
                     </motion.button>
 
                     {categoryDropdownOpen && (
@@ -124,19 +128,20 @@ const DropdownSearch = () => {
                             transition={{ duration: 0.2 }}
                             className="absolute z-10 w-full mt-1 bg-white border border-gray-300 text-black rounded shadow max-h-60 overflow-auto text-sm"
                         >
-                            {/* Add your category items here */}
-                            <li className="px-3 py-2 hover:bg-gray-100 cursor-pointer">Category 1</li>
-                            <li className="px-3 py-2 hover:bg-gray-100 cursor-pointer">Category 2</li>
-                            <li className="px-3 py-2 hover:bg-gray-100 cursor-pointer">Category 3</li>
+                            <li className="px-3 py-2 hover:bg-gray-100 cursor-pointer truncate">Electronics</li>
+                            <li className="px-3 py-2 hover:bg-gray-100 cursor-pointer truncate">Fashion</li>
+                            <li className="px-3 py-2 hover:bg-gray-100 cursor-pointer truncate">Home & Kitchen</li>
+                            <li className="px-3 py-2 hover:bg-gray-100 cursor-pointer truncate">Beauty</li>
+                            <li className="px-3 py-2 hover:bg-gray-100 cursor-pointer truncate">Sports</li>
                         </motion.ul>
                     )}
                 </div>
             </div>
 
-            {/* Search Input */}
-            <div className="relative w-full lg:w-[221px] mt-4 lg:mt-0">
+            {/* Search Input - takes full width on mobile, fixed width on larger screens */}
+            <div className="relative w-full md:w-[220px]">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <FiSearch className="text-gray-400" />
+                    <FiSearch className="text-gray-400" size={16} />
                 </div>
                 <input
                     type="text"

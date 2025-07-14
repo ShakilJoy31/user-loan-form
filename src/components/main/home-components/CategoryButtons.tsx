@@ -47,7 +47,7 @@ const ScrollableButtonGroup = ({
     <div className="relative w-full overflow-hidden">
       <div
         ref={containerRef}
-        className="flex overflow-x-auto scrollbar-hide cursor-grab active:cursor-grabbing "
+        className="flex overflow-x-auto scrollbar-hide cursor-grab active:cursor-grabbing"
         style={{
           scrollbarWidth: "none",
           msOverflowStyle: "none",
@@ -58,24 +58,22 @@ const ScrollableButtonGroup = ({
         onMouseUp={handleMouseUp}
         onMouseMove={handleMouseMove}
       >
-        {/* Left padding to align with container */}
         <div className="flex-shrink-0" />
         
         {buttons.map((button) => (
           <button
             key={button.id}
             onClick={() => onButtonClick?.(button.id)}
-            className={`flex-shrink-0 whitespace-nowrap px-4 py-3 rounded-full transition-colors duration-200 hover:cursor-pointer ${
+            className={`flex-shrink-0 whitespace-nowrap px-3 py-2 sm:px-4 sm:py-3 rounded-full transition-colors duration-200 hover:cursor-pointer text-xs sm:text-sm ${
               activeButtonId === button.id
                 ? "bg-[#EE5A2C] text-white"
-                : " bg-[#FDEFEA] text-black"
+                : "bg-[#FDEFEA] text-black"
             }`}
           >
             {button.label}
           </button>
         ))}
         
-        {/* Right padding to extend to edge */}
         <div className="flex-shrink-0 pr-[calc(100vw-100%)]" />
       </div>
     </div>
