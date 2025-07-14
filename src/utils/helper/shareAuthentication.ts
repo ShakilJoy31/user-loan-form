@@ -1,8 +1,8 @@
 
 import { appConfiguration } from "../constant/appConfiguration";
-import formatter from "./formatter";
-import { shareWithCookies } from "./shareWithCookies";
 import { jwtDecode } from "jwt-decode";
+import { shareWithCookies } from "./shareWithCookies";
+import formatter from "./formattor";
 
 interface IBranchInformationProps {
   id: number;
