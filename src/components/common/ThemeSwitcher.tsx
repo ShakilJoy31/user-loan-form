@@ -14,6 +14,7 @@ import { Moon, Sun } from "lucide-react";
 const ThemeSwitcher = () => {
   const { theme, setTheme } = useTheme();
   const { translate } = useCustomTranslator();
+  console.log(theme)
 
   return (
     <DropdownMenu>

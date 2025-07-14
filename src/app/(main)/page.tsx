@@ -5,9 +5,10 @@ import { useCustomTranslator } from '@/hooks/useCustomTranslator';
 import React from 'react'
 
 const Home = () => {
+  
    const { translate } = useCustomTranslator();
   return (
-    <div>
+    <div className='dark:bg-background'>
       <ThemeSwitcher/>
       <LocaleSwitcher/>
       {translate(

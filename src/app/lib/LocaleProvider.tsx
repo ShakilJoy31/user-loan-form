@@ -1,26 +1,29 @@
-"use client";
-
+"use client"
 import {
   FC,
   ReactNode,
   createContext,
   useEffect,
   useState,
-  useMemo,
+  Dispatch,
+  SetStateAction,
 } from "react";
 import { useTranslation } from "react-i18next";
 
 type Locale = "en" | "bn";
 
+const isLocale = (value: any): value is Locale => {
+  return value === "en" || value === "bn";
+};
+
 export interface ILocaleContextProps {
   locale: Locale;
-  setLocale: (locale: Locale) => void;
+  setLocale: Dispatch<SetStateAction<Locale>>;
 }
 
-export const LocaleContext = createContext<ILocaleContextProps>({
-  locale: "en",
-  setLocale: () => {},
-});
+export const LocaleContext = createContext<ILocaleContextProps | undefined>(
+  undefined
+);
 
 interface ILocaleWrapperProps {
   children: ReactNode;
@@ -28,36 +31,28 @@ interface ILocaleWrapperProps {
 
 export const LocaleProvider: FC<ILocaleWrapperProps> = ({ children }) => {
   const { i18n } = useTranslation();
-  const [locale, setLocale] = useState<Locale>("en");
+  const [locale, setLocale] = useState<Locale>(() => {
+    const initialLocale = i18n.language?.toString();
+    return isLocale(initialLocale) ? initialLocale : "en";
+  });
 
-  // Initialize locale from i18n
   useEffect(() => {
-    const storedLocale = localStorage.getItem("locale");
-    const detectedLocale = i18n.language?.substring(0, 2) as Locale;
-    
-    const initialLocale = storedLocale === "bn" ? "bn" : 
-                         detectedLocale === "bn" ? "bn" : "en";
-    
-    setLocale(initialLocale);
-    i18n.changeLanguage(initialLocale);
-  }, [i18n]);
+    setLocale(
+      i18n.language?.toLowerCase() === "en" ||
+        i18n.language?.toLowerCase() === "en-us"
+        ? "en"
+        : i18n.language?.toLowerCase() === "bn"
+        ? "bn"
+        : "en"
+    );
+  }, [i18n.language]);
 
-  // Update i18n when locale changes
-  useEffect(() => {
-    if (locale) {
-      i18n.changeLanguage(locale);
-      localStorage.setItem("locale", locale);
-    }
-  }, [locale, i18n]);
-
-  const contextValue = useMemo(() => ({
+  const state = {
     locale,
-    setLocale: (newLocale: Locale) => setLocale(newLocale),
-  }), [locale]);
+    setLocale,
+  };
 
   return (
-    <LocaleContext.Provider value={contextValue}>
-      {children}
-    </LocaleContext.Provider>
+    <LocaleContext.Provider value={state}>{children}</LocaleContext.Provider>
   );
 };
