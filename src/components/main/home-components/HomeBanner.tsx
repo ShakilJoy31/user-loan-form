@@ -5,7 +5,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { Key, useRef, useState } from "react";
+import { Key, SetStateAction, useRef, useState } from "react";
 import Image from "next/image";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import bannerImage1 from '../../../../assets/Home/banner (1).jpg'
@@ -23,12 +23,8 @@ interface BannerItem {
 
 const BannerImage = ({
     banner,
-    isFirst,
-    isLast,
 }: {
     banner: BannerItem;
-    isFirst: boolean;
-    isLast: boolean;
 }) => {
     return (
         <div className="relative w-full h-full">
@@ -65,7 +61,7 @@ const BannerImage = ({
                         Special Offer
                     </h3>
                     <p className="text-white/80">
-                        Limited time discounts available for all products. Don't miss out!
+                        Limited time discounts available for all products. Don&apos;t miss out!
                     </p>
                 </div>
             </div>
@@ -103,7 +99,7 @@ const HomeBanner = () => {
     const prevRefBanner = useRef(null);
     const nextRefBanner = useRef(null);
 
-    const handleSlideChange = (swiper: any) => {
+    const handleSlideChange = (swiper: { realIndex: SetStateAction<number>; }) => {
         setActiveIndex(swiper.realIndex);
     };
 
@@ -129,12 +125,11 @@ const HomeBanner = () => {
                 onSlideChange={handleSlideChange}
             >
                 {banners.length > 0 ? (
-                    banners.map((banner: BannerItem, index: number) => (
+                    banners.map((banner: BannerItem) => (
                         <SwiperSlide key={banner._id}>
                             <BannerImage
                                 banner={banner}
-                                isFirst={index === 0}
-                                isLast={index === banners.length - 1}
+                               
                             />
                         </SwiperSlide>
                     ))

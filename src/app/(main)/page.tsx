@@ -38,10 +38,10 @@ const Home = () => {
 
       {/* Rest of your content */}
       <div className="max-w-[1288px] mx-auto px-4 mt-4">
-      <div className='flex gap-4'>
-         <Promotion></Promotion>
-       <ShopLocationAndCategory></ShopLocationAndCategory>
-      </div>
+        <div className='flex gap-4'>
+          <Promotion></Promotion>
+          <ShopLocationAndCategory></ShopLocationAndCategory>
+        </div>
       </div>
     </div>
   )
