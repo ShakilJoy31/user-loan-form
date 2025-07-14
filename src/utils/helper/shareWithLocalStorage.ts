@@ -3,7 +3,7 @@ import { appConfiguration } from "../constant/appConfiguration";
 interface ILocalStorageDataProps {
   sidebar?: string;
   route?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export const shareWithLocal = (

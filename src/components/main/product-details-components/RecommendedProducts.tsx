@@ -1,5 +1,6 @@
 import { ShoppingCart } from 'lucide-react';
 import product from '../../../../assets/Products_Image/products.jpg'
+import Image from 'next/image';
 
 const products = [
     {
@@ -43,7 +44,7 @@ export const RecommendedProducts = () => {
                         className="flex justify-between border-b border-gray-300 last:border-0 pb-4"
                     >
                         <div className="flex items-start space-x-4 w-full ">
-                            <img
+                            <Image
                                 src={product.image}
                                 alt={product.name}
                                 className="w-14 h-14 rounded object-cover"

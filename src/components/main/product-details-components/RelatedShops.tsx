@@ -1,11 +1,11 @@
 import ShopCard from "../home-components/ShopCard";
 import shopLogo from '../../../../assets/Logo/shop-logo.png'
 
-const shops = [
-  { name: "FoodBazaar", tags: ["Grocery"], logo: "/shop1.png" },
-  { name: "BookCafe", tags: ["Books"], logo: "/shop2.png" },
-  { name: "GadgetZone", tags: ["Electronics"], logo: "/shop3.png" },
-];
+// const shops = [
+//   { name: "FoodBazaar", tags: ["Grocery"], logo: "/shop1.png" },
+//   { name: "BookCafe", tags: ["Books"], logo: "/shop2.png" },
+//   { name: "GadgetZone", tags: ["Electronics"], logo: "/shop3.png" },
+// ];
 
 export default function RelatedShops() {
     const shops = Array(6).fill({
