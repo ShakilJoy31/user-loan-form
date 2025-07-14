@@ -1,10 +1,11 @@
 import React from 'react';
+import DropdownSearch from './DropdownSearch';
 
 const ShopLocationAndCategory: React.FC = () => {
     return (
-        <div>
-            {/* Add your shop location and category UI here */}
-            <h2>Shop Location & Category</h2>
+        <div className='w-full'>
+            <h2>Find shops via Locations & Category</h2>
+            <DropdownSearch></DropdownSearch>
         </div>
     );
 };
