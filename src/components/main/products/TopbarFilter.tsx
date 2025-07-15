@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
-import { Squares2X2Icon, ListBulletIcon, FunnelIcon } from "@heroicons/react/24/solid";
+import { Squares2X2Icon, ListBulletIcon } from "@heroicons/react/24/solid";
 
 interface TopbarFilterProps {
     toggleSidebar: () => void;

@@ -162,7 +162,7 @@ const BillingAndPayment = () => {
                         </div>
 
                         {/* Apply Code Button */}
-                        <button className="bg-orange-500 text-white text-sm font-medium h-[48px] px-5 w-[126px] rounded-md hover:bg-orange-600 transition-colors">
+                        <button className="bg-orange-500 text-white text-xs md:text-sm font-medium h-[48px] px-5 w-[126px] rounded-md hover:bg-orange-600 transition-colors">
                             Apply Code
                         </button>
                     </div>

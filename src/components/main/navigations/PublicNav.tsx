@@ -26,7 +26,7 @@ const PublicNav = () => {
   useEffect(() => {
     const savedMode = localStorage.getItem('darkMode');
     const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
+
     if (savedMode !== null) {
       setDarkMode(savedMode === 'true');
     } else if (systemPrefersDark) {
@@ -51,24 +51,24 @@ const PublicNav = () => {
 
   // Properly typed animation variants for sidebar
   const sidebarVariants: Variants = {
-    hidden: { 
-      x: '-100%', 
-      opacity: 0 
+    hidden: {
+      x: '-100%',
+      opacity: 0
     },
-    visible: { 
-      x: 0, 
+    visible: {
+      x: 0,
       opacity: 1,
-      transition: { 
-        type: 'spring', 
+      transition: {
+        type: 'spring',
         stiffness: 300,
         damping: 30,
         duration: 0.5
       }
     },
-    exit: { 
-      x: '-100%', 
+    exit: {
+      x: '-100%',
       opacity: 0,
-      transition: { 
+      transition: {
         ease: 'easeInOut',
         duration: 0.2
       }
@@ -121,18 +121,18 @@ const PublicNav = () => {
 
               {/* Desktop Icons */}
               <div className="flex items-center gap-4">
-                 <ThemeSwitcher></ThemeSwitcher>
-              <LocaleSwitcher></LocaleSwitcher>
+                <ThemeSwitcher></ThemeSwitcher>
+                <LocaleSwitcher></LocaleSwitcher>
 
-                <Button 
-                onClick={() => router.push('/wish-list')}
-                className="p-2 rounded-full bg-white text-black hover:bg-orange-600 ">
+                <Button
+                  onClick={() => router.push('/wish-list')}
+                  className="p-2 rounded-full bg-white text-black hover:bg-orange-600 ">
                   <Heart size={20} />
                 </Button>
 
                 <Button
-                 onClick={() => router.push('/shopping-cart')}
-                className="p-2 rounded-full bg-white text-black hover:bg-orange-600 relative ">
+                  onClick={() => router.push('/shopping-cart')}
+                  className="p-2 rounded-full bg-white text-black hover:bg-orange-600 relative ">
                   <ShoppingCart size={20} />
                   <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-1 leading-none transform translate-x-1/2 -translate-y-1/2">
                     1
@@ -174,12 +174,12 @@ const PublicNav = () => {
                       </div>
                       <div className="mt-2 space-y-2">
                         <div className="flex justify-between items-center">
-                          <a
-                            href="/account"
+                          <Link
+                            href="/my-profile"
                             className="flex items-center gap-2 py-1 transition-colors hover:text-orange-500 dark:hover:text-orange-300"
                           >
                             My Account
-                          </a>
+                          </Link>
                           <div className="border text-xs p-1 rounded-full dark:border-gray-600">
                             <FaUser />
                           </div>

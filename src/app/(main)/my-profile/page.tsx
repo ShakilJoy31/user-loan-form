@@ -11,6 +11,7 @@ import { MdOutlineLock } from "react-icons/md";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { TfiControlPlay } from "react-icons/tfi";
 import UpdateProfile from "@/components/main/profile-components/UpdateProfile";
+import { shareWithLocal } from "@/utils/helper/shareWithLocalStorage";
 
 const tabs = [
   {
@@ -37,7 +38,7 @@ const tabs = [
   },
   {
     id: "track-order",
-    label: "Trac Order",
+    label: "Track Order",
     icon: () => <SiToggltrack className="w-5 h-5" />,
   },
   {
@@ -64,11 +65,12 @@ const tabs = [
 
 const AccountPage = () => {
   const [activeTab, setActiveTab] = useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("activeAccountTab") || "update-profile";
-    }
-    return "update-profile";
-  });
+  if (typeof window !== "undefined") {
+    const result = shareWithLocal('get', 'activeAccountTab');
+    return result || "update-profile";  // Provide default if null
+  }
+  return "update-profile";
+});
 
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
@@ -78,7 +80,7 @@ const AccountPage = () => {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      localStorage.setItem("activeAccountTab", activeTab);
+      shareWithLocal('set', 'activeAccountTab', activeTab);
     }
   }, [activeTab]);
 
@@ -87,13 +89,15 @@ const AccountPage = () => {
   };
 
   const handleTabChange = (tabId: string) => {
+     console.log(tabId)
+    shareWithLocal('set', 'activeAccountTab', tabId);
     setActiveTab(tabId);
     setMobileSidebarOpen(false);
   };
 
   return (
-    <div className="mb-10">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 px-4 lg:px-6">
+    <div className="max-w-[1270px] mx-auto px-4 sm:px-6 lg:px-8 mb-[37px] mt-16 pt-[40px]">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 w-full">
         {/* Mobile Toggle Button */}
         <button
           onClick={toggleMobileSidebar}
@@ -109,9 +113,10 @@ const AccountPage = () => {
 
         {/* Sidebar */}
         <div
-          className={`bg-white w-[90%] sm:w-[250px] max-w-[290px] z-40 shadow-md rounded-md py-5 px-3 transition-transform duration-300 lg:translate-x-0 lg:static fixed top-[80px] left-0 h-[90vh] overflow-y-auto ${
-            mobileSidebarOpen ? "translate-x-0" : "-translate-x-full"
+          className={`fixed lg:static inset-y-0 left-0 w-[280px] lg:w-full z-40 bg-white shadow-md rounded-md py-5 px-3 transition-transform duration-300 lg:translate-x-0 lg:col-span-3 h-[100vh] overflow-y-auto ${
+            mobileSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
           }`}
+          style={{ top: "80px" }}
         >
           <div className="mb-5">
             <h3 className="text-sm text-gray-500 px-2">Main menu</h3>
@@ -123,9 +128,9 @@ const AccountPage = () => {
                 <li
                   key={tab.id}
                   onClick={() => handleTabChange(tab.id)}
-                  className={`flex items-center gap-3 py-2 px-4 rounded-md cursor-pointer text-sm font-medium transition-colors duration-200 ${
+                  className={`flex items-center h-[42px] gap-3 py-2 px-4 rounded-md cursor-pointer text-sm font-medium transition-colors duration-200 ${
                     isActive
-                      ? "bg-orange-500 text-white"
+                      ? "bg-[#EE5A2C] text-white"
                       : "text-gray-700 hover:bg-gray-100"
                   }`}
                 >
@@ -137,23 +142,35 @@ const AccountPage = () => {
           </ul>
         </div>
 
+        {/* Overlay for mobile sidebar */}
+        {mobileSidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
+            onClick={() => setMobileSidebarOpen(false)}
+          />
+        )}
+
         {/* Main Content */}
-        <div className="col-span-1 lg:col-span-9">
-          {(() => {
-            switch (activeTab) {
-              case "update-profile":
-                return <UpdateProfile />;
-              default:
-                return (
-                  <div className="p-4 bg-white rounded-md shadow-sm">
-                    <h2 className="text-xl font-semibold">{activeTab}</h2>
-                    <p className="mt-2 text-gray-500">
-                      This tab is under construction.
-                    </p>
-                  </div>
-                );
-            }
-          })()}
+        <div className="lg:col-span-9 w-full">
+          <div className="bg-white">
+            {(() => {
+              switch (activeTab) {
+                case "update-profile":
+                  return <UpdateProfile />;
+                default:
+                  return (
+                    <>
+                      <h2 className="text-xl font-semibold capitalize">
+                        {activeTab?.split("-").join(" ")}
+                      </h2>
+                      <p className="mt-2 text-gray-500">
+                        This tab is under construction.
+                      </p>
+                    </>
+                  );
+              }
+            })()}
+          </div>
         </div>
       </div>
     </div>
