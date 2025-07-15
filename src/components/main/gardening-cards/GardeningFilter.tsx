@@ -5,8 +5,8 @@ import { GiSettingsKnobs } from "react-icons/gi";
 
 const GardeningFilter = () => {
   return (
-    <div>
-      <div className="flex justify-between items-center mb-6 lg:mb-[49px] pt-5 lg:pt-0 px-[20px] lg:px-0">
+    <div className="">
+      <div className="w-full lg:max-w-[1280px] mx-auto flex justify-between items-center mb-6 lg:mb-[49px] pt-5 lg:pt-0 px-[20px] lg:px-0">
        <div>
          <Button
           variant={"outline"}

@@ -7,7 +7,7 @@ const Gardening = () => {
     return (
         <div className="mt-16 lg:pt-[95px] max-w-[1280px] mx-auto mb-10 lg:mb-[93px]">
             <GardeningFilter />
-            <div className="lg:flex justify-between">
+            <div className="lg:flex justify-between lg:gap-[33px]">
             <TopCategory />
             <GardeningCards />
             </div>
