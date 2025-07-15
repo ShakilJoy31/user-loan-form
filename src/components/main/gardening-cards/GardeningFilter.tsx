@@ -1,46 +1,45 @@
-"use client"
+"use client";
 import { Button } from "@/components/ui/button";
 import { ChevronDownIcon } from "lucide-react";
 import { GiSettingsKnobs } from "react-icons/gi";
 
 const GardeningFilter = () => {
-    return (
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 lg:mb-[49px]">
-            {/* Filter Button - moves to top on mobile */}
-            <Button 
-                variant={"outline"} 
-                className="bg-[#EE5A2C] text-white text-base sm:text-[18px] font-normal w-full sm:w-auto"
-            >
-                Filter
-                <GiSettingsKnobs className="ml-1 text-white" />
-            </Button>
+  return (
+    <div>
+      <div className="flex justify-between items-center mb-6 lg:mb-[49px] pt-5 lg:pt-0 px-[20px] lg:px-0">
+        <Button
+          variant={"outline"}
+          className="bg-[#EE5A2C] text-white text-[18px] font-normal"
+        >
+          Filter
+          <GiSettingsKnobs className="ml-1 text-white" />
+        </Button>
 
-            {/* Middle section - stacks on mobile */}
-            <div className="flex flex-col xs:flex-row items-start xs:items-center gap-4 w-full sm:w-auto justify-between">
-                {/* Sort dropdown */}
-                <div className="flex items-center gap-2 w-full xs:w-auto">
-                    <label className="text-gray-700 whitespace-nowrap text-sm sm:text-base">Sort By:</label>
-                    <div className="relative flex-grow xs:flex-grow-0">
-                        <select
-                            className="appearance-none border border-gray-300 rounded px-4 py-1.5 pr-8 bg-white text-gray-700 text-sm focus:outline-none w-full"
-                        >
-                            <option>Featured</option>
-                            <option>Newest</option>
-                            <option>Price: Low to High</option>
-                            <option>Price: High to Low</option>
-                        </select>
-                        <ChevronDownIcon className="w-4 h-4 text-gray-500 absolute top-2.5 right-2 pointer-events-none" />
-                    </div>
-                </div>
-
-                {/* Results count - moves below on mobile */}
-                <div className="flex items-center gap-1 text-sm sm:text-base">
-                    <p>52</p>
-                    <p>Results Found</p>
-                </div>
-            </div>
+        {/* Sort dropdown */}
+        <div className="flex items-center space-x-2 w-full sm:w-auto justify-between sm:justify-normal">
+          <label className="text-gray-700 whitespace-nowrap">Sort By:</label>
+          <div className="relative">
+            <select className="appearance-none border border-gray-300 rounded px-4 py-1.5 pr-8 bg-white text-gray-700 text-sm focus:outline-none w-full sm:w-auto">
+              <option>Featured</option>
+              <option>Newest</option>
+              <option>Price: Low to High</option>
+              <option>Price: High to Low</option>
+            </select>
+            <ChevronDownIcon className="w-4 h-4 text-gray-500 absolute top-2.5 right-2 pointer-events-none" />
+          </div>
         </div>
-    );
+
+        <div className="flex items-center gap-1 hidden md:block">
+          <p>52</p>
+          <p>Result Fount</p>
+        </div>
+      </div>
+      <div className="flex items-center gap-1 md:hidden justify-center">
+          <p>52</p>
+          <p>Result Fount</p>
+        </div>
+    </div>
+  );
 };
 
 export default GardeningFilter;
