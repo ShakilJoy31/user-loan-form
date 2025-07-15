@@ -1,6 +1,6 @@
 "use client"
 import Image from "next/image";
-import map from "../../../../assets/Home/map.png"
+import map from "@/assets/Home/map.png"
 import { FaStar } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";

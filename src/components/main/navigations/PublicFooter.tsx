@@ -10,7 +10,7 @@ import {
 } from "react-icons/fa";
 import { MdHelp, MdInfo } from "react-icons/md";
 import { FiArrowRight } from 'react-icons/fi';
-import footerLogo from "../../../../assets/Home/navbarLogo.png"
+import footerLogo from "@/assets/Home/navbarLogo.png"
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";

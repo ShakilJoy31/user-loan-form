@@ -1,7 +1,7 @@
 "use client"
 import Image from "next/image";
 import { FiTrash2, FiTag } from "react-icons/fi";
-import wiring from "../../../../assets/Home/wiring.png";
+import wiring from "@/assets/Home/wiring.png";
 import { Button } from "@/components/ui/button";
 
 const ShoppingCart = () => {

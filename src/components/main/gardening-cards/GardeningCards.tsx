@@ -1,8 +1,8 @@
 "use client"
 import Image from "next/image";
 import { FaShareAlt } from "react-icons/fa";
-import camera from "../../../../assets/Home/camera.png";
-import person from "../../../../assets/Home/person.png";
+import camera from "@/assets/Home/camera.png";
+import person from "@/assets/Home/person.png";
 import { useState } from "react";
 
 const GardeningCards = () => {

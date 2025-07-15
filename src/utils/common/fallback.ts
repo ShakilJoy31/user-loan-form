@@ -26,5 +26,5 @@ export const fallback: IFallbackProps = {
   },
   querySize: 999999999999999,
   sortOrder: "asc",
-  photo: "../../../../public/not_available.png",
+  photo: "../public/not_available.png",
 };

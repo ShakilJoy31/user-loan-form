@@ -1,5 +1,5 @@
 import ShopCard from "../home-components/ShopCard";
-import shopLogo from '../../../../assets/Logo/shop-logo.png'
+import shopLogo from '@/assets/Logo/shop-logo.png'
 
 // const shops = [
 //   { name: "FoodBazaar", tags: ["Grocery"], logo: "/shop1.png" },

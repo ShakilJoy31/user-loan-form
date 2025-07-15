@@ -1,9 +1,9 @@
 "use client"
 import Image from "next/image";
-import pip from "../../../../assets/Home/image.png";
-import collectionBanner from "../../../../assets/Home/collectionBanner.png";
-import tool from "../../../../assets/Home/tool.png";
-import toolBox from "../../../../assets/Home/toolBox.png";
+import pip from "@/assets/Home/image.png";
+import collectionBanner from "@/assets/Home/collectionBanner.png";
+import tool from "@/assets/Home/tool.png";
+import toolBox from "@/assets/Home/toolBox.png";
 import { FaStar } from "react-icons/fa";
 import { ShoppingCart } from "lucide-react";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";

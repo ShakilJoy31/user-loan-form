@@ -1,6 +1,6 @@
 import Image from "next/image";
 import React from "react";
-import collectionBanner from "../../../../assets/Logo/payment-icons.png";
+import collectionBanner from "@/assets/Logo/payment-icons.png";
 
 
 const BillingAndPayment = () => {

@@ -8,10 +8,10 @@ import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { Key, SetStateAction, useRef, useState } from "react";
 import Image from "next/image";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
-import bannerImage1 from '../../../../assets/Home/banner (1).jpg'
-import bannerImage2 from '../../../../assets/Home/banner (2).jpg'
+import bannerImage1 from '@/assets/Home/banner (1).webp'
+import bannerImage2 from '@/assets/Home/banner (2).webp'
 import { FaArrowRight } from "react-icons/fa6";
-import bannerImage3 from '../../../../assets/Home/banner (3).jpg'
+import bannerImage3 from '@/assets/Home/banner (3).webp'
 
 interface BannerItem {
     _id: Key | null | undefined;

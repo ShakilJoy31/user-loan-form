@@ -1,5 +1,5 @@
 import Image from "next/image";
-import product from '../../../../assets/Products_Image/products.jpg'
+import product from '@/assets/Products_Image/products.jpg'
 
 const products = [
   {

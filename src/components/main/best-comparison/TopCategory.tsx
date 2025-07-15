@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { FiSearch } from "react-icons/fi";
-import Gallery from "../../../../assets/Home/gallery.png";
+import Gallery from "@/assets/Home/gallery.png";
 import { CiCalendar } from "react-icons/ci";
 
 const TopCategory = () => {

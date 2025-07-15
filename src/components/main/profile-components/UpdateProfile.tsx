@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { FiEdit, FiCalendar } from 'react-icons/fi';
-import user from '../../../../assets/Products_Image/man.avif'
+import user from '@/assets/Products_Image/man.avif'
 
 export default function UpdateProfile() {
 

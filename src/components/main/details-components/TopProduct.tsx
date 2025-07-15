@@ -1,10 +1,10 @@
 "use client"
 import Image from "next/image";
-import cellingFan from "../../../../assets/Home/cellingFan.png";
-import wiring from "../../../../assets/Home/wiring.png";
-import soket from "../../../../assets/Home/soket.png";
-import light from "../../../../assets/Home/light.png";
-import switch2 from "../../../../assets/Home/switch.png";
+import cellingFan from "@/assets/Home/cellingFan.png";
+import wiring from "@/assets/Home/wiring.png";
+import soket from "@/assets/Home/soket.png";
+import light from "@/assets/Home/light.png";
+import switch2 from "@/assets/Home/switch.png";
 import { ShoppingCart } from "lucide-react";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import { Button } from "@/components/ui/button";

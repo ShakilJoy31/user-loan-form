@@ -10,9 +10,9 @@ import {
 } from "react-icons/fa";
 import { BiUser } from "react-icons/bi";
 import { AiOutlineTag } from "react-icons/ai";
-import cameraImage from "../../../../assets/Home/camera.png";
-import person from "../../../../assets/Home/person.png";
-import girl from "../../../../assets/Home/girl.png";
+import cameraImage from "@/assets/Home/camera.png";
+import person from "@/assets/Home/person.png";
+import girl from "@/assets/Home/girl.png";
 import { Button } from "@/components/ui/button";
 
 const CameraComperison = () => {

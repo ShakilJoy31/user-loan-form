@@ -1,9 +1,9 @@
 "use client"
 import Image from "next/image";
-import ElectroHub from "../../../../assets/Home/ElectroHub.png";
+import ElectroHub from "@/assets/Home/ElectroHub.png";
 import { FaFacebook, FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
 import ShopCard from "../home-components/ShopCard";
-import shopLogo from '../../../../assets/Logo/shop-logo.png'
+import shopLogo from '@/assets/Logo/shop-logo.png'
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 
 const ShopDetailsInfo = () => {
