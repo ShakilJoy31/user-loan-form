@@ -5,7 +5,7 @@ export default function DeliveryOptionsCard() {
   return (
     <div>
         <h2 className="text-gray-700 font-semibold text-[15px]">Delivery options</h2>
-        <div className="w-full bg-white border border-gray-300 rounded-xl p-5 space-y-4">
+        <div className="w-full bg-white border border-gray-300 rounded-xl lg:max-w-[524px] max-w-full p-5 space-y-4">
       
 
       {/* Row 1: Location + Change */}

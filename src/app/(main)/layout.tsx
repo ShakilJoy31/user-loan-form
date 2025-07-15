@@ -10,7 +10,7 @@ export default function MainLayout({
   return (
     <>
       <PublicNav/>
-      <div className="min-h-screen pt-24 md:pt-[132px]">{children}</div>
+      <div className="min-h-screen">{children}</div>
       <SmallDevicePublicNav />
       <PublicFooter />
     </>
