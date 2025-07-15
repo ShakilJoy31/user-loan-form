@@ -25,4 +25,8 @@ export const publicNavigations: INavigations = {
     name: "Details",
     path: "/products/details",
   },
+  deal: {
+    name: "Best Deal",
+    path: "/best-deal-and-comparison",
+  },
 };

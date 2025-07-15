@@ -43,7 +43,7 @@ const Home = () => {
   ];
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen mt-16 pt-[32px]">
       <div className='max-w-[1288px] mx-auto px-4 lg:px-0'>
         <HomeBanner />
         <div className="mt-4 md:mt-6">

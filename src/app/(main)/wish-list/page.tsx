@@ -65,8 +65,8 @@ const WishList = () => {
       {/* Back Button */}
       <div className="mb-4 lg:mb-14 text-[#EE5A2C] text-[16px]">
         <Button 
-          variant="ghost" 
-          className="p-0 h-auto text-primary hover:text-primary  flex items-center gap-1"
+          variant="outline" 
+          className="p-2 h-auto text-[#EE5A2C]  flex items-center gap-1"
         >
           <IoMdArrowBack />
           Back
@@ -86,7 +86,7 @@ const WishList = () => {
             className="relative  rounded-lg w-full shadow-md transition-shadow"
           >
             {/* Delete Button */}
-            <button className="absolute top-3 right-3 bg-white rounded-full border p-2  hover:text-red-500 transition-colors">
+            <button className="absolute top-3 right-3 bg-white rounded-full  p-2  hover:text-red-500 transition-colors">
               <FaTrashAlt size={16} />
             </button>
 
