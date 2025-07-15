@@ -25,7 +25,7 @@ export default function ProductInfo() {
     const sizes = ["Small", "Medium", "Large", "Extra Large"];
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 mt-4 lg:mt-0">
             <div className="flex items-center justify-between">
                 <p className="text-orange-600 font-bold text-sm">ElectroHub</p>
                 <div className="flex gap-x-2 items-center">

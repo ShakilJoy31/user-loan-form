@@ -3,7 +3,7 @@
 import { publicNavigations } from "@/utils/helper/publicNavigationsLink";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { Menu, X, Heart, ShoppingCart, Moon, Sun } from "lucide-react";
+import { Menu, X, Heart, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import { FaUser } from "react-icons/fa";
 import { MdLogout } from "react-icons/md";
@@ -42,9 +42,9 @@ const PublicNav = () => {
     }
   }, [darkMode]);
 
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-  };
+  // const toggleDarkMode = () => {
+  //   setDarkMode(!darkMode);
+  // };
 
   // Properly typed animation variants for sidebar
   const sidebarVariants: Variants = {
@@ -81,7 +81,7 @@ const PublicNav = () => {
 
   return (
     <header className="lg:px-10 fixed top-0 left-0 right-0 z-50 border-b bg-[#FD6801] text-white">
-      <div className="w-full max-w-[1440px] mx-auto">
+      <div className="w-full max-w-[1280px] mx-auto">
         <div className="container mx-auto px-4">
           <div className="flex h-16 items-center justify-between">
             {/* Mobile Menu Button */}
