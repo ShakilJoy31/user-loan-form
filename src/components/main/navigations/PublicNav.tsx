@@ -13,11 +13,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import type { Variants } from "framer-motion";
 import ThemeSwitcher from "@/components/common/ThemeSwitcher";
 import LocaleSwitcher from "@/components/common/LocaleSwitcher";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 const PublicNav = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
+  const router = useRouter();
 
   // Initialize dark mode from localStorage or system preference
   useEffect(() => {
@@ -85,13 +88,13 @@ const PublicNav = () => {
         <div className="container mx-auto px-4">
           <div className="flex h-16 items-center justify-between">
             {/* Mobile Menu Button */}
-            <button
+            <Button
               className="md:hidden p-2 rounded-md text-white hover:bg-orange-600 focus:outline-none"
               onClick={() => setIsOpen(!isOpen)}
               aria-label="Toggle menu"
             >
               {isOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
+            </Button>
 
             {/* Logo */}
             <div className="text-lg font-semibold md:ml-0 mx-auto md:mx-0">
@@ -121,15 +124,20 @@ const PublicNav = () => {
                  <ThemeSwitcher></ThemeSwitcher>
               <LocaleSwitcher></LocaleSwitcher>
 
-                <button className="p-2 rounded-full bg-white text-black hover:bg-orange-600 ">
+                <Button 
+                onClick={() => router.push('/wish-list')}
+                className="p-2 rounded-full bg-white text-black hover:bg-orange-600 ">
                   <Heart size={20} />
-                </button>
-                <button className="p-2 rounded-full bg-white text-black hover:bg-orange-600 relative ">
+                </Button>
+
+                <Button
+                 onClick={() => router.push('/shopping-cart')}
+                className="p-2 rounded-full bg-white text-black hover:bg-orange-600 relative ">
                   <ShoppingCart size={20} />
                   <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-1 leading-none transform translate-x-1/2 -translate-y-1/2">
                     1
                   </span>
-                </button>
+                </Button>
 
                 {/* Avatar Dropdown */}
                 <div className="relative inline-block mt-1">
@@ -178,9 +186,9 @@ const PublicNav = () => {
                         </div>
                         <hr className="my-2 border-gray-200 dark:border-gray-600" />
                         <div className="flex justify-between items-center">
-                          <button className="flex items-center gap-2 transition-colors hover:text-orange-500 dark:hover:text-orange-300">
+                          <Button className="flex items-center gap-2 transition-colors hover:text-orange-500 dark:hover:text-orange-300">
                             Logout
-                          </button>
+                          </Button>
                           <MdLogout className="text-lg" />
                         </div>
                       </div>
@@ -192,15 +200,15 @@ const PublicNav = () => {
 
             {/* Mobile Icons */}
             <div className="flex md:hidden items-center gap-4">
-              <button className="p-2 rounded-md text-white hover:bg-orange-600">
+              <Button className="p-2 rounded-md text-white hover:bg-orange-600">
                 <Heart size={20} />
-              </button>
-              <button className="p-2 rounded-md text-white hover:bg-orange-600 relative">
+              </Button>
+              <Button className="p-2 rounded-md text-white hover:bg-orange-600 relative">
                 <ShoppingCart size={20} />
                 <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-1 leading-none transform translate-x-1/2 -translate-y-1/2">
                   1
                 </span>
-              </button>
+              </Button>
             </div>
           </div>
 
