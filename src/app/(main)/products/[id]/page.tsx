@@ -10,7 +10,7 @@ import TabsSection from "@/components/main/product-details-components/TabsSectio
 
 export default function ProductDetailsPage() {
     return (
-        <div className="max-w-[1280px] mx-auto px-4 py-6 space-y-8">
+        <div className="max-w-[1280px] mx-auto px-4  space-y-8">
             <div className="flex items-center gap-x-2">
                 <span className="hover:cursor-pointer">Home</span> / <span className="hover:cursor-pointer">Shop Details</span> / <span className="hover:cursor-pointer text-[#EE5A2C] ">Gang Light</span>
             </div>
