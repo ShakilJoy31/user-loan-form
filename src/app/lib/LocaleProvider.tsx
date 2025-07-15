@@ -12,7 +12,7 @@ import { useTranslation } from "react-i18next";
 
 type Locale = "en" | "bn";
 
-const isLocale = (value: any): value is Locale => {
+const isLocale = (value: unknown): value is Locale => {
   return value === "en" || value === "bn";
 };
 

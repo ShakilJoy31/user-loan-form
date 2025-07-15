@@ -1,4 +1,49 @@
 
+// import { appConfiguration } from "../constant/appConfiguration";
+// import { jwtDecode } from "jwt-decode";
+// import { shareWithCookies } from "./shareWithCookies";
+// import formatter from "./formattor";
+
+// interface IBranchInformationProps {
+//   id: number;
+//   branchName: string;
+//   branchLocation: string;
+//   due: number;
+//   address: string;
+//   phone: string;
+//   hotline: string;
+//   email: string;
+//   type: string;
+// }
+
+// export interface IAuthenticationProps {
+//   branchId: number;
+//   name: string;
+//   email: string;
+//   role: string;
+//   avatar: string;
+//   branchInfo: IBranchInformationProps;
+// }
+// export const shareAuthentication = (): IAuthenticationProps => {
+//   const token =
+//     shareWithCookies("get", `${appConfiguration.appCode}token`)?.toString() ||
+//     "";
+//   let authData;
+
+//   if (token) {
+//     authData = jwtDecode(token) as any;
+//   }
+
+//   return {
+//     branchId: authData?.branch || "",
+//     name: formatter({ type: "words", words: authData?.name }) || "",
+//     email: authData?.email || "",
+//     avatar: authData?.avatar || "",
+//     role: authData?.role?.toLowerCase() || "",
+//     branchInfo: authData?.branchInfo,
+//   };
+// };
+
 import { appConfiguration } from "../constant/appConfiguration";
 import { jwtDecode } from "jwt-decode";
 import { shareWithCookies } from "./shareWithCookies";
@@ -24,22 +69,42 @@ export interface IAuthenticationProps {
   avatar: string;
   branchInfo: IBranchInformationProps;
 }
+
+interface JwtPayload {
+  branch?: number;
+  name?: string;
+  email?: string;
+  role?: string;
+  avatar?: string;
+  branchInfo?: IBranchInformationProps;
+}
+
 export const shareAuthentication = (): IAuthenticationProps => {
   const token =
     shareWithCookies("get", `${appConfiguration.appCode}token`)?.toString() ||
     "";
-  let authData;
+  let authData: JwtPayload = {};
 
   if (token) {
-    authData = jwtDecode(token) as any;
+    authData = jwtDecode<JwtPayload>(token);
   }
 
   return {
-    branchId: authData?.branch || "",
+    branchId: authData?.branch || 0,
     name: formatter({ type: "words", words: authData?.name }) || "",
     email: authData?.email || "",
     avatar: authData?.avatar || "",
     role: authData?.role?.toLowerCase() || "",
-    branchInfo: authData?.branchInfo,
+    branchInfo: authData?.branchInfo || {
+      id: 0,
+      branchName: "",
+      branchLocation: "",
+      due: 0,
+      address: "",
+      phone: "",
+      hotline: "",
+      email: "",
+      type: ""
+    },
   };
 };
