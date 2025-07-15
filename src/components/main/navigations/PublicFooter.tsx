@@ -13,8 +13,11 @@ import { FiArrowRight } from 'react-icons/fi';
 import footerLogo from "../../../../assets/Home/navbarLogo.png"
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+
 
 const PublicFooter = () => {
+    const router = useRouter();
   return (
     <footer className="bg-[#FD6801] text-white py-8 px-4 lg:px-10">
       <div className="max-w-[1280px] mx-auto w-full">
@@ -49,7 +52,7 @@ const PublicFooter = () => {
       />
       
       {/* Submit Button */}
-      <Button className="text-gray-700 -rotate-45 px-4 py-2 ">
+      <Button variant={"outline"} className="text-gray-700 -rotate-45 px-4 py-2 ">
         <FiArrowRight className="h-5 w-5" />
       </Button>
     </div>
@@ -64,7 +67,7 @@ const PublicFooter = () => {
               </h3>
               <ul className="space-y-2">
                 <li>
-                  <a href="#" className="hover:text-blue-600 transition">
+                  <a onClick={() => router.push('/faq')} href="#" className="hover:text-blue-600 transition">
                     FAQ
                   </a>
                 </li>
