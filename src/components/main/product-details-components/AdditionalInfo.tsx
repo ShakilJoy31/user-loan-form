@@ -5,7 +5,7 @@ export default function AdditionalInfoCard() {
     return (
         <div>
             <h2 className="text-gray-700 font-semibold text-[15px]">Additional information</h2>
-            <div className="w-full bg-white border border-gray-300 rounded-xl p-5 space-y-4">
+            <div className="w-full bg-white border border-gray-300 rounded-xl p-5 space-y-4 lg:max-w-[524px] max-w-full ">
 
                 {/* Row 1: Minimum Booking */}
                 <div className="flex items-center justify-between text-sm font-medium text-gray-700">

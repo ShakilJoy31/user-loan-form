@@ -27,15 +27,15 @@ export default function ProductGallery() {
     };
 
     return (
-        <div className="w-full space-y-4">
+        <div className="w-full space-y-[16px]">
             {/* Main Image */}
-            <div style={{borderRadius: '16px'}} className="bg-[#F7EDE1] px-[42px] py-[24px]">
-                <Image
+            <div className="lg:pl-[37px]">
+                <Image style={{borderRadius: '16px'}}
                     src={thumbnails[currentImageIndex]}
                     alt="Main Product"
                     width={350}
                     height={350}
-                    className="border w-full h-full rounded-[16px]"
+                    className="border w-full h-full lg:w-[502px] lg:h-[439px] bg-[#F7EDE1] pt-[24px] pr-[42px] pb-[17px] pl-[29px]"
                 />
             </div>
 

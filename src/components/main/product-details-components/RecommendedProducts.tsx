@@ -35,7 +35,7 @@ const products = [
 
 export const RecommendedProducts = () => {
     return (
-        <div className="bg-white p-4 rounded-xl border border-gray-300 shadow-sm">
+        <div className="bg-white p-4 rounded-xl border border-gray-300 shadow-sm lg:max-w-[524px] max-w-full">
             <h3 className="text-lg font-semibold mb-4">Recommended Products</h3>
             <ul className="space-y-4">
                 {products.map((product, index) => (
