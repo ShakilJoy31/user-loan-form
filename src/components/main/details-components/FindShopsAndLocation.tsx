@@ -8,6 +8,7 @@ import ShopDetailsMap from "./ShopDetailsMap";
 const FindShopsAndLocation = () => {
     const { translate } = useCustomTranslator();
     return (
+        <div className="px-[20px]">
         <div className="mt-10 lg:mt-0 lg:max-w-[653px] h-auto lg:max-h-[1511px]  w-full shadow-lg rounded-[20px] pb-[19px] bg-[#FBFBFB]">
             <h2 className="text-[20px] font-semibold pt-[21] pl-[15px]">
                 {
@@ -19,13 +20,14 @@ const FindShopsAndLocation = () => {
                 <DropdownSearch />
              </div>
 
-             <div className="pt-[42px] pl-[21px]">
+             <div className="pt-[42px] pl-[21px] pr-[12px]">
                 <ShopDetailsMap />
              </div>
 
-             <div className="pt-[14px] pl-[21px]">
+             <div className="pt-[14px] pl-[21px] pr-[12px]">
                 <ShopDetailsInfo />
              </div>
+        </div>
         </div>
     );
 };

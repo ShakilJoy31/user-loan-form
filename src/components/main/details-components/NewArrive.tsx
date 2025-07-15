@@ -105,7 +105,8 @@ const ProductCard = ({ product }: ProductCardProps) => {
 const NewArrive = () => {
     const { translate } = useCustomTranslator();
   return (
-    <div className="lg:max-w-[343px] mt-[21px] h-auto lg:max-h-[724px] w-full shadow-lg rounded-[6px] pb-[19px] bg-[#F6F6F6] px-[12px]">
+    <div className="px-[20px] mb-10 lg:mb-0">
+    <div className="lg:max-w-[343px] mt-[21px] h-auto lg:max-h-[724px] w-full shadow-lg rounded-[6px] pb-[19px] bg-[#F6F6F6] md:px-[12px]">
       <h2 className="text-xl font-semibold pt-8 pl-6">
         {translate("নতুন আগমন", "New Arrivals")}
       </h2>
@@ -134,6 +135,7 @@ const NewArrive = () => {
           <ProductCard product={products[3]} />
         </div>
       </div>
+    </div>
     </div>
   );
 };

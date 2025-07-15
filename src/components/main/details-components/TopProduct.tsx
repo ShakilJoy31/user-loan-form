@@ -104,13 +104,14 @@ const ProductCard = ({
 const TopProduct = () => {
     const { translate } = useCustomTranslator();
   return (
-    <div className="mt-10 lg:mt-0 w-full lg:max-w-[343px] h-auto lg:max-h-[767px] shadow-lg rounded-[20px] pb-5 bg-white px-3">
+    <div className="px-[20px]">
+    <div className="mt-10 lg:mt-0 w-full lg:max-w-[343px] h-auto lg:max-h-[767px] shadow-lg rounded-[20px] pb-5 bg-white md:px-3">
       <h2 className="text-xl font-semibold pt-8 pl-3">
         {translate("শীর্ষ পণ্য", "Top Products")}
       </h2>
 
       {/* For sm and lg devices — 1-column list layout */}
-      <div className="mt-4 space-y-3 md:hidden lg:block">
+      <div className="mt-4 space-y-3 md:hidden lg:block px-[15px] lg:px-0">
         {products.map((product, index) => (
           <ProductCard
             key={product.id}
@@ -121,7 +122,7 @@ const TopProduct = () => {
       </div>
 
       {/* For md devices — 2-column grid layout */}
-      <div className="hidden md:grid lg:hidden mt-4 grid grid-cols-2 gap-4">
+      <div className="hidden md:grid lg:hidden mt-4 grid grid-cols-2 gap-4 px-5">
         {products.map((product, index) => (
           <ProductCard
             key={product.id}
@@ -130,6 +131,7 @@ const TopProduct = () => {
           />
         ))}
       </div>
+    </div>
     </div>
   );
 };

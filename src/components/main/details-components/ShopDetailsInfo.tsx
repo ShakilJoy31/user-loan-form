@@ -23,19 +23,19 @@ const ShopDetailsInfo = () => {
         }
       </h2>
 
-      <div className="flex flex-col md:flex-row gap-4 mb-6">
-        <div className="flex-1 space-y-3 sm:space-y-4">
-          <div className="bg-white w-full sm:max-w-[310px] rounded-lg py-3 sm:py-[14px] px-3 sm:px-[8px]">
+      <div className="flex flex-col md:flex-row gap-4 mb-6 text-[14px]">
+        <div className="flex-1 space-y-3 sm:space-y-4 pr-6 lg:pr-0">
+          <div className="bg-white max-w-[298px] w-full max-h-[50px]  rounded-lg py-3 sm:py-[14px] px-3 ">
             <span className="font-semibold text-[#EE5A2C]">Shop Type:</span>{" "}
             <span className="text-gray-400">Electronics & Gadgets Store</span>
           </div>
 
-          <div className="bg-white w-full sm:max-w-[310px] rounded-lg py-3 sm:py-[14px] px-3 sm:px-[8px]">
+          <div className="bg-white max-w-[298px] w-full max-h-[50px] rounded-lg py-3 sm:py-[14px] px-3 sm:px-[8px]">
             <span className="font-semibold text-[#EE5A2C]">Email:</span>{" "}
             <span className="text-gray-400">support@techzonebd.com</span>
           </div>
 
-          <div className="bg-white w-full sm:max-w-[310px] rounded-lg py-3 sm:py-[14px] px-3 sm:px-[8px]">
+          <div className="bg-white max-w-[298px] w-full max-h-[50px] rounded-lg py-3 sm:py-[14px] px-3 sm:px-[8px]">
             <span className="font-semibold text-[#EE5A2C]">
               Delivery Available:
             </span>{" "}
@@ -43,18 +43,18 @@ const ShopDetailsInfo = () => {
           </div>
         </div>
 
-        <div className="flex-1 space-y-3 sm:space-y-4">
-          <div className="bg-white w-full sm:max-w-[310px] rounded-lg py-3 sm:py-[14px] px-3 sm:px-[8px]">
+        <div className="flex-1 space-y-3 sm:space-y-4 pr-6 lg:pr-0">
+          <div className="bg-white max-w-[298px] w-full max-h-[50px] rounded-lg py-3 sm:py-[14px] px-3 sm:px-[8px]">
             <span className="font-semibold text-[#EE5A2C]">Phone Number:</span>{" "}
             <span className="text-gray-400">+880 1712 345678</span>
           </div>
 
-          <div className="bg-white w-full sm:max-w-[310px] rounded-lg py-3 sm:py-[14px] px-3 sm:px-[8px]">
+          <div className="bg-white max-w-[298px] w-full max-h-[50px] rounded-lg py-3 sm:py-[14px] px-3 sm:px-[8px]">
             <span className="font-semibold text-[#EE5A2C]">Store Hours:</span>{" "}
             <span className="text-gray-400">Sat-Thu, 10 AM – 9 PM</span>
           </div>
 
-          <div className="bg-white w-full sm:max-w-[310px] rounded-lg py-3 sm:py-[14px] px-3 sm:px-[8px]">
+          <div className="bg-white max-w-[298px] w-full max-h-[50px] rounded-lg py-3 sm:py-[14px] px-3 sm:px-[8px]">
             <span className="font-semibold text-[#EE5A2C]">
               Pickup Available:
             </span>{" "}
@@ -65,7 +65,7 @@ const ShopDetailsInfo = () => {
 
       <hr className="border-gray-300 my-4" />
 
-      <div className="py-4 flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-0 sm:pl-[49px] sm:pr-[56px]">
+      <div className="py-4 flex justify-between items-center gap-4 sm:gap-0  pr-6 pl-1">
         <div className="flex items-center gap-3">
           <h4 className="text-sm sm:text-[14px] font-normal">Brand:</h4>
           <div className="bg-white border border-gray-200">
@@ -103,13 +103,13 @@ const ShopDetailsInfo = () => {
 
       <hr className="border-gray-300 my-4" />
 
-      <h3 className="text-lg sm:text-xl font-medium mb-4 sm:pl-[49px] sm:pr-[56px]">
+      <h3 className="text-lg sm:text-xl font-medium mb-4  sm:px-2 md:px-0">
         {
             translate("আমরা কি বিক্রি করছি", "What are we selling")
         }
       </h3>
 
-      <div className="overflow-x-auto sm:pl-[49px] sm:pr-[56px]">
+      <div className="overflow-x-auto  sm:px-2 md:px-0">
         <table className="min-w-full border-collapse">
           <tbody>
             <tr>
@@ -145,7 +145,7 @@ const ShopDetailsInfo = () => {
         {translate("সম্পর্কিত দোকান", "Related Shop")}
       </h2>
 
-     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 pr-6">
          {shops.map((shop, index) => (
           <ShopCard
             key={index}
