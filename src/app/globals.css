@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import "tw-animate-css";
+/* @import "tw-animate-css"; */
 
 @custom-variant dark (&:is(.dark *));
 
@@ -102,6 +102,57 @@
   background-color: #131620;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Shakil */
+/* For Chrome, Safari, Edge */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #F53E32;
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* For Firefox */
+input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #F53E32;
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* For IE */
+input[type="range"]::-ms-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #F53E32;
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
