@@ -15,7 +15,7 @@ const ShopDetailsMap = () => {
                     translate("দোকান তথ্য", "Shop Details")
                 }
             </h2>
-            <div className="pr-[18px] mx-auto">
+            <div className=" mx-auto">
                 <Image 
                 width={614}
                 height={256}
