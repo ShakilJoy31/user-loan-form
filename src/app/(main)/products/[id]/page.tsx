@@ -1,3 +1,5 @@
+"use client"
+
 import AdditionalInfoCard from "@/components/main/product-details-components/AdditionalInfo";
 import DeliveryOptions from "@/components/main/product-details-components/DeliveryOptions";
 import PriceSection from "@/components/main/product-details-components/PriceSection";

@@ -4,6 +4,7 @@ import { IoMdArrowBack } from "react-icons/io";
 import { useState, useRef, useEffect } from "react";
 import { FiChevronDown, FiChevronUp, FiX } from "react-icons/fi";
 import { SellerLogin } from "./SellerLogin";
+import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 
 const SellerCreate = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -124,7 +125,7 @@ const SellerCreate = () => {
     e.preventDefault();
     
     if (password.newPassword !== password.confirmPassword) {
-      alert("Passwords don't match!");
+      alert(translate("পাসওয়ার্ড মেলে না!", "Passwords don't match!"));
       return;
     }
     
@@ -140,7 +141,7 @@ const SellerCreate = () => {
     console.log("Complete registration data:", completeData);
     
     // Reset form or redirect
-    alert("Registration successful!");
+    alert(translate("নিবন্ধন সফল হয়েছে!", "Registration successful!"));
     setCurrentStep("shop");
     setActiveTab("login");
   };
@@ -153,8 +154,10 @@ const SellerCreate = () => {
 
   const handleResendCode = () => {
     // Implement resend OTP logic here
-    alert("Verification code resent to your phone number");
+    alert(translate("আপনার ফোন নম্বরে ভেরিফিকেশন কোড পুনরায় পাঠানো হয়েছে", "Verification code resent to your phone number"));
   };
+
+  const { translate } = useCustomTranslator();
 
   return (
     <div className="max-w-[460px] w-full px-[20px] lg:px-0">
@@ -165,7 +168,7 @@ const SellerCreate = () => {
           onClick={handleBack}
         >
           <IoMdArrowBack />
-          Back
+          {translate("পিছনে", "Back")}
         </Button>
       </div>
 
@@ -174,8 +177,8 @@ const SellerCreate = () => {
           <>
             <h2 className="text-3xl lg:text-[36px] font-normal mb-5 lg:mb-[40px] text-center">
               {activeTab === "create"
-                ? "Create Seller account"
-                : "Login to your account"}
+                ? translate("বিক্রেতা অ্যাকাউন্ট তৈরি করুন", "Create Seller account")
+                : translate("আপনার অ্যাকাউন্টে লগইন করুন", "Login to your account")}
             </h2>
 
             <div className="max-w-[400px]">
@@ -188,7 +191,7 @@ const SellerCreate = () => {
                       : "bg-transparent text-gray-400 hover:bg-transparent"
                   }`}
                 >
-                  Create Account
+                  {translate("অ্যাকাউন্ট তৈরি করুন", "Create Account")}
                 </Button>
                 <Button
                   onClick={() => setActiveTab("login")}
@@ -198,14 +201,14 @@ const SellerCreate = () => {
                       : "bg-transparent text-gray-400 hover:bg-transparent"
                   }`}
                 >
-                  Log in
+                  {translate("লগ ইন", "Log in")}
                 </Button>
               </div>
 
               {activeTab === "create" ? (
                 <>
                   <p className="text-gray-600 mb-6 text-center">
-                    Fill your information below or register with your account.
+                    {translate("আপনার তথ্য নিচে পূরণ করুন বা আপনার অ্যাকাউন্ট দিয়ে নিবন্ধন করুন", "Fill your information below or register with your account.")}
                   </p>
 
                   <form className="space-y-4" onSubmit={handleShopDetailsSubmit}>
@@ -215,13 +218,13 @@ const SellerCreate = () => {
                         htmlFor="shopName"
                         className="block text-sm font-medium text-gray-700 mb-1"
                       >
-                        Shop Name*
+                        {translate("দোকানের নাম*", "Shop Name*")}
                       </label>
                       <input
                         type="text"
                         id="shopName"
                         name="shopName"
-                        placeholder="Enter your company name"
+                        placeholder={translate("আপনার কোম্পানির নাম লিখুন", "Enter your company name")}
                         className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
                         required
                       />
@@ -233,13 +236,13 @@ const SellerCreate = () => {
                         htmlFor="ownerName"
                         className="block text-sm font-medium text-gray-700 mb-1"
                       >
-                        Owner Name*
+                        {translate("মালিকের নাম*", "Owner Name*")}
                       </label>
                       <input
                         type="text"
                         id="ownerName"
                         name="ownerName"
-                        placeholder="Enter owner name"
+                        placeholder={translate("মালিকের নাম লিখুন", "Enter owner name")}
                         className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
                         required
                       />
@@ -251,7 +254,7 @@ const SellerCreate = () => {
                         htmlFor="designation"
                         className="block text-sm font-medium text-gray-700 mb-1"
                       >
-                        Designation*
+                        {translate("পদবী*", "Designation*")}
                       </label>
                       <select
                         id="designation"
@@ -259,10 +262,10 @@ const SellerCreate = () => {
                         className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
                         required
                       >
-                        <option value="">Select designation</option>
-                        <option value="Director">Director</option>
-                        <option value="Manager">Manager</option>
-                        <option value="Owner">Owner</option>
+                        <option value="">{translate("পদবী নির্বাচন করুন", "Select designation")}</option>
+                        <option value="Director">{translate("পরিচালক", "Director")}</option>
+                        <option value="Manager">{translate("ম্যানেজার", "Manager")}</option>
+                        <option value="Owner">{translate("মালিক", "Owner")}</option>
                       </select>
                     </div>
 
@@ -273,7 +276,7 @@ const SellerCreate = () => {
                           htmlFor="city"
                           className="block text-sm font-medium text-gray-700 mb-1"
                         >
-                          City*
+                          {translate("শহর*", "City*")}
                         </label>
                         <select
                           id="city"
@@ -282,10 +285,10 @@ const SellerCreate = () => {
                           className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
                           required
                         >
-                          <option value="">Select a city</option>
-                          <option value="Dhaka">Dhaka</option>
-                          <option value="Rajshahi">Rajshahi</option>
-                          <option value="Khulna">Khulna</option>
+                          <option value="">{translate("একটি শহর নির্বাচন করুন", "Select a city")}</option>
+                          <option value="Dhaka">{translate("ঢাকা", "Dhaka")}</option>
+                          <option value="Rajshahi">{translate("রাজশাহী", "Rajshahi")}</option>
+                          <option value="Khulna">{translate("খুলনা", "Khulna")}</option>
                         </select>
                       </div>
 
@@ -294,7 +297,7 @@ const SellerCreate = () => {
                           htmlFor="area"
                           className="block text-sm font-medium text-gray-700 mb-1"
                         >
-                          Area*
+                          {translate("এলাকা*", "Area*")}
                         </label>
                         <select
                           id="area"
@@ -304,24 +307,24 @@ const SellerCreate = () => {
                           className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C] disabled:bg-gray-100 disabled:cursor-not-allowed"
                           required
                         >
-                          <option value="">Select an area</option>
+                          <option value="">{translate("একটি এলাকা নির্বাচন করুন", "Select an area")}</option>
                           {selectedCity === "Dhaka" && (
                             <>
-                              <option value="Mirpur">Mirpur</option>
-                              <option value="Dhanmondi">Dhanmondi</option>
-                              <option value="Gulshan">Gulshan</option>
+                              <option value="Mirpur">{translate("মিরপুর", "Mirpur")}</option>
+                              <option value="Dhanmondi">{translate("ধানমন্ডি", "Dhanmondi")}</option>
+                              <option value="Gulshan">{translate("গুলশান", "Gulshan")}</option>
                             </>
                           )}
                           {selectedCity === "Rajshahi" && (
                             <>
-                              <option value="Shaheb Bazar">Shaheb Bazar</option>
-                              <option value="Boalia">Boalia</option>
+                              <option value="Shaheb Bazar">{translate("সাহেব বাজার", "Shaheb Bazar")}</option>
+                              <option value="Boalia">{translate("বোয়ালিয়া", "Boalia")}</option>
                             </>
                           )}
                           {selectedCity === "Khulna" && (
                             <>
-                              <option value="Khalishpur">Khalishpur</option>
-                              <option value="Sonadanga">Sonadanga</option>
+                              <option value="Khalishpur">{translate("খালিশপুর", "Khalishpur")}</option>
+                              <option value="Sonadanga">{translate("সোনাডাঙ্গা", "Sonadanga")}</option>
                             </>
                           )}
                         </select>
@@ -334,13 +337,13 @@ const SellerCreate = () => {
                         htmlFor="tradeLicense"
                         className="block text-sm font-medium text-gray-700 mb-1"
                       >
-                        Trade License (optional)
+                        {translate("ট্রেড লাইসেন্স (ঐচ্ছিক)", "Trade License (optional)")}
                       </label>
                       <input
                         type="text"
                         id="tradeLicense"
                         name="tradeLicense"
-                        placeholder="Enter Trade License"
+                        placeholder={translate("ট্রেড লাইসেন্স লিখুন", "Enter Trade License")}
                         className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
                       />
                     </div>
@@ -348,7 +351,7 @@ const SellerCreate = () => {
                     {/* Shop Category */}
                     <div className="relative" ref={dropdownRef}>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Shop Category
+                        {translate("দোকানের বিভাগ", "Shop Category")}
                       </label>
                       <div className="relative">
                         <div
@@ -358,7 +361,7 @@ const SellerCreate = () => {
                         >
                           {selectedCategories.length === 0 ? (
                             <span className="text-gray-400">
-                              Select Shop Category
+                              {translate("দোকানের বিভাগ নির্বাচন করুন", "Select Shop Category")}
                             </span>
                           ) : (
                             <div className="grid grid-cols-3 gap-2">
@@ -400,7 +403,7 @@ const SellerCreate = () => {
                                 clearSelection();
                               }}
                               className="text-gray-400 hover:text-gray-600"
-                              aria-label="Clear selection"
+                              aria-label={translate("নির্বাচন পরিষ্কার করুন", "Clear selection")}
                             >
                               <FiX size={18} />
                             </button>
@@ -412,7 +415,7 @@ const SellerCreate = () => {
                               inputRef.current?.focus();
                             }}
                             className="text-gray-400 hover:text-gray-600"
-                            aria-label="Toggle dropdown"
+                            aria-label={translate("ড্রপডাউন টগল করুন", "Toggle dropdown")}
                           >
                             {isOpen ? (
                               <FiChevronUp size={20} />
@@ -456,8 +459,8 @@ const SellerCreate = () => {
                             ) : (
                               <div className="px-4 py-2 text-gray-500">
                                 {searchTerm
-                                  ? "No categories found"
-                                  : "Start typing to search"}
+                                  ? translate("কোন বিভাগ পাওয়া যায়নি", "No categories found")
+                                  : translate("অনুসন্ধান করতে টাইপ করুন", "Start typing to search")}
                               </div>
                             )}
                           </div>
@@ -469,7 +472,7 @@ const SellerCreate = () => {
                       type="submit"
                       className="w-full bg-[#EE5A2C] text-white py-3 rounded-md hover:bg-orange-800 transition mt-6"
                     >
-                      Continue
+                      {translate("চালিয়ে যান", "Continue")}
                     </Button>
                   </form>
                 </>
@@ -481,7 +484,7 @@ const SellerCreate = () => {
         ) : currentStep === "personal" ? (
           <div className="max-w-[400px]">
             <h2 className="text-3xl lg:text-[36px] font-normal mb-5 lg:mb-[40px] text-center">
-              Enter Your Details
+              {translate("আপনার বিবরণ লিখুন", "Enter Your Details")}
             </h2>
 
             <div className=" ">
@@ -492,13 +495,13 @@ const SellerCreate = () => {
                     htmlFor="username"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
-                    Username*
+                    {translate("ব্যবহারকারীর নাম*", "Username*")}
                   </label>
                   <input
                     type="text"
                     id="username"
                     name="username"
-                    placeholder="Enter your username"
+                    placeholder={translate("আপনার ব্যবহারকারীর নাম লিখুন", "Enter your username")}
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
                     required
                   />
@@ -510,13 +513,13 @@ const SellerCreate = () => {
                     htmlFor="email"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
-                    Email*
+                    {translate("ইমেইল*", "Email*")}
                   </label>
                   <input
                     type="email"
                     id="email"
                     name="email"
-                    placeholder="Enter your email"
+                    placeholder={translate("আপনার ইমেইল লিখুন", "Enter your email")}
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
                     required
                   />
@@ -528,13 +531,13 @@ const SellerCreate = () => {
                     htmlFor="phone"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
-                    Phone Number*
+                    {translate("ফোন নম্বর*", "Phone Number*")}
                   </label>
                   <input
                     type="tel"
                     id="phone"
                     name="phone"
-                    placeholder="Enter your phone number"
+                    placeholder={translate("আপনার ফোন নম্বর লিখুন", "Enter your phone number")}
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
                     required
                   />
@@ -544,7 +547,7 @@ const SellerCreate = () => {
                   type="submit"
                   className="w-full bg-[#EE5A2C] text-white py-3 rounded-md hover:bg-orange-800 transition mt-6"
                 >
-                  Continue
+                  {translate("চালিয়ে যান", "Continue")}
                 </Button>
               </form>
             </div>
@@ -552,15 +555,15 @@ const SellerCreate = () => {
         ) : currentStep === "verify" ? (
            <div className="max-w-[400px]">
     <h2 className="text-3xl lg:text-[36px] font-normal mb-5 lg:mb-[40px] text-center">
-      Verify Code
+      {translate("কোড যাচাই করুন", "Verify Code")}
     </h2>
 
     <div>
       <form className="space-y-6" onSubmit={handleVerificationSubmit}>
         <p className="text-gray-600 text-center">
-          Please enter the verification code sent to
+          {translate("আপনার ফোন নম্বরে পাঠানো ভেরিফিকেশন কোডটি লিখুন", "Please enter the verification code sent to")}
           <br />
-          <span className="font-medium">{personalDetails.phone || "your phone number"}</span>
+          <span className="font-medium">{personalDetails.phone || translate("আপনার ফোন নম্বর", "your phone number")}</span>
         </p>
 
         <div className="flex justify-center gap-2">
@@ -596,7 +599,9 @@ const SellerCreate = () => {
         </div>
 
         {verificationCode.length === 5 && (
-          <p className="text-red-500 text-center">Wrong code, please try again</p>
+          <p className="text-red-500 text-center">
+            {translate("ভুল কোড, আবার চেষ্টা করুন", "Wrong code, please try again")}
+          </p>
         )}
 
         <div className="text-center">
@@ -605,7 +610,7 @@ const SellerCreate = () => {
             className="text-[#EE5A2C] hover:underline flex items-center justify-center gap-1 mx-auto"
             onClick={handleResendCode}
           >
-            Send code again <span className="text-gray-500">00:20</span>
+            {translate("আবার কোড পাঠান", "Send code again")} <span className="text-gray-500">00:20</span>
           </button>
         </div>
 
@@ -613,7 +618,7 @@ const SellerCreate = () => {
           type="submit"
           className="w-full bg-[#EE5A2C] text-white py-3 rounded-md hover:bg-orange-800 transition mt-6"
         >
-          Continue
+          {translate("চালিয়ে যান", "Continue")}
         </Button>
       </form>
     </div>
@@ -621,7 +626,7 @@ const SellerCreate = () => {
         ) : (
           <div className="max-w-[400px]">
             <h2 className="text-3xl lg:text-[36px] font-normal mb-5 lg:mb-[40px] text-center">
-              Create Password
+              {translate("পাসওয়ার্ড তৈরি করুন", "Create Password")}
             </h2>
 
             <div>
@@ -632,19 +637,21 @@ const SellerCreate = () => {
                     htmlFor="newPassword"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
-                    Create Password*
+                    {translate("পাসওয়ার্ড তৈরি করুন*", "Create Password*")}
                   </label>
                   <input
                     type="password"
                     id="newPassword"
                     value={password.newPassword}
                     onChange={(e) => setPassword({...password, newPassword: e.target.value})}
-                    placeholder="Must be 8 characters"
+                    placeholder={translate("অন্তত ৮টি অক্ষর হতে হবে", "Must be 8 characters")}
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
                     minLength={8}
                     required
                   />
-                  <p className="text-xs text-gray-500 mt-1">Must be at least 8 characters</p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    {translate("অন্তত ৮টি অক্ষর হতে হবে", "Must be at least 8 characters")}
+                  </p>
                 </div>
 
                 {/* Confirm Password */}
@@ -653,14 +660,14 @@ const SellerCreate = () => {
                     htmlFor="confirmPassword"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
-                    Confirm Password*
+                    {translate("পাসওয়ার্ড নিশ্চিত করুন*", "Confirm Password*")}
                   </label>
                   <input
                     type="password"
                     id="confirmPassword"
                     value={password.confirmPassword}
                     onChange={(e) => setPassword({...password, confirmPassword: e.target.value})}
-                    placeholder="Repeat Password"
+                    placeholder={translate("পাসওয়ার্ড পুনরায় লিখুন", "Repeat Password")}
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
                     minLength={8}
                     required
@@ -671,7 +678,7 @@ const SellerCreate = () => {
                   type="submit"
                   className="w-full bg-[#EE5A2C] text-white py-3 rounded-md hover:bg-orange-800 transition mt-6"
                 >
-                  Complete Registration
+                  {translate("নিবন্ধন সম্পূর্ণ করুন", "Complete Registration")}
                 </Button>
               </form>
             </div>

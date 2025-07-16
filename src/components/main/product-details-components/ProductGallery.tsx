@@ -1,26 +1,22 @@
 "use client";
 
-
 import Image from "next/image";
 import { FaArrowLeftLong, FaArrowRightLong } from "react-icons/fa6";
 import shopLogo from '@/assets/Products_Image/switch.jpg'
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
-const thumbnails = [shopLogo.src, shopLogo.src, shopLogo.src];
+const thumbnails = [shopLogo.src, shopLogo.src, shopLogo.src, shopLogo.src ];
 
 export default function ProductGallery() {
-    // State to track current main image index
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-    // Function to handle next image
     const nextImage = () => {
         setCurrentImageIndex((prevIndex) => 
             prevIndex === thumbnails.length - 1 ? 0 : prevIndex + 1
         );
     };
 
-    // Function to handle previous image
     const prevImage = () => {
         setCurrentImageIndex((prevIndex) => 
             prevIndex === 0 ? thumbnails.length - 1 : prevIndex - 1
@@ -28,20 +24,21 @@ export default function ProductGallery() {
     };
 
     return (
-        <div className="w-full space-y-[16px]">
+        <div className="w-full space-y-[16px] flex flex-col items-center">
             {/* Main Image */}
-            <div className="lg:pl-[37px]">
-                <Image style={{borderRadius: '16px'}}
+            <div className="">
+                <Image 
+                    style={{borderRadius: '16px'}}
                     src={thumbnails[currentImageIndex]}
                     alt="Main Product"
                     width={350}
                     height={350}
-                    className="border w-full h-full lg:w-[502px] lg:h-[439px] bg-[#F7EDE1] pt-[24px] pr-[42px] pb-[17px] pl-[29px]"
+                    className="border w-full h-full lg:w-[502px] lg:h-[439px] bg-[#F7EDE1] pt-[24px] pr-[42px] pb-[17px] pl-[34px]"
                 />
             </div>
 
-            {/* Thumbnails with arrows */}
-            <div className="flex items-center justify-center gap-4">
+            {/* Thumbnails with arrows - Centered container */}
+            <div className="flex items-center justify-center gap-4 w-full">
                 {/* Left Arrow */}
                 <Button variant={'outline'}
                     onClick={prevImage}
@@ -54,7 +51,7 @@ export default function ProductGallery() {
                 {/* Thumbnails */}
                 <div className="flex gap-2">
                     {thumbnails.map((thumb, idx) => (
-                        <Button variant={'outline'}
+                        <div
                             key={idx}
                             onClick={() => setCurrentImageIndex(idx)}
                             className={`rounded-[16px] overflow-hidden border-2 ${currentImageIndex === idx ? 'border-[#1A432E]' : 'border-transparent'}`}
@@ -66,7 +63,7 @@ export default function ProductGallery() {
                                 height={70}
                                 className="rounded-[16px] cursor-pointer"
                             />
-                        </Button>
+                        </div>
                     ))}
                 </div>
 

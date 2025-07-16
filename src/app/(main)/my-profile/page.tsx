@@ -176,16 +176,7 @@ const AccountPage = () => {
                   return <ChangePasswordTab />;
 
                 default:
-                  return (
-                    <>
-                      <h2 className="text-xl font-semibold capitalize">
-                        {activeTab?.split("-").join(" ")}
-                      </h2>
-                      <p className="mt-2 text-gray-500">
-                        This tab is under construction.
-                      </p>
-                    </>
-                  );
+                  return <UpdateProfile />
               }
             })()}
           </div>

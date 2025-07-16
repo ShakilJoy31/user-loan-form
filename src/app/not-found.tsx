@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { useEffect } from "react"; // Import useEffect
 import { Button } from "@/components/ui/button";
+import { P } from "@/components/ui/paragraph";
 
 export default function NotFound() {
   const router = useRouter();
@@ -30,9 +31,9 @@ export default function NotFound() {
         </Button>
         <div className="flex flex-col items-center justify-center bg-white text-center mt-[188px]">
           <h1 className="text-6xl font-bold text-black mb-4">404 Not Found</h1>
-          <p className="text-gray-600 mb-6">
+          <P className="text-gray-600 mb-6">
             Your visited page not found. You may go home page.
-          </p>
+          </P>
           <Button
             onClick={() => router.push("/")}
             className="bg-orange-500 text-white px-6 py-3 rounded-md hover:bg-orange-600 transition-all"

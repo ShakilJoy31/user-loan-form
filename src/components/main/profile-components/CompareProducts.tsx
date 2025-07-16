@@ -83,9 +83,9 @@ export default function CompareTab() {
                 <table className="min-w-[700px] w-full text-sm text-left">
                     <thead>
                         <tr className=" text-gray-700">
-                            <th className="py-3 px-4 text-sm font-medium w-[160px]"> <Button variant={'outline'} className="text-sm text-[#EB4335] underline hover:text-red-600">
+                            <th className="py-3 px-4 text-sm font-medium w-[160px]"> <p className="text-sm text-[#EB4335] underline hover:text-red-600">
                                 Remove all
-                            </Button></th>
+                            </p></th>
                             {compareProducts.map((product, index) => (
                                 <th
                                     key={index}
@@ -93,9 +93,9 @@ export default function CompareTab() {
                                 >
                                     <div className="flex flex-col items-center gap-2">
 
-                                        <Button variant={'outline'} className="text-[#EB4335] hover:text-red-500 ">
+                                        <p className="text-[#EB4335] hover:text-red-500 ">
                                             <FiTrash2 />
-                                        </Button>
+                                        </p>
                                     </div>
                                 </th>
                             ))}
