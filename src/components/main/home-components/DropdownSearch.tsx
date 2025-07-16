@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { FiSearch, FiChevronDown, FiChevronUp } from "react-icons/fi";
+import { Button } from "@/components/ui/button";
 
 const DropdownSearch = () => {
     const [categoryDropdownOpen, setCategoryDropdownOpen] = useState(false);
@@ -39,13 +40,13 @@ const DropdownSearch = () => {
             <div className="flex flex-col sm:flex-row gap-2 w-full">
                 {/* City Dropdown */}
                 <div className="relative flex-1 min-w-[120px]">
-                    <button
+                    <Button variant={'outline'}
                         onClick={() => setCityDropdownOpen(!cityDropdownOpen)}
                         className="w-full flex justify-between items-center px-3 py-2 border border-gray-300 rounded bg-[#F9F9F9] text-gray-700 text-sm"
                     >
                         <span className="truncate">{selectedCity || "City"}</span>
                         {cityDropdownOpen ? <FiChevronUp size={16} /> : <FiChevronDown size={16} />}
-                    </button>
+                    </Button>
 
                     {cityDropdownOpen && (
                         <motion.ul
@@ -72,7 +73,7 @@ const DropdownSearch = () => {
 
                 {/* Area Dropdown */}
                 <div className="relative flex-1 min-w-[120px]">
-                    <button
+                    <Button variant={'outline'}
                         onClick={() => selectedCity && setAreaDropdownOpen(!areaDropdownOpen)}
                         disabled={!selectedCity}
                         className={`w-full flex justify-between items-center px-3 py-2 border rounded text-sm ${
@@ -83,7 +84,7 @@ const DropdownSearch = () => {
                     >
                         <span className="truncate">{selectedArea || "Area"}</span>
                         {areaDropdownOpen ? <FiChevronUp size={16} /> : <FiChevronDown size={16} />}
-                    </button>
+                    </Button>
 
                     {areaDropdownOpen && selectedCity && (
                         <motion.ul

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import React from "react";
 import collectionBanner from "@/assets/Logo/payment-icons.png";
+import { Button } from "@/components/ui/button";
 
 
 const BillingAndPayment = () => {
@@ -162,9 +163,9 @@ const BillingAndPayment = () => {
                         </div>
 
                         {/* Apply Code Button */}
-                        <button className="bg-orange-500 text-white text-xs md:text-sm font-medium h-[48px] px-5 w-[126px] rounded-md hover:bg-orange-600 transition-colors">
+                        <Button variant={'outline'} className="bg-orange-500 text-white text-xs md:text-sm font-medium h-[48px] px-5 w-[126px] rounded-md hover:bg-orange-600 transition-colors">
                             Apply Code
-                        </button>
+                        </Button>
                     </div>
                 </div>
 
@@ -181,9 +182,9 @@ const BillingAndPayment = () => {
                 </div>
 
                 {/* Place Order Button */}
-                <button className="bg-orange-500 w-[222px] text-white font-semibold text-base py-3 rounded-md hover:bg-orange-600 transition-colors">
+                <Button variant={'outline'} className="bg-orange-500 w-[222px] text-white font-semibold text-base py-3 rounded-md hover:bg-orange-600 transition-colors">
                     Place Order
-                </button>
+                </Button>
 
             </div>
 

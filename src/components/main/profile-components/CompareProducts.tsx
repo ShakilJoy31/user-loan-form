@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { FiTrash2, FiSearch, FiShoppingCart } from "react-icons/fi";
 import product5 from "@/assets/Products_Image/products.jpg";
+import { Button } from "@/components/ui/button";
 
 const compareProducts = [
     {
@@ -61,9 +62,9 @@ export default function CompareTab() {
             </div>
 
             <div className="flex items-center justify-between mb-[23px] gap-4 flex-wrap">
-                <button className="bg-[#F6F6F6] shadow-md px-3 py-1 rounded-full text-sm text-gray-500 hover:bg-gray-100 transition">
+                <Button variant={'outline'} className="bg-[#F6F6F6] shadow-md px-3 py-1 rounded-full text-sm text-gray-500 hover:bg-gray-100 transition">
                     Add to compare
-                </button>
+                </Button>
 
                 <div className="relative">
                     <input
@@ -82,9 +83,9 @@ export default function CompareTab() {
                 <table className="min-w-[700px] w-full text-sm text-left">
                     <thead>
                         <tr className=" text-gray-700">
-                            <th className="py-3 px-4 text-sm font-medium w-[160px]"> <button className="text-sm text-[#EB4335] underline hover:text-red-600">
+                            <th className="py-3 px-4 text-sm font-medium w-[160px]"> <Button variant={'outline'} className="text-sm text-[#EB4335] underline hover:text-red-600">
                                 Remove all
-                            </button></th>
+                            </Button></th>
                             {compareProducts.map((product, index) => (
                                 <th
                                     key={index}
@@ -92,9 +93,9 @@ export default function CompareTab() {
                                 >
                                     <div className="flex flex-col items-center gap-2">
 
-                                        <button className="text-[#EB4335] hover:text-red-500 ">
+                                        <Button variant={'outline'} className="text-[#EB4335] hover:text-red-500 ">
                                             <FiTrash2 />
-                                        </button>
+                                        </Button>
                                     </div>
                                 </th>
                             ))}
@@ -125,9 +126,9 @@ export default function CompareTab() {
                                                 <p className="mb-2">{product.description}</p>
                                                 <div className="flex items-center gap-x-[7px] justify-center">
                                                     <span className="p-2 bg-white rounded-sm"><FiShoppingCart size={14} color={'#642612'} /></span>
-                                                    <button className="flex items-center gap-1 text-white bg-[#EE5A2C] hover:bg-orange-600 text-xs px-4 py-1.5 rounded-sm">
+                                                    <Button variant={'outline'} className="flex items-center gap-1 text-white bg-[#EE5A2C] hover:bg-orange-600 text-xs px-4 py-1.5 rounded-sm">
                                                         View details
-                                                    </button>
+                                                    </Button>
                                                 </div>
 
                                             </div>
@@ -151,11 +152,11 @@ export default function CompareTab() {
 
             {/* Pagination */}
             <div className="flex justify-center mt-6 gap-2">
-                <button className="text-sm px-3 py-1 border border-gray-300 rounded-md hover:bg-gray-100">
+                <Button variant={'outline'} className="text-sm px-3 py-1 border border-gray-300 rounded-md hover:bg-gray-100">
                     Previous
-                </button>
+                </Button>
                 {[1, 2, 3].map((page) => (
-                    <button
+                    <Button variant={'outline'}
                         key={page}
                         className={`text-sm px-3 py-1 border rounded-md ${page === 1
                             ? "bg-orange-500 text-white border-orange-500"
@@ -163,11 +164,11 @@ export default function CompareTab() {
                             }`}
                     >
                         {page}
-                    </button>
+                    </Button>
                 ))}
-                <button className="text-sm px-3 py-1 border border-gray-300 rounded-md hover:bg-gray-100">
+                <Button variant={'outline'} className="text-sm px-3 py-1 border border-gray-300 rounded-md hover:bg-gray-100">
                     Next
-                </button>
+                </Button>
             </div>
         </div>
     );

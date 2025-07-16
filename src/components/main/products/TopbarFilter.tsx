@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { Squares2X2Icon, ListBulletIcon } from "@heroicons/react/24/solid";
+import { Button } from "@/components/ui/button";
 
 interface TopbarFilterProps {
     toggleSidebar: () => void;
@@ -17,31 +18,25 @@ export default function TopbarFilter({ toggleSidebar, showSidebar }: TopbarFilte
         <div className="w-full flex flex-col sm:flex-row items-center justify-between border border-gray-300 rounded px-4 py-2 bg-gray-50 text-sm gap-3 sm:gap-0">
             {/* View toggle + message + filter toggle */}
             <div className="flex items-center space-x-3 w-full sm:w-auto">
-                {/* Mobile filter toggle button */}
-                {/* <button 
-                    
-                    className="md:hidden p-1.5 border rounded bg-white text-gray-600"
-                >
-                    <FunnelIcon className="w-5 h-5" />
-                </button> */}
 
                 <div className="flex space-x-1">
-                    <button onClick={toggleSidebar}
+                    <Button variant={'outline'} onClick={toggleSidebar}
                         // onClick={() => setView("grid")}
                         className={`p-1.5 border border-gray-300 bg-[#EE5A2C] hover:cursor-pointer rounded ${
                             showSidebar ? "bg-[#EE5A2C] hover:cursor-pointer text-white" : "bg-white text-gray-600"
                         }`}
                     >
                         <Squares2X2Icon className="w-5 h-5" />
-                    </button>
-                    <button
+                    </Button>
+
+                    <Button variant={'outline'}
                         // onClick={() => setView("list")}
                         className={`p-1.5 rounded border border-gray-300 ${
                             view === "list" ? "bg-[#EE5A2C] text-white" : "bg-white text-gray-600"
                         }`}
                     >
                         <ListBulletIcon className="w-5 h-5" />
-                    </button>
+                    </Button>
                 </div>
                 <span className="text-gray-700">We found 29 items for you!</span>
             </div>

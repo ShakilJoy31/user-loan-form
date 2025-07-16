@@ -1,6 +1,7 @@
 "use client";
 import { FiEdit, FiTrash2, FiMapPin } from "react-icons/fi";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 type Address = {
   id: number;
@@ -49,15 +50,15 @@ export default function ShippingAddressTab() {
           <p className="text-sm text-gray-500">Trac your order Status</p>
         </div>
         <div className="flex items-center gap-4 mt-4 sm:mt-0">
-          <button className="bg-[#EE5A2C] hover:bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-md transition">
+          <Button variant={'outline'} className="bg-[#EE5A2C] hover:bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-md transition">
             Add New Address
-          </button>
-          <button
+          </Button>
+          <Button variant={'outline'}
             onClick={handleDeleteAll}
             className="bg-white font-medium px-4 py-2 rounded-md transition text-sm text-black border border-gray-200"
           >
             Delete All
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -90,18 +91,18 @@ export default function ShippingAddressTab() {
               </p>
             </div>
 
-            {/* Action buttons */}
+            {/* Action Buttons */}
             <div className="absolute top-3 right-3 flex items-center gap-2">
-              <button className="flex items-center gap-1 text-gray-600 hover:text-blue-600 text-sm px-3 py-1 border border-gray-300 rounded-md">
+              <Button variant={'outline'} className="flex items-center gap-1 text-gray-600 hover:text-blue-600 text-sm px-3 py-1 border border-gray-300 rounded-md">
                 <FiEdit size={14} />
                 Edit
-              </button>
-              <button
+              </Button>
+              <Button variant={'outline'}
                 onClick={() => handleDelete(address.id)}
                 className="text-gray-500 hover:text-red-500"
               >
                 <FiTrash2 />
-              </button>
+              </Button>
             </div>
           </div>
         ))}

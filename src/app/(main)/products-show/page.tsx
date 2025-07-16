@@ -6,6 +6,7 @@ import TopbarFilter from "@/components/main/products/TopbarFilter";
 import React, { useState } from "react";
 import productImage from '@/assets/Products_Image/mobile.png';
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
+import { Button } from "@/components/ui/button";
 
 const ProductsShowPage: React.FC = () => {
     // Mock product data
@@ -102,13 +103,13 @@ const ProductsShowPage: React.FC = () => {
                         <div className="flex justify-center pt-[40px]">
                             <nav className="inline-flex rounded-md shadow-sm overflow-hidden border border-gray-300">
                                 {/* Previous Button */}
-                                <button 
+                                <Button variant={'outline'} 
                                     onClick={() => paginate(currentPage - 1)}
                                     disabled={currentPage === 1}
                                     className={`px-4 py-2 hover:cursor-pointer text-sm font-medium ${currentPage === 1 ? 'bg-gray-100 text-gray-400' : 'bg-white text-gray-600 hover:bg-gray-100'}`}
                                 >
                                     Previous
-                                </button>
+                                </Button>
 
                                 {/* Page Numbers */}
                                 {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
@@ -124,7 +125,7 @@ const ProductsShowPage: React.FC = () => {
                                     }
 
                                     return (
-                                        <button
+                                        <Button variant={'outline'}
                                             key={pageNumber}
                                             onClick={() => paginate(pageNumber)}
                                             className={`px-4 py-2 hover:cursor-pointer text-sm font-medium border-r border-l border-gray-300 ${currentPage === pageNumber
@@ -133,18 +134,18 @@ const ProductsShowPage: React.FC = () => {
                                                 }`}
                                         >
                                             {pageNumber}
-                                        </button>
+                                        </Button>
                                     );
                                 })}
 
                                 {/* Next Button */}
-                                <button 
+                                <Button variant={'outline'}
                                     onClick={() => paginate(currentPage + 1)}
                                     disabled={currentPage === totalPages}
                                     className={`px-4 py-2 hover:cursor-pointer text-sm font-medium ${currentPage === totalPages ? 'bg-gray-100 text-gray-400' : 'bg-white text-gray-600 hover:bg-gray-100'}`}
                                 >
                                     Next
-                                </button>
+                                </Button>
                             </nav>
                         </div>
                     </motion.div>

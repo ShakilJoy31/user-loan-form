@@ -86,9 +86,9 @@ const WishList = () => {
             className="relative  rounded-lg w-full shadow-md transition-shadow"
           >
             {/* Delete Button */}
-            <button className="absolute top-3 right-3 bg-white rounded-full  p-2  hover:text-red-500 transition-colors">
+            <Button variant={'outline'} className="absolute top-3 right-3 bg-white rounded-full  p-2  hover:text-red-500 transition-colors">
               <FaTrashAlt size={16} />
-            </button>
+            </Button>
 
             {/* Product Image */}
             <div className="flex justify-center mb-3 bg-gray-50">
@@ -142,9 +142,9 @@ const WishList = () => {
             {/* Price + Cart Button */}
             <div className="flex justify-between items-center">
               <span className="text-lg font-bold">{item.price} TK</span>
-              <button className="bg-[#fdefea] p-2 rounded-md text-primary hover:bg-orange-100 transition-colors">
+              <Button className="bg-[#fdefea] p-2 rounded-md text-primary hover:bg-orange-100 transition-colors">
                 <FiShoppingCart size={14} />
-              </button>
+              </Button>
             </div>
             </div>
           </div>

@@ -34,11 +34,12 @@ const PublicFooter = () => {
                 className="w-full h-full object-cover"
               />
             </div>
-              <div>
-                <p className="mb-4 sm:text-xs md:text-[14px]">
-                Experience Personalized Online/Offline <br /> Shopping in
-                Bangladesh with Proydon
+              <div className="mb-4 sm:text-xs md:text-[14px]">
+                <p >
+                Experience Personalized Online/Offline <br /> 
               </p>
+              <p>Shopping in
+                Bangladesh with Proydon</p>
               </div>
             </div>
            <div className="flex items-center max-w-md mx-auto bg-white rounded-lg overflow-hidden border border-gray-300 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent">

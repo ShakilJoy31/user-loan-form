@@ -1,4 +1,5 @@
 // components/PaymentMethod.tsx
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
 
 export default function PaymentMethod() {
@@ -58,9 +59,9 @@ export default function PaymentMethod() {
             placeholder="Add promo code"
             className="w-full px-4 py-2 text-sm border-y border-r border-gray-300 focus:outline-none"
           />
-          <button className="px-4 py-2 bg-orange-500 text-white text-sm font-medium rounded-r hover:bg-orange-600">
+          <Button variant={'outline'} className="px-4 py-2 bg-orange-500 text-white text-sm font-medium rounded-r hover:bg-orange-600">
             Apply Code
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -77,9 +78,9 @@ export default function PaymentMethod() {
       </div>
 
       {/* Place Order Button */}
-      <button className="w-full bg-orange-500 text-white font-semibold py-2 rounded hover:bg-orange-600">
+      <Button variant={'outline'} className="w-full bg-orange-500 text-white font-semibold py-2 rounded hover:bg-orange-600">
         Place Order
-      </button>
+      </Button>
     </div>
   );
 }

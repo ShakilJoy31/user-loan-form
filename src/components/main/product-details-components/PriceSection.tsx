@@ -3,6 +3,7 @@ import { useState } from "react";
 import { FiHeart } from "react-icons/fi";
 import { PiShoppingCartSimpleBold } from "react-icons/pi";
 import { Check } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function PriceSection() {
   const [quantity, setQuantity] = useState(1);
@@ -24,28 +25,28 @@ export default function PriceSection() {
       <div className="flex items-center gap-4 flex-wrap">
         {/* Quantity Selector */}
         <div className="flex items-center border border-gray-300 rounded-full px-3 py-1 shadow-sm">
-          <button
+          <Button variant={'outline'}
             onClick={decreaseQty}
             className="px-2 text-xl text-gray-600 hover:text-black"
           >
             –
-          </button>
+          </Button>
           <span className="px-3 text-sm">{quantity}</span>
-          <button
+          <Button variant={'outline'}
             onClick={increaseQty}
             className="px-2 text-xl text-gray-600 hover:text-black"
           >
             +
-          </button>
+          </Button>
         </div>
 
         {/* Action Buttons */}
-        <button className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded-md font-semibold text-sm shadow-md">
+        <Button variant={'outline'} className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded-md font-semibold text-sm shadow-md">
           Buy Now
-        </button>
-        <button className="border border-gray-300 hover:bg-gray-100 px-5 py-2 rounded-md text-sm font-semibold flex items-center gap-2">
+        </Button>
+        <Button variant={'outline'} className="border border-gray-300 hover:bg-gray-100 px-5 py-2 rounded-md text-sm font-semibold flex items-center gap-2">
           Add to Cart <PiShoppingCartSimpleBold className="text-lg" />
-        </button>
+        </Button>
       </div>
 
       {/* Extra Info Row */}

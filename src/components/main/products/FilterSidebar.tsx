@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 
 interface FilterSidebarProps {
@@ -24,12 +25,12 @@ export default function FilterSidebar({ onClose }: FilterSidebarProps) {
         <div className="w-full p-4 border border-gray-300 rounded-md bg-white relative">
             {/* Close button for mobile */}
             {isMobile && onClose && (
-                <button
+                <Button variant={'outline'}
                     onClick={onClose}
                     className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
                 >
                     ✕
-                </button>
+                </Button>
             )}
 
             {/* Product Category */}
@@ -79,9 +80,9 @@ export default function FilterSidebar({ onClose }: FilterSidebarProps) {
                     Price : ${price[0]} – ${price[1]}
                 </p>
 
-                <button className="mt-3 w-full bg-[#F53E32] text-white font-semibold text-sm py-2 rounded shadow hover:bg-red-600 transition duration-200">
+                <Button variant={'outline'} className="mt-3 w-full bg-[#F53E32] text-white font-semibold text-sm py-2 rounded shadow hover:bg-red-600 transition duration-200">
                     Filter
-                </button>
+                </Button>
             </div>
 
             {/* Color */}

@@ -4,6 +4,7 @@
 import { HeartIcon, ShoppingCartIcon, StarIcon } from "@heroicons/react/24/solid";
 import { StarIcon as StarOutline } from "@heroicons/react/24/outline";
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
 
 interface ProductCardProps {
     name: string;
@@ -36,9 +37,9 @@ export default function ProductCard({
                     alt='Payment image'
                     className="mx-auto h-full w-full object-contain"
                 />
-                <button className="absolute top-1 right-1 text-gray-400 p-0.5 bg-white rounded-full hover:text-red-500">
+                <Button className="absolute top-1 right-1 text-gray-400 p-0.5 bg-white rounded-full hover:text-red-500">
                     <HeartIcon className="w-5 h-5" />
-                </button>
+                </Button>
             </div>
 
             {/* Product Info */}
@@ -68,12 +69,13 @@ export default function ProductCard({
 
                 {/* Button Group */}
                 <div className="flex items-center mt-2 space-x-2">
-                    <button className="flex items-center justify-center px-3 py-2 border border-orange-500 text-orange-500 rounded hover:bg-orange-50">
+                    <Button variant={'outline'} className="flex items-center justify-center px-3 py-2 border border-orange-500 text-orange-500 rounded hover:bg-orange-50">
                         <ShoppingCartIcon className="w-4 h-4" />
-                    </button>
-                    <button className="flex-1 bg-orange-500 text-white text-sm font-semibold py-2 rounded hover:bg-orange-600 transition-colors">
+                    </Button>
+
+                    <Button variant={'outline'} className="flex-1 bg-orange-500 text-white text-sm font-semibold py-2 rounded hover:bg-orange-600 transition-colors">
                         Buy Now
-                    </button>
+                    </Button>
                 </div>
             </div>
         </div>

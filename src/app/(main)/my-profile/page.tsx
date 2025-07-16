@@ -20,6 +20,7 @@ import WishlistTab from "@/components/main/profile-components/WishList";
 import CompareTab from "@/components/main/profile-components/CompareProducts";
 import ShippingAddressTab from "@/components/main/profile-components/ShipingAddress";
 import ChangePasswordTab from "@/components/main/profile-components/ChangeAddress";
+import { Button } from "@/components/ui/button";
 
 const tabs = [
   {
@@ -105,7 +106,7 @@ const AccountPage = () => {
   return (
     <div className="max-w-[1280px] mx-auto px-4 lg:px-0 mb-[37px] mt-16 pt-[40px]">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 w-full">
-        <button
+        <Button variant={'outline'}
           onClick={toggleMobileSidebar}
           className="lg:hidden fixed top-24 left-4 z-50 bg-white p-2 rounded-md shadow-md"
         >
@@ -114,7 +115,7 @@ const AccountPage = () => {
             className={`transition-transform duration-300 ${mobileSidebarOpen ? "rotate-180 text-red-500" : "text-gray-700"
               }`}
           />
-        </button>
+        </Button>
 
         <div
           className={`fixed lg:static inset-y-0 left-0 w-[280px] lg:w-full z-40 bg-white shadow-md rounded-md py-5 px-3 transition-transform duration-300 lg:translate-x-0 lg:col-span-3 h-[100vh] overflow-y-auto ${mobileSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
