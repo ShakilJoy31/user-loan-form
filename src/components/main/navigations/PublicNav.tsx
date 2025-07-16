@@ -83,9 +83,9 @@ const PublicNav = () => {
   };
 
   return (
-    <header className="lg:px-10 fixed top-0 left-0 right-0 z-50 border-b bg-[#FD6801] text-white">
+    <header className="fixed top-0 left-0 right-0 z-50 border-b bg-[#FD6801] text-white">
       <div className="w-full max-w-[1280px] mx-auto">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 lg:px-0">
           <div className="flex h-16 items-center justify-between">
             {/* Mobile Menu Button */}
             <Button
@@ -186,9 +186,13 @@ const PublicNav = () => {
                         </div>
                         <hr className="my-2 border-gray-200 dark:border-gray-600" />
                         <div className="flex justify-between items-center">
-                          <Button className="flex items-center gap-2 transition-colors hover:text-orange-500 dark:hover:text-orange-300">
+                         
+                          <Link
+                            href=""
+                            className="flex items-center gap-2 py-1 transition-colors hover:text-orange-500 dark:hover:text-orange-300"
+                          >
                             Logout
-                          </Button>
+                          </Link>
                           <MdLogout className="text-lg" />
                         </div>
                       </div>

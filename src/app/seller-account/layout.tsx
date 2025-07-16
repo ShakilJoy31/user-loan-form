@@ -8,7 +8,6 @@ export default function SellerLayout({
 }) {
   return (
     <div className="">
-      
       <div> 
         {children}
       </div>
