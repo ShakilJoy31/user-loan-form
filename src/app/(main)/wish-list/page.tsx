@@ -61,7 +61,7 @@ const WishList = () => {
   ];
 
   return (
-    <div className="mt-16 lg:pt-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 lg:mb-[291px]">
+    <div className="mt-16 lg:pt-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-10 lg:mb-[291px]">
       {/* Back Button */}
       <div className="mb-4 lg:mb-14 text-[#EE5A2C] text-[16px]">
         <Button 

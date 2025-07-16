@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 
 const ShoppingCart = () => {
   return (
-    <div className="mt-16 lg:pt-[40px] max-w-[1280px] mx-auto px-4">
+    <div className="mt-16 lg:pt-[40px] max-w-[1280px] mx-auto px-4 mb-10 lg:mb-[136px]">
       <h2 className="text-[18px] font-medium mb-[51px] text-gray-300">
         Home / Shop details / Gang Light{" "}
         <span className="text-[#EE5A2C]">/ Cart</span>{" "}

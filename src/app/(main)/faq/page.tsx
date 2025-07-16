@@ -6,7 +6,7 @@ import faq from "@/assets/Home/FAQ.png";
 
 const FAQ = () => {
   return (
-    <div className="mt-16 lg:pt-[28px] max-w-[1280px] mx-auto lg:mb-[100px]">
+    <div className="mt-16 lg:pt-[28px] max-w-[1280px] mx-auto mb-10 lg:mb-[100px]">
       <div className="mb-4 lg:mb-[60px] text-[#EE5A2C] text-[16px]">
         <Button
           variant={"outline"}
@@ -17,7 +17,7 @@ const FAQ = () => {
         </Button>
       </div>
 
-      <div className="flex flex-col lg:flex-row justify-between gap-[25px]">
+      <div className="max-w-[1280px] mx-auto flex flex-col lg:flex-row justify-between gap-[25px]">
         {/* image */}
         <div className="px-[20px] lg:px-0">
           <Image

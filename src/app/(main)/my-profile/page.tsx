@@ -11,7 +11,15 @@ import { MdOutlineLock } from "react-icons/md";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { TfiControlPlay } from "react-icons/tfi";
 import UpdateProfile from "@/components/main/profile-components/UpdateProfile";
+import WalletPoint from "@/components/main/profile-components/WalletPoint";
 import { shareWithLocal } from "@/utils/helper/shareWithLocalStorage";
+import OrderTab from "@/components/main/profile-components/MyOrder";
+import ReturnOrdersTab from "@/components/main/profile-components/ReturnOrder";
+import TrackOrderTab from "@/components/main/profile-components/TracOrder";
+import WishlistTab from "@/components/main/profile-components/WishList";
+import CompareTab from "@/components/main/profile-components/CompareProducts";
+import ShippingAddressTab from "@/components/main/profile-components/ShipingAddress";
+import ChangePasswordTab from "@/components/main/profile-components/ChangeAddress";
 
 const tabs = [
   {
@@ -27,7 +35,7 @@ const tabs = [
     icon: () => <AiOutlineShoppingCart className="w-5 h-5" />,
   },
   {
-    id: "wallet",
+    id: "wallet-point",
     label: "Wallet Point",
     icon: () => <span className="w-5 h-5">💳</span>,
   },
@@ -65,12 +73,12 @@ const tabs = [
 
 const AccountPage = () => {
   const [activeTab, setActiveTab] = useState(() => {
-  if (typeof window !== "undefined") {
-    const result = shareWithLocal('get', 'activeAccountTab');
-    return result || "update-profile";  // Provide default if null
-  }
-  return "update-profile";
-});
+    if (typeof window !== "undefined") {
+      const result = shareWithLocal('get', 'activeAccountTab');
+      return result || "update-profile";
+    }
+    return "update-profile";
+  });
 
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
@@ -89,33 +97,28 @@ const AccountPage = () => {
   };
 
   const handleTabChange = (tabId: string) => {
-     console.log(tabId)
     shareWithLocal('set', 'activeAccountTab', tabId);
     setActiveTab(tabId);
     setMobileSidebarOpen(false);
   };
 
   return (
-    <div className="max-w-[1270px] mx-auto px-4 sm:px-6 lg:px-8 mb-[37px] mt-16 pt-[40px]">
+    <div className="max-w-[1280px] mx-auto px-4 lg:px-0 mb-[37px] mt-16 pt-[40px]">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 w-full">
-        {/* Mobile Toggle Button */}
         <button
           onClick={toggleMobileSidebar}
           className="lg:hidden fixed top-24 left-4 z-50 bg-white p-2 rounded-md shadow-md"
         >
           <TfiControlPlay
             size={20}
-            className={`transition-transform duration-300 ${
-              mobileSidebarOpen ? "rotate-180 text-red-500" : "text-gray-700"
-            }`}
+            className={`transition-transform duration-300 ${mobileSidebarOpen ? "rotate-180 text-red-500" : "text-gray-700"
+              }`}
           />
         </button>
 
-        {/* Sidebar */}
         <div
-          className={`fixed lg:static inset-y-0 left-0 w-[280px] lg:w-full z-40 bg-white shadow-md rounded-md py-5 px-3 transition-transform duration-300 lg:translate-x-0 lg:col-span-3 h-[100vh] overflow-y-auto ${
-            mobileSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
-          }`}
+          className={`fixed lg:static inset-y-0 left-0 w-[280px] lg:w-full z-40 bg-white shadow-md rounded-md py-5 px-3 transition-transform duration-300 lg:translate-x-0 lg:col-span-3 h-[100vh] overflow-y-auto ${mobileSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+            }`}
           style={{ top: "80px" }}
         >
           <div className="mb-5">
@@ -128,11 +131,10 @@ const AccountPage = () => {
                 <li
                   key={tab.id}
                   onClick={() => handleTabChange(tab.id)}
-                  className={`flex items-center h-[42px] gap-3 py-2 px-4 rounded-md cursor-pointer text-sm font-medium transition-colors duration-200 ${
-                    isActive
+                  className={`flex items-center h-[42px] gap-3 py-2 px-4 rounded-md cursor-pointer text-sm font-medium transition-colors duration-200 ${isActive
                       ? "bg-[#EE5A2C] text-white"
                       : "text-gray-700 hover:bg-gray-100"
-                  }`}
+                    }`}
                 >
                   {tab.icon(isActive)}
                   <span>{tab.label}</span>
@@ -142,7 +144,6 @@ const AccountPage = () => {
           </ul>
         </div>
 
-        {/* Overlay for mobile sidebar */}
         {mobileSidebarOpen && (
           <div
             className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
@@ -150,13 +151,29 @@ const AccountPage = () => {
           />
         )}
 
-        {/* Main Content */}
         <div className="lg:col-span-9 w-full">
           <div className="bg-white">
             {(() => {
               switch (activeTab) {
                 case "update-profile":
                   return <UpdateProfile />;
+                case "order":
+                  return <OrderTab />;
+                case "wallet-point":
+                  return <WalletPoint />;
+                case "return-order":
+                  return <ReturnOrdersTab />;
+                case "track-order":
+                  return <TrackOrderTab />;
+                case "wishlist":
+                  return <WishlistTab />;
+                case "compare":
+                  return <CompareTab />;
+                case "shipping-info":
+                  return <ShippingAddressTab />;
+                case "change-password":
+                  return <ChangePasswordTab />;
+
                 default:
                   return (
                     <>

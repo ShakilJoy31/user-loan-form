@@ -5,7 +5,7 @@ import camera from "@/assets/Home/camera.png";
 import person from "@/assets/Home/person.png";
 import { useState } from "react";
 
-const GardeningCards = () => {
+const BlogPageCards = () => {
   return (
     <div className="lg:max-w-[290px]  w-full px-[10px] pt-[5px] lg:px-0 lg:pt-0 max-h-[378px] rounded-xl shadow-sm border overflow-hidden font-sans">
       {/* Image and Tags */}
@@ -49,7 +49,7 @@ const GardeningCards = () => {
   );
 };
 
-const GardeningCardsGrid = () => {
+const BlogPageCardsGrid = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const cardsPerPage = 9; // You can adjust this number based on your needs
   const totalCards = 12; // Total number of cards you have
@@ -73,7 +73,7 @@ const GardeningCardsGrid = () => {
       {/* Responsive grid layout */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mx-auto gap-6 mb-8">
         {currentCards.map((_, index) => (
-          <GardeningCards key={index} />
+          <BlogPageCards key={index} />
         ))}
       </div>
 
@@ -131,4 +131,4 @@ const GardeningCardsGrid = () => {
   );
 };
 
-export default GardeningCardsGrid;
+export default BlogPageCardsGrid;

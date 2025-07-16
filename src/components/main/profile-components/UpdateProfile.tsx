@@ -92,11 +92,14 @@ export default function UpdateProfile() {
                                 className="flex-1 outline-none text-sm"
                             />
                             <span className="ml-2">
-                                <img
-                                    src="https://flagcdn.com/w40/bd.png"
-                                    alt="BD"
+                                <Image
+                                    src={'https://flagcdn.com/w40/bd.png'}
+                                    alt={''}
+                                    width={60}
+                                    height={60}
                                     className="w-5 h-5 rounded-sm"
                                 />
+                              
                             </span>
                         </div>
                     </div>
