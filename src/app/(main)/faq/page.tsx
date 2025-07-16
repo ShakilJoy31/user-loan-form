@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { IoMdArrowBack } from "react-icons/io";
 import faq from "@/assets/Home/FAQ.png";
+import { P } from "@/components/ui/paragraph";
 
 const FAQ = () => {
   return (
@@ -37,11 +38,11 @@ const FAQ = () => {
               <h1 className="text-2xl font-bold mb-4">
                 What Facilities Does Your Hotel Have?
               </h1>
-              <p className="text-gray-600 mb-6">
+              <P className="text-gray-600 mb-6">
                 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad
                 voluptate doloribus eos sunt lobore ea enim voluptatem, sequi
                 voluptas rem doloremque architecto. Libero, vero natus.
-              </p>
+              </P>
             </div>
 
             {/* Divider */}

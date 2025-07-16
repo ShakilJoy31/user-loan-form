@@ -4,6 +4,7 @@ import ScrollableButtonGroup from '@/components/main/home-components/CategoryBut
 import HomeBanner from '@/components/main/home-components/HomeBanner'
 import Promotion from '@/components/main/home-components/Promotion';
 import ShopLocationAndCategory from '@/components/main/home-components/ShopLocationAndCategory';
+import { P } from '@/components/ui/paragraph';
 import React, { useState } from 'react'
 
 const Home = () => {
@@ -48,7 +49,7 @@ const Home = () => {
         <HomeBanner />
         <div className="mt-4 md:mt-6">
           <h1 className='text-xl sm:text-2xl md:text-[30px] font-semibold mb-1 md:mb-2'>Explore Your Type Around You</h1>
-          <p className="text-sm md:text-base mb-3 md:mb-4">From local boutiques to trending styles — all in one place.</p>
+          <P className="text-sm md:text-base mb-3 md:mb-4">From local boutiques to trending styles — all in one place.</P>
         </div>
       </div>
 

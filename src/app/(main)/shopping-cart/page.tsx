@@ -3,6 +3,7 @@ import Image from "next/image";
 import { FiTrash2, FiTag } from "react-icons/fi";
 import wiring from "@/assets/Home/wiring.png";
 import { Button } from "@/components/ui/button";
+import { P } from "@/components/ui/paragraph";
 
 const ShoppingCart = () => {
   return (
@@ -41,8 +42,8 @@ const ShoppingCart = () => {
                         />
                       </div>
                       <div>
-                        <p className="text-xs md:text-sm font-medium">House Wiring Cable</p>
-                        <p className="text-xs text-gray-500">Color: Multiple</p>
+                        <P className="text-xs md:text-sm font-medium">House Wiring Cable</P>
+                        <P className="text-xs text-gray-500">Color: Multiple</P>
                       </div>
                     </div>
                   </td>
