@@ -4,23 +4,37 @@ import Image from "next/image";
 import { FiSearch } from "react-icons/fi";
 import Gallery from "@/assets/Home/gallery.png";
 import { CiCalendar } from "react-icons/ci";
+import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 
 const TopCategory = () => {
+  const { translate } = useCustomTranslator();
   const categories = [
-    { name: "All", count: 134 },
-    { name: "Best Electronics", count: 134 },
-    { name: "Home Appliances", count: 134 },
-    { name: "Fashion", count: 134 },
-    { name: "Sports", count: 134 },
-    { name: "Toys", count: 134 },
-    { name: "Grocery", count: 134 },
+    { name: translate("সব", "All"), count: 134 },
+    { name: translate("সেরা ইলেকট্রনিক্স", "Best Electronics"), count: 134 },
+    { name: translate("গৃহ সরঞ্জাম", "Home Appliances"), count: 134 },
+    { name: translate("ফ্যাশন", "Fashion"), count: 134 },
+    { name: translate("খেলাধুলা", "Sports"), count: 134 },
+    { name: translate("খেলনা", "Toys"), count: 134 },
+    { name: translate("মুদিখানা", "Grocery"), count: 134 },
   ];
 
-  const tags = ["Healthy", "Lifestyle", "Food", "Fitness", "Travel", "Sports", "Technology", "Fashion", "Home"];
+  const tags = [
+    translate("স্বাস্থ্যকর", "Healthy"),
+    translate("জীবনধারা", "Lifestyle"),
+    translate("খাদ্য", "Food"),
+    translate("ফিটনেস", "Fitness"),
+    translate("ভ্রমণ", "Travel"),
+    translate("খেলাধুলা", "Sports"),
+    translate("প্রযুক্তি", "Technology"),
+    translate("ফ্যাশন", "Fashion"),
+    translate("বাড়ি", "Home")
+  ];
 
   const recentPosts = [
-    { title: "Curabitur porttitor orci eget nequ accumsan.", date: "Apr 25, 2021" },
-    // Add more posts as needed
+    { 
+      title: translate("Curabitur porttitor orci eget nequ accumsan.", "Curabitur porttitor orci eget nequ accumsan."), 
+      date: translate("এপ্রিল ২৫, ২০২১", "Apr 25, 2021") 
+    },
   ];
 
   return (
@@ -32,7 +46,7 @@ const TopCategory = () => {
         </div>
         <input
           type="text"
-          placeholder="Search..."
+          placeholder={translate("খুঁজুন...", "Search...")}
           className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#EE5A2C] text-sm"
         />
       </div>
@@ -41,7 +55,9 @@ const TopCategory = () => {
 
       {/* Top Categories */}
       <div className="w-full">
-        <h2 className="text-xl font-bold mb-5">Top Categories</h2>
+        <h2 className="text-xl font-bold mb-5">
+          {translate("শীর্ষ বিভাগসমূহ", "Top Categories")}
+        </h2>
         <div className="flex justify-between">
           <div>
             {categories.map((category, index) => (
@@ -64,7 +80,9 @@ const TopCategory = () => {
 
       {/* Popular Tags */}
       <div>
-        <h2 className="text-xl font-bold mb-5">Popular Tag</h2>
+        <h2 className="text-xl font-bold mb-5">
+          {translate("জনপ্রিয় ট্যাগ", "Popular Tag")}
+        </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
           {tags.map((tag, index) => (
             <Button
@@ -81,7 +99,9 @@ const TopCategory = () => {
 
       {/* Gallery */}
       <div className="mt-8">
-        <h2 className="text-xl font-bold mb-5">Our Gallery</h2>
+        <h2 className="text-xl font-bold mb-5">
+          {translate("আমাদের গ্যালারি", "Our Gallery")}
+        </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           {[...Array(6)].map((_, index) => (
             <Image
@@ -100,7 +120,9 @@ const TopCategory = () => {
 
       {/* Recent Added */}
       <div>
-        <h2 className="text-xl font-bold mb-5">Recent Added</h2>
+        <h2 className="text-xl font-bold mb-5">
+          {translate("সাম্প্রতিক যোগ", "Recent Added")}
+        </h2>
         {recentPosts.map((post, index) => (
           <div key={index} className="flex gap-3 mb-4">
             <div className="min-w-[80px]">

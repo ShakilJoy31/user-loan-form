@@ -107,8 +107,8 @@ const CameraComperison = () => {
               className="rounded-full text-[10px] font-normal"
             >
                {translate(
-                    "প্রযুক্তি",
-                    "Technology"
+                    "ক্যামেরা",
+                    "Camera"
                   )}
             </Button>
           </div>
@@ -145,7 +145,7 @@ const CameraComperison = () => {
 
         <p className="font-normal text-sm sm:text-[16px] text-gray-300">
           {translate(
-                    "যখন আমি এই বাগান বিষয়ক ব্লগটি শুরু করি, আমার লক্ষ্য ছিল খুব সহজ: সব বাগানপ্রেমীদের অনুপ্রাণিত, শিক্ষিত এবং উৎসাহিত করা যাতে তারা তাদের সবুজ প্রকল্পে সফল হয়। আমি বিশেষভাবে নতুন বাগান爱好ীদের সাহায্য করতে ভালোবাসি - তাদের উৎসাহই সবচেয়ে বেশি আনন্দ দেয়। তবে কিছু সাধারণ ভুল আছে যা প্রায় সব নতুন বাগান কর্তাই করেন, যদি না তাদের জন্য উপযুক্ত নির্দেশনা থাকে।",
+                    "যখন আমি এই বাগান বিষয়ক ব্লগটি শুরু করি, আমার লক্ষ্য ছিল খুব সহজ: সব বাগানপ্রেমীদের অনুপ্রাণিত, শিক্ষিত এবং উৎসাহিত করা যাতে তারা তাদের সবুজ প্রকল্পে সফল হয়। আমি বিশেষভাবে নতুন বাগান爱好ীদের সাহায্য করতে ভালোবাসি - তাদের উৎসাহই সবচেয়ে বেশি আনন্দ দেয়। তবে কিছু সাধারণ ভুল আছে যা প্রায় সব নতুন বাগান কর্তাই করেন, যদি না তাদের জন্য উপযুক্ত নির্দেশনা থাকে।",
                     " When I started this gardening blog, I was on a simple mission: to help inspire, educate and encourage all gardeners to succeed in their green spaces. One of the most exciting groups of gardeners I help is beginners or new gardeners. However, there are several common mistakes that all new gardeners make unless they have some guidance."
                   )}
         </p>
@@ -158,7 +158,7 @@ const CameraComperison = () => {
         </p>
         <p className="font-normal text-sm sm:text-[16px] text-gray-300 mt-4 sm:mt-[20px]">
           {translate(
-                    "আমি যখন এই গার্ডেনিং ব্লগটি শুরু করি, আমার লক্ষ্য ছিল খুব সহজ: সব বাগানপ্রেমীদের অনুপ্রাণিত করা, শিক্ষা দেওয়া এবং উৎসাহিত করা, যাতে তারা তাদের সবুজ জগতে সফল হতে পারে। আমি বিশেষভাবে নতুন বাগানপ্রেমীদের সাহায্য করতে ভালোবাসি – তাদের উৎসাহ আমাকে সবচেয়ে বেশি আনন্দ দেয়। তবে, কিছু সাধারণ ভুল আছে যা প্রায় সব নতুন বাগানপ্রেমীই করে থাকেন, যদি না তাদের সঠিক দিকনির্দেশনা থাকে।",
+                    "আমি যখন এই গার্ডেনিং ব্লগটি শুরু করি, আমার লক্ষ্য ছিল খুব সহজ: সব বাগানপ্রেমীদের অনুপ্রাণিত করা, শিক্ষা দেওয়া এবং উৎসাহিত করা, যাতে তারা তাদের সবুজ জগতে সফল হতে পারে। আমি বিশেষভাবে নতুন বাগানপ্রেমীদের সাহায্য করতে ভালোবাসি – তাদের উৎসাহ আমাকে সবচেয়ে বেশি আনন্দ দেয়। তবে, কিছু সাধারণ ভুল আছে যা প্রায় সব নতুন বাগানপ্রেমীই করে থাকেন, যদি না তাদের সঠিক দিকনির্দেশনা থাকে।",
                     " When I started this gardening blog, I was on a simple mission: to help inspire, educate and encourage all gardeners to succeed in their green spaces. One of the most exciting groups of gardeners I help is beginners or new gardeners. However, there are several common mistakes that all new gardeners make unless they have some guidance."
                   )}
         </p>
@@ -166,7 +166,7 @@ const CameraComperison = () => {
 
       <h2 className="text-2xl sm:text-3xl lg:text-[36px] font-semibold mt-6 sm:mt-[30px]">
          {translate(
-                    "নতুন বাগানপ্রেমীদের সবচেয়ে সাধারণ ভুলগুলো কী কী?",
+                    "নতুন বাগানপ্রেমীদের সবচেয়ে সাধারণ ভুলগুলো কী কী?",
                     "What are the most common mistakes of new gardeners?"
                   )}
       </h2>
@@ -180,27 +180,27 @@ const CameraComperison = () => {
         </p>
 
         <ol className="space-y-2">
-          <li>1. Planting too many plants</li>
-          <li>2. Planting in any soil</li>
-          <li>3. Ignoring how much sun plants need</li>
-          <li>4. Planting at the wrong time of year</li>
-          <li>5. Planting too close together</li>
-          <li>6. Planting too many plants</li>
-          <li>7. Planting in any soil</li>
-          <li>8. Ignoring how much sun plants need</li>
-          <li>9. Planting at the wrong time of year</li>
-          <li>10. Planting too close together</li>
+          <li>1. {translate("অনেক বেশি গাছ লাগানো", "Planting too many plants")}</li>
+          <li>2. {translate("যে কোনো মাটিতে গাছ লাগানো", "Planting in any soil")}</li>
+          <li>3. {translate("গাছের কতটা সূর্যালোক প্রয়োজন তা উপেক্ষা করা", "Ignoring how much sun plants need")}</li>
+          <li>4. {translate("বছরের ভুল সময়ে গাছ লাগানো", "Planting at the wrong time of year")}</li>
+          <li>5. {translate("গাছগুলো খুব কাছাকাছি লাগানো", "Planting too close together")}</li>
+          <li>6. {translate("অনেক বেশি গাছ লাগানো", "Planting too many plants")}</li>
+          <li>7. {translate("যে কোনো মাটিতে গাছ লাগানো", "Planting in any soil")}</li>
+          <li>8. {translate("গাছের কতটা সূর্যালোক প্রয়োজন তা উপেক্ষা করা", "Ignoring how much sun plants need")}</li>
+          <li>9. {translate("বছরের ভুল সময়ে গাছ লাগানো", "Planting at the wrong time of year")}</li>
+          <li>10. {translate("গাছগুলো খুব কাছাকাছি লাগানো", "Planting too close together")}</li>
         </ol>
       </div>
 
       <h2 className="text-2xl sm:text-3xl lg:text-[36px] font-semibold my-4 sm:my-[20px]">
-        Planting too close together
+        {translate("গাছগুলো খুব কাছাকাছি লাগানো", "Planting too close together")}
       </h2>
       <p className="font-medium text-sm sm:text-[16px] text-gray-400">
-        It&apos;s tempting as a new gardener to crowd the plants to try and fit
-        as many new plants into your garden as possible. However, as these
-        plants grow, they will outcompete each other. You&apos;ll spend more
-        time digging up plants to move them than enjoying them.
+        {translate(
+          "একজন নতুন বাগানপ্রেমী হিসেবে যত বেশি সম্ভব নতুন গাছ আপনার বাগানে ফিট করার জন্য গাছগুলোকে ঘনিষ্ঠভাবে লাগানোর প্রলোভন থাকে। তবে, এই গাছগুলো বড় হওয়ার সাথে সাথে তারা একে অপরের সাথে প্রতিযোগিতা করবে। আপনি গাছ উপভোগ করার চেয়ে সেগুলো সরানোর জন্য বেশি সময় ব্যয় করবেন।",
+          "It&apos;s tempting as a new gardener to crowd the plants to try and fit as many new plants into your garden as possible. However, as these plants grow, they will outcompete each other. You&apos;ll spend more time digging up plants to move them than enjoying them."
+        )}
       </p>
 
       <div className="mt-4 sm:mt-[20px]">

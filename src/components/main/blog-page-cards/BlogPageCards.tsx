@@ -5,21 +5,23 @@ import camera from "@/assets/Home/camera.png";
 import person from "@/assets/Home/person.png";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 
 const BlogPageCards = () => {
+  const { translate } = useCustomTranslator();
   return (
     <div className="lg:max-w-[290px]  w-full px-[10px] pt-[5px] lg:px-0 lg:pt-0 max-h-[378px] rounded-xl shadow-sm border overflow-hidden font-sans">
       {/* Image and Tags */}
       <div className="relative w-full h-[199px]">
         <Image
           src={camera}
-          alt="Gardening Mistakes"
+          alt={translate("গার্ডেনিং ভুল", "Gardening Mistakes")}
           layout="fill"
           objectFit="cover rounded-md"
         />
         <div className="absolute top-2 left-2 flex gap-2">
-          <span className="bg-white/80 text-xs text-[#5B5B5B] px-2 py-1 rounded-md">Watering</span>
-          <span className="bg-white/80 text-xs text-[#5B5B5B] px-2 py-1 rounded-md">Gardening</span>
+          <span className="bg-white/80 text-xs text-[#5B5B5B] px-2 py-1 rounded-md">{translate("পানি দেওয়া", "Watering")}</span>
+          <span className="bg-white/80 text-xs text-[#5B5B5B] px-2 py-1 rounded-md">{translate("বাগান করা", "Gardening")}</span>
         </div>
       </div>
 
@@ -27,23 +29,23 @@ const BlogPageCards = () => {
       <div className="p-4">
         {/* Author Info */}
         <div className="flex items-center mb-2">
-          <Image src={person} alt="Joanna Wellick" width={20} height={20} className="rounded-full mr-2" />
-          <span className="text-[#EE5A2C] font-normal text-[12px] w-[80px]">Joanna Wellick</span>
-          <span className="font-normal text-[10px] text-gray-300 w-[87px]">— June 28, 2018</span>
+          <Image src={person} alt={translate("জোয়ানা ওয়েলিক", "Joanna Wellick")} width={20} height={20} className="rounded-full mr-2" />
+          <span className="text-[#EE5A2C] font-normal text-[12px] w-[80px]">{translate("জোয়ানা ওয়েলিক", "Joanna Wellick")}</span>
+          <span className="font-normal text-[10px] text-gray-300 w-[87px]">— {translate("জুন ২৮, ২০১৮", "June 28, 2018")}</span>
           <span className=" text-gray-300">•</span>
           <FaShareAlt className="text-gray-300  text-[10px]" />
-          <span className="font-normal text-[10px] text-gray-300">1k shares</span>
+          <span className="font-normal text-[10px] text-gray-300">{translate("১ হাজার শেয়ার", "1k shares")}</span>
         </div>
 
         {/* Title */}
         <h3 className="text-base font-bold text-black leading-tight mb-1">
-          10 Beginner Gardening Mistakes to Avoid
+          {translate("১০টি শুরু করার গার্ডেনিং ভুল যা এড়ানো উচিত", "10 Beginner Gardening Mistakes to Avoid")}
         </h3>
 
         {/* Description */}
         <p className="text-sm text-gray-300">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dolorum eius iste fugiat reprehende…
-          <span className="text-[#EE5A2C] font-medium">Read More</span>
+          {translate("লোরেম ইপসাম ডলর সিট আমেট, কনসেক্টেটুর এডিপিসিং এলিট। ডলরুম ইইউস ইস্টে ফুগিয়াট রিপ্রিহেন্ডে...", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dolorum eius iste fugiat reprehende...")}
+          <span className="text-[#EE5A2C] font-medium">{translate("আরও পড়ুন", "Read More")}</span>
         </p>
       </div>
     </div>
@@ -52,22 +54,22 @@ const BlogPageCards = () => {
 
 const BlogPageCardsGrid = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const cardsPerPage = 9; // You can adjust this number based on your needs
-  const totalCards = 12; // Total number of cards you have
+  const cardsPerPage = 9;
+  const totalCards = 12;
   const totalPages = Math.ceil(totalCards / cardsPerPage);
 
-  // Calculate current cards to display
   const indexOfLastCard = currentPage * cardsPerPage;
   const indexOfFirstCard = indexOfLastCard - cardsPerPage;
   const currentCards = [...Array(totalCards)].slice(indexOfFirstCard, indexOfLastCard);
 
-  // Change page
   const paginate = (pageNumber: number) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
       setCurrentPage(pageNumber);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
+
+  const { translate } = useCustomTranslator();
 
   return (
     <div className="px-[10px]">
@@ -80,14 +82,14 @@ const BlogPageCardsGrid = () => {
 
       {/* Pagination */}
       <div className="flex justify-center pt-[40px]">
-        <nav className="inline-flex rounded-md shadow-sm overflow-hidden border border-gray-300">
+        <nav className="inline-flex rounded-md  overflow-hidden gap-2">
           {/* Previous Button */}
           <Button variant={'outline'}
             onClick={() => paginate(currentPage - 1)}
             disabled={currentPage === 1}
             className={`px-4 py-2 hover:cursor-pointer text-sm font-medium ${currentPage === 1 ? 'bg-gray-100 text-gray-400' : 'bg-white text-gray-600 hover:bg-gray-100'}`}
           >
-            Previous
+            {translate("পূর্ববর্তী", "Previous")}
           </Button>
 
           {/* Page Numbers */}
@@ -124,7 +126,7 @@ const BlogPageCardsGrid = () => {
             disabled={currentPage === totalPages}
             className={`px-4 py-2 hover:cursor-pointer text-sm font-medium ${currentPage === totalPages ? 'bg-gray-100 text-gray-400' : 'bg-white text-gray-600 hover:bg-gray-100'}`}
           >
-            Next
+            {translate("পরবর্তী", "Next")}
           </Button>
         </nav>
       </div>
