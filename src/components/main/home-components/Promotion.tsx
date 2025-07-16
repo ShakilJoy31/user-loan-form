@@ -5,6 +5,7 @@ import ElectroHub from "@/assets/Home/ElectroHub.png";
 import FashionPoint from "@/assets/Home/FashionPoint.png";
 import ElectroHub2 from "@/assets/Home/ElectroHub (2).png";
 import { FiArrowRight } from "react-icons/fi";
+import { Button } from "@/components/ui/button";
 
 const Promotion = () => {
   return (
@@ -57,14 +58,14 @@ const Promotion = () => {
       </div>
 
       <div className="flex justify-center mt-4 sm:mt-5 md:mt-6">
-        <button className="max-w-[180px] sm:max-w-[200px] md:max-w-[224px] h-[40px] sm:h-[45px] md:h-[54px] border-[#FD6801] border-2 rounded-xl">
+        <Button variant={'outline'} className="max-w-[180px] sm:max-w-[200px] md:max-w-[224px] h-[40px] sm:h-[45px] md:h-[54px] border-[#FD6801] border-2 rounded-xl">
           <div className="flex items-center justify-center p-2 sm:p-3">
             <p className="text-xs sm:text-sm md:text-base text-gray-500 font-medium">See All Featured</p>
             <span className="text-gray-700 px-2 sm:px-3 md:px-4">
               <FiArrowRight className="h-4 w-4 sm:h-5 sm:w-5" />
             </span>
           </div>
-        </button>
+        </Button>
       </div>
     </div>
   );

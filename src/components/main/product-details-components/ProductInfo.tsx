@@ -5,6 +5,7 @@ import { BsDot } from "react-icons/bs";
 import { CiShare2 } from "react-icons/ci";
 import { Check } from "lucide-react";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
+import { Button } from "@/components/ui/button";
 
 export default function ProductInfo() {
     const [selectedColor, setSelectedColor] = useState("beige");
@@ -29,9 +30,9 @@ export default function ProductInfo() {
             <div className="flex items-center justify-between">
                 <p className="text-orange-600 font-bold text-sm">ElectroHub</p>
                 <div className="flex gap-x-2 items-center">
-                    <button className="bg-[#F6F6F6] shadow-md px-3 py-1 rounded-full text-sm text-gray-500 hover:bg-gray-100 transition">
+                    <Button variant={'outline'} className="bg-[#F6F6F6] shadow-md px-3 py-1 rounded-full text-sm text-gray-500 hover:bg-gray-100 transition">
                         Add to compare
-                    </button>
+                    </Button>
                     <span>
                         <CiShare2 size={22} />
                     </span>

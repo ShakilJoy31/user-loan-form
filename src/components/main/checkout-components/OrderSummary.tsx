@@ -1,5 +1,6 @@
 import Image from "next/image";
 import product from '@/assets/Products_Image/products.jpg'
+import { Button } from "@/components/ui/button";
 
 const products = [
   {
@@ -93,9 +94,9 @@ export default function OrderSummary() {
         ))}
       </div>
 
-      <button className="mt-6 w-full bg-[#EE5A2C] text-white font-semibold py-2 rounded">
+      <Button variant={'outline'} className="mt-6 w-full bg-[#EE5A2C] text-white font-semibold py-2 rounded">
         Proceed To Pay
-      </button>
+      </Button>
     </div>
   );
 }

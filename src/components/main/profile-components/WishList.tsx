@@ -3,6 +3,7 @@ import Image from "next/image";
 import { FiTrash2, FiCalendar } from "react-icons/fi";
 import { AiFillStar } from "react-icons/ai";
 import computer from "@/assets/Products_Image/computer.png";
+import { Button } from "@/components/ui/button";
 
 // Sample data
 const wishlistItems = new Array(4).fill({
@@ -30,9 +31,9 @@ export default function WishlistTab() {
             className="flex flex-col sm:flex-row sm:items-center justify-between px-4 py-5 border-b last:border-b-0"
           >
             <div className="flex items-center ">
-              <button className="text-gray-500 pl-[22px] pr-[32px] hover:text-red-500 flex items-center justify-center h-full">
+              <Button variant={'outline'} className="text-gray-500 pl-[22px] pr-[32px] hover:text-red-500 flex items-center justify-center h-full">
                 <FiTrash2 size={18} />
-              </button>
+              </Button>
 
               <Image
                 src={item.image}
@@ -64,9 +65,9 @@ export default function WishlistTab() {
               <span className="text-sm font-semibold bg-[#FEEFE8] text-[#1E1E1E] px-4 py-1 rounded-md">
                 {item.price}
               </span>
-              <button className="bg-[#EE5A2C] hover:bg-orange-600 text-white text-sm px-5 py-2 rounded-md transition">
+              <Button variant={'outline'} className="bg-[#EE5A2C] hover:bg-orange-600 text-white text-sm px-5 py-2 rounded-md transition">
                 Add to Cart
-              </button>
+              </Button>
             </div>
           </div>
         ))}
@@ -74,11 +75,11 @@ export default function WishlistTab() {
 
       {/* Pagination */}
       <div className="flex justify-center mt-6 gap-2">
-        <button className="text-sm px-3 py-1 border border-gray-300 rounded-md hover:bg-gray-100">
+        <Button variant={'outline'} className="text-sm px-3 py-1 border border-gray-300 rounded-md hover:bg-gray-100">
           Previous
-        </button>
+        </Button>
         {[1, 2, 3].map((page) => (
-          <button
+          <Button variant={'outline'}
             key={page}
             className={`text-sm px-3 py-1 border rounded-md ${
               page === 1
@@ -87,11 +88,11 @@ export default function WishlistTab() {
             }`}
           >
             {page}
-          </button>
+          </Button>
         ))}
-        <button className="text-sm px-3 py-1 border border-gray-300 rounded-md hover:bg-gray-100">
+        <Button variant={'outline'} className="text-sm px-3 py-1 border border-gray-300 rounded-md hover:bg-gray-100">
           Next
-        </button>
+        </Button>
       </div>
     </div>
   );

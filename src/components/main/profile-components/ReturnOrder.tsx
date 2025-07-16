@@ -1,4 +1,5 @@
 "use client";
+import { Button } from "@/components/ui/button";
 import { FiSearch } from "react-icons/fi";
 
 interface ReturnOrder {
@@ -135,11 +136,11 @@ export default function ReturnOrdersTab() {
 
       {/* Pagination */}
       <div className="flex justify-center mt-6 gap-2">
-        <button className="text-sm px-3 py-1 border border-gray-300 rounded-md hover:bg-gray-100">
+        <Button variant={'outline'} className="text-sm px-3 py-1 border border-gray-300 rounded-md hover:bg-gray-100">
           Previous
-        </button>
+        </Button>
         {[1, 2, 3].map((page) => (
-          <button
+          <Button variant={'outline'}
             key={page}
             className={`text-sm px-3 py-1 border rounded-md ${
               page === 1
@@ -148,11 +149,11 @@ export default function ReturnOrdersTab() {
             }`}
           >
             {page}
-          </button>
+          </Button>
         ))}
-        <button className="text-sm px-3 py-1 border border-gray-300 rounded-md hover:bg-gray-100">
+        <Button variant={'outline'} className="text-sm px-3 py-1 border border-gray-300 rounded-md hover:bg-gray-100">
           Next
-        </button>
+        </Button>
       </div>
     </div>
   );

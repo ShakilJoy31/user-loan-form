@@ -57,12 +57,12 @@ const FAQ = () => {
               <div className="space-y-4">
                 {/* Repeated FAQ Item */}
                 <div className="border-b border-gray-200 pb-4">
-                  <button className="flex justify-between items-center w-full text-left">
+                  <Button variant={'outline'} className="flex justify-between items-center w-full text-left">
                     <span className="font-medium">
                       Is There Any Fitness Center in Your Hotel?
                     </span>
                     <span className="text-gray-500">+</span>
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>

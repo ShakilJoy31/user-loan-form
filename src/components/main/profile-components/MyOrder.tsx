@@ -8,6 +8,7 @@ import product2 from "@/assets/Products_Image/products.jpg";
 import product3 from "@/assets/Products_Image/products.jpg";
 import product4 from "@/assets/Products_Image/products.jpg";
 import product5 from "@/assets/Products_Image/products.jpg";
+import { Button } from "@/components/ui/button";
 
 const orders = [
     {
@@ -136,17 +137,17 @@ export default function OrderTab() {
                                 </td>
                                 <td className="px-4 py-4 text-gray-600">{order.date}</td>
                                 <td className="px-4 py-4">
-                                    <button className="bg-[#FF9742] text-black font-bold text-xs px-4 py-2 rounded-full">
+                                    <Button variant={'outline'} className="bg-[#FF9742] text-black font-bold text-xs px-4 py-2 rounded-full">
                                         Trac order
-                                    </button>
+                                    </Button>
                                 </td>
                                 <td className="px-4 py-4">
-                                    <div className="flex gap-x-4"><button className="text-black font-bold hover:text-red-500">
+                                    <div className="flex gap-x-4"><Button variant={'outline'} className="text-black font-bold hover:text-red-500">
                                         <FiTrash2 />
-                                    </button>
-                                        <button className="text-black font-bold hover:text-orange-500">
+                                    </Button>
+                                        <Button variant={'outline'} className="text-black font-bold hover:text-orange-500">
                                             <FaArrowRight />
-                                        </button></div>
+                                        </Button></div>
                                 </td>
 
                             </tr>
@@ -161,22 +162,22 @@ export default function OrderTab() {
                     ✓ {selectedOrders.length} products selected
                 </div>
                 <div className="flex items-center gap-3">
-                    <button className="text-gray-700 border border-gray-300 px-4 py-2 rounded-md hover:bg-gray-100 text-sm">
+                    <Button variant={'outline'} className="text-gray-700 border border-gray-300 px-4 py-2 rounded-md hover:bg-gray-100 text-sm">
                         Delete
-                    </button>
-                    <button className="bg-[#EE5A2C] hover:bg-orange-600 text-white px-4 py-2 rounded-md text-sm">
+                    </Button>
+                    <Button variant={'outline'} className="bg-[#EE5A2C] hover:bg-orange-600 text-white px-4 py-2 rounded-md text-sm">
                         Unpublish
-                    </button>
+                    </Button>
                 </div>
             </div>
 
             {/* Pagination Buttons */}
             <div className="flex justify-center mt-4 gap-2">
-                <button className="text-sm px-3 py-1 border border-gray-300 rounded-md hover:bg-gray-100">
+                <Button variant={'outline'} className="text-sm px-3 py-1 border border-gray-300 rounded-md hover:bg-gray-100">
                     Previous
-                </button>
+                </Button>
                 {[1, 2, 3].map((num) => (
-                    <button
+                    <Button variant={'outline'}
                         key={num}
                         className={`text-sm px-3 py-1 border ${num === 1
                             ? "bg-orange-500 text-white"
@@ -184,11 +185,11 @@ export default function OrderTab() {
                             } rounded-md`}
                     >
                         {num}
-                    </button>
+                    </Button>
                 ))}
-                <button className="text-sm px-3 py-1 border border-gray-300 rounded-md hover:bg-gray-100">
+                <Button variant={'outline'} className="text-sm px-3 py-1 border border-gray-300 rounded-md hover:bg-gray-100">
                     Next
-                </button>
+                </Button>
             </div>
         </div>
     );

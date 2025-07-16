@@ -1,6 +1,7 @@
 import { ShoppingCart } from 'lucide-react';
 import product from '@/assets/Products_Image/products.jpg'
 import Image from 'next/image';
+import { Button } from '@/components/ui/button';
 
 const products = [
     {
@@ -60,9 +61,9 @@ export const RecommendedProducts = () => {
                                         {product.price} TK
                                     </p>
 
-                                    <button className="p-2 rounded-full hover:bg-gray-100">
+                                    <Button variant={'outline'} className="p-2 rounded-full hover:bg-gray-100">
                                         <ShoppingCart size={18} />
-                                    </button>
+                                    </Button>
                                 </div>
 
                             </div>

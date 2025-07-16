@@ -6,6 +6,7 @@ import { FiEdit2, FiShare2, FiHelpCircle } from "react-icons/fi";
 import { BsGoogle, BsFacebook, BsTwitter } from "react-icons/bs";
 
 import avatar from "@/assets/Products_Image/man.avif";
+import { Button } from "@/components/ui/button";
 
 export default function ChangePasswordTab() {
     const [showCurrent, setShowCurrent] = useState(false);
@@ -57,9 +58,9 @@ export default function ChangePasswordTab() {
                             </div>
                         </div>
 
-                        <button className="mt-4 bg-white border border-gray-300 text-gray-700 text-sm px-4 py-1.5 rounded-sm hover:bg-gray-200 transition">
+                        <Button variant={'outline'} className="mt-4 bg-white border border-gray-300 text-gray-700 text-sm px-4 py-1.5 rounded-sm hover:bg-gray-200 transition">
                             🔗 Social media
-                        </button>
+                        </Button>
                     </div>
                 </div>
 
@@ -69,9 +70,9 @@ export default function ChangePasswordTab() {
                         <h3 className="text-base font-semibold text-gray-800">
                             Change Password
                         </h3>
-                        <button className="text-sm text-orange-500 flex items-center gap-1">
+                        <Button variant={'outline'} className="text-sm text-orange-500 flex items-center gap-1">
                             Need help <FiHelpCircle size={14} />
-                        </button>
+                        </Button>
                     </div>
 
                     <form className="space-y-4">
@@ -86,13 +87,13 @@ export default function ChangePasswordTab() {
                                     placeholder="Enter password"
                                     className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-1 focus:ring-orange-500 outline-none"
                                 />
-                                <button
+                                <Button variant={'outline'}
                                     type="button"
                                     onClick={() => setShowCurrent(!showCurrent)}
                                     className="absolute right-3 top-2.5 text-gray-500"
                                 >
                                     {showCurrent ? <FaEyeSlash /> : <FaEye />}
-                                </button>
+                                </Button>
                             </div>
                             <p className="text-xs text-orange-500 mt-1 underline cursor-pointer hover:text-orange-600">
                                 Forgot Current Password? Click here
@@ -110,13 +111,13 @@ export default function ChangePasswordTab() {
                                     placeholder="Enter password"
                                     className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-1 focus:ring-orange-500 outline-none"
                                 />
-                                <button
+                                <Button variant={'outline'}
                                     type="button"
                                     onClick={() => setShowNew(!showNew)}
                                     className="absolute right-3 top-2.5 text-gray-500"
                                 >
                                     {showNew ? <FaEyeSlash /> : <FaEye />}
-                                </button>
+                                </Button>
                             </div>
                         </div>
 
@@ -131,24 +132,24 @@ export default function ChangePasswordTab() {
                                     placeholder="Enter password"
                                     className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-1 focus:ring-orange-500 outline-none"
                                 />
-                                <button
+                                <Button variant={'outline'}
                                     type="button"
                                     onClick={() => setShowReEnter(!showReEnter)}
                                     className="absolute right-3 top-2.5 text-gray-500"
                                 >
                                     {showReEnter ? <FaEyeSlash /> : <FaEye />}
-                                </button>
+                                </Button>
                             </div>
                         </div>
 
                         {/* Save Button */}
                         <div className="pt-2">
-                            <button
+                            <Button variant={'outline'}
                                 type="submit"
                                 className="w-full h-[50px] bg-[#EE5A2C] hover:bg-orange-600 text-white text-sm font-semibold rounded-md transition"
                             >
                                 Save Changes
-                            </button>
+                            </Button>
                         </div>
                     </form>
                 </div>

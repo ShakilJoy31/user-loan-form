@@ -5,6 +5,7 @@ import Image from "next/image";
 import { FaArrowLeftLong, FaArrowRightLong } from "react-icons/fa6";
 import shopLogo from '@/assets/Products_Image/switch.jpg'
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 const thumbnails = [shopLogo.src, shopLogo.src, shopLogo.src];
 
@@ -42,18 +43,18 @@ export default function ProductGallery() {
             {/* Thumbnails with arrows */}
             <div className="flex items-center justify-center gap-4">
                 {/* Left Arrow */}
-                <button 
+                <Button variant={'outline'}
                     onClick={prevImage}
                     className="p-2 text-gray-600 hover:text-[#f15a29] transition-colors"
                     aria-label="Previous image"
                 >
                     <FaArrowLeftLong size={20} />
-                </button>
+                </Button>
 
                 {/* Thumbnails */}
                 <div className="flex gap-2">
                     {thumbnails.map((thumb, idx) => (
-                        <button 
+                        <Button variant={'outline'}
                             key={idx}
                             onClick={() => setCurrentImageIndex(idx)}
                             className={`rounded-[16px] overflow-hidden border-2 ${currentImageIndex === idx ? 'border-[#1A432E]' : 'border-transparent'}`}
@@ -65,18 +66,18 @@ export default function ProductGallery() {
                                 height={70}
                                 className="rounded-[16px] cursor-pointer"
                             />
-                        </button>
+                        </Button>
                     ))}
                 </div>
 
                 {/* Right Arrow */}
-                <button 
+                <Button variant={'outline'}
                     onClick={nextImage}
                     className="p-2 text-gray-600 hover:text-[#f15a29] transition-colors"
                     aria-label="Next image"
                 >
                     <FaArrowRightLong size={20} />
-                </button>
+                </Button>
             </div>
         </div>
     );

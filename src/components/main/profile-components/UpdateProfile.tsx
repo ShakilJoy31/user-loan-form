@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { FiEdit, FiCalendar } from 'react-icons/fi';
 import user from '@/assets/Products_Image/man.avif'
+import { Button } from '@/components/ui/button';
 
 export default function UpdateProfile() {
 
@@ -17,10 +18,10 @@ export default function UpdateProfile() {
                 <div>
                     <h2 className="text-lg font-semibold text-gray-800">Edit Account Details</h2>
                 </div>
-                <button className="text-gray-500 hover:text-gray-700 flex gap-x-[8px] items-center border border-gray-300 rounded-md px-4 py-1">
+                <Button variant={'outline'} className="text-gray-500 hover:text-gray-700 flex gap-x-[8px] items-center border border-gray-300 rounded-md px-4 py-1">
                     <FiEdit size={20} />
                     Edit
-                </button>
+                </Button>
             </div>
 
             {/* Top Section - Image and Upload */}
@@ -33,12 +34,12 @@ export default function UpdateProfile() {
                     height={60}
                 />
                 <div className="flex gap-2">
-                    <button className="bg-[#EE5A2C] w-[120px] h-[42px] text-white px-4 py-1 rounded-md text-sm font-semibold hover:bg-orange-600">
+                    <Button variant={'outline'} className="bg-[#EE5A2C] w-[120px] h-[42px] text-white px-4 py-1 rounded-md text-sm font-semibold hover:bg-orange-600">
                         Upload New
-                    </button>
-                    <button className="bg-white border w-[120px] h-[42px] border-gray-300 text-gray-700 px-4 py-1 rounded-md text-sm hover:bg-gray-50">
+                    </Button>
+                    <Button variant={'outline'} className="bg-white border w-[120px] h-[42px] border-gray-300 text-gray-700 px-4 py-1 rounded-md text-sm hover:bg-gray-50">
                         Delete
-                    </button>
+                    </Button>
                 </div>
             </div>
 
@@ -73,13 +74,13 @@ export default function UpdateProfile() {
                             defaultValue="password123"
                             className="w-full border border-gray-300 rounded-md px-3 py-2 pr-10 text-sm outline-none focus:ring-1 focus:ring-orange-500"
                         />
-                        <button
+                        <Button variant={'outline'}
                             type="button"
                             className="absolute right-3 top-[36px] text-gray-500"
                             onClick={() => setShowPassword(!showPassword)}
                         >
                             {showPassword ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
-                        </button>
+                        </Button>
                     </div>
 
                     {/* Contact Number */}
@@ -155,12 +156,12 @@ export default function UpdateProfile() {
 
                 {/* Save Button */}
                 <div className="pt-2">
-                    <button
+                    <Button variant={'outline'}
                         type="submit"
                         className="w-full block mx-auto lg:w-[385px] h-[60px] bg-[#EE5A2C] text-white font-semibold py-2 rounded-md hover:bg-orange-600 transition"
                     >
                         Save Changes
-                    </button>
+                    </Button>
                 </div>
             </form>
         </div>

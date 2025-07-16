@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { CheckCircle2, Star } from "lucide-react";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
+import { Button } from "@/components/ui/button";
 
  const Tabs = [
         "Specifications",
@@ -20,7 +21,7 @@ export default function TabsSection() {
             {/* Tabs */}
             <div className="flex items-center gap-4 justify-between bg-[#FDEFEA] rounded-full p-[5px] h-[56px] ">
                 {Tabs.map((tab) => (
-                    <button
+                    <Button variant={'outline'}
                         key={tab}
                         onClick={() => setActiveTab(tab)}
                         className={`px-4 py-1.5 rounded-full text-sm font-medium w-full hover:cursor-pointer h-full transition-all
@@ -30,7 +31,7 @@ export default function TabsSection() {
                             }`}
                     >
                         {tab}
-                    </button>
+                    </Button>
                 ))}
             </div>
 
@@ -171,9 +172,9 @@ export default function TabsSection() {
                             )}
                         />
                         <div className="text-right">
-                            <button className="text-orange-600 font-semibold hover:underline">
+                            <Button variant={'outline'} className="text-orange-600 font-semibold hover:underline">
                                 {translate("সমস্ত রিভিউ দেখুন", "View All Review")}
-                            </button>
+                            </Button>
                         </div>
                     </div>
 
@@ -213,11 +214,11 @@ export default function TabsSection() {
                             />
                         </div>
 
-                        <button
+                        <Button variant={'outline'}
                             className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all bg-orange-500 text-white shadow-sm w-[185px] mt-[50px]`}
                         >
                             {translate("জমা দিন", "Submit")}
-                        </button>
+                        </Button>
                     </div>
                 </div>
             )}

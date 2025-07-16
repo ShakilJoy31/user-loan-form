@@ -1,4 +1,5 @@
 // app/components/DeliveryOptionsCard.tsx
+import { Button } from "@/components/ui/button";
 import { FaMapMarkerAlt, FaTags, FaTruck } from "react-icons/fa";
 
 export default function DeliveryOptionsCard() {
@@ -14,7 +15,7 @@ export default function DeliveryOptionsCard() {
           <FaMapMarkerAlt className="text-[#f15a29]" />
           <span>Uttara, Dhaka</span>
         </div>
-        <button className="text-blue-600 font-semibold text-sm hover:underline">Change</button>
+        <Button variant={'outline'} className="text-blue-600 font-semibold text-sm hover:underline">Change</Button>
       </div>
 
       {/* Row 2: Standard Delivery */}
