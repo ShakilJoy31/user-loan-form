@@ -1,7 +1,7 @@
 import React from "react";
 import DropdownSearch from "./DropdownSearch";
 import ShopCard from "./ShopCard";
-import shopLogo from '../../../../assets/Logo/shop-logo.png'
+import shopLogo from '@/assets/Logo/shop-logo.png'
 
 const shops = Array(20).fill({
   name: "FashionFiesta",

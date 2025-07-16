@@ -12,6 +12,7 @@ import { AiOutlineShoppingCart } from "react-icons/ai";
 import { TfiControlPlay } from "react-icons/tfi";
 import UpdateProfile from "@/components/main/profile-components/UpdateProfile";
 import { shareWithLocal } from "@/utils/helper/shareWithLocalStorage";
+import WalletPoint from "@/components/main/profile-components/WalletPoint";
 
 const tabs = [
   {
@@ -27,7 +28,7 @@ const tabs = [
     icon: () => <AiOutlineShoppingCart className="w-5 h-5" />,
   },
   {
-    id: "wallet",
+    id: "wallet-point",
     label: "Wallet Point",
     icon: () => <span className="w-5 h-5">💳</span>,
   },
@@ -157,6 +158,8 @@ const AccountPage = () => {
               switch (activeTab) {
                 case "update-profile":
                   return <UpdateProfile />;
+                case "wallet-point":
+                  return <WalletPoint />;
                 default:
                   return (
                     <>

@@ -6,7 +6,7 @@ import {
   FaStarHalfAlt 
 } from "react-icons/fa";
 import Image from "next/image";
-import wiring from "../../../../assets/Home/wiring.png";
+import wiring from "@/assets/Home/wiring.png";
 import { FiShoppingCart } from "react-icons/fi";
 import { IoMdArrowBack } from "react-icons/io";
 

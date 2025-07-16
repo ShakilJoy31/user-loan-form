@@ -1,11 +1,11 @@
 "use client"
 import Image from "next/image";
-import promotion2 from "../../../../assets/Home/promotion2.png";
-import percentage from "../../../../assets/Home/percentage.png";
-import percentage2 from "../../../../assets/Home/percentage2.png";
-import WhatsAppImage from "../../../../assets/Home/WhatsAppImage.png";
-import collectionBanner from "../../../../assets/Home/collectionBanner.png";
-import WhatsAppHotLine from "../../../../assets/Home/WhatsAppHotLine.png";
+import promotion2 from "@/assets/Home/promotion2.png";
+import percentage from "@/assets/Home/percentage.png";
+import percentage2 from "@/assets/Home/percentage2.png";
+import WhatsAppImage from "@/assets/Home/WhatsAppImage.png";
+import collectionBanner from "@/assets/Home/collectionBanner.png";
+import WhatsAppHotLine from "@/assets/Home/WhatsAppHotLine.png";
 import { StaticImageData } from "next/image";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 

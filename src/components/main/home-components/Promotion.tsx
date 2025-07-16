@@ -1,9 +1,9 @@
 import Image from "next/image";
-import promotion from "../../../../assets/Home/promotion.png";
-import whatsApp from "../../../../assets/Home/what'sApp.png";
-import ElectroHub from "../../../../assets/Home/ElectroHub.png";
-import FashionPoint from "../../../../assets/Home/FashionPoint.png";
-import ElectroHub2 from "../../../../assets/Home/ElectroHub (2).png";
+import promotion from "@/assets/Home/promotion.png";
+import whatsApp from "@/assets/Home/what'sApp.png";
+import ElectroHub from "@/assets/Home/ElectroHub.png";
+import FashionPoint from "@/assets/Home/FashionPoint.png";
+import ElectroHub2 from "@/assets/Home/ElectroHub (2).png";
 import { FiArrowRight } from "react-icons/fi";
 
 const Promotion = () => {

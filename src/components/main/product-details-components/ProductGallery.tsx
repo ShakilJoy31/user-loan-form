@@ -3,7 +3,7 @@
 
 import Image from "next/image";
 import { FaArrowLeftLong, FaArrowRightLong } from "react-icons/fa6";
-import shopLogo from '../../../../assets/Products_Image/switch.jpg'
+import shopLogo from '@/assets/Products_Image/switch.jpg'
 import { useState } from "react";
 
 const thumbnails = [shopLogo.src, shopLogo.src, shopLogo.src];

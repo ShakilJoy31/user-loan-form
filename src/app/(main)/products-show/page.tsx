@@ -4,7 +4,7 @@ import FilterSidebar from "@/components/main/products/FilterSidebar";
 import ProductCard from "@/components/main/products/ProductCard";
 import TopbarFilter from "@/components/main/products/TopbarFilter";
 import React, { useState } from "react";
-import productImage from '../../../../assets/Products_Image/mobile.png';
+import productImage from '@/assets/Products_Image/mobile.png';
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 
 const ProductsShowPage: React.FC = () => {

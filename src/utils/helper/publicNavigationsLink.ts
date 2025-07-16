@@ -25,12 +25,12 @@ export const publicNavigations: INavigations = {
     name: "Details",
     path: "/products/details",
   },
-  deal: {
-    name: "Best Deal",
-    path: "/best-deal-and-comparison",
+  blogDetails: {
+    name: "Blog Details",
+    path: "/blog-details",
   },
-  gardening: {
-    name: "Gardening",
-    path: "/gardening",
+  blogPage: {
+    name: "Blog Page",
+    path: "/blog-page",
   },
 };

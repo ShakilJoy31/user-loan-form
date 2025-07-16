@@ -1,5 +1,5 @@
 import { ShoppingCart } from 'lucide-react';
-import product from '../../../../assets/Products_Image/products.jpg'
+import product from '@/assets/Products_Image/products.jpg'
 import Image from 'next/image';
 
 const products = [
