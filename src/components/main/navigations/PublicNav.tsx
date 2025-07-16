@@ -186,9 +186,13 @@ const PublicNav = () => {
                         </div>
                         <hr className="my-2 border-gray-200 dark:border-gray-600" />
                         <div className="flex justify-between items-center">
-                          <Button className="flex items-center gap-2 transition-colors hover:text-orange-500 dark:hover:text-orange-300">
+                         
+                          <Link
+                            href=""
+                            className="flex items-center gap-2 py-1 transition-colors hover:text-orange-500 dark:hover:text-orange-300"
+                          >
                             Logout
-                          </Button>
+                          </Link>
                           <MdLogout className="text-lg" />
                         </div>
                       </div>
