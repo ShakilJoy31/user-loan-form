@@ -157,23 +157,26 @@ const CameraComperison = () => {
                   )}
         </p>
         <p className="font-normal text-sm sm:text-[16px] text-gray-300 mt-4 sm:mt-[20px]">
-          When I started this gardening blog, I was on a simple mission: to help
-          inspire, educate and encourage all gardeners to succeed in their green
-          spaces. One of the most exciting groups of gardeners I help is
-          beginners or new gardeners. However, there are several common mistakes
-          that all new gardeners make unless they have some guidance.
+          {translate(
+                    "আমি যখন এই গার্ডেনিং ব্লগটি শুরু করি, আমার লক্ষ্য ছিল খুব সহজ: সব বাগানপ্রেমীদের অনুপ্রাণিত করা, শিক্ষা দেওয়া এবং উৎসাহিত করা, যাতে তারা তাদের সবুজ জগতে সফল হতে পারে। আমি বিশেষভাবে নতুন বাগানপ্রেমীদের সাহায্য করতে ভালোবাসি – তাদের উৎসাহ আমাকে সবচেয়ে বেশি আনন্দ দেয়। তবে, কিছু সাধারণ ভুল আছে যা প্রায় সব নতুন বাগানপ্রেমীই করে থাকেন, যদি না তাদের সঠিক দিকনির্দেশনা থাকে।",
+                    " When I started this gardening blog, I was on a simple mission: to help inspire, educate and encourage all gardeners to succeed in their green spaces. One of the most exciting groups of gardeners I help is beginners or new gardeners. However, there are several common mistakes that all new gardeners make unless they have some guidance."
+                  )}
         </p>
       </div>
 
       <h2 className="text-2xl sm:text-3xl lg:text-[36px] font-semibold mt-6 sm:mt-[30px]">
-        What are the most common mistakes of new gardeners?
+         {translate(
+                    "নতুন বাগানপ্রেমীদের সবচেয়ে সাধারণ ভুলগুলো কী কী?",
+                    "What are the most common mistakes of new gardeners?"
+                  )}
       </h2>
 
       <div className="mt-4 sm:mt-[20px] font-medium text-sm sm:text-[16px] text-gray-400">
         <p className="mb-4 sm:mb-[20px]">
-          What are the most common mistakes of new gardeners? Let&apos;s jump in
-          and see the top 10 new gardener mistakes and how you can avoid
-          mistakes!
+           {translate(
+                    "চলুন জেনে নিই নতুন বাগানপ্রেমীদের ১০টি প্রধান ভুল এবং কীভাবে আপনি এগুলো এড়াতে পারেন!",
+                    "What are the most common mistakes of new gardeners? Let&apos;s jump in and see the top 10 new gardener mistakes and how you can avoid mistakes!"
+                  )}
         </p>
 
         <ol className="space-y-2">
