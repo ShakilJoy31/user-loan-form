@@ -62,17 +62,17 @@ const ScrollableButtonGroup = ({
         <div className="flex-shrink-0" />
         
         {buttons.map((button) => (
-          <Button variant={'outline'}
+          <span
             key={button.id}
             onClick={() => onButtonClick?.(button.id)}
             className={`flex-shrink-0 whitespace-nowrap px-3 py-2 sm:px-4 sm:py-3 rounded-full transition-colors duration-200 hover:cursor-pointer text-xs sm:text-sm ${
               activeButtonId === button.id
                 ? "bg-[#EE5A2C] text-white"
-                : "bg-[#FDEFEA] text-black"
+                : "bg-[#FDEFEA] text-[#808089]"
             }`}
           >
             {button.label}
-          </Button>
+          </span>
         ))}
         
         <div className="flex-shrink-0 pr-[calc(100vw-100%)]" />
