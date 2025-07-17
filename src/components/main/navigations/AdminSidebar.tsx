@@ -127,7 +127,7 @@ const AdminSidebarNavigation = () => {
         initial={{ width: 70 }}
         animate={{ width: open ? 260 : 70 }}
         transition={{ duration: 0.5, ease: "easeInOut" }}
-        className="fixed top-0 left-0 z-20 hidden lg:block bg-white px-5 h-full overflow-hidden"
+        className="fixed top-0 left-0 z-20 hidden lg:block bg-white dark:bg-background dark:shadow-2xl px-5 h-full overflow-hidden"
       >
         {/* BRAND HEADER */}
         <div className="p-4 flex items-center justify-between">
@@ -182,7 +182,7 @@ const AdminSidebarNavigation = () => {
                   <Link
                     href={link.href || "#"}
                     className={cn(
-                      "flex items-center px-2 py-3 gap-3 text-gray-800 transition-all w-full justify-between hover:bg-primary-50",
+                      "flex items-center px-2 py-3 gap-3 text-gray-800 dark:text-gray-200 transition-all w-full justify-between hover:bg-primary-50",
                       isActive(link.href || "")
                         ? "bg-primary-100 text-primary font-semibold"
                         : ""
@@ -206,7 +206,7 @@ const AdminSidebarNavigation = () => {
                           activeSubmenu === link.key ? null : link.key
                         )
                       }
-                      className="flex items-center px-2 py-3 gap-3 text-gray-800 transition-all rounded-md w-full justify-between hover:bg-primary-50"
+                      className="flex items-center px-2 py-3 gap-3 text-gray-800 dark:text-gray-300 cursor-pointer transition-all rounded-md w-full justify-between hover:bg-primary-50"
                     >
                       <div className="flex items-center gap-3">
                         {link.icon && <link.icon size={20} />}
@@ -298,7 +298,7 @@ const AdminSidebarNavigation = () => {
                                               <Link
                                                 href={subSubLink.href || "#"}
                                                 className={cn(
-                                                  "block px-6 py-1 text-sm text-black transition-all",
+                                                  "block px-6 py-1 text-sm text-black dark:text-white transition-all",
                                                   isActive(
                                                     subSubLink.href || ""
                                                   )
