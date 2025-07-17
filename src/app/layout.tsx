@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "./lib/ThemeProvider";
 import { LocaleProvider } from "./lib/LocaleProvider";
 import { appConfiguration } from "@/utils/constant/appConfiguration";
+import Providers from "./lib/Providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,12 +31,15 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ThemeProvider
-          defaultTheme="light"
-          storageKey={`${appConfiguration.appCode}theme`}
-        >
-          <LocaleProvider>{children}</LocaleProvider>
-        </ThemeProvider>
+        <Providers>
+          {" "}
+          <ThemeProvider
+            defaultTheme="light"
+            storageKey={`${appConfiguration.appCode}theme`}
+          >
+            <LocaleProvider>{children}</LocaleProvider>
+          </ThemeProvider>
+        </Providers>
       </body>
     </html>
   );
