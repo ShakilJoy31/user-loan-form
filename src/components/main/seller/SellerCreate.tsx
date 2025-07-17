@@ -2,7 +2,13 @@
 import { Button } from "@/components/ui/button";
 import { IoMdArrowBack } from "react-icons/io";
 import { useState, useRef, useEffect } from "react";
-import { FiChevronDown, FiChevronUp, FiX } from "react-icons/fi";
+import {
+  FiChevronDown,
+  FiChevronUp,
+  FiEye,
+  FiEyeOff,
+  FiX,
+} from "react-icons/fi";
 import { SellerLogin } from "./SellerLogin";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 
@@ -13,7 +19,11 @@ const SellerCreate = () => {
   const [activeTab, setActiveTab] = useState<"create" | "login">("create");
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedArea, setSelectedArea] = useState("");
-  const [currentStep, setCurrentStep] = useState<"shop" | "personal" | "verify" | "password">("shop");
+  const [currentStep, setCurrentStep] = useState<
+    "shop" | "personal" | "verify" | "password"
+  >("shop");
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
     shopName: "",
     ownerName: "",
@@ -30,7 +40,7 @@ const SellerCreate = () => {
     newPassword: "",
     confirmPassword: "",
   });
-  
+
   const dropdownRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -97,9 +107,13 @@ const SellerCreate = () => {
     const form = e.target as HTMLFormElement;
     setFormData({
       shopName: (form.elements.namedItem("shopName") as HTMLInputElement).value,
-      ownerName: (form.elements.namedItem("ownerName") as HTMLInputElement).value,
-      designation: (form.elements.namedItem("designation") as HTMLSelectElement).value,
-      tradeLicense: (form.elements.namedItem("tradeLicense") as HTMLInputElement).value,
+      ownerName: (form.elements.namedItem("ownerName") as HTMLInputElement)
+        .value,
+      designation: (form.elements.namedItem("designation") as HTMLSelectElement)
+        .value,
+      tradeLicense: (
+        form.elements.namedItem("tradeLicense") as HTMLInputElement
+      ).value,
     });
     setCurrentStep("personal");
   };
@@ -123,12 +137,12 @@ const SellerCreate = () => {
 
   const handlePasswordSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (password.newPassword !== password.confirmPassword) {
       alert(translate("পাসওয়ার্ড মেলে না!", "Passwords don't match!"));
       return;
     }
-    
+
     // Here you would typically submit all data to your backend
     const completeData = {
       ...formData,
@@ -136,10 +150,10 @@ const SellerCreate = () => {
       area: selectedArea,
       categories: selectedCategories,
       ...personalDetails,
-      password: password.newPassword
+      password: password.newPassword,
     };
     console.log("Complete registration data:", completeData);
-    
+
     // Reset form or redirect
     alert(translate("নিবন্ধন সফল হয়েছে!", "Registration successful!"));
     setCurrentStep("shop");
@@ -154,7 +168,12 @@ const SellerCreate = () => {
 
   const handleResendCode = () => {
     // Implement resend OTP logic here
-    alert(translate("আপনার ফোন নম্বরে ভেরিফিকেশন কোড পুনরায় পাঠানো হয়েছে", "Verification code resent to your phone number"));
+    alert(
+      translate(
+        "আপনার ফোন নম্বরে ভেরিফিকেশন কোড পুনরায় পাঠানো হয়েছে",
+        "Verification code resent to your phone number"
+      )
+    );
   };
 
   const { translate } = useCustomTranslator();
@@ -177,12 +196,18 @@ const SellerCreate = () => {
           <>
             <h2 className="text-3xl lg:text-[36px] font-normal mb-5 lg:mb-[40px] text-center">
               {activeTab === "create"
-                ? translate("বিক্রেতা অ্যাকাউন্ট তৈরি করুন", "Create Seller account")
-                : translate("আপনার অ্যাকাউন্টে লগইন করুন", "Login to your account")}
+                ? translate(
+                    "বিক্রেতা অ্যাকাউন্ট তৈরি করুন",
+                    "Create Seller account"
+                  )
+                : translate(
+                    "আপনার অ্যাকাউন্টে লগইন করুন",
+                    "Login to your account"
+                  )}
             </h2>
 
             <div className="max-w-[400px]">
-              <div className="flex max-w-[300px] mx-auto mb-6 p-1 rounded-md bg-[#fdefea]">
+              <div className="flex max-w-[330px] mx-auto mb-6 p-1 rounded-md bg-[#fdefea]">
                 <Button
                   onClick={() => setActiveTab("create")}
                   className={`px-6 py-3 rounded-md mr-1 transition ${
@@ -208,10 +233,16 @@ const SellerCreate = () => {
               {activeTab === "create" ? (
                 <>
                   <p className="text-gray-600 mb-6 text-center">
-                    {translate("আপনার তথ্য নিচে পূরণ করুন বা আপনার অ্যাকাউন্ট দিয়ে নিবন্ধন করুন", "Fill your information below or register with your account.")}
+                    {translate(
+                      "আপনার তথ্য নিচে পূরণ করুন বা আপনার অ্যাকাউন্ট দিয়ে নিবন্ধন করুন",
+                      "Fill your information below or register with your account."
+                    )}
                   </p>
 
-                  <form className="space-y-4" onSubmit={handleShopDetailsSubmit}>
+                  <form
+                    className="space-y-4"
+                    onSubmit={handleShopDetailsSubmit}
+                  >
                     {/* Shop Name */}
                     <div>
                       <label
@@ -224,7 +255,10 @@ const SellerCreate = () => {
                         type="text"
                         id="shopName"
                         name="shopName"
-                        placeholder={translate("আপনার কোম্পানির নাম লিখুন", "Enter your company name")}
+                        placeholder={translate(
+                          "আপনার কোম্পানির নাম লিখুন",
+                          "Enter your company name"
+                        )}
                         className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
                         required
                       />
@@ -242,7 +276,10 @@ const SellerCreate = () => {
                         type="text"
                         id="ownerName"
                         name="ownerName"
-                        placeholder={translate("মালিকের নাম লিখুন", "Enter owner name")}
+                        placeholder={translate(
+                          "মালিকের নাম লিখুন",
+                          "Enter owner name"
+                        )}
                         className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
                         required
                       />
@@ -262,10 +299,21 @@ const SellerCreate = () => {
                         className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
                         required
                       >
-                        <option value="">{translate("পদবী নির্বাচন করুন", "Select designation")}</option>
-                        <option value="Director">{translate("পরিচালক", "Director")}</option>
-                        <option value="Manager">{translate("ম্যানেজার", "Manager")}</option>
-                        <option value="Owner">{translate("মালিক", "Owner")}</option>
+                        <option value="">
+                          {translate(
+                            "পদবী নির্বাচন করুন",
+                            "Select designation"
+                          )}
+                        </option>
+                        <option value="Director">
+                          {translate("পরিচালক", "Director")}
+                        </option>
+                        <option value="Manager">
+                          {translate("ম্যানেজার", "Manager")}
+                        </option>
+                        <option value="Owner">
+                          {translate("মালিক", "Owner")}
+                        </option>
                       </select>
                     </div>
 
@@ -285,10 +333,21 @@ const SellerCreate = () => {
                           className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
                           required
                         >
-                          <option value="">{translate("একটি শহর নির্বাচন করুন", "Select a city")}</option>
-                          <option value="Dhaka">{translate("ঢাকা", "Dhaka")}</option>
-                          <option value="Rajshahi">{translate("রাজশাহী", "Rajshahi")}</option>
-                          <option value="Khulna">{translate("খুলনা", "Khulna")}</option>
+                          <option value="">
+                            {translate(
+                              "একটি শহর নির্বাচন করুন",
+                              "Select a city"
+                            )}
+                          </option>
+                          <option value="Dhaka">
+                            {translate("ঢাকা", "Dhaka")}
+                          </option>
+                          <option value="Rajshahi">
+                            {translate("রাজশাহী", "Rajshahi")}
+                          </option>
+                          <option value="Khulna">
+                            {translate("খুলনা", "Khulna")}
+                          </option>
                         </select>
                       </div>
 
@@ -307,24 +366,43 @@ const SellerCreate = () => {
                           className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C] disabled:bg-gray-100 disabled:cursor-not-allowed"
                           required
                         >
-                          <option value="">{translate("একটি এলাকা নির্বাচন করুন", "Select an area")}</option>
+                          <option value="">
+                            {translate(
+                              "একটি এলাকা নির্বাচন করুন",
+                              "Select an area"
+                            )}
+                          </option>
                           {selectedCity === "Dhaka" && (
                             <>
-                              <option value="Mirpur">{translate("মিরপুর", "Mirpur")}</option>
-                              <option value="Dhanmondi">{translate("ধানমন্ডি", "Dhanmondi")}</option>
-                              <option value="Gulshan">{translate("গুলশান", "Gulshan")}</option>
+                              <option value="Mirpur">
+                                {translate("মিরপুর", "Mirpur")}
+                              </option>
+                              <option value="Dhanmondi">
+                                {translate("ধানমন্ডি", "Dhanmondi")}
+                              </option>
+                              <option value="Gulshan">
+                                {translate("গুলশান", "Gulshan")}
+                              </option>
                             </>
                           )}
                           {selectedCity === "Rajshahi" && (
                             <>
-                              <option value="Shaheb Bazar">{translate("সাহেব বাজার", "Shaheb Bazar")}</option>
-                              <option value="Boalia">{translate("বোয়ালিয়া", "Boalia")}</option>
+                              <option value="Shaheb Bazar">
+                                {translate("সাহেব বাজার", "Shaheb Bazar")}
+                              </option>
+                              <option value="Boalia">
+                                {translate("বোয়ালিয়া", "Boalia")}
+                              </option>
                             </>
                           )}
                           {selectedCity === "Khulna" && (
                             <>
-                              <option value="Khalishpur">{translate("খালিশপুর", "Khalishpur")}</option>
-                              <option value="Sonadanga">{translate("সোনাডাঙ্গা", "Sonadanga")}</option>
+                              <option value="Khalishpur">
+                                {translate("খালিশপুর", "Khalishpur")}
+                              </option>
+                              <option value="Sonadanga">
+                                {translate("সোনাডাঙ্গা", "Sonadanga")}
+                              </option>
                             </>
                           )}
                         </select>
@@ -337,13 +415,19 @@ const SellerCreate = () => {
                         htmlFor="tradeLicense"
                         className="block text-sm font-medium text-gray-700 mb-1"
                       >
-                        {translate("ট্রেড লাইসেন্স (ঐচ্ছিক)", "Trade License (optional)")}
+                        {translate(
+                          "ট্রেড লাইসেন্স (ঐচ্ছিক)",
+                          "Trade License (optional)"
+                        )}
                       </label>
                       <input
                         type="text"
                         id="tradeLicense"
                         name="tradeLicense"
-                        placeholder={translate("ট্রেড লাইসেন্স লিখুন", "Enter Trade License")}
+                        placeholder={translate(
+                          "ট্রেড লাইসেন্স লিখুন",
+                          "Enter Trade License"
+                        )}
                         className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
                       />
                     </div>
@@ -361,7 +445,10 @@ const SellerCreate = () => {
                         >
                           {selectedCategories.length === 0 ? (
                             <span className="text-gray-400">
-                              {translate("দোকানের বিভাগ নির্বাচন করুন", "Select Shop Category")}
+                              {translate(
+                                "দোকানের বিভাগ নির্বাচন করুন",
+                                "Select Shop Category"
+                              )}
                             </span>
                           ) : (
                             <div className="grid grid-cols-3 gap-2">
@@ -392,7 +479,9 @@ const SellerCreate = () => {
                               if (!isOpen) setIsOpen(true);
                             }}
                             className="flex-1 min-w-[100px] outline-none bg-transparent"
-                            placeholder={selectedCategories.length === 0 ? "" : ""}
+                            placeholder={
+                              selectedCategories.length === 0 ? "" : ""
+                            }
                           />
                         </div>
                         <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center space-x-1">
@@ -403,7 +492,10 @@ const SellerCreate = () => {
                                 clearSelection();
                               }}
                               className="text-gray-400 hover:text-gray-600"
-                              aria-label={translate("নির্বাচন পরিষ্কার করুন", "Clear selection")}
+                              aria-label={translate(
+                                "নির্বাচন পরিষ্কার করুন",
+                                "Clear selection"
+                              )}
                             >
                               <FiX size={18} />
                             </button>
@@ -415,7 +507,10 @@ const SellerCreate = () => {
                               inputRef.current?.focus();
                             }}
                             className="text-gray-400 hover:text-gray-600"
-                            aria-label={translate("ড্রপডাউন টগল করুন", "Toggle dropdown")}
+                            aria-label={translate(
+                              "ড্রপডাউন টগল করুন",
+                              "Toggle dropdown"
+                            )}
                           >
                             {isOpen ? (
                               <FiChevronUp size={20} />
@@ -441,7 +536,9 @@ const SellerCreate = () => {
                                 >
                                   <input
                                     type="checkbox"
-                                    checked={selectedCategories.includes(category)}
+                                    checked={selectedCategories.includes(
+                                      category
+                                    )}
                                     readOnly
                                     className="mr-2 h-4 w-4 text-[#EE5A2C] focus:ring-[#EE5A2C] border-gray-300 rounded"
                                   />
@@ -459,8 +556,14 @@ const SellerCreate = () => {
                             ) : (
                               <div className="px-4 py-2 text-gray-500">
                                 {searchTerm
-                                  ? translate("কোন বিভাগ পাওয়া যায়নি", "No categories found")
-                                  : translate("অনুসন্ধান করতে টাইপ করুন", "Start typing to search")}
+                                  ? translate(
+                                      "কোন বিভাগ পাওয়া যায়নি",
+                                      "No categories found"
+                                    )
+                                  : translate(
+                                      "অনুসন্ধান করতে টাইপ করুন",
+                                      "Start typing to search"
+                                    )}
                               </div>
                             )}
                           </div>
@@ -488,7 +591,10 @@ const SellerCreate = () => {
             </h2>
 
             <div className=" ">
-              <form className="space-y-4" onSubmit={handlePersonalDetailsSubmit}>
+              <form
+                className="space-y-4"
+                onSubmit={handlePersonalDetailsSubmit}
+              >
                 {/* Username */}
                 <div>
                   <label
@@ -501,7 +607,10 @@ const SellerCreate = () => {
                     type="text"
                     id="username"
                     name="username"
-                    placeholder={translate("আপনার ব্যবহারকারীর নাম লিখুন", "Enter your username")}
+                    placeholder={translate(
+                      "আপনার ব্যবহারকারীর নাম লিখুন",
+                      "Enter your username"
+                    )}
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
                     required
                   />
@@ -519,7 +628,10 @@ const SellerCreate = () => {
                     type="email"
                     id="email"
                     name="email"
-                    placeholder={translate("আপনার ইমেইল লিখুন", "Enter your email")}
+                    placeholder={translate(
+                      "আপনার ইমেইল লিখুন",
+                      "Enter your email"
+                    )}
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
                     required
                   />
@@ -537,7 +649,10 @@ const SellerCreate = () => {
                     type="tel"
                     id="phone"
                     name="phone"
-                    placeholder={translate("আপনার ফোন নম্বর লিখুন", "Enter your phone number")}
+                    placeholder={translate(
+                      "আপনার ফোন নম্বর লিখুন",
+                      "Enter your phone number"
+                    )}
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
                     required
                   />
@@ -553,76 +668,94 @@ const SellerCreate = () => {
             </div>
           </div>
         ) : currentStep === "verify" ? (
-           <div className="max-w-[400px]">
-    <h2 className="text-3xl lg:text-[36px] font-normal mb-5 lg:mb-[40px] text-center">
-      {translate("কোড যাচাই করুন", "Verify Code")}
-    </h2>
+          <div className="max-w-[400px]">
+            <h2 className="text-3xl lg:text-[36px] font-normal mb-5 lg:mb-[40px] text-center">
+              {translate("কোড যাচাই করুন", "Verify Code")}
+            </h2>
 
-    <div>
-      <form className="space-y-6" onSubmit={handleVerificationSubmit}>
-        <p className="text-gray-600 text-center">
-          {translate("আপনার ফোন নম্বরে পাঠানো ভেরিফিকেশন কোডটি লিখুন", "Please enter the verification code sent to")}
-          <br />
-          <span className="font-medium">{personalDetails.phone || translate("আপনার ফোন নম্বর", "your phone number")}</span>
-        </p>
+            <div>
+              <form className="space-y-6" onSubmit={handleVerificationSubmit}>
+                <p className="text-gray-600 text-center">
+                  {translate(
+                    "আপনার ফোন নম্বরে পাঠানো ভেরিফিকেশন কোডটি লিখুন",
+                    "Please enter the verification code sent to"
+                  )}
+                  <br />
+                  <span className="font-medium">
+                    {personalDetails.phone ||
+                      translate("আপনার ফোন নম্বর", "your phone number")}
+                  </span>
+                </p>
 
-        <div className="flex justify-center gap-2">
-          {[0, 1, 2, 3, 4].map((index) => (
-            <input
-              key={index}
-              type="text"
-              maxLength={1}
-              value={verificationCode[index] || ""}
-              onChange={(e) => {
-                const newCode = verificationCode.split('');
-                newCode[index] = e.target.value.replace(/\D/g, ''); // Only allow numbers
-                setVerificationCode(newCode.join(''));
-                
-                // Auto focus to next input if a digit was entered
-                if (e.target.value && index < 4) {
-                  const nextInput = document.getElementById(`code-input-${index + 1}`);
-                  if (nextInput) nextInput.focus();
-                }
-              }}
-              onKeyDown={(e) => {
-                // Handle backspace to move to previous input
-                if (e.key === 'Backspace' && !verificationCode[index] && index > 0) {
-                  const prevInput = document.getElementById(`code-input-${index - 1}`);
-                  if (prevInput) prevInput.focus();
-                }
-              }}
-              id={`code-input-${index}`}
-              className="w-12 h-12 px-2 border border-gray-300 rounded-md text-center text-xl focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
-              required
-            />
-          ))}
-        </div>
+                <div className="flex justify-center gap-2">
+                  {[0, 1, 2, 3, 4].map((index) => (
+                    <input
+                      key={index}
+                      type="text"
+                      maxLength={1}
+                      value={verificationCode[index] || ""}
+                      onChange={(e) => {
+                        const newCode = verificationCode.split("");
+                        newCode[index] = e.target.value.replace(/\D/g, ""); // Only allow numbers
+                        setVerificationCode(newCode.join(""));
 
-        {verificationCode.length === 5 && (
-          <p className="text-red-500 text-center">
-            {translate("ভুল কোড, আবার চেষ্টা করুন", "Wrong code, please try again")}
-          </p>
-        )}
+                        // Auto focus to next input if a digit was entered
+                        if (e.target.value && index < 4) {
+                          const nextInput = document.getElementById(
+                            `code-input-${index + 1}`
+                          );
+                          if (nextInput) nextInput.focus();
+                        }
+                      }}
+                      onKeyDown={(e) => {
+                        // Handle backspace to move to previous input
+                        if (
+                          e.key === "Backspace" &&
+                          !verificationCode[index] &&
+                          index > 0
+                        ) {
+                          const prevInput = document.getElementById(
+                            `code-input-${index - 1}`
+                          );
+                          if (prevInput) prevInput.focus();
+                        }
+                      }}
+                      id={`code-input-${index}`}
+                      className="w-12 h-12 px-2 border border-gray-300 rounded-md text-center text-xl focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
+                      required
+                    />
+                  ))}
+                </div>
 
-        <div className="text-center">
-          <button
-            type="button"
-            className="text-[#EE5A2C] hover:underline flex items-center justify-center gap-1 mx-auto"
-            onClick={handleResendCode}
-          >
-            {translate("আবার কোড পাঠান", "Send code again")} <span className="text-gray-500">00:20</span>
-          </button>
-        </div>
+                {verificationCode.length === 5 && (
+                  <p className="text-red-500 text-center">
+                    {translate(
+                      "ভুল কোড, আবার চেষ্টা করুন",
+                      "Wrong code, please try again"
+                    )}
+                  </p>
+                )}
 
-        <Button
-          type="submit"
-          className="w-full bg-[#EE5A2C] text-white py-3 rounded-md hover:bg-orange-800 transition mt-6"
-        >
-          {translate("চালিয়ে যান", "Continue")}
-        </Button>
-      </form>
-    </div>
-  </div>
+                <div className="text-center">
+                  <button
+                    type="button"
+                    className="text-[#EE5A2C] hover:underline flex items-center justify-center gap-1 mx-auto"
+                    onClick={handleResendCode}
+                  >
+                    {translate("আবার কোড পাঠান", "Send code again")}{" "}
+                    <span className="text-gray-500">00:20</span>
+                  </button>
+                </div>
+
+                <Button
+                  type="submit"
+                  className="w-full bg-[#EE5A2C] text-white py-3 rounded-md hover:bg-orange-800 transition mt-6"
+                >
+                  {translate("চালিয়ে যান", "Continue")}
+                </Button>
+              </form>
+            </div>
+          </div>
         ) : (
           <div className="max-w-[400px]">
             <h2 className="text-3xl lg:text-[36px] font-normal mb-5 lg:mb-[40px] text-center">
@@ -632,7 +765,7 @@ const SellerCreate = () => {
             <div>
               <form className="space-y-4" onSubmit={handlePasswordSubmit}>
                 {/* New Password */}
-                <div>
+                <div className="relative">
                   <label
                     htmlFor="newPassword"
                     className="block text-sm font-medium text-gray-700 mb-1"
@@ -640,22 +773,41 @@ const SellerCreate = () => {
                     {translate("পাসওয়ার্ড তৈরি করুন*", "Create Password*")}
                   </label>
                   <input
-                    type="password"
+                    type={showNewPassword ? "text" : "password"}
                     id="newPassword"
                     value={password.newPassword}
-                    onChange={(e) => setPassword({...password, newPassword: e.target.value})}
-                    placeholder={translate("অন্তত ৮টি অক্ষর হতে হবে", "Must be 8 characters")}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
-                    minLength={8}
+                    onChange={(e) =>
+                      setPassword({ ...password, newPassword: e.target.value })
+                    }
+                    placeholder={translate(
+                      "অন্তত ৬টি অক্ষর হতে হবে",
+                      "Must be 6 characters"
+                    )}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C] pr-10"
+                    minLength={6}
                     required
                   />
+                  <button
+                    type="button"
+                    className="absolute right-3 top-9 text-gray-500 hover:text-gray-700"
+                    onClick={() => setShowNewPassword(!showNewPassword)}
+                  >
+                    {showNewPassword ? (
+                      <FiEyeOff size={18} />
+                    ) : (
+                      <FiEye size={18} />
+                    )}
+                  </button>
                   <p className="text-xs text-gray-500 mt-1">
-                    {translate("অন্তত ৮টি অক্ষর হতে হবে", "Must be at least 8 characters")}
+                    {translate(
+                      "অন্তত ৬টি অক্ষর হতে হবে",
+                      "Must be at least 6 characters"
+                    )}
                   </p>
                 </div>
 
                 {/* Confirm Password */}
-                <div>
+                <div className="relative">
                   <label
                     htmlFor="confirmPassword"
                     className="block text-sm font-medium text-gray-700 mb-1"
@@ -663,15 +815,34 @@ const SellerCreate = () => {
                     {translate("পাসওয়ার্ড নিশ্চিত করুন*", "Confirm Password*")}
                   </label>
                   <input
-                    type="password"
+                    type={showConfirmPassword ? "text" : "password"}
                     id="confirmPassword"
                     value={password.confirmPassword}
-                    onChange={(e) => setPassword({...password, confirmPassword: e.target.value})}
-                    placeholder={translate("পাসওয়ার্ড পুনরায় লিখুন", "Repeat Password")}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
-                    minLength={8}
+                    onChange={(e) =>
+                      setPassword({
+                        ...password,
+                        confirmPassword: e.target.value,
+                      })
+                    }
+                    placeholder={translate(
+                      "পাসওয়ার্ড পুনরায় লিখুন",
+                      "Repeat Password"
+                    )}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C] pr-10"
+                    minLength={6}
                     required
                   />
+                  <button
+                    type="button"
+                    className="absolute right-3 top-9 text-gray-500 hover:text-gray-700"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  >
+                    {showConfirmPassword ? (
+                      <FiEyeOff size={18} />
+                    ) : (
+                      <FiEye size={18} />
+                    )}
+                  </button>
                 </div>
 
                 <Button
