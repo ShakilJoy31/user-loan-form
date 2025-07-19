@@ -1,7 +1,7 @@
-import nextI18NextConfig from './next-i18next.config';
+import type { NextConfig } from "next";
 
-const nextConfig = {
-  i18n: nextI18NextConfig.i18n,
+const nextConfig: NextConfig = {
+  /* config options here */
 };
 
 export default nextConfig;

@@ -127,7 +127,7 @@ const AdminSidebarNavigation = () => {
         initial={{ width: 70 }}
         animate={{ width: open ? 260 : 70 }}
         transition={{ duration: 0.5, ease: "easeInOut" }}
-        className="fixed top-0 left-0 z-20 hidden lg:block bg-white dark:bg-background dark:shadow-2xl px-5 h-full overflow-hidden"
+        className="fixed top-0 left-0 z-20 hidden lg:block  bg-white dark:bg-background dark:shadow-2xl px-5 h-full overflow-hidden"
       >
         {/* BRAND HEADER */}
         <div className="p-4 flex items-center justify-between">
@@ -168,8 +168,8 @@ const AdminSidebarNavigation = () => {
         </div>
 
         {/* NAVIGATION LINKS */}
-        <nav className="flex-1 overflow-y-auto custom-scrollbar pb-4">
-          <ul className="mt-2">
+        <nav className="flex-1 overflow-y-auto custom-scrollbar h-[calc(100vh-180px)] pb-4">
+          <ul className="mt-2 ">
             {adminNavigationLinks.map((link, index) => (
               <motion.li
                 key={index}
@@ -264,7 +264,7 @@ const AdminSidebarNavigation = () => {
                                           : subLink.key
                                       )
                                     }
-                                    className="flex items-center w-full px-6 py-2 text-sm justify-between hover:bg-primary-50"
+                                    className="flex items-center w-full cursor-pointer px-6 py-2 text-sm justify-between hover:bg-primary-50"
                                   >
                                     <span>{renderLabelWithCount(subLink)}</span>
                                     <FiChevronDown
