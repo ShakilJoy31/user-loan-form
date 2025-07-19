@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useState, useEffect } from "react";
 import { FiEdit, FiSearch, FiTrash2 } from "react-icons/fi";
@@ -18,23 +18,31 @@ import {
 import { AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import DataLoader from "@/components/common/DataLoader";
-import { useDeleteCategoryMutation, useGetAllCategoryQuery } from "@/redux/features/product/categoryApi";
+import {
+  useDeleteCategoryMutation,
+  useGetAllCategoryQuery,
+} from "@/redux/features/product/categoryApi";
 import ButtonLoader from "@/components/common/ButtonLoader";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import Pagination from "@/components/common/Pagination";
 import { toast } from "react-hot-toast";
 import AddCategory from "./AddCategory";
+import EditCategory from "./EditCategory";
 
 interface Category {
   id: number;
   name: string;
+  serialNo?: string;
+  description?: string;
+  isShippedFree?: boolean;
+  isFullPay?: boolean;
   image: string;
+  banner?: string;
   _count: {
     Product: number;
   };
 }
-
 interface MetaData {
   page: number;
   size: number;
@@ -198,7 +206,10 @@ export default function CategoryList() {
 
                   {/* Hover Overlay with Edit and Delete buttons */}
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300 bg-black/30">
-                    <Dialog open={editModalOpen} onOpenChange={setEditModalOpen}>
+                    <Dialog
+                      open={editModalOpen}
+                      onOpenChange={setEditModalOpen}
+                    >
                       <DialogTrigger asChild>
                         <Button
                           variant="default"
