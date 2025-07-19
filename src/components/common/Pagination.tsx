@@ -3,7 +3,6 @@
 
 import { useState, useEffect } from "react";
 
-
 export interface PaginationProps {
   totalPages: number;
   currentPage: number;

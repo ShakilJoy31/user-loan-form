@@ -60,7 +60,7 @@ const Variation: React.FC = () => {
 
                     <div className="border rounded-md overflow-x-auto">
                         {/* Table Header */}
-                        <div className="grid grid-cols-3 md:grid-cols-6 bg-orange-50 text-sm font-semibold text-gray-700 px-4 py-3 border-b min-w-[600px]">
+                        <div className="grid grid-cols-1 md:grid-cols-2 bg-[#FDEFEA] text-sm font-semibold text-gray-700 px-4 py-3 border-b min-w-[600px]">
                             <div className="col-span-1 md:col-span-2 text-center md:text-left">Options</div>
                             <div className="text-center md:text-left">Price</div>
                             <div className="text-center md:text-left">Discount Price</div>
