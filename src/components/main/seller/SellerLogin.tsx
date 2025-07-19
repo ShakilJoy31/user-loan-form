@@ -5,7 +5,7 @@ import { FcGoogle } from "react-icons/fc";
 
 export const SellerLogin = () => {
   return (
-    <div>
+    <div className=" dark:text-white">
     <form className="space-y-4">
       <p className="text-gray-600 mb-6 text-center">
         Login to your seller account
@@ -45,7 +45,7 @@ export const SellerLogin = () => {
 
       <Button
         type="submit"
-        className="w-full bg-[#EE5A2C] text-white py-3 rounded-md hover:bg-orange-800 transition mt-6"
+        className="w-full bg-[#EE5A2C] text-white h-auto max-h-[63px] py-[18px] rounded-full md:rounded-md hover:bg-orange-800 transition mt-6"
       >
         Sign In
       </Button>

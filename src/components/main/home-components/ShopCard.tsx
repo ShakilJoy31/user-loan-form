@@ -1,7 +1,6 @@
 import React from "react";
 import { FiMapPin, FiBookmark } from "react-icons/fi";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
 
 interface ShopCardProps {
   name: string;
@@ -59,13 +58,13 @@ const ShopCard: React.FC<ShopCardProps> = ({ name, location, categories, logoUrl
           Shop Now
         </Button> */}
         
-        <Button variant={'outline'} className="bg-[#EE5A2C] text-white text-[10px] sm:text-[12px] px-2 sm:px-3 py-1 rounded font-medium">
+        <button className="bg-[#EE5A2C] text-white text-[10px] sm:text-[12px] px-2 sm:px-3 py-1 rounded font-medium">
           Shop Now
-        </Button>
+        </button>
 
-        <Button variant={'outline'} className="bg-gray-100 text-gray-700 text-[10px] sm:text-[12px] px-2 sm:px-3 py-1 rounded font-medium">
+        <button className="bg-gray-100 text-gray-700 text-[10px] sm:text-[12px] px-2 sm:px-3 py-1 rounded font-medium">
           Details
-        </Button>
+        </button>
       </div>
     </div>
   );

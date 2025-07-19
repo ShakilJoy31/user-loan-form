@@ -93,7 +93,7 @@ const handlePersonalDetailsSubmit = (e: React.FormEvent) => {
   const { translate } = useCustomTranslator();
 
   return (
-    <div className="max-w-[460px] w-full px-[20px] lg:px-0">
+    <div className="max-w-[460px] w-full px-[20px] lg:px-0  dark:text-white">
       <div className="mb-4 lg:mb-[30px] text-[#EE5A2C] text-[16px]">
         {currentStep !== "personal" && (
           <Button

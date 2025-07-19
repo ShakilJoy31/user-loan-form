@@ -12,7 +12,6 @@ import bannerImage1 from '@/assets/Home/banner (1).webp'
 import bannerImage2 from '@/assets/Home/banner (2).webp'
 import { FaArrowRight } from "react-icons/fa6";
 import bannerImage3 from '@/assets/Home/banner (3).webp'
-import { Button } from "@/components/ui/button";
 
 interface BannerItem {
     _id: Key | null | undefined;
@@ -46,10 +45,10 @@ const BannerImage = ({
                         {banner.title}
                     </h1>
                     {banner.ctaText && (
-                        <Button variant={'outline'} className="bg-[#EE5A2C] mt-8 sm:mt-12 md:mt-28 hover:bg-[#d14a24] text-white text-sm sm:text-base font-semibold py-2 px-4 sm:py-3 sm:px-8 rounded-lg transition duration-300 flex items-center gap-2">
+                        <button className="bg-[#EE5A2C] mt-8 sm:mt-12 md:mt-28 hover:bg-[#d14a24] text-white text-sm sm:text-base font-semibold py-2 px-4 sm:py-3 sm:px-8 rounded-lg transition duration-300 flex items-center gap-2">
                             {banner.ctaText}
                             <FaArrowRight className="text-sm sm:text-lg" />
-                        </Button>
+                        </button>
                     )}
                 </div>
 
@@ -132,7 +131,7 @@ const HomeBanner = () => {
                     </SwiperSlide>
                 )}
 
-                <Button variant={'outline'}
+                <span
                     ref={prevRefBanner}
                     className={`prev-button absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-50 rounded-full p-1 md:p-2 text-white duration-300 hover:bg-white/80 hover:text-black ${
                         activeIndex === 0 ? "opacity-0" : "opacity-100"
@@ -140,8 +139,9 @@ const HomeBanner = () => {
                     aria-label="Previous Slide"
                 >
                     <IoIosArrowBack className="text-lg md:text-xl lg:text-2xl" />
-                </Button>
-                <Button variant={'outline'}
+                </span>
+
+                <span
                     ref={nextRefBanner}
                     className={`next-button absolute right-2 md:right-4 lg:right-[450px] top-1/2 -translate-y-1/2 z-50 rounded-full p-1 md:p-2 text-white duration-300 hover:bg-white/80 hover:text-black ${
                         activeIndex === banners.length - 1 ? "opacity-0" : "opacity-100"
@@ -149,7 +149,7 @@ const HomeBanner = () => {
                     aria-label="Next Slide"
                 >
                     <IoIosArrowForward className="text-lg md:text-xl lg:text-2xl" />
-                </Button>
+                </span>
             </Swiper>
         </div>
     );

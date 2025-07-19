@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { useState, useRef } from "react";
 
 interface ScrollableButtonGroupProps {
@@ -45,10 +44,10 @@ const ScrollableButtonGroup = ({
   };
 
   return (
-    <div className="relative w-full overflow-hidden">
+    <div className="relative w-full h-[47px] lg:h-[57px] overflow-hidden bg-[#FDEFEA] rounded-tl-full rounded-bl-full px-2 xl:px-0">
       <div
         ref={containerRef}
-        className="flex overflow-x-auto scrollbar-hide cursor-grab active:cursor-grabbing"
+        className="flex h-full items-center overflow-x-auto scrollbar-hide cursor-grab active:cursor-grabbing"
         style={{
           scrollbarWidth: "none",
           msOverflowStyle: "none",
@@ -62,17 +61,17 @@ const ScrollableButtonGroup = ({
         <div className="flex-shrink-0" />
         
         {buttons.map((button) => (
-          <Button variant={'outline'}
+          <span
             key={button.id}
             onClick={() => onButtonClick?.(button.id)}
-            className={`flex-shrink-0 whitespace-nowrap px-3 py-2 sm:px-4 sm:py-3 rounded-full transition-colors duration-200 hover:cursor-pointer text-xs sm:text-sm ${
+            className={`flex-shrink-0 h-full flex items-center justify-center whitespace-nowrap px-3 sm:px-4 rounded-full transition-colors duration-200 hover:cursor-pointer text-xs sm:text-sm ${
               activeButtonId === button.id
                 ? "bg-[#EE5A2C] text-white"
-                : "bg-[#FDEFEA] text-black"
+                : "text-[#808089]"
             }`}
           >
             {button.label}
-          </Button>
+          </span>
         ))}
         
         <div className="flex-shrink-0 pr-[calc(100vw-100%)]" />

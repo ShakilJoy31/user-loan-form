@@ -1,26 +1,29 @@
+"use client";
 import Image from "next/image";
 import React from "react";
 import collectionBanner from "@/assets/Logo/payment-icons.png";
 import { Button } from "@/components/ui/button";
-
+import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 
 const BillingAndPayment = () => {
+    const { translate } = useCustomTranslator();
+
     return (
         <div className="space-y-6">
             <div className="bg-white p-6 rounded-lg border border-gray-300 shadow-md">
-                <h2 className="text-lg font-semibold mb-4">Billing Details</h2>
+                <h2 className="text-lg font-semibold mb-4">{translate("বিলিং বিবরণ", "Billing Details")}</h2>
 
                 {/* Checkout Options */}
                 <div className="mb-4">
-                    <p className="text-sm font-medium mb-2">Checkout Options</p>
+                    <p className="text-sm font-medium mb-2">{translate("চেকআউট অপশন", "Checkout Options")}</p>
                     <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
                         <label className="flex items-center gap-2 text-sm text-gray-700">
                             <input type="radio" name="addressOption" className="accent-[#F53E32]" />
-                            I want to use an existing address
+                            {translate("আমি একটি বিদ্যমান ঠিকানা ব্যবহার করতে চাই", "I want to use an existing address")}
                         </label>
                         <label className="flex items-center gap-2 text-sm text-gray-700">
                             <input type="radio" name="addressOption" defaultChecked className="accent-[#F53E32]" />
-                            I want to use new address
+                            {translate("আমি নতুন ঠিকানা ব্যবহার করতে চাই", "I want to use new address")}
                         </label>
                     </div>
                 </div>
@@ -29,7 +32,7 @@ const BillingAndPayment = () => {
                 <div className="space-y-4">
                     <input
                         type="text"
-                        placeholder="Address Line 1"
+                        placeholder={translate("ঠিকানা লাইন ১", "Address Line 1")}
                         className="w-full border border-gray-200 rounded px-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-red-400"
                     />
 
@@ -39,15 +42,15 @@ const BillingAndPayment = () => {
                             defaultValue=""
                         >
                             <option value="" disabled>
-                                City*
+                                {translate("শহর*", "City*")}
                             </option>
-                            <option value="dhaka">Dhaka</option>
-                            <option value="ctg">Chattogram</option>
+                            <option value="dhaka">{translate("ঢাকা", "Dhaka")}</option>
+                            <option value="ctg">{translate("চট্টগ্রাম", "Chattogram")}</option>
                         </select>
 
                         <input
                             type="text"
-                            placeholder="Zone"
+                            placeholder={translate("জোন", "Zone")}
                             className="w-full border border-gray-200 rounded px-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-red-400"
                         />
                     </div>
@@ -58,9 +61,9 @@ const BillingAndPayment = () => {
                             defaultValue=""
                         >
                             <option value="" disabled>
-                                Select Country*
+                                {translate("দেশ নির্বাচন করুন*", "Select Country*")}
                             </option>
-                            <option value="bangladesh">Bangladesh</option>
+                            <option value="bangladesh">{translate("বাংলাদেশ", "Bangladesh")}</option>
                         </select>
 
                         <select
@@ -68,37 +71,36 @@ const BillingAndPayment = () => {
                             defaultValue=""
                         >
                             <option value="" disabled>
-                                Area
+                                {translate("এলাকা", "Area")}
                             </option>
-                            <option value="uttara">Uttara</option>
-                            <option value="mirpur">Mirpur</option>
+                            <option value="uttara">{translate("উত্তরা", "Uttara")}</option>
+                            <option value="mirpur">{translate("মিরপুর", "Mirpur")}</option>
                         </select>
                     </div>
                 </div>
 
                 {/* Shipping Method */}
                 <div className="mt-6">
-                    <p className="text-sm font-medium mb-2">Shipping Method</p>
+                    <p className="text-sm font-medium mb-2">{translate("শিপিং পদ্ধতি", "Shipping Method")}</p>
                     <div className="flex items-center gap-2 bg-[#E8F1F8] border border-blue-100 px-4 py-3 rounded-md max-w-[425px] ">
                         <input type="radio" checked readOnly className="accent-red-500" />
                         <span className="text-sm text-[#EE5A2C] font-medium">
-                            Shipping out side Dhaka
+                            {translate("ঢাকার বাইরে শিপিং", "Shipping out side Dhaka")}
                         </span>
                     </div>
                 </div>
 
-
- <h2 className="text-lg font-semibold mb-4 mt-[60px] ">Payment Method</h2>
+                <h2 className="text-lg font-semibold mb-4 mt-[60px]">{translate("পেমেন্ট পদ্ধতি", "Payment Method")}</h2>
 
                 {/* Payment Options */}
                 <div className="border border-gray-300 rounded-md p-4 mb-6 max-w-[740px] ">
                     <p className="text-sm text-gray-600 mb-4">
-                        Please select the preferred payment method to use on this order.
+                        {translate("এই অর্ডারে ব্যবহারের জন্য পছন্দসই পেমেন্ট পদ্ধতি নির্বাচন করুন।", "Please select the preferred payment method to use on this order.")}
                     </p>
                     <div className="space-y-3 text-sm text-gray-700">
                         <label className="flex items-center gap-2">
                             <input type="radio" name="payment" defaultChecked className="accent-[#F53E32]" />
-                            Cash On Delivery
+                            {translate("ক্যাশ অন ডেলিভারি", "Cash On Delivery")}
                         </label>
                         <label className="flex items-center gap-2">
                             <input type="radio" name="payment" className="accent-[#F53E32]" />
@@ -106,41 +108,29 @@ const BillingAndPayment = () => {
                         </label>
                         <label className="flex items-center gap-2">
                             <input type="radio" name="payment" className="accent-[#F53E32]" />
-                            Bank Transfer
+                            {translate("ব্যাংক ট্রান্সফার", "Bank Transfer")}
                         </label>
                     </div>
                 </div>
 
                 {/* Payment Icons */}
                 <div className="border border-gray-300 rounded-md p-4 mb-6 max-w-[584px] h-[121px] ">
-                    <p className="text-sm font-semibold mb-3">Payment Method</p>
+                    <p className="text-sm font-semibold mb-3">{translate("পেমেন্ট পদ্ধতি", "Payment Method")}</p>
                     <div className="flex flex-wrap items-center gap-4">
                         <Image
-
                             width={300}
                             height={300}
                             src={collectionBanner}
-                            alt='Payment image'
+                            alt={translate("পেমেন্ট ইমেজ", "Payment image")}
                             className="w-full h-auto object-cover"
                         />
                     </div>
-                    {/* <div className="flex flex-wrap items-center gap-4">
-                        {["visa", "mastercard", "paypal", "skrill", "maestro", "visaelectron"].map((method, idx) => (
-                            <img
-                                key={idx}
-                                src={`/payments/${method}.png`}
-                                alt={method}
-                                className="w-12 h-8 object-contain"
-                            />
-                        ))}
-                    </div> */}
                 </div>
 
                 {/* Discount Coupon */}
                 <div className="mb-6 max-w-[457px] ">
-                    <label className="text-base font-semibold mb-2 block">Discount Coupon :</label>
+                    <label className="text-base font-semibold mb-2 block">{translate("ডিসকাউন্ট কুপন:", "Discount Coupon :")}</label>
                     <div className="flex items-stretch gap-2">
-                        {/* Icon + Input */}
                         <div className="flex items-center bg-gray-100 border border-gray-200 rounded-md px-3 max-w-[321px] h-[48px]">
                             <svg
                                 className="w-4 h-4 text-gray-400 mr-2"
@@ -157,14 +147,13 @@ const BillingAndPayment = () => {
                             </svg>
                             <input
                                 type="text"
-                                placeholder="Add promo code"
+                                placeholder={translate("প্রোমো কোড যোগ করুন", "Add promo code")}
                                 className="w-full bg-gray-100 text-sm outline-none h-full placeholder:text-gray-400"
                             />
                         </div>
 
-                        {/* Apply Code Button */}
                         <Button variant={'outline'} className="bg-orange-500 text-white text-xs md:text-sm font-medium h-[48px] px-5 w-[126px] rounded-md hover:bg-orange-600 transition-colors">
-                            Apply Code
+                            {translate("কোড প্রয়োগ করুন", "Apply Code")}
                         </Button>
                     </div>
                 </div>
@@ -172,10 +161,10 @@ const BillingAndPayment = () => {
                 {/* Note Section */}
                 <div className="mb-6 max-w-[388px]">
                     <label className="text-base font-semibold mb-2 block">
-                        Note<span className="text-red-500">*</span>
+                        {translate("নোট", "Note")}<span className="text-red-500">*</span>
                     </label>
                     <textarea
-                        placeholder="Write your note here"
+                        placeholder={translate("আপনার নোট এখানে লিখুন", "Write your note here")}
                         className="w-full bg-gray-100 border border-gray-200 rounded-md px-4 py-3 h-[90px] text-sm outline-none resize-none placeholder:text-gray-400 focus:ring-1 focus:ring-orange-400"
                         rows={3}
                     />
@@ -183,12 +172,9 @@ const BillingAndPayment = () => {
 
                 {/* Place Order Button */}
                 <Button variant={'outline'} className="bg-orange-500 w-[222px] text-white font-semibold text-base py-3 rounded-md hover:bg-orange-600 transition-colors">
-                    Place Order
+                    {translate("অর্ডার করুন", "Place Order")}
                 </Button>
-
             </div>
-
-           
         </div>
     );
 };

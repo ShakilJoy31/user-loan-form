@@ -49,7 +49,7 @@ export const CustomerLogin = () => {
         </div>
 
         <h2
-          onClick={() => router.push("/customer-account/forget-password")}
+          onClick={() => router.push("/forget-password")}
           className="text-[14px] text-end mt-[6px] hover:cursor-pointer"
         >
           Forgot password?
