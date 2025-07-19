@@ -53,7 +53,7 @@ export const ForgetPassword = () => {
 
   if (step === "success") {
     return (
-      <div className="max-w-[463px] w-full px-[20px] lg:px-0 mx-auto text-center">
+      <div className="max-w-[463px] w-full px-[20px] lg:px-0 mx-auto text-center  dark:text-white">
            <div className="mb-4 lg:mb-[100px] text-[#EE5A2C] text-[16px]">
         <Button
           variant="outline"
@@ -93,7 +93,7 @@ export const ForgetPassword = () => {
   }
 
   return (
-    <div className="max-w-[463px] w-full px-[20px] lg:px-0">
+    <div className="max-w-[463px] w-full px-[20px] lg:px-0  dark:text-white">
       <div className="mb-4 lg:mb-[100px] text-[#EE5A2C] text-[16px]">
         <Button
           variant="outline"

@@ -1,5 +1,10 @@
+import { Editor } from "@tiptap/react";
+
 // UndoButton.tsx
-const UndoButton = ({ editor }) => {
+interface ImageButtonProps {
+  editor: Editor;
+}
+const UndoButton = ({ editor }:ImageButtonProps) => {
   return (
     <button
       type="button"

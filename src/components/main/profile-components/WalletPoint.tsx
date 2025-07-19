@@ -5,7 +5,7 @@ import { FiSearch } from "react-icons/fi";
 import { Button } from "@/components/ui/button";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 import { useState } from "react";
-import Pagination from "@/utils/helper/Pagination";
+import Pagination from "@/components/common/Pagination";
 
 const WalletPoint = () => {
   const { translate } = useCustomTranslator();

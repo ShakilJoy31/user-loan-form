@@ -179,7 +179,7 @@ const SellerCreate = () => {
   const { translate } = useCustomTranslator();
 
   return (
-    <div className="max-w-[460px] w-full px-[20px] lg:px-0">
+    <div className="max-w-[460px] w-full px-[20px] lg:px-0  dark:text-white">
       <div className="mb-4 lg:mb-[30px] text-[#EE5A2C] text-[16px]">
         <Button
           variant="outline"
@@ -296,7 +296,7 @@ const SellerCreate = () => {
                       <select
                         id="designation"
                         name="designation"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
+                        className="w-full dark:bg-black dark:text-white px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
                         required
                       >
                         <option value="">
@@ -318,7 +318,7 @@ const SellerCreate = () => {
                     </div>
 
                     {/* City and Area */}
-                    <div className="flex flex-col sm:flex-row gap-4">
+                    <div className="flex flex-col sm:flex-row gap-4 ">
                       <div className="w-full sm:w-1/2">
                         <label
                           htmlFor="city"
@@ -330,7 +330,7 @@ const SellerCreate = () => {
                           id="city"
                           value={selectedCity}
                           onChange={(e) => setSelectedCity(e.target.value)}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
+                          className="w-full px-4 dark:bg-black dark:text-white py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
                           required
                         >
                           <option value="">
@@ -363,7 +363,7 @@ const SellerCreate = () => {
                           value={selectedArea}
                           onChange={(e) => setSelectedArea(e.target.value)}
                           disabled={!selectedCity}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C] disabled:bg-gray-100 disabled:cursor-not-allowed"
+                          className="w-full dark:bg-black dark:text-white px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C] disabled:bg-gray-100 disabled:cursor-not-allowed"
                           required
                         >
                           <option value="">
@@ -451,11 +451,11 @@ const SellerCreate = () => {
                               )}
                             </span>
                           ) : (
-                            <div className="grid grid-cols-3 gap-2">
+                            <div className="grid grid-cols-3 gap-2 dark:bg-black dark:text-white">
                               {selectedCategories.map((category) => (
                                 <div
                                   key={category}
-                                  className="bg-gray-100 px-2 py-1 rounded-md text-sm flex items-center justify-between"
+                                  className="bg-gray-100 dark:bg-black dark:text-white px-2 py-1 rounded-md text-sm flex items-center justify-between"
                                 >
                                   <span className="truncate">{category}</span>
                                   <button
@@ -478,13 +478,13 @@ const SellerCreate = () => {
                             onFocus={() => {
                               if (!isOpen) setIsOpen(true);
                             }}
-                            className="flex-1 min-w-[100px] outline-none bg-transparent"
+                            className="flex-1 min-w-[100px] outline-none bg-transparent "
                             placeholder={
                               selectedCategories.length === 0 ? "" : ""
                             }
                           />
                         </div>
-                        <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center space-x-1">
+                        <div className="absolute dark:bg-black dark:text-white right-3 top-1/2 transform -translate-y-1/2 flex items-center space-x-1">
                           {selectedCategories.length > 0 && !isOpen && (
                             <button
                               onClick={(e) => {
@@ -521,13 +521,13 @@ const SellerCreate = () => {
                         </div>
                       </div>
                       {isOpen && (
-                        <div className="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 focus:outline-none max-h-60 overflow-auto">
+                        <div className="absolute dark:bg-black dark:text-white z-10 mt-1 w-full bg-white shadow-lg rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 focus:outline-none max-h-60 overflow-auto">
                           <div className="py-1">
                             {filteredCategories.length > 0 ? (
                               filteredCategories.map((category) => (
                                 <div
                                   key={category}
-                                  className={`px-4 py-2 cursor-pointer hover:bg-gray-100 flex items-center ${
+                                  className={`px-4 py-2 cursor-pointer  hover:dark:text-black hover:bg-gray-100 flex items-center ${
                                     selectedCategories.includes(category)
                                       ? "bg-gray-100"
                                       : ""
@@ -554,7 +554,7 @@ const SellerCreate = () => {
                                 </div>
                               ))
                             ) : (
-                              <div className="px-4 py-2 text-gray-500">
+                              <div className="px-4 py-2 text-gray-500 dark:bg-black dark:text-white">
                                 {searchTerm
                                   ? translate(
                                       "কোন বিভাগ পাওয়া যায়নি",
@@ -573,7 +573,7 @@ const SellerCreate = () => {
 
                     <Button
                       type="submit"
-                      className="w-full bg-[#EE5A2C] text-white py-3 rounded-md hover:bg-orange-800 transition mt-6"
+                      className="w-full bg-[#EE5A2C] text-white h-auto max-h-[63px] py-[18px] rounded-full md:rounded-md hover:bg-orange-800 transition mt-6"
                     >
                       {translate("চালিয়ে যান", "Continue")}
                     </Button>
@@ -660,7 +660,7 @@ const SellerCreate = () => {
 
                 <Button
                   type="submit"
-                  className="w-full bg-[#EE5A2C] text-white py-3 rounded-md hover:bg-orange-800 transition mt-6"
+                  className="w-full bg-[#EE5A2C] text-white h-auto max-h-[63px] py-[18px] rounded-full md:rounded-md hover:bg-orange-800 transition mt-6"
                 >
                   {translate("চালিয়ে যান", "Continue")}
                 </Button>
@@ -749,7 +749,7 @@ const SellerCreate = () => {
 
                 <Button
                   type="submit"
-                  className="w-full bg-[#EE5A2C] text-white py-3 rounded-md hover:bg-orange-800 transition mt-6"
+                  className="w-full bg-[#EE5A2C] text-white h-auto max-h-[63px] py-[18px] rounded-full md:rounded-md hover:bg-orange-800 transition mt-6"
                 >
                   {translate("চালিয়ে যান", "Continue")}
                 </Button>
@@ -847,7 +847,7 @@ const SellerCreate = () => {
 
                 <Button
                   type="submit"
-                  className="w-full bg-[#EE5A2C] text-white py-3 rounded-md hover:bg-orange-800 transition mt-6"
+                  className="w-full bg-[#EE5A2C] text-white h-auto max-h-[63px] py-[18px] rounded-full md:rounded-md hover:bg-orange-800 transition mt-6"
                 >
                   {translate("নিবন্ধন সম্পূর্ণ করুন", "Complete Registration")}
                 </Button>

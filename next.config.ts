@@ -1,7 +1,13 @@
+// next.config.js
 const nextConfig = {
   images: {
-    domains: ['flagcdn.com'],
+    domains: [
+      'www.image.com',
+      'flagcdn.com', // Changed from www.flagcdn.com
+      'www.flagcdn.com' // Can keep both if needed
+    ],
   },
-};
+  // ... other config options
+}
 
-export default nextConfig;
+module.exports = nextConfig

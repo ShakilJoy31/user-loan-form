@@ -14,7 +14,7 @@ const version = "V1.0.0";
 //////////// BETA VERSION ////////////
 
 export const appConfiguration: IConfigurationProps = {
-  appName: "Iconic Express",
+  appName: "Proyojon e-commerce",
   appCode: "__t_beta__",
   baseUrl:"https://proyojon-backend.vercel.app/api/v1/",
   databaseResetAPI:

@@ -1,6 +1,10 @@
+import { Editor } from "@tiptap/react";
 import { FaItalic } from "react-icons/fa"
 
-const ItalicButton = ({ editor }) => {
+interface ImageButtonProps {
+  editor: Editor;
+}
+const ItalicButton = ({ editor }:ImageButtonProps) => {
   return (
     <button
     type="button"

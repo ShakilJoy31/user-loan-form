@@ -85,6 +85,8 @@ export const apiSlice = createApi({
     "ShippingAddress",
     "shippingInfo",
     "PreOrder",
-    "subcategoryOffer"
+    "subcategoryOffer",
+    "variation",
+    "seller-login",
   ],
 });

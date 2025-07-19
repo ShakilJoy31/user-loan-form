@@ -1,5 +1,19 @@
-const AlignmentButtons = ({ editor }) => {
-  const items = [
+import { Editor } from "@tiptap/react";
+import React from "react";
+
+type Alignment = 'left' | 'center' | 'right';
+
+interface ImageButtonProps {
+  editor: Editor;
+}
+
+interface AlignmentButtonItem {
+  align: Alignment;
+  icon: React.ReactNode;
+}
+
+const AlignmentButtons: React.FC<ImageButtonProps> = ({ editor }) => {
+  const items: AlignmentButtonItem[] = [
     {
       align: 'left',
       icon: (
@@ -24,44 +38,42 @@ const AlignmentButtons = ({ editor }) => {
         </svg>
       ),
     },
-  ]
+  ];
 
-  const applyAlignment = (align) => {
+  const applyAlignment = (align: Alignment) => {
     if (editor.isActive('image')) {
-      const currentAlign = editor.getAttributes('image').align
-      const newAlign = currentAlign === align ? null : align
-      
+      const currentAlign = editor.getAttributes('image').align as Alignment | undefined;
+      const newAlign: Alignment | null = currentAlign === align ? null : align;
+
       editor.chain().focus()
         .updateAttributes('image', { align: newAlign })
-        .run()
+        .run();
     } else {
-      // Handle text alignment
       if (align === 'left') {
-        editor.chain().focus().unsetTextAlign().run()
+        editor.chain().focus().unsetTextAlign().run();
       } else {
-        editor.chain().focus().setTextAlign(align).run()
+        editor.chain().focus().setTextAlign(align).run();
       }
     }
-  }
+  };
 
-  const getActiveAlignment = () => {
+  const getActiveAlignment = (): Alignment => {
     if (editor.isActive('image')) {
-      return editor.getAttributes('image').align
+      return editor.getAttributes('image').align as Alignment ?? 'left';
     }
-    
-    if (editor.isActive({ textAlign: 'center' })) return 'center'
-    if (editor.isActive({ textAlign: 'right' })) return 'right'
-    return 'left'
-  }
+    if (editor.isActive({ textAlign: 'center' })) return 'center';
+    if (editor.isActive({ textAlign: 'right' })) return 'right';
+    return 'left';
+  };
 
-  const currentAlign = getActiveAlignment()
+  const currentAlign = getActiveAlignment();
 
   return (
     <div className="flex border-r border-gray-200 pr-2">
-      {items.map((item, index) => (
+      {items.map((item) => (
         <button
+          key={item.align}
           type="button"
-          key={index}
           onClick={() => applyAlignment(item.align)}
           className={`p-2 rounded ${
             currentAlign === item.align
@@ -74,7 +86,7 @@ const AlignmentButtons = ({ editor }) => {
         </button>
       ))}
     </div>
-  )
-}
+  );
+};
 
-export default AlignmentButtons
+export default AlignmentButtons;

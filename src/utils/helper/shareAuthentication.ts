@@ -83,7 +83,7 @@ export const shareAuthentication = (): IAuthenticationProps => {
   const token =
     shareWithCookies("get", `${appConfiguration.appCode}token`)?.toString() ||
     "";
-  let authData: JwtPayload = {};
+  let authData: JwtPayload = {} as JwtPayload;
 
   if (token) {
     authData = jwtDecode<JwtPayload>(token);

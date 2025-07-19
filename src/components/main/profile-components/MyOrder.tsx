@@ -10,7 +10,7 @@ import product4 from "@/assets/Products_Image/products.jpg";
 import product5 from "@/assets/Products_Image/products.jpg";
 import { Button } from "@/components/ui/button";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
-import Pagination from "@/utils/helper/Pagination";
+import Pagination from "@/components/common/Pagination";
 
 const OrderTab = () => {
   const { translate } = useCustomTranslator();

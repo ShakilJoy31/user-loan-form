@@ -2,7 +2,7 @@
 import { FiSearch } from "react-icons/fi";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 import { useState } from "react";
-import Pagination from "@/utils/helper/Pagination";
+import Pagination from "@/components/common/Pagination";
 
 interface ReturnOrder {
   id: number;

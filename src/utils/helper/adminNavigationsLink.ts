@@ -35,6 +35,44 @@ const adminDashboardProduct: INavigationLink = {
   key: "product-list",
   href: "/proyojon-admin-portal/product-list",
   subLinks: [
+     {
+      icon: MdCategory,
+      label: {
+        en: "Variation",
+        bn: "সমস্ত পণ্য"
+      },
+      key: "variation-list",
+      href: "/proyojon-admin-portal/variation-list",
+      subSubLinks: [
+         {
+          icon: MdCategory,
+          label: {
+            en: "Variation List",
+            bn: "বিভাগ অনুযায়ী তারতম্য"
+          },
+          key: "variation",
+          href: "/proyojon-admin-portal/variation",
+        },
+        {
+          icon: MdCategory,
+          label: {
+            en: "Variation Option",
+            bn: "বিভাগ অনুযায়ী তারতম্য"
+          },
+          key: "variation-option",
+          href: "/proyojon-admin-portal/variation-option",
+        },
+        {
+          icon: MdCategory,
+          label: {
+            en: "Category Wise Variation",
+            bn: "পণ্যের বৈচিত্র্য অপশন"
+          },
+          key: "category-wise-variation",
+          href: "/proyojon-admin-portal/category-wise-variation",
+        },
+      ],
+    },
     {
       icon: MdCategory,
       label: {
