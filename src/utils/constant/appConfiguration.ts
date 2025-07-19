@@ -16,7 +16,6 @@ const version = "V1.0.0";
 export const appConfiguration: IConfigurationProps = {
   appName: "Proyojon e-commerce",
   appCode: "__t_beta__",
-  // baseUrl: "https://backend.iconicticket.com/api/v1/",
   baseUrl:"https://proyojon-backend.vercel.app/api/v1",
   databaseResetAPI:
     "https://pos-software-with-my-sql-kry-test.vercel.app/api/v1/admin/db-reset-tebd2024",

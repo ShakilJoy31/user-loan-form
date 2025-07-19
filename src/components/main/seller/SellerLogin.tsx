@@ -1,9 +1,12 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 
 export const SellerLogin = () => {
+  const [showPassword, setShowPassword] = useState(false);
   return (
     <div className=" dark:text-white">
     <form className="space-y-4">
@@ -28,20 +31,29 @@ export const SellerLogin = () => {
       </div>
 
       {/* Password */}
-      <div>
-        <label
-          htmlFor="password"
-          className="block text-sm font-medium text-gray-700 mb-1"
-        >
-          Password*
-        </label>
+       <div>
+      <label
+        htmlFor="password"
+        className="block text-sm font-medium text-gray-700 mb-1"
+      >
+        Password*
+      </label>
+      <div className="relative">
         <input
-          type="password"
+          type={showPassword ? "text" : "password"}
           id="password"
           placeholder="Enter your password"
-          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
+          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C] pr-10"
         />
+        <button
+          type="button"
+          className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700"
+          onClick={() => setShowPassword(!showPassword)}
+        >
+          {showPassword ? <FaEyeSlash /> : <FaEye />}
+        </button>
       </div>
+    </div>
 
       <Button
         type="submit"
