@@ -438,3 +438,269 @@ input[type="range"]::-ms-thumb {
   transform: rotate(330deg) translate(0, -130%);
   animation-delay: -0.1s;
 }
+
+
+/* TIPTAP EDITOR */
+body {
+  overflow-x: hidden;
+}
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
+
+ul li p,
+td p {
+  margin-bottom: 0 !important;
+  margin-top: 0 !important;
+}
+
+/* Reduce margin/padding for list items */
+.ProseMirror ul, 
+.ProseMirror ol {
+  padding: 0.2rem 0; /* Adjust as needed */
+  margin: 0.2rem 0;  /* Adjust as needed */
+}
+
+.ProseMirror li {
+  margin: 0.1rem 0;  /* Reduce vertical margin between list items */
+  padding: 0.1rem 0; /* Reduce vertical padding between list items */
+}
+
+/* Remove the default max-width from ProseMirror */
+.ProseMirror {
+  width: 100%;
+  min-height: 300px;
+  padding: 1rem;
+  border: none;
+  outline: none;
+}
+
+/* Remove the prose max-width constraints */
+.prose {
+  max-width: 100% !important;
+}
+
+/* Make sure tables expand to full width */
+.ProseMirror table {
+  width: 100% !important;
+}
+
+/* Editor content container */
+.editor-content-container {
+  width: 100%;
+  flex: 1;
+  overflow-y: auto;
+}
+.editor-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Or your desired height */
+  max-width: 100%; /* Adjust as needed */
+  margin: 0 auto;
+}
+
+/* Image alignment styles */
+/* In your global CSS */
+.ProseMirror img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.ProseMirror img[data-width="25%"] { 
+  width: 25% !important;
+  max-width: 25%;
+}
+
+.ProseMirror img[data-width="50%"] { 
+  width: 50% !important;
+  max-width: 50%;
+}
+
+.ProseMirror img[data-width="75%"] { 
+  width: 75% !important;
+  max-width: 75%;
+}
+
+.ProseMirror img[data-align="left"] {
+  float: left;
+  margin: 0 1em 1em 0;
+}
+
+.ProseMirror img[data-align="right"] {
+  float: right;
+  margin: 0 0 1em 1em;
+}
+
+.ProseMirror img[data-align="center"],
+.ProseMirror img:not([data-align]) {
+  display: block;
+  margin: 0 auto 1em;
+}
+/* Force width to be applied */
+.ProseMirror img[data-width="25%"] { width: 25% !important; }
+.ProseMirror img[data-width="50%"] { width: 50% !important; }
+.ProseMirror img[data-width="75%"] { width: 75% !important; }
+.ProseMirror img[data-width="100%"] { width: 100% !important; }
+.ProseMirror img[data-width="auto"] { width: auto !important; }
+
+/* Clear floats */
+.ProseMirror p:after,
+.ProseMirror div:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Toolbar styles - fixed at top */
+.menu-bar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: 0.5rem;
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.375rem 0.375rem 0 0;
+}
+
+/* Editor content - scrollable */
+.editor-content-container {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 1rem; /* Space at bottom */
+}
+
+.ProseMirror {
+  min-height: 300px;
+  padding: 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0 0 0.375rem 0.375rem;
+  height: 100%;
+  outline: none;
+}
+
+/* Keep your existing ProseMirror styles */
+.ProseMirror:focus {
+  border-color: #94a3b8;
+}
+
+.ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #94a3b8;
+  pointer-events: none;
+  height: 0;
+}
+
+/* Floating menus positioning */
+.floating-menu {
+  position: absolute;
+  z-index: 20;
+  margin-top: 0.25rem;
+}
+
+.bubble-menu {
+  position: absolute;
+  z-index: 20;
+  transform: translateY(-100%);
+  margin-bottom: 0.25rem;
+}
+
+/* Table styles (keep your existing table styles) */
+/* Table styles */
+.tiptap table {
+  border-collapse: collapse;
+  margin: 1em 0;
+  table-layout: fixed;
+  width: 100%;
+}
+
+.tiptap th,
+.tiptap td {
+  border: 1px solid #e2e8f0;
+  padding: 0 0.5rem;
+  position: relative;
+  min-width: 1em;
+}
+
+.tiptap th {
+  background-color: #f1f5f9;
+  font-weight: bold;
+  text-align: left;
+}
+
+.tiptap .selectedCell:after {
+  background: rgba(200, 200, 255, 0.4);
+  content: "";
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  pointer-events: none;
+  position: absolute;
+  z-index: 2;
+}
+
+.tiptap .column-resize-handle {
+  background-color: #94a3b8;
+  bottom: -2px;
+  position: absolute;
+  right: -2px;
+  pointer-events: none;
+  top: 0;
+  width: 4px;
+}
+.ProseMirror table {
+  border-collapse: collapse;
+  margin: 0;
+  overflow: hidden;
+  table-layout: fixed;
+  width: 100%;
+}
+
+.ProseMirror table td,
+.ProseMirror table th {
+  border: 1px solid #e2e8f0;
+  box-sizing: border-box;
+  min-width: 1em;
+  /* padding: 0.5rem; */
+  position: relative;
+  vertical-align: top;
+}
+
+/* Add this to your styles */
+.ProseMirror h1 {
+  font-size: 2em;
+  font-weight: bold;
+  margin: 0.67em 0;
+}
+.ProseMirror h2 {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin: 0.83em 0;
+}
+.ProseMirror h3 {
+  font-size: 1.17em;
+  font-weight: bold;
+  margin: 1em 0;
+}
+/* Tailwind-style class override for inner editor */
+.custom-editor .ql-editor {
+  @apply min-h-[300px] max-h-[400px] overflow-y-auto;
+}
+/* Custom height for the editor container */
+.custom-editor {
+  border: 1px solid #ccc;
+}
+
+/* Set scroll only for the text editing area */
+.custom-editor .ql-editor {
+  min-height: 300px;
+  max-height: 400px;
+  overflow-y: auto;
+}
