@@ -14,23 +14,24 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { 
-  useCreateVariationMutation,
-  useDeleteVariationMutation, 
-  useGetAllVariationsQuery, 
-  useUpdateVariationMutation, 
-} from "@/redux/features/product/variationApi";
 import DataLoader from "@/components/common/DataLoader";
 import ButtonLoader from "@/components/common/ButtonLoader";
 import toast from "react-hot-toast";
 import Pagination from "@/components/common/Pagination";
-import AddEditVariation from "./AddEditVariation";
 import Table from "@/components/ui/table";
+import { useAddAreaMutation, useDeleteAreaMutation, useGetAllAreasQuery, useUpdateAreaMutation } from "@/redux/features/seller-auth/sellerLogin";
+import AddEditAreaList from "./AddEditAreaList";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 
-interface Variation {
+interface Area {
   id: number;
   name: string;
+  cityId: number;
+  cityName?: string; 
+  city: {
+    id: number;
+    name: string;
+  }
 }
 
 interface PaginationMeta {
@@ -55,11 +56,11 @@ interface ApiError {
   error?: string;
 }
 
-const VariationList = () => {
+const AreaList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
-  const [currentVariation, setCurrentVariation] = useState<Variation | null>(null);
-  const [selectedRows, setSelectedRows] = useState<Variation[]>([]);
+  const [currentArea, setCurrentArea] = useState<Area | null>(null);
+  const [selectedRows, setSelectedRows] = useState<Area[]>([]);
   const { translate } = useCustomTranslator();
   const [pagination, setPagination] = useState<PaginationState>({
     sort: "asc",
@@ -73,21 +74,21 @@ const VariationList = () => {
     },
   });
 
-  const { data, isLoading, isError, refetch } = useGetAllVariationsQuery({
+  const { data, isLoading, isError, refetch } = useGetAllAreasQuery({
     sort: pagination.sort,
     page: pagination.page,
     size: pagination.size,
     search: searchTerm,
   });
 
-  const [createVariation, { isLoading: addLoading, error: addError }] = 
-    useCreateVariationMutation();
-  const [updateVariation, { isLoading: editLoading, error: editError }] = 
-    useUpdateVariationMutation();
-  const [deleteVariation, { isLoading: deleteLoading, error: deleteError }] = 
-    useDeleteVariationMutation();
+  const [createArea, { isLoading: addLoading, error: addError }] = 
+    useAddAreaMutation();
+  const [updateArea, { isLoading: editLoading, error: editError }] = 
+    useUpdateAreaMutation();
+  const [deleteArea, { isLoading: deleteLoading, error: deleteError }] = 
+    useDeleteAreaMutation();
 
-  const variations = data?.data || [];
+  const areas = data?.data || [];
   const meta = data?.meta || pagination.meta;
 
   useEffect(() => {
@@ -114,7 +115,7 @@ const VariationList = () => {
     }));
   };
 
-  const handleRowSelect = (row: Variation) => {
+  const handleRowSelect = (row: Area) => {
     setSelectedRows((prev) =>
       prev.some(selected => selected.id === row.id) 
         ? prev.filter(selected => selected.id !== row.id) 
@@ -123,64 +124,64 @@ const VariationList = () => {
   };
 
   const handleSelectAll = () => {
-    if (selectedRows.length === variations.length) {
+    if (selectedRows.length === areas.length) {
       setSelectedRows([]);
     } else {
-      setSelectedRows([...variations]);
+      setSelectedRows([...areas]);
     }
   };
 
   const handleDeleteSelected = async () => {
     try {
       for (const row of selectedRows) {
-        await deleteVariation(row.id).unwrap();
+        await deleteArea(row.id).unwrap();
       }
-      toast.success(translate("নির্বাচিত বৈচিত্র্যগুলো সফলভাবে মুছে ফেলা হয়েছে", "Selected variations deleted successfully"));
+      toast.success(translate("নির্বাচিত এলাকাগুলি সফলভাবে মুছে ফেলা হয়েছে", "Selected areas deleted successfully"));
       setSelectedRows([]);
       refetch();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      toast.error(translate("নির্বাচিত বৈচিত্র্যগুলো মুছতে ব্যর্থ হয়েছে", "Failed to delete selected variations"));
+      toast.error(translate("নির্বাচিত এলাকাগুলি মুছতে ব্যর্থ হয়েছে", "Failed to delete selected areas"));
     }
   };
 
-  const handleSaveVariation = async (id: number | null, name: string) => {
+  const handleSaveArea = async (id: number | null, data: { cityId: number; name: string }) => {
     try {
       if (id) {
-        await updateVariation({ id, name }).unwrap();
-        toast.success(translate("বৈচিত্র্য সফলভাবে আপডেট করা হয়েছে", "Variation updated successfully"));
+        await updateArea({ id, data }).unwrap();
+        toast.success(translate("এলাকা সফলভাবে আপডেট করা হয়েছে", "Area updated successfully"));
       } else {
-        await createVariation({ name }).unwrap();
-        toast.success(translate("বৈচিত্র্য সফলভাবে তৈরি করা হয়েছে", "Variation created successfully"));
+        await createArea(data).unwrap();
+        toast.success(translate("এলাকা সফলভাবে তৈরি করা হয়েছে", "Area created successfully"));
       }
       setModalOpen(false);
       refetch();
     } catch (error) {
-      console.error("Error saving variation:", error);
+      console.error("Error saving area:", error);
     }
   };
 
-  const handleDeleteVariation = async (id: number) => {
+  const handleDeleteArea = async (id: number) => {
     try {
-      await deleteVariation(id).unwrap();
-      toast.success(translate("বৈচিত্র্য সফলভাবে মুছে ফেলা হয়েছে", "Variation deleted successfully"));
+      await deleteArea(id).unwrap();
+      toast.success(translate("এলাকা সফলভাবে মুছে ফেলা হয়েছে", "Area deleted successfully"));
       refetch();
     } catch (error) {
-      console.error("Error deleting variation:", error);
+      console.error("Error deleting area:", error);
     }
   };
 
-  const handleAddVariation = () => {
-    setCurrentVariation(null);
+  const handleAddArea = () => {
+    setCurrentArea(null);
     setModalOpen(true);
   };
 
-  const handleEditVariation = (variation: Variation) => {
-    setCurrentVariation(variation);
+  const handleEditArea = (area: Area) => {
+    setCurrentArea(area);
     setModalOpen(true);
   };
 
-  const renderRow = (row: Variation, index: number) => {
+  const renderRow = (row: Area, index: number) => {
     const dynamicIndex = index + 1 + (pagination.page - 1) * pagination.size;
     
     return (
@@ -189,18 +190,25 @@ const VariationList = () => {
           {dynamicIndex}
         </td>
         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-          {row.name}
+          {`${row.city?.name}`}
         </td>
-        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 flex  gap-2">
+        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+          {`${row.name}`}
+        </td>
+        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 flex gap-2">
           <button
             className="text-blue-500 hover:text-blue-700 cursor-pointer"
-            onClick={() => handleEditVariation(row)}
+            onClick={() => handleEditArea(row)}
+            title={translate("সম্পাদনা করুন", "Edit")}
           >
             <FiEdit />
           </button>
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <button className="text-red-500 hover:text-red-700 cursor-pointer">
+              <button 
+                className="text-red-500 hover:text-red-700 cursor-pointer"
+                title={translate("মুছুন", "Delete")}
+              >
                 <FiTrash2 />
               </button>
             </AlertDialogTrigger>
@@ -210,13 +218,13 @@ const VariationList = () => {
                   {translate("আপনি কি সম্পূর্ণ নিশ্চিত?", "Are you absolutely sure?")}
                 </AlertDialogTitle>
                 <AlertDialogDescription>
-                  {translate("এটি এই বৈচিত্র্যটি স্থায়ীভাবে মুছে ফেলবে।", "This will permanently delete this variation.")}
+                  {translate("এটি এই এলাকাটি স্থায়ীভাবে মুছে ফেলবে।", "This will permanently delete this area.")}
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>{translate("বাতিল", "Cancel")}</AlertDialogCancel>
                 <AlertDialogAction
-                  onClick={() => handleDeleteVariation(row.id)}
+                  onClick={() => handleDeleteArea(row.id)}
                 >
                   {deleteLoading ? <ButtonLoader /> : translate("নিশ্চিত করুন", "Confirm")}
                 </AlertDialogAction>
@@ -235,16 +243,16 @@ const VariationList = () => {
   return (
     <div className="bg-gray-100 min-h-screen p-4 dark:bg-black dark:text-white">
       <div className="flex justify-between items-center mb-5">
-        <h1 className="text-2xl font-semibold">{translate("বৈচিত্র্য", "Variations")}</h1>
+        <h1 className="text-2xl font-semibold">{translate("এলাকাসমূহ", "Areas")}</h1>
         <button
           className="flex items-center bg-[#EE5A2C] cursor-pointer text-white px-4 py-2 rounded hover:bg-orange-800"
-          onClick={handleAddVariation}
+          onClick={handleAddArea}
         >
-          <Plus className="mr-2" /> {translate("বৈচিত্র্য যোগ করুন", "Add Variation")}
+          <Plus className="mr-2" /> {translate("এলাকা যোগ করুন", "Add Area")}
         </button>
       </div>
 
-      <div className="flex justify-between dark:bg-black dark:text-white items-center bg-white px-4 rounded-lg">
+      <div className="flex dark:bg-black dark:text-white justify-between items-center bg-white px-4 rounded-lg">
         <div className="relative w-1/3 my-4">
           <input
             type="text"
@@ -272,14 +280,19 @@ const VariationList = () => {
 
       {isError && (
         <div className="text-center py-6 text-red-500">
-          {translate("বৈচিত্র্যগুলো ফেট্চ করতে ব্যর্থ হয়েছে", "Failed to fetch variations.")}
+          {translate("এলাকাগুলি আনতে ব্যর্থ হয়েছে", "Failed to fetch areas.")}
         </div>
       )}
 
       {!isLoading && !isError && (
-        <Table<Variation>
-          headers={[translate("SL", "SL"), translate("নাম", "Name"), translate("কার্যক্রম", "Actions")]}
-          data={variations}
+        <Table<Area>
+          headers={[
+            translate("SL", "SL"), 
+            translate("শহর", "City"), 
+            translate("এলাকা", "Area"), 
+            translate("ক্রিয়া", "Actions")
+          ]}
+          data={areas}
           renderRow={renderRow}
           selectedRows={selectedRows}
           onRowSelect={handleRowSelect}
@@ -310,11 +323,11 @@ const VariationList = () => {
         />
       </div>
 
-      <AddEditVariation
+      <AddEditAreaList
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
-        onSave={handleSaveVariation}
-        currentVariation={currentVariation}
+        onSave={handleSaveArea}
+        currentArea={currentArea}
         loading={addLoading || editLoading}
         err={(addError || editError) as ApiError}
       />
@@ -322,4 +335,4 @@ const VariationList = () => {
   );
 };
 
-export default VariationList;
+export default AreaList;

@@ -5,10 +5,15 @@ import { AiFillStar } from "react-icons/ai";
 import computer from "@/assets/Products_Image/computer.png";
 import { Button } from "@/components/ui/button";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
+import { useState } from "react";
+import Pagination from "@/components/common/Pagination";
 
 const WishlistTab = () => {
     const { translate } = useCustomTranslator();
-    const wishlistItems = new Array(4).fill({
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize, setPageSize] = useState(4); // Default to showing 4 items per page
+
+    const allWishlistItems = new Array(12).fill({
         id: 1,
         title: translate("3D কম্পিউটার উন্নত সংস্করণ", "3D computer improved version"),
         price: translate("৮০০ টাকা", "800 Tk"),
@@ -16,7 +21,23 @@ const WishlistTab = () => {
         reviews: 121,
         date: translate("৭/৫/২০২৫, ১০:২১:৩২ PM", "7/5/2025, 10:21:32 PM"),
         image: computer.src,
-    });
+    }).map((item, index) => ({ ...item, id: index + 1 }));
+
+    // Calculate paginated items
+    const totalPages = Math.ceil(allWishlistItems.length / pageSize);
+    const indexOfLastItem = currentPage * pageSize;
+    const indexOfFirstItem = indexOfLastItem - pageSize;
+    const currentItems = allWishlistItems.slice(indexOfFirstItem, indexOfLastItem);
+
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const handlePageSizeChange = (size: number) => {
+        setPageSize(size);
+        setCurrentPage(1); // Reset to first page when changing page size
+    };
 
     return (
         <div className="bg-white p-4 md:p-6 rounded-xl shadow-sm mx-auto max-w-7xl">
@@ -26,9 +47,9 @@ const WishlistTab = () => {
             </p>
 
             <div className="bg-white border rounded-xl overflow-hidden">
-                {wishlistItems.map((item, index) => (
+                {currentItems.map((item) => (
                     <div
-                        key={index}
+                        key={item.id}
                         className="flex flex-col sm:flex-row sm:items-center justify-between p-3 md:p-4 border-b last:border-b-0 gap-3 md:gap-0"
                     >
                         <div className="flex flex-col sm:flex-row sm:items-center gap-3 md:gap-8 w-full sm:w-auto">
@@ -79,26 +100,15 @@ const WishlistTab = () => {
                 ))}
             </div>
 
-            <div className="flex justify-center mt-4 md:mt-6 gap-1 md:gap-2 flex-wrap">
-                <Button variant={'outline'} className="text-xs md:text-sm px-2 py-1 md:px-3 md:py-1 border border-gray-300 rounded-md hover:bg-gray-100">
-                    {translate("পূর্ববর্তী", "Previous")}
-                </Button>
-                {[1, 2, 3].map((page) => (
-                    <Button 
-                        variant={'outline'}
-                        key={page}
-                        className={`text-xs md:text-sm px-2 py-1 md:px-3 md:py-1 border rounded-md ${
-                            page === 1
-                                ? "bg-orange-500 text-white border-orange-500"
-                                : "border-gray-300 hover:bg-gray-100"
-                        }`}
-                    >
-                        {page}
-                    </Button>
-                ))}
-                <Button variant={'outline'} className="text-xs md:text-sm px-2 py-1 md:px-3 md:py-1 border border-gray-300 rounded-md hover:bg-gray-100">
-                    {translate("পরবর্তী", "Next")}
-                </Button>
+            {/* Pagination */}
+            <div className="mt-6">
+                <Pagination
+                    totalPages={totalPages}
+                    currentPage={currentPage}
+                    pageSize={pageSize}
+                    onPageChange={handlePageChange}
+                    onPageSizeChange={handlePageSizeChange}
+                />
             </div>
         </div>
     );

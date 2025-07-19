@@ -11,53 +11,95 @@ import {
 } from "react-icons/fi";
 import { SellerLogin } from "./SellerLogin";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  useCreateSellerMutation,
+  useGetAllAreasQuery,
+  useGetAllCitiesQuery,
+} from "@/redux/features/seller-auth/sellerLogin";
+import {
+  RegisterDataProps,
+  registerSchema,
+} from "@/schema/authSchema/sellerRegistrationSchema";
+import toast from "react-hot-toast";
+import { useGetAllCategoryQuery } from "@/redux/features/product/categoryApi";
+
+interface Category {
+  id: number;
+  name: string;
+}
+interface City {
+  id: number;
+  name: string;
+}
+interface Area {
+  id: number;
+  cityId: number;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+  city: City;
+}
 
 const SellerCreate = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const { translate } = useCustomTranslator();
   const [activeTab, setActiveTab] = useState<"create" | "login">("create");
-  const [selectedCity, setSelectedCity] = useState("");
-  const [selectedArea, setSelectedArea] = useState("");
   const [currentStep, setCurrentStep] = useState<
     "shop" | "personal" | "verify" | "password"
   >("shop");
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [formData, setFormData] = useState({
-    shopName: "",
-    ownerName: "",
-    designation: "",
-    tradeLicense: "",
-  });
-  const [personalDetails, setPersonalDetails] = useState({
-    username: "",
-    email: "",
-    phone: "",
-  });
   const [verificationCode, setVerificationCode] = useState("");
-  const [password, setPassword] = useState({
-    newPassword: "",
-    confirmPassword: "",
-  });
-
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const categories = [
-    "Position & Accessories",
-    "Grocery",
-    "Electronics & Appliances",
-    "Home Docs",
-    "Glucosilon & Radiomery",
-    "Pharmacy",
-    "Mobile & Limited",
-    "Bus",
-    "Dimensions",
-  ];
+  // API hooks
+  const [createSeller, { isLoading }] = useCreateSellerMutation();
+  const { data: citiesData } = useGetAllCitiesQuery({});
+  const { data: areasData } = useGetAllAreasQuery({});
+  const { data: categoriesData } = useGetAllCategoryQuery({});
 
-  const filteredCategories = categories.filter((category) =>
-    category.toLowerCase().includes(searchTerm.toLowerCase())
+  const cities = citiesData?.data || [];
+  const areas = areasData?.data || [];
+  const categories = categoriesData?.data || [];
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { errors },
+    reset,
+    trigger,
+    getValues,
+  } = useForm<RegisterDataProps>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      contactNo: "",
+      companyInfo: {
+        shopName: "",
+        ownerName: "",
+        designation: "",
+        city: "",
+        area: "",
+        tradeLicense: "",
+      },
+      categories: [],
+    },
+    mode: "onChange",
+  });
+
+  const selectedCity = watch("companyInfo.city");
+  const selectedCategories = watch("categories");
+  const filteredCategories = categories.filter((category: Category) =>
+    category.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   useEffect(() => {
@@ -76,88 +118,38 @@ const SellerCreate = () => {
     };
   }, []);
 
+  const handleCategorySelect = (categoryId: number) => {
+    const currentCategories = watch("categories");
+    if (currentCategories.includes(categoryId)) {
+      setValue(
+        "categories",
+        currentCategories.filter((id) => id !== categoryId)
+      );
+    } else {
+      setValue("categories", [...currentCategories, categoryId]);
+    }
+    setSearchTerm("");
+    trigger("categories");
+  };
+
+  const removeCategory = (categoryId: number, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setValue(
+      "categories",
+      watch("categories").filter((id) => id !== categoryId)
+    );
+    trigger("categories");
+  };
+
   const clearSelection = () => {
-    setSelectedCategories([]);
+    setValue("categories", []);
     setSearchTerm("");
     inputRef.current?.focus();
+    trigger("categories");
   };
 
   const handleInputClick = () => {
     setIsOpen(true);
-  };
-
-  const handleCategorySelect = (category: string) => {
-    setSelectedCategories((prev) => {
-      if (prev.includes(category)) {
-        return prev.filter((c) => c !== category);
-      } else {
-        return [...prev, category];
-      }
-    });
-    setSearchTerm("");
-  };
-
-  const removeCategory = (category: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    setSelectedCategories((prev) => prev.filter((c) => c !== category));
-  };
-
-  const handleShopDetailsSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const form = e.target as HTMLFormElement;
-    setFormData({
-      shopName: (form.elements.namedItem("shopName") as HTMLInputElement).value,
-      ownerName: (form.elements.namedItem("ownerName") as HTMLInputElement)
-        .value,
-      designation: (form.elements.namedItem("designation") as HTMLSelectElement)
-        .value,
-      tradeLicense: (
-        form.elements.namedItem("tradeLicense") as HTMLInputElement
-      ).value,
-    });
-    setCurrentStep("personal");
-  };
-
-  const handlePersonalDetailsSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const form = e.target as HTMLFormElement;
-    setPersonalDetails({
-      username: (form.elements.namedItem("username") as HTMLInputElement).value,
-      email: (form.elements.namedItem("email") as HTMLInputElement).value,
-      phone: (form.elements.namedItem("phone") as HTMLInputElement).value,
-    });
-    setCurrentStep("verify");
-  };
-
-  const handleVerificationSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Here you would typically verify the code with your backend
-    setCurrentStep("password");
-  };
-
-  const handlePasswordSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (password.newPassword !== password.confirmPassword) {
-      alert(translate("পাসওয়ার্ড মেলে না!", "Passwords don't match!"));
-      return;
-    }
-
-    // Here you would typically submit all data to your backend
-    const completeData = {
-      ...formData,
-      city: selectedCity,
-      area: selectedArea,
-      categories: selectedCategories,
-      ...personalDetails,
-      password: password.newPassword,
-    };
-    console.log("Complete registration data:", completeData);
-
-    // Reset form or redirect
-    alert(translate("নিবন্ধন সফল হয়েছে!", "Registration successful!"));
-    setCurrentStep("shop");
-    setActiveTab("login");
   };
 
   const handleBack = () => {
@@ -167,7 +159,6 @@ const SellerCreate = () => {
   };
 
   const handleResendCode = () => {
-    // Implement resend OTP logic here
     alert(
       translate(
         "আপনার ফোন নম্বরে ভেরিফিকেশন কোড পুনরায় পাঠানো হয়েছে",
@@ -176,19 +167,102 @@ const SellerCreate = () => {
     );
   };
 
-  const { translate } = useCustomTranslator();
+const onSubmit = async (data: RegisterDataProps) => {
+  // Create a new object without confirmPassword
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { confirmPassword, ...submitData } = data;
+  
+  try {
+    await createSeller(submitData).unwrap();
+    toast.success(translate("নিবন্ধন সফল হয়েছে!", "Registration successful!"));
+    reset();
+    setCurrentStep("shop");
+    setActiveTab("login");
+  } catch (error) {
+    console.error("Registration failed:", error);
+    toast.error(translate("নিবন্ধন ব্যর্থ হয়েছে!", "Registration failed!"));
+  }
+};
+
+  const validateCurrentStep = async () => {
+    switch (currentStep) {
+      case "shop":
+        return await trigger([
+          "companyInfo.shopName",
+          "companyInfo.ownerName",
+          "companyInfo.designation",
+          "companyInfo.city",
+          "companyInfo.area",
+          "categories",
+        ]);
+      case "personal":
+        return await trigger(["name", "email", "contactNo"]);
+      case "verify":
+        return verificationCode.length === 5;
+      case "password":
+        return await trigger(["password", "confirmPassword"]);
+      default:
+        return false;
+    }
+  };
+
+  const handleContinue = async () => {
+    const isValid = await validateCurrentStep();
+    if (!isValid) return;
+
+    switch (currentStep) {
+      case "shop":
+        setCurrentStep("personal");
+        break;
+      case "personal":
+        setCurrentStep("verify");
+        break;
+      case "verify":
+        setCurrentStep("password");
+        break;
+    }
+  };
+
+  const isStepValid = async (step: typeof currentStep) => {
+    const values = getValues();
+    
+    if (step === "shop") {
+      return (
+        values.companyInfo.shopName &&
+        values.companyInfo.ownerName &&
+        values.companyInfo.designation &&
+        values.companyInfo.city &&
+        values.companyInfo.area &&
+        values.categories.length > 0
+      );
+    }
+    
+    if (step === "personal") {
+      return values.name && values.email && values.contactNo;
+    }
+    
+    if (step === "verify") {
+      return verificationCode.length === 5;
+    }
+    
+    return false;
+  };
+
+  console.log(isStepValid)
 
   return (
-    <div className="max-w-[460px] w-full px-[20px] lg:px-0  dark:text-white">
+    <div className="max-w-[460px] w-full px-[20px] lg:px-0 dark:text-white">
       <div className="mb-4 lg:mb-[30px] text-[#EE5A2C] text-[16px]">
-        <Button
-          variant="outline"
-          className="p-2 h-auto text-[#EE5A2C] flex items-center gap-1"
-          onClick={handleBack}
-        >
-          <IoMdArrowBack />
-          {translate("পিছনে", "Back")}
-        </Button>
+        {currentStep !== "shop" && (
+          <Button
+            variant="outline"
+            className="p-2 h-auto text-[#EE5A2C] flex items-center gap-1"
+            onClick={handleBack}
+          >
+            <IoMdArrowBack />
+            {translate("পিছনে", "Back")}
+          </Button>
+        )}
       </div>
 
       <div className="px-[30px]">
@@ -239,10 +313,7 @@ const SellerCreate = () => {
                     )}
                   </p>
 
-                  <form
-                    className="space-y-4"
-                    onSubmit={handleShopDetailsSubmit}
-                  >
+                  <form className="space-y-4">
                     {/* Shop Name */}
                     <div>
                       <label
@@ -252,16 +323,19 @@ const SellerCreate = () => {
                         {translate("দোকানের নাম*", "Shop Name*")}
                       </label>
                       <input
-                        type="text"
                         id="shopName"
-                        name="shopName"
+                        {...register("companyInfo.shopName")}
                         placeholder={translate(
                           "আপনার কোম্পানির নাম লিখুন",
                           "Enter your company name"
                         )}
                         className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
-                        required
                       />
+                      {errors.companyInfo?.shopName && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.companyInfo.shopName.message}
+                        </p>
+                      )}
                     </div>
 
                     {/* Owner Name */}
@@ -273,16 +347,19 @@ const SellerCreate = () => {
                         {translate("মালিকের নাম*", "Owner Name*")}
                       </label>
                       <input
-                        type="text"
                         id="ownerName"
-                        name="ownerName"
+                        {...register("companyInfo.ownerName")}
                         placeholder={translate(
                           "মালিকের নাম লিখুন",
                           "Enter owner name"
                         )}
                         className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
-                        required
                       />
+                      {errors.companyInfo?.ownerName && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.companyInfo.ownerName.message}
+                        </p>
+                      )}
                     </div>
 
                     {/* Designation */}
@@ -295,9 +372,8 @@ const SellerCreate = () => {
                       </label>
                       <select
                         id="designation"
-                        name="designation"
+                        {...register("companyInfo.designation")}
                         className="w-full dark:bg-black dark:text-white px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
-                        required
                       >
                         <option value="">
                           {translate(
@@ -315,10 +391,15 @@ const SellerCreate = () => {
                           {translate("মালিক", "Owner")}
                         </option>
                       </select>
+                      {errors.companyInfo?.designation && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.companyInfo.designation.message}
+                        </p>
+                      )}
                     </div>
 
                     {/* City and Area */}
-                    <div className="flex flex-col sm:flex-row gap-4 ">
+                    <div className="flex flex-col sm:flex-row gap-4">
                       <div className="w-full sm:w-1/2">
                         <label
                           htmlFor="city"
@@ -328,10 +409,8 @@ const SellerCreate = () => {
                         </label>
                         <select
                           id="city"
-                          value={selectedCity}
-                          onChange={(e) => setSelectedCity(e.target.value)}
+                          {...register("companyInfo.city")}
                           className="w-full px-4 dark:bg-black dark:text-white py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
-                          required
                         >
                           <option value="">
                             {translate(
@@ -339,16 +418,17 @@ const SellerCreate = () => {
                               "Select a city"
                             )}
                           </option>
-                          <option value="Dhaka">
-                            {translate("ঢাকা", "Dhaka")}
-                          </option>
-                          <option value="Rajshahi">
-                            {translate("রাজশাহী", "Rajshahi")}
-                          </option>
-                          <option value="Khulna">
-                            {translate("খুলনা", "Khulna")}
-                          </option>
+                          {cities.map((city: City) => (
+                            <option key={city.id} value={city.id}>
+                              {translate(city.name, city.name)}
+                            </option>
+                          ))}
                         </select>
+                        {errors.companyInfo?.city && (
+                          <p className="text-red-500 text-sm mt-1">
+                            {errors.companyInfo.city.message}
+                          </p>
+                        )}
                       </div>
 
                       <div className="w-full sm:w-1/2">
@@ -360,11 +440,9 @@ const SellerCreate = () => {
                         </label>
                         <select
                           id="area"
-                          value={selectedArea}
-                          onChange={(e) => setSelectedArea(e.target.value)}
+                          {...register("companyInfo.area")}
                           disabled={!selectedCity}
                           className="w-full dark:bg-black dark:text-white px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C] disabled:bg-gray-100 disabled:cursor-not-allowed"
-                          required
                         >
                           <option value="">
                             {translate(
@@ -372,40 +450,23 @@ const SellerCreate = () => {
                               "Select an area"
                             )}
                           </option>
-                          {selectedCity === "Dhaka" && (
-                            <>
-                              <option value="Mirpur">
-                                {translate("মিরপুর", "Mirpur")}
+                          {areas
+                            .filter(
+                              (area: Area) =>
+                                area.cityId.toString() === selectedCity ||
+                                area.city.id.toString() === selectedCity
+                            )
+                            .map((area: Area) => (
+                              <option key={area.id} value={area.id}>
+                                {translate(area.name, area.name)}
                               </option>
-                              <option value="Dhanmondi">
-                                {translate("ধানমন্ডি", "Dhanmondi")}
-                              </option>
-                              <option value="Gulshan">
-                                {translate("গুলশান", "Gulshan")}
-                              </option>
-                            </>
-                          )}
-                          {selectedCity === "Rajshahi" && (
-                            <>
-                              <option value="Shaheb Bazar">
-                                {translate("সাহেব বাজার", "Shaheb Bazar")}
-                              </option>
-                              <option value="Boalia">
-                                {translate("বোয়ালিয়া", "Boalia")}
-                              </option>
-                            </>
-                          )}
-                          {selectedCity === "Khulna" && (
-                            <>
-                              <option value="Khalishpur">
-                                {translate("খালিশপুর", "Khalishpur")}
-                              </option>
-                              <option value="Sonadanga">
-                                {translate("সোনাডাঙ্গা", "Sonadanga")}
-                              </option>
-                            </>
-                          )}
+                            ))}
                         </select>
+                        {errors.companyInfo?.area && (
+                          <p className="text-red-500 text-sm mt-1">
+                            {errors.companyInfo.area.message}
+                          </p>
+                        )}
                       </div>
                     </div>
 
@@ -421,9 +482,8 @@ const SellerCreate = () => {
                         )}
                       </label>
                       <input
-                        type="text"
                         id="tradeLicense"
-                        name="tradeLicense"
+                        {...register("companyInfo.tradeLicense")}
                         placeholder={translate(
                           "ট্রেড লাইসেন্স লিখুন",
                           "Enter Trade License"
@@ -435,7 +495,7 @@ const SellerCreate = () => {
                     {/* Shop Category */}
                     <div className="relative" ref={dropdownRef}>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        {translate("দোকানের বিভাগ", "Shop Category")}
+                        {translate("দোকানের বিভাগ*", "Shop Category*")}
                       </label>
                       <div className="relative">
                         <div
@@ -452,20 +512,34 @@ const SellerCreate = () => {
                             </span>
                           ) : (
                             <div className="grid grid-cols-3 gap-2 dark:bg-black dark:text-white">
-                              {selectedCategories.map((category) => (
-                                <div
-                                  key={category}
-                                  className="bg-gray-100 dark:bg-black dark:text-white px-2 py-1 rounded-md text-sm flex items-center justify-between"
-                                >
-                                  <span className="truncate">{category}</span>
-                                  <button
-                                    onClick={(e) => removeCategory(category, e)}
-                                    className="ml-1 text-gray-400 hover:text-gray-600"
+                              {selectedCategories.map((categoryId) => {
+                                const category = categories.find(
+                                  (c: { id: number }) => c.id === categoryId
+                                );
+                                return (
+                                  <div
+                                    key={categoryId}
+                                    className="bg-gray-100 dark:bg-black dark:text-white px-2 py-1 rounded-md text-sm flex items-center justify-between"
                                   >
-                                    <FiX size={14} />
-                                  </button>
-                                </div>
-                              ))}
+                                    <span className="truncate">
+                                      {category
+                                        ? translate(
+                                            category.name,
+                                            category.name
+                                          )
+                                        : ""}
+                                    </span>
+                                    <button
+                                      onClick={(e) =>
+                                        removeCategory(categoryId, e)
+                                      }
+                                      className="ml-1 text-gray-400 hover:text-gray-600"
+                                    >
+                                      <FiX size={14} />
+                                    </button>
+                                  </div>
+                                );
+                              })}
                             </div>
                           )}
                           <input
@@ -478,7 +552,7 @@ const SellerCreate = () => {
                             onFocus={() => {
                               if (!isOpen) setIsOpen(true);
                             }}
-                            className="flex-1 min-w-[100px] outline-none bg-transparent "
+                            className="flex-1 min-w-[100px] outline-none bg-transparent"
                             placeholder={
                               selectedCategories.length === 0 ? "" : ""
                             }
@@ -524,32 +598,34 @@ const SellerCreate = () => {
                         <div className="absolute dark:bg-black dark:text-white z-10 mt-1 w-full bg-white shadow-lg rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 focus:outline-none max-h-60 overflow-auto">
                           <div className="py-1">
                             {filteredCategories.length > 0 ? (
-                              filteredCategories.map((category) => (
+                              filteredCategories.map((category: Category) => (
                                 <div
-                                  key={category}
-                                  className={`px-4 py-2 cursor-pointer  hover:dark:text-black hover:bg-gray-100 flex items-center ${
-                                    selectedCategories.includes(category)
+                                  key={category.id}
+                                  className={`px-4 py-2 cursor-pointer hover:dark:text-black hover:bg-gray-100 flex items-center ${
+                                    selectedCategories.includes(category.id)
                                       ? "bg-gray-100"
                                       : ""
                                   }`}
-                                  onClick={() => handleCategorySelect(category)}
+                                  onClick={() =>
+                                    handleCategorySelect(category.id)
+                                  }
                                 >
                                   <input
                                     type="checkbox"
                                     checked={selectedCategories.includes(
-                                      category
+                                      category.id
                                     )}
                                     readOnly
                                     className="mr-2 h-4 w-4 text-[#EE5A2C] focus:ring-[#EE5A2C] border-gray-300 rounded"
                                   />
                                   <span
                                     className={
-                                      selectedCategories.includes(category)
+                                      selectedCategories.includes(category.id)
                                         ? "text-[#EE5A2C]"
                                         : ""
                                     }
                                   >
-                                    {category}
+                                    {translate(category.name, category.name)}
                                   </span>
                                 </div>
                               ))
@@ -569,11 +645,18 @@ const SellerCreate = () => {
                           </div>
                         </div>
                       )}
+                      {errors.categories && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.categories.message}
+                        </p>
+                      )}
                     </div>
 
                     <Button
-                      type="submit"
+                      type="button"
                       className="w-full bg-[#EE5A2C] text-white h-auto max-h-[63px] py-[18px] rounded-full md:rounded-md hover:bg-orange-800 transition mt-6"
+                      onClick={handleContinue}
+                      disabled={isLoading}
                     >
                       {translate("চালিয়ে যান", "Continue")}
                     </Button>
@@ -590,30 +673,30 @@ const SellerCreate = () => {
               {translate("আপনার বিবরণ লিখুন", "Enter Your Details")}
             </h2>
 
-            <div className=" ">
-              <form
-                className="space-y-4"
-                onSubmit={handlePersonalDetailsSubmit}
-              >
+            <div className="">
+              <form className="space-y-4">
                 {/* Username */}
                 <div>
                   <label
-                    htmlFor="username"
+                    htmlFor="name"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
                     {translate("ব্যবহারকারীর নাম*", "Username*")}
                   </label>
                   <input
-                    type="text"
-                    id="username"
-                    name="username"
+                    id="name"
+                    {...register("name")}
                     placeholder={translate(
                       "আপনার ব্যবহারকারীর নাম লিখুন",
                       "Enter your username"
                     )}
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
-                    required
                   />
+                  {errors.name && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.name.message}
+                    </p>
+                  )}
                 </div>
 
                 {/* Email */}
@@ -625,42 +708,50 @@ const SellerCreate = () => {
                     {translate("ইমেইল*", "Email*")}
                   </label>
                   <input
-                    type="email"
                     id="email"
-                    name="email"
+                    {...register("email")}
                     placeholder={translate(
                       "আপনার ইমেইল লিখুন",
                       "Enter your email"
                     )}
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
-                    required
                   />
+                  {errors.email && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.email.message}
+                    </p>
+                  )}
                 </div>
 
                 {/* Phone Number */}
                 <div>
                   <label
-                    htmlFor="phone"
+                    htmlFor="contactNo"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
                     {translate("ফোন নম্বর*", "Phone Number*")}
                   </label>
                   <input
-                    type="tel"
-                    id="phone"
-                    name="phone"
+                    id="contactNo"
+                    {...register("contactNo")}
                     placeholder={translate(
                       "আপনার ফোন নম্বর লিখুন",
                       "Enter your phone number"
                     )}
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
-                    required
                   />
+                  {errors.contactNo && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.contactNo.message}
+                    </p>
+                  )}
                 </div>
 
                 <Button
-                  type="submit"
+                  type="button"
                   className="w-full bg-[#EE5A2C] text-white h-auto max-h-[63px] py-[18px] rounded-full md:rounded-md hover:bg-orange-800 transition mt-6"
+                  onClick={handleContinue}
+                  disabled={isLoading}
                 >
                   {translate("চালিয়ে যান", "Continue")}
                 </Button>
@@ -674,17 +765,14 @@ const SellerCreate = () => {
             </h2>
 
             <div>
-              <form className="space-y-6" onSubmit={handleVerificationSubmit}>
+              <form className="space-y-6">
                 <p className="text-gray-600 text-center">
                   {translate(
                     "আপনার ফোন নম্বরে পাঠানো ভেরিফিকেশন কোডটি লিখুন",
                     "Please enter the verification code sent to"
                   )}
                   <br />
-                  <span className="font-medium">
-                    {personalDetails.phone ||
-                      translate("আপনার ফোন নম্বর", "your phone number")}
-                  </span>
+                  <span className="font-medium">{watch("contactNo")}</span>
                 </p>
 
                 <div className="flex justify-center gap-2">
@@ -696,10 +784,9 @@ const SellerCreate = () => {
                       value={verificationCode[index] || ""}
                       onChange={(e) => {
                         const newCode = verificationCode.split("");
-                        newCode[index] = e.target.value.replace(/\D/g, ""); // Only allow numbers
+                        newCode[index] = e.target.value.replace(/\D/g, "");
                         setVerificationCode(newCode.join(""));
 
-                        // Auto focus to next input if a digit was entered
                         if (e.target.value && index < 4) {
                           const nextInput = document.getElementById(
                             `code-input-${index + 1}`
@@ -708,7 +795,6 @@ const SellerCreate = () => {
                         }
                       }}
                       onKeyDown={(e) => {
-                        // Handle backspace to move to previous input
                         if (
                           e.key === "Backspace" &&
                           !verificationCode[index] &&
@@ -748,8 +834,10 @@ const SellerCreate = () => {
                 </div>
 
                 <Button
-                  type="submit"
+                  type="button"
                   className="w-full bg-[#EE5A2C] text-white h-auto max-h-[63px] py-[18px] rounded-full md:rounded-md hover:bg-orange-800 transition mt-6"
+                  onClick={handleContinue}
+                  disabled={verificationCode.length !== 5 || isLoading}
                 >
                   {translate("চালিয়ে যান", "Continue")}
                 </Button>
@@ -763,29 +851,24 @@ const SellerCreate = () => {
             </h2>
 
             <div>
-              <form className="space-y-4" onSubmit={handlePasswordSubmit}>
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 {/* New Password */}
                 <div className="relative">
                   <label
-                    htmlFor="newPassword"
+                    htmlFor="password"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
                     {translate("পাসওয়ার্ড তৈরি করুন*", "Create Password*")}
                   </label>
                   <input
+                    id="password"
                     type={showNewPassword ? "text" : "password"}
-                    id="newPassword"
-                    value={password.newPassword}
-                    onChange={(e) =>
-                      setPassword({ ...password, newPassword: e.target.value })
-                    }
+                    {...register("password")}
                     placeholder={translate(
                       "অন্তত ৬টি অক্ষর হতে হবে",
                       "Must be 6 characters"
                     )}
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C] pr-10"
-                    minLength={6}
-                    required
                   />
                   <button
                     type="button"
@@ -804,6 +887,11 @@ const SellerCreate = () => {
                       "Must be at least 6 characters"
                     )}
                   </p>
+                  {errors.password && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.password.message}
+                    </p>
+                  )}
                 </div>
 
                 {/* Confirm Password */}
@@ -815,22 +903,14 @@ const SellerCreate = () => {
                     {translate("পাসওয়ার্ড নিশ্চিত করুন*", "Confirm Password*")}
                   </label>
                   <input
-                    type={showConfirmPassword ? "text" : "password"}
                     id="confirmPassword"
-                    value={password.confirmPassword}
-                    onChange={(e) =>
-                      setPassword({
-                        ...password,
-                        confirmPassword: e.target.value,
-                      })
-                    }
+                    type={showConfirmPassword ? "text" : "password"}
+                    {...register("confirmPassword")}
                     placeholder={translate(
                       "পাসওয়ার্ড পুনরায় লিখুন",
                       "Repeat Password"
                     )}
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C] pr-10"
-                    minLength={6}
-                    required
                   />
                   <button
                     type="button"
@@ -843,11 +923,17 @@ const SellerCreate = () => {
                       <FiEye size={18} />
                     )}
                   </button>
+                  {errors.confirmPassword && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.confirmPassword.message}
+                    </p>
+                  )}
                 </div>
 
                 <Button
                   type="submit"
                   className="w-full bg-[#EE5A2C] text-white h-auto max-h-[63px] py-[18px] rounded-full md:rounded-md hover:bg-orange-800 transition mt-6"
+                  disabled={isLoading}
                 >
                   {translate("নিবন্ধন সম্পূর্ণ করুন", "Complete Registration")}
                 </Button>

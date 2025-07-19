@@ -1,10 +1,10 @@
-
+import AddProducts from '@/components/seller/products/AddProduct'
 import React from 'react'
 
 const AddProduct = () => {
   return (
     <div>
-      {/* <VariationList /> */}
+      <AddProducts></AddProducts>
     </div>
   )
 }

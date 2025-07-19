@@ -5,6 +5,7 @@ import InputField from "@/components/ui/input";
 import ButtonLoader from "@/components/common/ButtonLoader";
 import { Button } from "@/components/ui/button";
 import { useGetAllVariationsQuery } from "@/redux/features/product/variationApi";
+import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 
 interface Variation {
   id: number;
@@ -39,6 +40,7 @@ const AddEditVariationOptionList = ({
   const [name, setName] = useState("");
   const [variationId, setVariationId] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const { translate } = useCustomTranslator();
 
   useEffect(() => {
     if (initialData) {
@@ -53,11 +55,11 @@ const AddEditVariationOptionList = ({
 
   const handleSubmit = () => {
     if (!name.trim()) {
-      setError("Name cannot be empty");
+      setError(translate("নাম খালি রাখা যাবে না", "Name cannot be empty"));
       return;
     }
     if (!variationId) {
-      setError("Please select a variation");
+      setError(translate("একটি বৈচিত্র্য নির্বাচন করুন", "Please select a variation"));
       return;
     }
 
@@ -72,45 +74,47 @@ const AddEditVariationOptionList = ({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-lg">
-            {initialData ? "Edit Variation Option" : "Add Variation Option"}
+            {initialData 
+              ? translate("বৈচিত্র্য অপশন সম্পাদনা করুন", "Edit Variation Option") 
+              : translate("বৈচিত্র্য অপশন যোগ করুন", "Add Variation Option")}
           </DialogTitle>
         </DialogHeader>
         
-        <div className="space-y-4 py-4">
+        <div className="space-y-4 py-4 ">
           <div className="space-y-2">
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Variation *
+              {translate("বৈচিত্র্য *", "Variation *")}
             </label>
             <select
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
+              className="w-full p-2 dark:bg-black dark:text-white border rounded focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
               value={variationId}
               onChange={(e) => {
                 setVariationId(Number(e.target.value));
-                if (error?.includes("Variation")) setError(null);
+                if (error?.includes(translate("বৈচিত্র্য", "Variation"))) setError(null);
               }}
             >
-              <option value={0}>Select Variation</option>
+              <option value={0}>{translate("বৈচিত্র্য নির্বাচন করুন", "Select Variation")}</option>
               {variationsData?.data?.map((variation: Variation) => (
                 <option key={variation.id} value={variation.id}>
                   {variation.name}
                 </option>
               ))}
             </select>
-            {error && error.includes("Variation") && (
+            {error && error.includes(translate("বৈচিত্র্য", "Variation")) && (
               <p className="text-sm text-red-500 mt-1">{error}</p>
             )}
           </div>
 
           <InputField
             type="text"
-            label="Name *"
-            placeholder="Enter option name"
+            label={translate("নাম *", "Name *")}
+            placeholder={translate("অপশন নাম লিখুন", "Enter option name")}
             value={name}
             onChange={(e) => {
               setName(e.target.value);
-              if (error?.includes("Name")) setError(null);
+              if (error?.includes(translate("নাম", "Name"))) setError(null);
             }}
-            errorMessage={error && error.includes("Name") ? error : undefined}
+            errorMessage={error && error.includes(translate("নাম", "Name")) ? error : undefined}
           />
         </div>
 
@@ -120,7 +124,7 @@ const AddEditVariationOptionList = ({
             onClick={onClose}
             className="border-gray-300 hover:bg-gray-50 cursor-pointer"
           >
-            Cancel
+            {translate("বাতিল", "Cancel")}
           </Button>
           <Button
             onClick={handleSubmit}
@@ -128,7 +132,9 @@ const AddEditVariationOptionList = ({
             disabled={!name.trim() || !variationId || loading}
           >
             {loading && <ButtonLoader />} 
-            {initialData ? "Update" : "Add"} Variation Option
+            {initialData 
+              ? translate("আপডেট করুন", "Update") 
+              : translate("যোগ করুন", "Add")} 
           </Button>
         </DialogFooter>
       </DialogContent>

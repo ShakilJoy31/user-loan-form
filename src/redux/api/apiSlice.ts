@@ -87,5 +87,6 @@ export const apiSlice = createApi({
     "PreOrder",
     "subcategoryOffer",
     "variation",
+    "seller-login",
   ],
 });

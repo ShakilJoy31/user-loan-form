@@ -1,74 +1,99 @@
 "use client";
 
+import ButtonLoader from "@/components/common/ButtonLoader";
 import { Button } from "@/components/ui/button";
+import { useLoginSellerMutation } from "@/redux/features/seller-auth/sellerLogin";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 
 export const SellerLogin = () => {
-  const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loginSeller] = useLoginSellerMutation();
+  const [signUpLoader, setSignUpLoader] = useState(false);
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSignUpLoader(true);
+
+    try {
+      const payload = { email, password };
+      const response = await loginSeller(payload).unwrap();
+      if (response?.success === true) {
+        router.push('/add-product');
+      }
+    } catch (error: unknown) {
+      let errorMessage = 'Login failed';
+
+      if (typeof error === 'object' && error !== null && 'data' in error) {
+        const apiError = error as { data?: { message?: string } };
+        errorMessage = apiError.data?.message || errorMessage;
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+    } finally {
+      setSignUpLoader(false)
+    }
+  };
+
+
   return (
-    <div className=" dark:text-white">
-    <form className="space-y-4">
-      <p className="text-gray-600 mb-6 text-center">
-        Login to your seller account
-      </p>
-      
-      {/* Email */}
-      <div>
-        <label
-          htmlFor="email"
-          className="block text-sm font-medium text-gray-700 mb-1"
+    <div>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <p className="text-gray-600 mb-6 text-center">
+          Login to your seller account
+        </p>
+
+        {/* Email */}
+        <div>
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Email*
+          </label>
+          <input onChange={(e) => setEmail(e.target.value)}
+            type="email"
+            id="email"
+            placeholder="Enter your email"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
+          />
+        </div>
+
+        {/* Password */}
+        <div>
+          <label
+            htmlFor="password"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Password*
+          </label>
+          <input onChange={(e) => setPassword(e.target.value)}
+            type="password"
+            id="password"
+            placeholder="Enter your password"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
+          />
+        </div>
+
+        <Button
+          type="submit"
+          className="w-full bg-[#EE5A2C] text-white py-3 rounded-md hover:bg-orange-800 transition mt-6"
         >
-          Email*
-        </label>
-        <input
-          type="email"
-          id="email"
-          placeholder="Enter your email"
-          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
-        />
-      </div>
-
-      {/* Password */}
-       <div>
-      <label
-        htmlFor="password"
-        className="block text-sm font-medium text-gray-700 mb-1"
-      >
-        Password*
-      </label>
-      <div className="relative">
-        <input
-          type={showPassword ? "text" : "password"}
-          id="password"
-          placeholder="Enter your password"
-          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C] pr-10"
-        />
-        <button
-          type="button"
-          className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700"
-          onClick={() => setShowPassword(!showPassword)}
-        >
-          {showPassword ? <FaEyeSlash /> : <FaEye />}
-        </button>
-      </div>
-    </div>
-
-      <Button
-        type="submit"
-        className="w-full bg-[#EE5A2C] text-white h-auto max-h-[63px] py-[18px] rounded-full md:rounded-md hover:bg-orange-800 transition mt-6"
-      >
-        Sign In
-      </Button>
-    </form>
-
-    <div className="flex justify-center mt-5 lg:mt-10 w-full">
-        <Button variant={"outline"} className="w-full py-[18px]">
-            <FcGoogle /> 
-            <span className="ml-1 text-[16px] font-normal">Sign Up with Google</span>
+          {
+            signUpLoader ? <ButtonLoader></ButtonLoader> : 'Sign in'
+          }
         </Button>
-    </div>
+      </form>
+
+      <div className="flex justify-center mt-5 lg:mt-10 w-full">
+        <Button variant={"outline"} className="w-full py-[18px]">
+          <FcGoogle />
+          <span className="ml-1 text-[16px] font-normal">Sign Up with Google</span>
+        </Button>
+      </div>
     </div>
   );
 };

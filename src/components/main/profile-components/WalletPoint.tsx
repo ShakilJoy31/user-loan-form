@@ -4,9 +4,40 @@ import icons1 from "../../../assets/Icons/icons.png";
 import { FiSearch } from "react-icons/fi";
 import { Button } from "@/components/ui/button";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
+import { useState } from "react";
+import Pagination from "@/components/common/Pagination";
 
 const WalletPoint = () => {
   const { translate } = useCustomTranslator();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(4); // Default to showing 4 items per page
+
+  // Mock data for the table
+  const activities = [
+    { id: 1, orderId: "#CUST001", name: "ম্যাজিক কার্পেট", date: "০১-০১-২০২৫", amount: -228 },
+    { id: 2, orderId: "#CUST002", name: "জাদুর আলখাল্লা", date: "০২-০১-২০২৫", amount: -150 },
+    { id: 3, orderId: "#CUST003", name: "উড়ন্ত গালিচা", date: "০৩-০১-২০২৫", amount: -320 },
+    { id: 4, orderId: "#CUST004", name: "অদৃশ্য টুপি", date: "০৪-০১-২০২৫", amount: -180 },
+    { id: 5, orderId: "#CUST005", name: "ড্রাগনের ডিম", date: "০৫-০১-২০২৫", amount: -420 },
+    { id: 6, orderId: "#CUST006", name: "জাদুর লাঠি", date: "০৬-০১-২০২৫", amount: -210 },
+  ];
+
+  // Calculate paginated activities
+  const totalPages = Math.ceil(activities.length / pageSize);
+  const indexOfLastActivity = currentPage * pageSize;
+  const indexOfFirstActivity = indexOfLastActivity - pageSize;
+  const currentActivities = activities.slice(indexOfFirstActivity, indexOfLastActivity);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    // Optional: Scroll to top when page changes
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handlePageSizeChange = (size: number) => {
+    setPageSize(size);
+    setCurrentPage(1); // Reset to first page when changing page size
+  };
 
   return (
     <div className="lg:mt-[45px] space-y-6 md:space-y-10 px-4 sm:px-0">
@@ -73,29 +104,27 @@ const WalletPoint = () => {
               </tr>
             </thead>
             <tbody className="text-gray-700">
-              {[1, 2, 3, 4].map((_, i) => (
-                <tr key={i} className="border-t border-[#808089]">
-                  <td className="py-3 px-2 sm:px-4">#CUST001</td>
-                  <td className="py-3 px-2 sm:px-4">{translate("ম্যাজিক কার্পেট", "Magic Carpet")}</td>
-                  <td className="py-3 px-2 sm:px-4">{translate("০১-০১-২০২৫", "01-01-2025")}</td>
-                  <td className="py-3 px-2 sm:px-4 font-bold text-[#EE5A2C]">-228 Tk</td>
+              {currentActivities.map((activity, i) => (
+                <tr key={activity.id} className="border-t border-[#808089]">
+                  <td className="py-3 px-2 sm:px-4">{activity.orderId}</td>
+                  <td className="py-3 px-2 sm:px-4">{translate(activity.name, activity.name)}</td>
+                  <td className="py-3 px-2 sm:px-4">{translate(activity.date, activity.date)}</td>
+                  <td className="py-3 px-2 sm:px-4 font-bold text-[#EE5A2C]">{activity.amount} Tk</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-        <div className="flex justify-center mt-4">
-          <nav className="flex items-center space-x-2">
-            <Button variant={'outline'} className="px-2 sm:px-3 py-1 text-gray-400 bg-gray-100 rounded-md" disabled>
-              {translate("পূর্ববর্তী", "Previous")}
-            </Button>
-            <Button variant={'outline'} className="px-2 sm:px-3 py-1 bg-[#EE5A2C] text-white rounded-md">1</Button>
-            <Button variant={'outline'} className="px-2 sm:px-3 py-1 text-gray-700 bg-gray-100 rounded-md">2</Button>
-            <Button variant={'outline'} className="px-2 sm:px-3 py-1 text-gray-700 bg-gray-100 rounded-md">3</Button>
-            <Button variant={'outline'} className="px-2 sm:px-3 py-1 text-white bg-[#EE5A2C] rounded-md">
-              {translate("পরবর্তী", "Next")}
-            </Button>
-          </nav>
+
+        {/* Pagination */}
+        <div className="mt-4 px-4">
+          <Pagination
+            totalPages={totalPages}
+            currentPage={currentPage}
+            pageSize={pageSize}
+            onPageChange={handlePageChange}
+            onPageSizeChange={handlePageSizeChange}
+          />
         </div>
       </div>
 

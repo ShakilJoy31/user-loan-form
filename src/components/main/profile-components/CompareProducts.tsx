@@ -159,7 +159,7 @@ export default function CompareTab() {
             </div>
 
             {/* Pagination */}
-            <div className="flex justify-center mt-6 gap-2">
+            {/* <div className="flex justify-center mt-6 gap-2">
                 <Button variant={'outline'} className="text-sm px-3 py-1 border border-gray-300 rounded-md hover:bg-gray-100">
                     {translate("পূর্ববর্তী", "Previous")}
                 </Button>
@@ -177,7 +177,7 @@ export default function CompareTab() {
                 <Button variant={'outline'} className="text-sm px-3 py-1 border border-gray-300 rounded-md hover:bg-gray-100">
                     {translate("পরবর্তী", "Next")}
                 </Button>
-            </div>
+            </div> */}
         </div>
     );
 }

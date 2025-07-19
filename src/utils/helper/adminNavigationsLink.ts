@@ -560,9 +560,40 @@ const adminDashboardOffer: INavigationLink = {
   ],
 };
 
+const adminDashboardLocation: INavigationLink = {
+  icon: MdCategory,
+  label: {
+    en: "Locations",
+    bn: "অফার",
+  },
+  key: "location",
+  href: "/proyojon-admin-portal/location",
+  subLinks: [
+   {
+      icon: FaProductHunt,
+      label: {
+        en: "City",
+        bn: "অফার তৈরি করুন",
+      },
+      key: "create-city",
+      href: "/proyojon-admin-portal/create-city",
+    }, 
+   {
+      icon: FaProductHunt,
+      label: {
+        en: "Area",
+        bn: "অফার তৈরি করুন",
+      },
+      key: "create-area",
+      href: "/proyojon-admin-portal/create-area",
+    }, 
+  ],
+};
+
 export const adminNavigationLinks: INavigationLink[] = [
   { ...admindashboardRootLinks },
   { ...adminDashboardProduct },
   { ...adminDashboardOrders },
   { ...adminDashboardOffer },
+  { ...adminDashboardLocation },
 ];

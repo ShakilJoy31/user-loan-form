@@ -15,49 +15,49 @@ import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 
-interface Variation {
+interface City {
   id: number;
   name: string;
 }
 
-interface AddEditVariationProps {
+interface AddEditCityProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (id: number | null, name: string) => void;
-  currentVariation: Variation | null;
+  currentCity: City | null;
   loading: boolean;
-    err?: {
+  err?: {
     data?: {
       message?: string;
     };
   };
 }
 
-const AddEditVariation = ({
+const AddEditCityList = ({
   isOpen,
   onClose,
   onSave,
-  currentVariation,
+  currentCity,
   loading,
   err,
-}: AddEditVariationProps) => {
-  const [name, setName] = useState(currentVariation?.name || "");
+}: AddEditCityProps) => {
+  const [name, setName] = useState(currentCity?.name || "");
   const [error, setError] = useState<string | null>(null);
   const { translate } = useCustomTranslator();
 
   useEffect(() => {
-    setName(currentVariation?.name || "");
+    setName(currentCity?.name || "");
     setError(null);
-  }, [currentVariation]);
+  }, [currentCity]);
 
   const handleSubmit = () => {
     if (!name.trim()) {
-      setError(translate("বৈচিত্র্যের নাম খালি রাখা যাবে না", "Variation name cannot be empty"));
+      setError(translate("শহরের নাম খালি রাখা যাবে না", "City name cannot be empty"));
       return;
     }
 
     try {
-      onSave(currentVariation?.id || null, name.trim());
+      onSave(currentCity?.id || null, name.trim());
     } catch (error) {
       console.error(error);
       toast.error(translate("কিছু ভুল হয়েছে! দয়া করে আবার চেষ্টা করুন।", "Something went wrong! Please try again."));
@@ -70,13 +70,13 @@ const AddEditVariation = ({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            {currentVariation ? translate("বৈচিত্র্য সম্পাদনা করুন", "Edit Variation") : translate("বৈচিত্র্য যোগ করুন", "Add Variation")}
+            {currentCity ? translate("শহর সম্পাদনা করুন", "Edit City") : translate("শহর যোগ করুন", "Add City")}
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
           <InputField
             type="text"
-            placeholder={translate("বৈচিত্র্যের নাম লিখুন", "Enter variation name")}
+            placeholder={translate("শহরের নাম লিখুন", "Enter city name")}
             value={name}
             onChange={(e) => {
               setName(e.target.value);
@@ -114,4 +114,4 @@ const AddEditVariation = ({
   );
 };
 
-export default AddEditVariation;
+export default AddEditCityList;

@@ -1,3 +1,4 @@
+// app/products/page.tsx
 "use client";
 
 import FilterSidebar from "@/components/main/products/FilterSidebar";
@@ -7,6 +8,7 @@ import React, { useState } from "react";
 import productImage from '@/assets/Products_Image/mobile.png';
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
+import Pagination from "@/utils/helper/Pagination";
 
 const ProductsShowPage: React.FC = () => {
     const { translate } = useCustomTranslator();
@@ -24,7 +26,7 @@ const ProductsShowPage: React.FC = () => {
     // State for sidebar visibility and pagination
     const [showSidebar, setShowSidebar] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
-    const productsPerPage = 16;
+    const [productsPerPage, setProductsPerPage] = useState(16);
 
     // Calculate current products
     const indexOfLastProduct = currentPage * productsPerPage;
@@ -38,11 +40,17 @@ const ProductsShowPage: React.FC = () => {
     };
 
     // Change page
-    const paginate = (pageNumber: number) => {
+    const handlePageChange = (pageNumber: number) => {
         if (pageNumber > 0 && pageNumber <= totalPages) {
             setCurrentPage(pageNumber);
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
+    };
+
+    // Change page size
+    const handlePageSizeChange = (size: number) => {
+        setProductsPerPage(size);
+        setCurrentPage(1); // Reset to first page when changing page size
     };
 
     return (
@@ -104,52 +112,13 @@ const ProductsShowPage: React.FC = () => {
 
                         {/* Pagination */}
                         <div className="flex justify-center pt-[40px]">
-                            <nav className="inline-flex rounded-md shadow-sm overflow-hidden border border-gray-300">
-                                {/* Previous Button */}
-                                <button
-                                    onClick={() => paginate(currentPage - 1)}
-                                    disabled={currentPage === 1}
-                                    className={`px-4 py-2 hover:cursor-pointer text-sm font-medium ${currentPage === 1 ? 'bg-gray-100 text-gray-400' : 'bg-white text-gray-600 hover:bg-gray-100'}`}
-                                >
-                                    {translate("পূর্ববর্তী", "Previous")}
-                                </button>
-
-                                {/* Page Numbers */}
-                                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                                    let pageNumber;
-                                    if (totalPages <= 5) {
-                                        pageNumber = i + 1;
-                                    } else if (currentPage <= 3) {
-                                        pageNumber = i + 1;
-                                    } else if (currentPage >= totalPages - 2) {
-                                        pageNumber = totalPages - 4 + i;
-                                    } else {
-                                        pageNumber = currentPage - 2 + i;
-                                    }
-
-                                    return (
-                                        <button
-                                            key={pageNumber}
-                                            onClick={() => paginate(pageNumber)}
-                                            className={`px-4 py-2 hover:cursor-pointer text-sm font-medium border-r border-l border-gray-300 ${currentPage === pageNumber
-                                                ? "bg-orange-500 text-white"
-                                                : "bg-white text-gray-700 hover:bg-gray-100"
-                                                }`}
-                                        >
-                                            {pageNumber}
-                                        </button>
-                                    );
-                                })}
-
-                                {/* Next button */}
-                                <button
-                                    onClick={() => paginate(currentPage + 1)}
-                                    disabled={currentPage === totalPages}
-                                    className={`px-4 py-2 hover:cursor-pointer text-sm font-medium ${currentPage === totalPages ? 'bg-gray-100 text-gray-400' : 'bg-white text-gray-600 hover:bg-gray-100'}`}
-                                >
-                                    {translate("পরবর্তী", "Next")}
-                                </button>
-                            </nav>
+                            <Pagination
+                                totalPages={totalPages}
+                                currentPage={currentPage}
+                                pageSize={productsPerPage}
+                                onPageChange={handlePageChange}
+                                onPageSizeChange={handlePageSizeChange}
+                            />
                         </div>
                     </motion.div>
                 </div>
