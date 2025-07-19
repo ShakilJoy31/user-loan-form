@@ -25,6 +25,7 @@ import ButtonLoader from "@/components/common/ButtonLoader";
 import toast from "react-hot-toast";
 import Pagination from "@/components/common/Pagination";
 import AddEditVariation from "./AddEditVariation";
+import Table from "@/components/ui/table";
 
 interface Variation {
   id: number;
@@ -57,7 +58,7 @@ const VariationList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [currentVariation, setCurrentVariation] = useState<Variation | null>(null);
-  const [selectedRows, setSelectedRows] = useState<number[]>([]);
+  const [selectedRows, setSelectedRows] = useState<Variation[]>([]);
   const [pagination, setPagination] = useState<PaginationState>({
     sort: "asc",
     page: 1,
@@ -111,9 +112,11 @@ const VariationList = () => {
     }));
   };
 
-  const handleRowSelect = (id: number) => {
+  const handleRowSelect = (row: Variation) => {
     setSelectedRows((prev) =>
-      prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id]
+      prev.some(selected => selected.id === row.id) 
+        ? prev.filter(selected => selected.id !== row.id) 
+        : [...prev, row]
     );
   };
 
@@ -121,14 +124,14 @@ const VariationList = () => {
     if (selectedRows.length === variations.length) {
       setSelectedRows([]);
     } else {
-      setSelectedRows(variations.map((row: Variation) => row.id));
+      setSelectedRows([...variations]);
     }
   };
 
   const handleDeleteSelected = async () => {
     try {
-      for (const id of selectedRows) {
-        await deleteVariation(id).unwrap();
+      for (const row of selectedRows) {
+        await deleteVariation(row.id).unwrap();
       }
       toast.success("Selected variations deleted successfully");
       setSelectedRows([]);
@@ -173,6 +176,54 @@ const VariationList = () => {
   const handleEditVariation = (variation: Variation) => {
     setCurrentVariation(variation);
     setModalOpen(true);
+  };
+
+  const renderRow = (row: Variation, index: number) => {
+    const dynamicIndex = index + 1 + (pagination.page - 1) * pagination.size;
+    
+    return (
+      <>
+        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+          {dynamicIndex}
+        </td>
+        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+          {row.name}
+        </td>
+        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 flex justify-center gap-2">
+          <button
+            className="text-blue-500 hover:text-blue-700 cursor-pointer"
+            onClick={() => handleEditVariation(row)}
+          >
+            <FiEdit />
+          </button>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <button className="text-red-500 hover:text-red-700 cursor-pointer">
+                <FiTrash2 />
+              </button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  Are you absolutely sure?
+                </AlertDialogTitle>
+                <AlertDialogDescription>
+                  This will permanently delete this variation.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => handleDeleteVariation(row.id)}
+                >
+                  {deleteLoading ? <ButtonLoader /> : "Confirm"}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </td>
+      </>
+    );
   };
 
   if (isLoading) {
@@ -224,89 +275,14 @@ const VariationList = () => {
       )}
 
       {!isLoading && !isError && (
-        <div className="bg-white rounded-lg shadow overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    <input
-                      type="checkbox"
-                      checked={selectedRows.length === variations.length && variations.length > 0}
-                      onChange={handleSelectAll}
-                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                    />
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    SL
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Name
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {variations.map((row: Variation, index: number) => {
-                  const dynamicIndex = index + 1 + (pagination.page - 1) * pagination.size;
-                  return (
-                    <tr key={row.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <input
-                          type="checkbox"
-                          checked={selectedRows.includes(row.id)}
-                          onChange={() => handleRowSelect(row.id)}
-                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                        />
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {dynamicIndex}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {row.name}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 flex justify-center gap-2">
-                        <button
-                          className="text-blue-500 hover:text-blue-700 cursor-pointer"
-                          onClick={() => handleEditVariation(row)}
-                        >
-                          <FiEdit />
-                        </button>
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <button className="text-red-500 hover:text-red-700 cursor-pointer">
-                              <FiTrash2 />
-                            </button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>
-                                Are you absolutely sure?
-                              </AlertDialogTitle>
-                              <AlertDialogDescription>
-                                This will permanently delete this variation.
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Cancel</AlertDialogCancel>
-                              <AlertDialogAction
-                                onClick={() => handleDeleteVariation(row.id)}
-                              >
-                                {deleteLoading ? <ButtonLoader /> : "Confirm"}
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <Table<Variation>
+          headers={["SL", "Name", "Actions"]}
+          data={variations}
+          renderRow={renderRow}
+          selectedRows={selectedRows}
+          onRowSelect={handleRowSelect}
+          onSelectAll={handleSelectAll}
+        />
       )}
 
       {(deleteError || addError || editError) && (

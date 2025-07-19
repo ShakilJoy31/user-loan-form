@@ -5,17 +5,21 @@ import InputField from "@/components/ui/input";
 import ButtonLoader from "@/components/common/ButtonLoader";
 import { Button } from "@/components/ui/button";
 import { useGetAllVariationsQuery } from "@/redux/features/product/variationApi";
-import toast from "react-hot-toast";
+
+interface Variation {
+  id: number;
+  name: string;
+}
 
 interface VariationOption {
   id: number;
   name: string;
-  value: string;
   variationId: number;
   variation: {
     name: string;
   };
 }
+
 interface AddEditVariationOptionListProps {
   isOpen: boolean;
   onClose: () => void;
@@ -32,24 +36,24 @@ const AddEditVariationOptionList = ({
   loading,
 }: AddEditVariationOptionListProps) => {
   const { data: variationsData } = useGetAllVariationsQuery({ page: 1, size: 1000 });
-  const [value, setValue] = useState(initialData?.value || "");
-  const [variationId, setVariationId] = useState(initialData?.variationId || 0);
+  const [name, setName] = useState("");
+  const [variationId, setVariationId] = useState(0);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (initialData) {
-      setValue(initialData.value);
-      setVariationId(initialData.variationId);
+      setName(initialData.name || "");
+      setVariationId(initialData.variationId || 0);
     } else {
-      setValue("");
+      setName("");
       setVariationId(0);
     }
     setError(null);
-  }, [initialData]);
+  }, [initialData, isOpen]);
 
   const handleSubmit = () => {
-    if (!value.trim()) {
-      setError("Value cannot be empty");
+    if (!name.trim()) {
+      setError("Name cannot be empty");
       return;
     }
     if (!variationId) {
@@ -57,16 +61,10 @@ const AddEditVariationOptionList = ({
       return;
     }
 
-    try {
-      onSubmit({
-        name: value.trim(),
-        variationId: variationId
-      });
-    } catch (error) {
-      console.error(error);
-      toast.error("Something went wrong! Please try again.");   
-      setError(null);
-    }
+    onSubmit({
+      name: name.trim(),
+      variationId: variationId
+    });
   };
 
   return (
@@ -84,15 +82,15 @@ const AddEditVariationOptionList = ({
               Variation *
             </label>
             <select
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
               value={variationId}
               onChange={(e) => {
                 setVariationId(Number(e.target.value));
-                setError(null);
+                if (error?.includes("Variation")) setError(null);
               }}
             >
               <option value={0}>Select Variation</option>
-              {variationsData?.data.map((variation: { id: number; name: string }) => (
+              {variationsData?.data?.map((variation: Variation) => (
                 <option key={variation.id} value={variation.id}>
                   {variation.name}
                 </option>
@@ -106,13 +104,13 @@ const AddEditVariationOptionList = ({
           <InputField
             type="text"
             label="Name *"
-            placeholder="Enter option value"
-            value={value}
+            placeholder="Enter option name"
+            value={name}
             onChange={(e) => {
-              setValue(e.target.value);
-              setError(null);
+              setName(e.target.value);
+              if (error?.includes("Name")) setError(null);
             }}
-            errorMessage={error && error.includes("Value") ? error : undefined}
+            errorMessage={error && error.includes("Name") ? error : undefined}
           />
         </div>
 
@@ -120,14 +118,14 @@ const AddEditVariationOptionList = ({
           <Button 
             variant="outline" 
             onClick={onClose}
-            className="border-gray-300 hover:bg-gray-50"
+            className="border-gray-300 hover:bg-gray-50 cursor-pointer"
           >
             Cancel
           </Button>
           <Button
             onClick={handleSubmit}
-            className="bg-blue-500 hover:bg-blue-600 text-white"
-            disabled={!value.trim() || !variationId || loading}
+            className="bg-[#EE5A2C] hover:bg-orange-800 text-white cursor-pointer"
+            disabled={!name.trim() || !variationId || loading}
           >
             {loading && <ButtonLoader />} 
             {initialData ? "Update" : "Add"} Variation Option

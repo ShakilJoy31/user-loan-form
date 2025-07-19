@@ -24,10 +24,12 @@ import DataLoader from "@/components/common/DataLoader";
 import ButtonLoader from "@/components/common/ButtonLoader";
 import toast from "react-hot-toast";
 import Pagination from "@/components/common/Pagination";
+import Table from "@/components/ui/table";
+import { useGetAllVariationsQuery } from "@/redux/features/product/variationApi";
 
 interface VariationOption {
   id: number;
-  name: string;  // Add this line
+  name: string;
   value: string;
   variationId: number;
   variation: {
@@ -40,12 +42,19 @@ interface VariationOptionFormData {
   variationId: number;
 }
 
+interface Variation {
+  id: number;
+  name: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 const VariationOptionList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState<"add" | "edit">("add");
   const [selectedOption, setSelectedOption] = useState<VariationOption | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedRows, setSelectedRows] = useState<number[]>([]);
+  const [selectedRows, setSelectedRows] = useState<VariationOption[]>([]);
   const [pagination, setPagination] = useState({
     sort: "asc",
     page: 1,
@@ -58,11 +67,18 @@ const VariationOptionList = () => {
     },
   });
 
+  // Fetch variation options
   const { data, refetch, isLoading } = useGetAllVariationOptionsQuery({
     sort: pagination.sort,
     page: pagination.page,
     size: pagination.size,
     search: searchTerm,
+  });
+
+  // Fetch all variations to map IDs to names
+  const { data: variationsData } = useGetAllVariationsQuery({ 
+    page: 1, 
+    size: 1000 
   });
 
   const [createVariationOption, { isLoading: addLoading }] = 
@@ -73,6 +89,13 @@ const VariationOptionList = () => {
     useDeleteVariationOptionMutation();
 
   const variationOptions = data?.data || [];
+  const variations = variationsData?.data || [];
+
+  // Create a map of variation IDs to names for easy lookup
+  const variationMap = variations.reduce((map: Record<number, string>, variation: Variation) => {
+  map[variation.id] = variation.name;
+  return map;
+}, {} as Record<number, string>);
 
   useEffect(() => {
     if (data) {
@@ -141,9 +164,11 @@ const VariationOptionList = () => {
     }
   };
 
-  const handleRowSelect = (id: number) => {
+  const handleRowSelect = (row: VariationOption) => {
     setSelectedRows((prev) =>
-      prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id]
+      prev.some(selected => selected.id === row.id) 
+        ? prev.filter(selected => selected.id !== row.id) 
+        : [...prev, row]
     );
   };
 
@@ -151,13 +176,15 @@ const VariationOptionList = () => {
     if (selectedRows.length === variationOptions.length) {
       setSelectedRows([]);
     } else {
-      setSelectedRows(variationOptions.map((row: { id: number }) => row.id));
+      setSelectedRows([...variationOptions]);
     }
   };
 
   const handleBulkDelete = async () => {
     try {
-      await Promise.all(selectedRows.map(id => deleteVariationOption(id).unwrap()));
+      await Promise.all(selectedRows.map(row => 
+        deleteVariationOption(row.id).unwrap()
+      ));
       toast.success(`${selectedRows.length} variation options deleted successfully`);
       setSelectedRows([]);
       refetch();
@@ -171,12 +198,73 @@ const VariationOptionList = () => {
     return <DataLoader />;
   }
 
+  const headers = ["SL", "Name", "Variation", "Actions"];
+
+  const renderRow = (row: VariationOption, index: number) => {
+    const dynamicIndex = index + 1 + (pagination.page - 1) * pagination.size;
+    const variationName = variationMap[row.variationId] || "Unknown Variation";
+    
+    return (
+      <>
+        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+          {dynamicIndex}
+        </td>
+        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+          {row.name}
+        </td>
+        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+          {variationName}
+        </td>
+        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={() => handleEditOption(row)}
+              className="text-blue-500 hover:text-blue-700 p-1 rounded hover:bg-blue-50 cursor-pointer"
+              title="Edit"
+            >
+              <FiEdit size={18} />
+            </button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <button 
+                  className="text-red-500 hover:text-red-700 p-1 rounded hover:bg-red-50 cursor-pointer"
+                  title="Delete"
+                >
+                  <FiTrash2 size={18} />
+                </button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>
+                    Are you absolutely sure?
+                  </AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will permanently delete this variation option.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() => handleDeleteOption(row.id)}
+                    className="bg-red-500 hover:bg-red-600"
+                  >
+                    {deleteLoading && <ButtonLoader />} Confirm
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+        </td>
+      </>
+    );
+  };
+
   return (
     <div className="bg-gray-100 min-h-screen p-4">
       <div className="flex justify-between items-center mb-5">
         <h1 className="text-2xl font-semibold">Variation Options</h1>
         <button
-          className="flex items-center bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
+          className="flex items-center bg-[#EE5A2C] cursor-pointer text-white px-4 py-2 rounded hover:bg-orange-800 transition-colors"
           onClick={handleAddOption}
         >
           <Plus className="mr-2" /> Add Variation Option
@@ -188,7 +276,7 @@ const VariationOptionList = () => {
           <input
             type="text"
             placeholder="Search..."
-            className="border rounded pl-10 pr-3 py-2 text-gray-700 w-60 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border rounded pl-10 pr-3 py-2 text-gray-700 w-60 focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -224,114 +312,14 @@ const VariationOptionList = () => {
         )}
       </div>
 
-      {variationOptions.length > 0 ? (
-        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    <input
-                      type="checkbox"
-                      checked={selectedRows.length === variationOptions.length && variationOptions.length > 0}
-                      onChange={handleSelectAll}
-                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                    />
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    SL
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Value
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Variation
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {variationOptions.map((row: VariationOption, index: number) => {
-                  const dynamicIndex = index + 1 + (pagination.page - 1) * pagination.size;
-                  return (
-                    <tr key={row.id} className={selectedRows.includes(row.id) ? "bg-blue-50" : ""}>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <input
-                          type="checkbox"
-                          checked={selectedRows.includes(row.id)}
-                          onChange={() => handleRowSelect(row.id)}
-                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                        />
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {dynamicIndex}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {row.value}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {row.variation?.name}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <div className="flex items-center space-x-2">
-                          <button
-                            onClick={() => handleEditOption(row)}
-                            className="text-blue-500 hover:text-blue-700 p-1 rounded hover:bg-blue-50"
-                            title="Edit"
-                          >
-                            <FiEdit size={18} />
-                          </button>
-                          <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                              <button 
-                                className="text-red-500 hover:text-red-700 p-1 rounded hover:bg-red-50"
-                                title="Delete"
-                              >
-                                <FiTrash2 size={18} />
-                              </button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>
-                                  Are you absolutely sure?
-                                </AlertDialogTitle>
-                                <AlertDialogDescription>
-                                  This will permanently delete this variation option.
-                                </AlertDialogDescription>
-                              </AlertDialogHeader>
-                              <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction
-                                  onClick={() => handleDeleteOption(row.id)}
-                                  className="bg-red-500 hover:bg-red-600"
-                                >
-                                  {deleteLoading && <ButtonLoader />} Confirm
-                                </AlertDialogAction>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      ) : (
-        <div className="bg-white rounded-lg shadow-sm p-8 text-center">
-          <p className="text-gray-500 text-lg">No variation options found.</p>
-          <button
-            className="mt-4 flex items-center mx-auto bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
-            onClick={handleAddOption}
-          >
-            <Plus className="mr-2" /> Add Your First Variation Option
-          </button>
-        </div>
-      )}
+      <Table<VariationOption>
+        headers={headers}
+        data={variationOptions}
+        renderRow={renderRow}
+        selectedRows={selectedRows}
+        onRowSelect={handleRowSelect}
+        onSelectAll={handleSelectAll}
+      />
 
       <div className="mt-6">
         <Pagination
