@@ -6,6 +6,7 @@ import { ThemeProvider } from "./lib/ThemeProvider";
 import { LocaleProvider } from "./lib/LocaleProvider";
 import { appConfiguration } from "@/utils/constant/appConfiguration";
 import Providers from "./lib/Providers";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,6 +41,7 @@ export default function RootLayout({
           >
             <LocaleProvider>{children}</LocaleProvider>
           </ThemeProvider>
+          <Toaster/>
         </Providers>
       </body>
     </html>

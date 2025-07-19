@@ -1,11 +1,18 @@
+import { Editor } from "@tiptap/react";
 import { useState, useRef, useEffect } from "react";
 
 interface ImageAttributes {
   src: string;
-  width: string;
-  align: "left" | "center" | "right";
+  alt?: string;
+  title?: string;
+  width?: string;
+  align?: "left" | "center" | "right";
 }
-const ImageButton = ({ editor }) => {
+
+interface ImageButtonProps {
+  editor: Editor;
+}
+const ImageButton = ({ editor }: ImageButtonProps) => {
   const [showInput, setShowInput] = useState(false);
   const [url, setUrl] = useState("");
   const [selectedImage, setSelectedImage] = useState<ImageAttributes | null>(
@@ -15,8 +22,11 @@ const ImageButton = ({ editor }) => {
 
   // Close dropdown when clicking outside
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         closeDropdown();
       }
     };
@@ -68,26 +78,26 @@ const ImageButton = ({ editor }) => {
     }
   };
 
-const handleFileUpload = (e) => {
-  const file = e.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      editor
-        .chain()
-        .focus()
-        .setImage({
-          src: e.target?.result,
-          width: selectedImage?.width || '100%' 
-        })
-        .run();
-      closeDropdown();
-    };
-    reader.readAsDataURL(file);
-  }
-};
+ const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e: ProgressEvent<FileReader>) => {
+        editor
+          .chain()
+          .focus()
+          .setImage({
+            src: e.target?.result as string,
+            width: selectedImage?.width || '100%',
+          })
+          .run();
+        closeDropdown();
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
-  const updateImageAttributes = (attributes) => {
+  const updateImageAttributes = (attributes: Partial<ImageAttributes>) => {
     editor.chain().focus().updateAttributes("image", attributes).run();
   };
 
@@ -123,7 +133,7 @@ const handleFileUpload = (e) => {
       </button>
 
       {showInput && (
-        <div className="absolute z-10 mt-1 p-2 bg-white rounded shadow-lg border border-gray-200 w-64">
+        <div className="absolute z-10 mt-1 p-2 bg-white dark:bg-background rounded shadow-lg border border-gray-200 w-64">
           <input
             type="text"
             placeholder="Enter image URL"
@@ -144,7 +154,7 @@ const handleFileUpload = (e) => {
             <button
               type="button"
               onClick={closeDropdown}
-              className="px-2 py-1 text-sm bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+              className="px-2 py-1 text-sm bg-gray-200 dark:bg-background dark:border text-gray-700 rounded hover:bg-gray-300 hover:dark:bg-background"
             >
               Cancel
             </button>
@@ -159,7 +169,7 @@ const handleFileUpload = (e) => {
             />
             <label
               htmlFor="image-upload"
-              className="block w-full px-2 py-1 text-sm text-center bg-gray-100 text-gray-700 rounded border border-gray-300 hover:bg-gray-200 cursor-pointer"
+              className="block w-full px-2 py-1 text-sm text-center bg-gray-100 dark:bg-background text-gray-700 dark:text-gray-300 rounded border border-gray-300 hover:bg-gray-200 cursor-pointer"
             >
               Upload Image
             </label>
@@ -189,13 +199,13 @@ const handleFileUpload = (e) => {
               Alignment
             </label>
             <div className="flex space-x-1">
-              {["left", "center", "right"].map((align) => (
+              {(["left", "center", "right"] as const).map((align) => (
                 <button
                   key={align}
                   type="button"
                   onClick={() => updateImageAttributes({ align })}
                   className={`p-1 flex-1 text-sm rounded ${
-                    selectedImage.align === align
+                    selectedImage?.align === align
                       ? "bg-blue-500 text-white"
                       : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                   }`}

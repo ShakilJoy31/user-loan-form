@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { FiEdit, FiSearch, FiTrash2 } from "react-icons/fi";
-import defimg from "../../../assets/images/category/def.webp";
+import defimg from "../../../assets/category/def.webp";
 import Image from "next/image";
 import {
   AlertDialog,
@@ -131,10 +131,10 @@ export default function CategoryList() {
   }
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
+    <div className="p-6 bg-gray-100 dark:bg-background min-h-screen">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-semibold text-gray-800">Categories</h1>
+        <h1 className="text-2xl font-semibold text-gray-800 dark:text-gray-300">Categories</h1>
 
         <Dialog open={modalOpen} onOpenChange={setModalOpen}>
           <DialogTrigger asChild>
@@ -181,7 +181,7 @@ export default function CategoryList() {
             {data.data.map((category: Category) => (
               <div
                 key={category.id}
-                className="relative bg-white shadow-md rounded-lg overflow-hidden group"
+                className="relative bg-white dark:bg-background dark:border shadow-md rounded-lg overflow-hidden group"
               >
                 <div className="relative h-48">
                   {category.image !== "N/A" ? (

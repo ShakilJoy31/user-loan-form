@@ -1,4 +1,9 @@
-const ListButtons = ({ editor }) => {
+import { Editor } from "@tiptap/react";
+
+interface ImageButtonProps {
+  editor: Editor;
+}
+const ListButtons = ({ editor }:ImageButtonProps) => {
   return (
     <div className="flex border-r border-gray-200 pr-2">
       <button

@@ -1,6 +1,11 @@
+import { Editor } from "@tiptap/react";
 import { useState } from "react";
 
-const TableButton = ({ editor }) => {
+
+interface ImageButtonProps {
+  editor: Editor;
+}
+const TableButton = ({ editor }:ImageButtonProps) => {
   const [showOptions, setShowOptions] = useState(false);
   const [rows, setRows] = useState(3);
   const [cols, setCols] = useState(3);
@@ -41,7 +46,7 @@ const TableButton = ({ editor }) => {
       </button>
 
       {showOptions && (
-        <div className="absolute z-10 mt-1 p-2 bg-white rounded shadow-lg border border-gray-200 w-48">
+        <div className="absolute z-10 mt-1 p-2 bg-white dark:bg-background rounded shadow-lg border border-gray-200 w-48">
           <div className="grid grid-cols-2 gap-2 mb-2">
             <div>
               <label className="block text-xs text-gray-500 mb-1">Rows</label>
