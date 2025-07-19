@@ -29,20 +29,8 @@ import Pagination from "@/components/common/Pagination";
 import { toast } from "react-hot-toast";
 import AddCategory from "./AddCategory";
 import EditCategory from "./EditCategory";
+import { Category } from "@/types/category";
 
-interface Category {
-  id: number;
-  name: string;
-  serialNo?: string;
-  description?: string;
-  isShippedFree?: boolean;
-  isFullPay?: boolean;
-  image: string;
-  banner?: string;
-  _count: {
-    Product: number;
-  };
-}
 interface MetaData {
   page: number;
   size: number;
@@ -134,7 +122,9 @@ export default function CategoryList() {
     <div className="p-6 bg-gray-100 dark:bg-background min-h-screen">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-semibold text-gray-800 dark:text-gray-300">Categories</h1>
+        <h1 className="text-2xl font-semibold text-gray-800 dark:text-gray-300">
+          Categories
+        </h1>
 
         <Dialog open={modalOpen} onOpenChange={setModalOpen}>
           <DialogTrigger asChild>
@@ -215,7 +205,7 @@ export default function CategoryList() {
                           variant="default"
                           className="flex justify-start"
                           size="sm"
-                          onClick={() => setActionItem(category)}
+                          onClick={() => setActionItem(category as Category)}
                         >
                           <FiEdit />
                           Edit
@@ -224,7 +214,18 @@ export default function CategoryList() {
                       <DialogContent className="sm:max-w-[1000px]">
                         <EditCategory
                           setModalOpen={setEditModalOpen}
-                          actionItem={actionItem}
+                          actionItem={
+                            actionItem ?? {
+                              id: 0,
+                              name: "",
+                              serialNo: "",
+                              image: "",
+                              banner: "",
+                              description: "",
+                              isShippedFree: false,
+                              isFullPay: false,
+                            }
+                          }
                         />
                       </DialogContent>
                     </Dialog>
