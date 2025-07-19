@@ -1,4 +1,3 @@
-// types/category.ts
 export interface CategoryCore {
   id: number;
   name: string;
