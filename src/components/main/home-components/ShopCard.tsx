@@ -1,7 +1,6 @@
 import React from "react";
 import { FiMapPin, FiBookmark } from "react-icons/fi";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
 
 interface ShopCardProps {
   name: string;

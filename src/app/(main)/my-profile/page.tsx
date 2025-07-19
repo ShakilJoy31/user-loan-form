@@ -21,58 +21,10 @@ import CompareTab from "@/components/main/profile-components/CompareProducts";
 import ShippingAddressTab from "@/components/main/profile-components/ShipingAddress";
 import ChangePasswordTab from "@/components/main/profile-components/ChangeAddress";
 import { Button } from "@/components/ui/button";
-
-const tabs = [
-  {
-    id: "update-profile",
-    label: "Customer Info",
-    icon: (active: boolean) => (
-      <CircleUser className={`w-5 h-5 ${active ? "text-white" : "text-black"}`} />
-    ),
-  },
-  {
-    id: "order",
-    label: "Order",
-    icon: () => <AiOutlineShoppingCart className="w-5 h-5" />,
-  },
-  {
-    id: "wallet-point",
-    label: "Wallet Point",
-    icon: () => <span className="w-5 h-5">💳</span>,
-  },
-  {
-    id: "return-order",
-    label: "Return Order",
-    icon: () => <ShoppingBag className="w-5 h-5" />,
-  },
-  {
-    id: "track-order",
-    label: "Track Order",
-    icon: () => <SiToggltrack className="w-5 h-5" />,
-  },
-  {
-    id: "wishlist",
-    label: "Wish-list",
-    icon: () => <Heart className="w-5 h-5" />,
-  },
-  {
-    id: "compare",
-    label: "Compare",
-    icon: () => <GitCompareArrows className="w-5 h-5" />,
-  },
-  {
-    id: "shipping-info",
-    label: "Shipping Address",
-    icon: () => <span className="w-5 h-5">📍</span>,
-  },
-  {
-    id: "change-password",
-    label: "Change Password",
-    icon: () => <MdOutlineLock className="w-5 h-5" />,
-  },
-];
+import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 
 const AccountPage = () => {
+  const { translate } = useCustomTranslator();
   const [activeTab, setActiveTab] = useState(() => {
     if (typeof window !== "undefined") {
       const result = shareWithLocal('get', 'activeAccountTab');
@@ -103,6 +55,56 @@ const AccountPage = () => {
     setMobileSidebarOpen(false);
   };
 
+  const tabs = [
+    {
+      id: "update-profile",
+      label: translate("গ্রাহক তথ্য", "Customer Info"),
+      icon: (active: boolean) => (
+        <CircleUser className={`w-5 h-5 ${active ? "text-white" : "text-black"}`} />
+      ),
+    },
+    {
+      id: "order",
+      label: translate("অর্ডার", "Order"),
+      icon: () => <AiOutlineShoppingCart className="w-5 h-5" />,
+    },
+    {
+      id: "wallet-point",
+      label: translate("ওয়ালেট পয়েন্ট", "Wallet Point"),
+      icon: () => <span className="w-5 h-5">💳</span>,
+    },
+    {
+      id: "return-order",
+      label: translate("রিটার্ন অর্ডার", "Return Order"),
+      icon: () => <ShoppingBag className="w-5 h-5" />,
+    },
+    {
+      id: "track-order",
+      label: translate("অর্ডার ট্র্যাক", "Track Order"),
+      icon: () => <SiToggltrack className="w-5 h-5" />,
+    },
+    {
+      id: "wishlist",
+      label: translate("ইচ্ছেতালিকা", "Wish-list"),
+      icon: () => <Heart className="w-5 h-5" />,
+    },
+    {
+      id: "compare",
+      label: translate("তুলনা", "Compare"),
+      icon: () => <GitCompareArrows className="w-5 h-5" />,
+    },
+    {
+      id: "shipping-info",
+      label: translate("শিপিং ঠিকানা", "Shipping Address"),
+      icon: () => <span className="w-5 h-5">📍</span>,
+    },
+    {
+      id: "change-password",
+      label: translate("পাসওয়ার্ড পরিবর্তন", "Change Password"),
+      icon: () => <MdOutlineLock className="w-5 h-5" />,
+    },
+  ];
+
   return (
     <div className="max-w-[1280px] mx-auto px-4 lg:px-0 mb-[37px] mt-16 pt-[40px]">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 w-full">
@@ -123,7 +125,9 @@ const AccountPage = () => {
           style={{ top: "80px" }}
         >
           <div className="mb-5">
-            <h3 className="text-sm text-gray-500 px-2">Main menu</h3>
+            <h3 className="text-sm text-gray-500 px-2">
+              {translate("প্রধান মেনু", "Main menu")}
+            </h3>
           </div>
           <ul className="space-y-3">
             {tabs.map((tab) => {
@@ -137,7 +141,7 @@ const AccountPage = () => {
                       : "text-gray-700 hover:bg-gray-100"
                     }`}
                 >
-                  {tab.icon(isActive)}
+                  {typeof tab.icon === 'function' ? tab.icon(isActive) : tab.icon}
                   <span>{tab.label}</span>
                 </li>
               );
@@ -174,9 +178,8 @@ const AccountPage = () => {
                   return <ShippingAddressTab />;
                 case "change-password":
                   return <ChangePasswordTab />;
-
                 default:
-                  return <UpdateProfile />
+                  return <UpdateProfile />;
               }
             })()}
           </div>

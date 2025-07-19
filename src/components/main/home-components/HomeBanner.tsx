@@ -12,8 +12,6 @@ import bannerImage1 from '@/assets/Home/banner (1).webp'
 import bannerImage2 from '@/assets/Home/banner (2).webp'
 import { FaArrowRight } from "react-icons/fa6";
 import bannerImage3 from '@/assets/Home/banner (3).webp'
-import { Button } from "@/components/ui/button";
-import { P } from "@/components/ui/paragraph";
 
 interface BannerItem {
     _id: Key | null | undefined;

@@ -2,7 +2,7 @@
 
 import { publicNavigations } from "@/utils/helper/publicNavigationsLink";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Menu, X, Heart, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import { FaUser } from "react-icons/fa";
@@ -19,36 +19,9 @@ import { Button } from "@/components/ui/button";
 const PublicNav = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
   const router = useRouter();
 
-  // Initialize dark mode from localStorage or system preference
-  useEffect(() => {
-    const savedMode = localStorage.getItem('darkMode');
-    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-    if (savedMode !== null) {
-      setDarkMode(savedMode === 'true');
-    } else if (systemPrefersDark) {
-      setDarkMode(true);
-    }
-  }, []);
-
-  // Apply dark mode class to document
-  useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('darkMode', 'true');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('darkMode', 'false');
-    }
-  }, [darkMode]);
-
-  // const toggleDarkMode = () => {
-  //   setDarkMode(!darkMode);
-  // };
-
+  
   // Properly typed animation variants for sidebar
   const sidebarVariants: Variants = {
     hidden: {

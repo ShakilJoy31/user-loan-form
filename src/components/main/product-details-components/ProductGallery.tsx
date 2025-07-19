@@ -5,11 +5,13 @@ import { FaArrowLeftLong, FaArrowRightLong } from "react-icons/fa6";
 import shopLogo from '@/assets/Products_Image/switch.jpg'
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 
-const thumbnails = [shopLogo.src, shopLogo.src, shopLogo.src, shopLogo.src ];
+const thumbnails = [shopLogo.src, shopLogo.src, shopLogo.src, shopLogo.src];
 
 export default function ProductGallery() {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const { translate } = useCustomTranslator();
 
     const nextImage = () => {
         setCurrentImageIndex((prevIndex) => 
@@ -24,31 +26,29 @@ export default function ProductGallery() {
     };
 
     return (
-        <div className="w-full space-y-[16px] flex flex-col items-center">
+        <div className="w-full space-y-[16px] flex flex-col">
             {/* Main Image */}
             <div className="">
                 <Image 
                     style={{borderRadius: '16px'}}
                     src={thumbnails[currentImageIndex]}
-                    alt="Main Product"
+                    alt={translate("প্রধান পণ্য", "Main Product")}
                     width={350}
                     height={350}
                     className="border w-full h-full lg:w-[502px] lg:h-[439px] bg-[#F7EDE1] pt-[24px] pr-[42px] pb-[17px] pl-[34px]"
                 />
             </div>
 
-            {/* Thumbnails with arrows - Centered container */}
-            <div className="flex items-center justify-center gap-4 w-full">
-                {/* Left Arrow */}
+            {/* Thumbnails with arrows */}
+            <div className="flex items-center gap-4 w-full">
                 <Button variant={'outline'}
                     onClick={prevImage}
                     className="p-2 text-gray-600 hover:text-[#f15a29] transition-colors"
-                    aria-label="Previous image"
+                    aria-label={translate("পূর্ববর্তী ছবি", "Previous image")}
                 >
                     <FaArrowLeftLong size={20} />
                 </Button>
 
-                {/* Thumbnails */}
                 <div className="flex gap-2">
                     {thumbnails.map((thumb, idx) => (
                         <div
@@ -58,7 +58,7 @@ export default function ProductGallery() {
                         >
                             <Image
                                 src={thumb}
-                                alt={`Thumbnail ${idx}`}
+                                alt={translate(`থাম্বনেইল ${idx}`, `Thumbnail ${idx}`)}
                                 width={70}
                                 height={70}
                                 className="rounded-[16px] cursor-pointer"
@@ -67,11 +67,10 @@ export default function ProductGallery() {
                     ))}
                 </div>
 
-                {/* Right Arrow */}
                 <Button variant={'outline'}
                     onClick={nextImage}
                     className="p-2 text-gray-600 hover:text-[#f15a29] transition-colors"
-                    aria-label="Next image"
+                    aria-label={translate("পরবর্তী ছবি", "Next image")}
                 >
                     <FaArrowRightLong size={20} />
                 </Button>

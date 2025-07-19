@@ -6,12 +6,13 @@ import TopbarFilter from "@/components/main/products/TopbarFilter";
 import React, { useState } from "react";
 import productImage from '@/assets/Products_Image/mobile.png';
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
-import { Button } from "@/components/ui/button";
+import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 
 const ProductsShowPage: React.FC = () => {
+    const { translate } = useCustomTranslator();
     // Mock product data
     const allProducts = Array(32).fill({
-        name: "TDX Sinkers",
+        name: translate("TDX সিঙ্কার্স", "TDX Sinkers"),
         currentPrice: 145,
         originalPrice: 205,
         discount: 30,
@@ -47,7 +48,9 @@ const ProductsShowPage: React.FC = () => {
     return (
         <main className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center gap-x-2 mb-[37px] mt-16 pt-[40px]">
-                <span className="hover:cursor-pointer">Home</span> / <span className="hover:cursor-pointer">Shop Details</span> / <span className="hover:cursor-pointer text-[#EE5A2C]">Buy Now</span>
+                <span className="hover:cursor-pointer">{translate("হোম", "Home")}</span> / 
+                <span className="hover:cursor-pointer">{translate("দোকানের বিবরণ", "Shop Details")}</span> / 
+                <span className="hover:cursor-pointer text-[#EE5A2C]">{translate("এখনই কিনুন", "Buy Now")}</span>
             </div>
 
             <LayoutGroup>
@@ -60,8 +63,8 @@ const ProductsShowPage: React.FC = () => {
                                 initial={{ x: -300, opacity: 0 }}
                                 animate={{ x: 0, opacity: 1 }}
                                 exit={{ x: -300, opacity: 0 }}
-                                transition={{ 
-                                    type: "spring", 
+                                transition={{
+                                    type: "spring",
                                     stiffness: 400,
                                     damping: 30,
                                     duration: 0.2
@@ -76,7 +79,7 @@ const ProductsShowPage: React.FC = () => {
                     {/* Main Content - Right Column */}
                     <motion.div
                         layout
-                        className={`flex-1 min-w-0`}  // Ensures content doesn't overflow
+                        className={`flex-1 min-w-0`}
                         transition={{
                             type: "spring",
                             stiffness: 400,
@@ -86,8 +89,8 @@ const ProductsShowPage: React.FC = () => {
                     >
                         {/* Top Filter Bar */}
                         <div className="mb-6">
-                            <TopbarFilter 
-                                toggleSidebar={toggleSidebar} 
+                            <TopbarFilter
+                                toggleSidebar={toggleSidebar}
                                 showSidebar={showSidebar}
                             />
                         </div>
@@ -103,13 +106,13 @@ const ProductsShowPage: React.FC = () => {
                         <div className="flex justify-center pt-[40px]">
                             <nav className="inline-flex rounded-md shadow-sm overflow-hidden border border-gray-300">
                                 {/* Previous Button */}
-                                <Button variant={'outline'} 
+                                <button
                                     onClick={() => paginate(currentPage - 1)}
                                     disabled={currentPage === 1}
                                     className={`px-4 py-2 hover:cursor-pointer text-sm font-medium ${currentPage === 1 ? 'bg-gray-100 text-gray-400' : 'bg-white text-gray-600 hover:bg-gray-100'}`}
                                 >
-                                    Previous
-                                </Button>
+                                    {translate("পূর্ববর্তী", "Previous")}
+                                </button>
 
                                 {/* Page Numbers */}
                                 {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
@@ -125,27 +128,27 @@ const ProductsShowPage: React.FC = () => {
                                     }
 
                                     return (
-                                        <Button variant={'outline'}
+                                        <button
                                             key={pageNumber}
                                             onClick={() => paginate(pageNumber)}
                                             className={`px-4 py-2 hover:cursor-pointer text-sm font-medium border-r border-l border-gray-300 ${currentPage === pageNumber
-                                                    ? "bg-orange-500 text-white"
-                                                    : "bg-white text-gray-700 hover:bg-gray-100"
+                                                ? "bg-orange-500 text-white"
+                                                : "bg-white text-gray-700 hover:bg-gray-100"
                                                 }`}
                                         >
                                             {pageNumber}
-                                        </Button>
+                                        </button>
                                     );
                                 })}
 
-                                {/* Next Button */}
-                                <Button variant={'outline'}
+                                {/* Next button */}
+                                <button
                                     onClick={() => paginate(currentPage + 1)}
                                     disabled={currentPage === totalPages}
                                     className={`px-4 py-2 hover:cursor-pointer text-sm font-medium ${currentPage === totalPages ? 'bg-gray-100 text-gray-400' : 'bg-white text-gray-600 hover:bg-gray-100'}`}
                                 >
-                                    Next
-                                </Button>
+                                    {translate("পরবর্তী", "Next")}
+                                </button>
                             </nav>
                         </div>
                     </motion.div>

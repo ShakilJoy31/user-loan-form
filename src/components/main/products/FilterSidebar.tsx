@@ -2,12 +2,14 @@
 
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
+import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 
 interface FilterSidebarProps {
     onClose?: () => void;
 }
 
 export default function FilterSidebar({ onClose }: FilterSidebarProps) {
+    const { translate } = useCustomTranslator();
     const [price, setPrice] = useState([20, 250]);
     const [isMobile, setIsMobile] = useState(false);
 
@@ -35,13 +37,12 @@ export default function FilterSidebar({ onClose }: FilterSidebarProps) {
 
             {/* Product Category */}
             <div className="mb-6">
-                <h2 className="font-semibold text-base mb-3">Product Category</h2>
+                <h2 className="font-semibold text-base mb-3">
+                    {translate("পণ্য বিভাগ", "Product Category")}
+                </h2>
                 <hr className="mb-3 border-t border-gray-200" />
-                {["Phone", "Phone", "Phone"].map((item, idx) => (
-                    <div
-                        key={idx}
-                        className="flex items-center justify-between mb-3 text-sm"
-                    >
+                {[translate("ফোন", "Phone"), translate("ফোন", "Phone"), translate("ফোন", "Phone")].map((item, idx) => (
+                    <div key={idx} className="flex items-center justify-between mb-3 text-sm">
                         <label className="inline-flex items-center gap-2 text-gray-700">
                             <input
                                 type="checkbox"
@@ -56,10 +57,11 @@ export default function FilterSidebar({ onClose }: FilterSidebarProps) {
 
             {/* Price Filter */}
             <div className="mb-6">
-                <h2 className="font-semibold text-base mb-3">Filter By Price</h2>
+                <h2 className="font-semibold text-base mb-3">
+                    {translate("দাম দ্বারা ফিল্টার করুন", "Filter By Price")}
+                </h2>
                 <hr className="mb-3 border-t border-gray-200" />
 
-                {/* Custom Styled Slider */}
                 <div className="relative mb-2">
                     <input
                         type="range"
@@ -73,28 +75,27 @@ export default function FilterSidebar({ onClose }: FilterSidebarProps) {
                                 }%, #ddd ${((price[0] - 20) / 230) * 100}%, #ddd 100%)`,
                         }}
                     />
-
                 </div>
 
                 <p className="text-sm font-semibold text-gray-800">
-                    Price : ${price[0]} – ${price[1]}
+                    {translate("দাম:", "Price:")} ${price[0]} – ${price[1]}
                 </p>
 
                 <Button variant={'outline'} className="mt-3 w-full bg-[#F53E32] text-white font-semibold text-sm py-2 rounded shadow hover:bg-red-600 transition duration-200">
-                    Filter
+                    {translate("ফিল্টার", "Filter")}
                 </Button>
             </div>
 
             {/* Color */}
             <div className="mb-6">
                 <h2 className="font-semibold text-base mb-3 border-t border-gray-200 pt-4">
-                    Color
+                    {translate("রঙ", "Color")}
                 </h2>
                 <div className="space-y-2">
                     {[
-                        { name: "Blue", color: "bg-blue-500" },
-                        { name: "Yellow", color: "bg-yellow-300" },
-                        { name: "Red", color: "bg-red-500" },
+                        { name: translate("নীল", "Blue"), color: "bg-blue-500" },
+                        { name: translate("হলুদ", "Yellow"), color: "bg-yellow-300" },
+                        { name: translate("লাল", "Red"), color: "bg-red-500" },
                     ].map((item, idx) => (
                         <div key={idx} className="flex items-center gap-2">
                             <input
@@ -111,16 +112,16 @@ export default function FilterSidebar({ onClose }: FilterSidebarProps) {
             {/* Weight */}
             <div className="mb-6">
                 <h2 className="font-semibold text-base mb-3 border-t border-gray-200 pt-4">
-                    Weight
+                    {translate("ওজন", "Weight")}
                 </h2>
                 <div className="flex flex-wrap gap-2">
                     {[
-                        "Vegetables",
-                        "Juice",
-                        "Food",
-                        "Dry Fruits",
-                        "Vegetables",
-                        "Juice",
+                        translate("সবজি", "Vegetables"),
+                        translate("জুস", "Juice"),
+                        translate("খাবার", "Food"),
+                        translate("শুকনো ফল", "Dry Fruits"),
+                        translate("সবজি", "Vegetables"),
+                        translate("জুস", "Juice"),
                     ].map((tag, idx) => (
                         <span
                             key={idx}
@@ -135,7 +136,7 @@ export default function FilterSidebar({ onClose }: FilterSidebarProps) {
             {/* Brands */}
             <div>
                 <h2 className="font-semibold text-base mb-3 border-t border-gray-200 pt-4">
-                    Brands
+                    {translate("ব্র্যান্ড", "Brands")}
                 </h2>
                 {[
                     ["Acefast", 20],
@@ -147,10 +148,7 @@ export default function FilterSidebar({ onClose }: FilterSidebarProps) {
                     ["Hoco", 40],
                     ["Huawei", 40],
                 ].map(([brand, count], idx) => (
-                    <div
-                        key={idx}
-                        className="flex items-center justify-between mb-2 text-sm"
-                    >
+                    <div key={idx} className="flex items-center justify-between mb-2 text-sm">
                         <label className="inline-flex items-center gap-2 text-gray-700">
                             <input
                                 type="checkbox"
