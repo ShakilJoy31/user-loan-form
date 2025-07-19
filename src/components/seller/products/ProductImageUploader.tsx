@@ -19,7 +19,7 @@ export default function ProductImageUploader() {
   const [addThumbnail, { isLoading: isUploading }] = useAddThumbnailMutation();
   const [altText, setAltText] = useState("");
   const [gallery, setGallery] = useState<UploadedImage[]>([]);
-  const [uploadProgress, setUploadProgress] = useState<Record<number, number>>({});
+  const [uploadProgress, ] = useState<Record<number, number>>({});
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -102,6 +102,7 @@ export default function ProductImageUploader() {
       );
 
       toast.success("Images uploaded successfully!");
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       toast.error("Some images failed to upload");
     }
@@ -124,6 +125,8 @@ export default function ProductImageUploader() {
         isMain: img.isMain || false
       }));
   };
+
+  console.log(getHostedImageUrls)
 
   return (
     <div className="border rounded-xl p-6 w-full">

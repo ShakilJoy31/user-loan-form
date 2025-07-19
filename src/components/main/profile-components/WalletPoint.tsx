@@ -2,7 +2,6 @@
 import Image from "next/image";
 import icons1 from "../../../assets/Icons/icons.png";
 import { FiSearch } from "react-icons/fi";
-import { Button } from "@/components/ui/button";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 import { useState } from "react";
 import Pagination from "@/components/common/Pagination";
@@ -104,7 +103,7 @@ const WalletPoint = () => {
               </tr>
             </thead>
             <tbody className="text-gray-700">
-              {currentActivities.map((activity, i) => (
+              {currentActivities.map((activity, ) => (
                 <tr key={activity.id} className="border-t border-[#808089]">
                   <td className="py-3 px-2 sm:px-4">{activity.orderId}</td>
                   <td className="py-3 px-2 sm:px-4">{translate(activity.name, activity.name)}</td>

@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, MessageSquare, Plus, Pencil, Code2, X } from "lucide-react";
+import { ChevronDown, MessageSquare, Plus,  X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import Variation from "./Variation";
 import ProductImageUploader from "./ProductImageUploader";
@@ -14,7 +14,7 @@ const AddProducts = () => {
     const [seoDescription, setSeoDescription] = useState(
         "This item 15 delivers cutting-edge performance with the A16 Bionic chip, an immersive Super Retina XDR display, advanced dual-camera system, and exceptional battery life, all encased in stunning aerospace-grade aluminum."
     );
-    const { handleSubmit, setValue, watch, control } = useForm();
+    const {  control } = useForm();
 
     return (
         <div className="relative bg-white p-6 border rounded-md shadow-sm mt-[15px] ">

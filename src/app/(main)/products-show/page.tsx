@@ -8,7 +8,7 @@ import React, { useState } from "react";
 import productImage from '@/assets/Products_Image/mobile.png';
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
-import Pagination from "@/utils/helper/Pagination";
+import Pagination from "@/components/common/Pagination";
 
 const ProductsShowPage: React.FC = () => {
     const { translate } = useCustomTranslator();

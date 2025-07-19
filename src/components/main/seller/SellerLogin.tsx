@@ -31,6 +31,7 @@ export const SellerLogin = () => {
         const apiError = error as { data?: { message?: string } };
         errorMessage = apiError.data?.message || errorMessage;
       } else if (error instanceof Error) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         errorMessage = error.message;
       }
     } finally {
