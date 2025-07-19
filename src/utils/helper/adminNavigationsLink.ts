@@ -50,8 +50,8 @@ const adminDashboardProduct: INavigationLink = {
             en: "Variation List",
             bn: "বিভাগ অনুযায়ী তারতম্য"
           },
-          key: "variation",
-          href: "/proyojon-admin-portal/variation",
+          key: "variation-list",
+          href: "/proyojon-admin-portal/variation-list",
         },
         {
           icon: MdCategory,

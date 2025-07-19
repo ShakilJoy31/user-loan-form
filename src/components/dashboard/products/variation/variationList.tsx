@@ -1,4 +1,4 @@
-import Table from "@/components/ui/table";
+"use client"
 import { AlertCircle, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { FiEdit, FiSearch, FiTrash2 } from "react-icons/fi";
@@ -26,26 +26,9 @@ import toast from "react-hot-toast";
 import Pagination from "@/components/common/Pagination";
 import AddEditVariation from "./AddEditVariation";
 
-interface VariationOption {
+interface Variation {
   id: number;
-  value: string;
-  variationId: number;
-  variation: {
-    name: string;
-  };
-}
-
-interface VariationOptionFormData {
-  value: string;
-  variationId: number;
-}
-
-interface ApiError {
-  data?: {
-    message?: string;
-  };
-  status?: number;
-  error?: string;
+  name: string;
 }
 
 interface PaginationMeta {
@@ -62,11 +45,18 @@ interface PaginationState {
   meta: PaginationMeta;
 }
 
+interface ApiError {
+  data?: {
+    message?: string;
+  };
+  status?: number;
+  error?: string;
+}
+
 const VariationList = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalType, setModalType] = useState<"add" | "edit">("add");
-  const [selectedOption, setSelectedOption] = useState<VariationOption | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
+  const [currentVariation, setCurrentVariation] = useState<Variation | null>(null);
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
   const [pagination, setPagination] = useState<PaginationState>({
     sort: "asc",
@@ -80,21 +70,21 @@ const VariationList = () => {
     },
   });
 
-  const { data, refetch, isLoading } = useGetAllVariationsQuery({
+  const { data, isLoading, isError, refetch } = useGetAllVariationsQuery({
     sort: pagination.sort,
     page: pagination.page,
     size: pagination.size,
     search: searchTerm,
   });
 
-  const [createVariationOption, { isLoading: addLoading, error: addError }] = 
+  const [createVariation, { isLoading: addLoading, error: addError }] = 
     useCreateVariationMutation();
-  const [updateVariationOption, { isLoading: editLoading, error: editError }] = 
+  const [updateVariation, { isLoading: editLoading, error: editError }] = 
     useUpdateVariationMutation();
-  const [deleteVariationOption, { isLoading: deleteLoading, error: deleteError }] = 
+  const [deleteVariation, { isLoading: deleteLoading, error: deleteError }] = 
     useDeleteVariationMutation();
 
-  const variationOptions = data?.data || [];
+  const variations = data?.data || [];
   const meta = data?.meta || pagination.meta;
 
   useEffect(() => {
@@ -121,49 +111,6 @@ const VariationList = () => {
     }));
   };
 
-  const handleAddOption = () => {
-    setModalType("add");
-    setSelectedOption(null);
-    setIsModalOpen(true);
-  };
-
-  const handleEditOption = (option: VariationOption) => {
-    setModalType("edit");
-    setSelectedOption(option);
-    setIsModalOpen(true);
-  };
-
-  const handleDeleteOption = async (id: number) => {
-    try {
-      await deleteVariationOption(id).unwrap();
-      toast.success("Variation list deleted successfully");
-      refetch();
-    } catch (error) {
-      const apiError = error as ApiError;
-      toast.error(apiError?.data?.message || "Failed to delete Variation list");
-    }
-  };
-
-  const handleSubmit = async (data: VariationOptionFormData) => {
-    try {
-      if (modalType === "add") {
-        await createVariationOption(data).unwrap();
-        toast.success("Variation list added successfully");
-      } else if (modalType === "edit" && selectedOption) {
-        await updateVariationOption({
-          id: selectedOption.id,
-          data,
-        }).unwrap();
-        toast.success("Variation list updated successfully");
-      }
-      setIsModalOpen(false);
-      refetch();
-    } catch (error) {
-      const apiError = error as ApiError;
-      toast.error(apiError?.data?.message || "An error occurred while processing your request");
-    }
-  };
-
   const handleRowSelect = (id: number) => {
     setSelectedRows((prev) =>
       prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id]
@@ -171,11 +118,61 @@ const VariationList = () => {
   };
 
   const handleSelectAll = () => {
-    if (selectedRows.length === variationOptions.length) {
+    if (selectedRows.length === variations.length) {
       setSelectedRows([]);
     } else {
-      setSelectedRows(variationOptions.map((row: { id: number; }) => row.id));
+      setSelectedRows(variations.map((row: Variation) => row.id));
     }
+  };
+
+  const handleDeleteSelected = async () => {
+    try {
+      for (const id of selectedRows) {
+        await deleteVariation(id).unwrap();
+      }
+      toast.success("Selected variations deleted successfully");
+      setSelectedRows([]);
+      refetch();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      toast.error("Failed to delete selected variations");
+    }
+  };
+
+  const handleSaveVariation = async (id: number | null, name: string) => {
+    try {
+      if (id) {
+        await updateVariation({ id, name }).unwrap();
+        toast.success("Variation updated successfully");
+      } else {
+        await createVariation({ name }).unwrap();
+        toast.success("Variation created successfully");
+      }
+      setModalOpen(false);
+      refetch();
+    } catch (error) {
+      console.error("Error saving variation:", error);
+    }
+  };
+
+  const handleDeleteVariation = async (id: number) => {
+    try {
+      await deleteVariation(id).unwrap();
+      toast.success("Variation deleted successfully");
+      refetch();
+    } catch (error) {
+      console.error("Error deleting variation:", error);
+    }
+  };
+
+  const handleAddVariation = () => {
+    setCurrentVariation(null);
+    setModalOpen(true);
+  };
+
+  const handleEditVariation = (variation: Variation) => {
+    setCurrentVariation(variation);
+    setModalOpen(true);
   };
 
   if (isLoading) {
@@ -185,10 +182,10 @@ const VariationList = () => {
   return (
     <div className="bg-gray-100 min-h-screen p-4">
       <div className="flex justify-between items-center mb-5">
-        <h1 className="text-2xl font-semibold">Variation List</h1>
+        <h1 className="text-2xl font-semibold">Variations</h1>
         <button
-          className="flex items-center bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-          onClick={handleAddOption}
+          className="flex items-center bg-[#EE5A2C] cursor-pointer text-white px-4 py-2 rounded hover:bg-orange-800"
+          onClick={handleAddVariation}
         >
           <Plus className="mr-2" /> Add Variation
         </button>
@@ -205,75 +202,111 @@ const VariationList = () => {
           />
           <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
         </div>
-        {selectedRows.length > 0 && (
+        <div className="space-x-2 py-5">
           <button
-            onClick={() => {
-              selectedRows.forEach(handleDeleteOption);
-              setSelectedRows([]);
-            }}
-            className="px-4 py-2 text-red-500 border border-red-500 rounded hover:bg-red-50"
+            onClick={handleDeleteSelected}
+            disabled={selectedRows.length === 0}
+            className={`px-4 py-1.5 -mt-1 rounded border ${
+              selectedRows.length > 0
+                ? "text-red-500 border-red-500 hover:bg-red-50"
+                : "text-gray-400 border-gray-300 cursor-not-allowed"
+            }`}
           >
             <FiTrash2 className="inline-block mr-1" /> Delete Selected
           </button>
-        )}
+        </div>
       </div>
 
-      {variationOptions.length > 0 ? (
-        <Table
-          headers={["SL", "Value", "Variation", "Action"]}
-          data={variationOptions}
-          selectedRows={selectedRows}
-          onRowSelect={handleRowSelect}
-          onSelectAll={handleSelectAll}
-          renderRow={(row: VariationOption, index: number) => {
-            const dynamicIndex =
-              index + 1 + (pagination.page - 1) * pagination.size;
-            return (
-              <>
-                <td className="px-4 py-2 font-medium">{dynamicIndex}</td>
-                <td className="px-4 py-2">{row.value}</td>
-                <td className="px-4 py-2">{row.variation?.name}</td>
-                <td className="px-4 py-2 flex gap-2 justify-center">
-                  <button
-                    className="text-blue-500 hover:text-blue-700"
-                    onClick={() => handleEditOption(row)}
-                  >
-                    <FiEdit />
-                  </button>
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <button className="text-red-500 hover:text-red-700">
-                        <FiTrash2 />
-                      </button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>
-                          Are you absolutely sure?
-                        </AlertDialogTitle>
-                        <AlertDialogDescription>
-                          This will permanently delete this Variation list.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                          onClick={() => handleDeleteOption(row.id)}
+      {isError && (
+        <div className="text-center py-6 text-red-500">
+          Failed to fetch variations.
+        </div>
+      )}
+
+      {!isLoading && !isError && (
+        <div className="bg-white rounded-lg shadow overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <input
+                      type="checkbox"
+                      checked={selectedRows.length === variations.length && variations.length > 0}
+                      onChange={handleSelectAll}
+                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                    />
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    SL
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Name
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {variations.map((row: Variation, index: number) => {
+                  const dynamicIndex = index + 1 + (pagination.page - 1) * pagination.size;
+                  return (
+                    <tr key={row.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <input
+                          type="checkbox"
+                          checked={selectedRows.includes(row.id)}
+                          onChange={() => handleRowSelect(row.id)}
+                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                        />
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {dynamicIndex}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {row.name}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 flex justify-center gap-2">
+                        <button
+                          className="text-blue-500 hover:text-blue-700 cursor-pointer"
+                          onClick={() => handleEditVariation(row)}
                         >
-                          {deleteLoading ? <ButtonLoader /> : "Confirm"}
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                </td>
-              </>
-            );
-          }}
-        />
-      ) : (
-        <p className="text-center text-gray-500 py-6">
-          No Variation lists found.
-        </p>
+                          <FiEdit />
+                        </button>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <button className="text-red-500 hover:text-red-700 cursor-pointer">
+                              <FiTrash2 />
+                            </button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>
+                                Are you absolutely sure?
+                              </AlertDialogTitle>
+                              <AlertDialogDescription>
+                                This will permanently delete this variation.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={() => handleDeleteVariation(row.id)}
+                              >
+                                {deleteLoading ? <ButtonLoader /> : "Confirm"}
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
       )}
 
       {(deleteError || addError || editError) && (
@@ -300,10 +333,10 @@ const VariationList = () => {
       </div>
 
       <AddEditVariation
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSubmit={handleSubmit}
-        initialData={selectedOption}
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onSave={handleSaveVariation}
+        currentVariation={currentVariation}
         loading={addLoading || editLoading}
         err={(addError || editError) as ApiError}
       />
