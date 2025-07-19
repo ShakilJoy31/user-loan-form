@@ -1,4 +1,3 @@
-
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle, XCircle } from "lucide-react";
 import React, { useState } from "react";
@@ -8,20 +7,29 @@ import { removeFalsyProperties } from "@/utils/helper/removeFalsyProperties";
 import InputWrapper from "@/components/common/Wrapper/InputWrapper";
 import TipTapEditor from "../tiptap/TipTapEditor";
 import { useAddCategoryMutation } from "@/redux/features/product/categoryApi";
+import { useAddThumbnailMutation } from "@/redux/features/file/fileApi";
+import toast from "react-hot-toast";
+import Image from "next/image";
 
-
-
-export default function AddCategory({ setModalOpen }: any) {
-  const { toast } = useToast();
+interface AddCategoryProps {
+  setModalOpen: (open: boolean) => void;
+}
+interface ApiError {
+  data?: {
+    message?: string;
+  };
+  status?: number;
+}
+export default function AddCategory({ setModalOpen }: AddCategoryProps) {
   const [altTextBanner, setAltTextBanner] = useState("");
   const [altText, setAltText] = useState("");
   const { handleSubmit, setValue, watch, control } = useForm();
   const [uploadedImage, setUploadedImage] = useState<File | undefined>(
     undefined
   );
-  const [uploadedImageBanner, setUploadedImageBanner] = useState<File | undefined>(
-    undefined
-  );
+  const [uploadedImageBanner, setUploadedImageBanner] = useState<
+    File | undefined
+  >(undefined);
   const [preview, setPreview] = useState<string | null>(null);
   const [previewBanner, setPreviewBanner] = useState<string | null>(null);
 
@@ -50,25 +58,18 @@ export default function AddCategory({ setModalOpen }: any) {
     const serialNo = parseInt(watch("serialNo"));
 
     if (!name) {
-      toast({
-        title: "Error",
-        description: "Category name is required.",
-        variant: "destructive",
-      });
+      toast.error("Category name is required.");
+
       return;
     }
 
     if (isNaN(serialNo)) {
-      toast({
-        title: "Error",
-        description: "Serial Number must be a number.",
-        variant: "destructive",
-      });
+      toast.error("Serial Number must be a number.");
       return;
     }
 
     let imageUrl = null;
-    let bannerUrl=null;
+    let bannerUrl = null;
 
     if (uploadedImage) {
       const formData = new FormData();
@@ -80,13 +81,9 @@ export default function AddCategory({ setModalOpen }: any) {
       try {
         const response = await addThumbnail(formData).unwrap();
         imageUrl = response?.data[0];
-      } catch (error) {
-        console.error("Error uploading image:", error);
-        toast({
-          title: "Error",
-          description: "Failed to upload image. Please try again.",
-          variant: "destructive",
-        });
+      } catch (error: unknown) {
+        const apiError = error as ApiError;
+        toast.error(apiError?.data?.message || "Error uploading image");
         return;
       }
     }
@@ -100,13 +97,9 @@ export default function AddCategory({ setModalOpen }: any) {
       try {
         const response = await addThumbnail(formData).unwrap();
         bannerUrl = response?.data[0];
-      } catch (error) {
-        console.error("Error uploading image:", error);
-        toast({
-          title: "Error",
-          description: "Failed to upload image. Please try again.",
-          variant: "destructive",
-        });
+      } catch (error: unknown) {
+        const apiError = error as ApiError;
+        toast(apiError?.data?.message || "Image Upload error");
         return;
       }
     }
@@ -117,26 +110,21 @@ export default function AddCategory({ setModalOpen }: any) {
         serialNo,
         description: watch("description"),
         image: imageUrl,
-        banner:bannerUrl
+        banner: bannerUrl,
       };
 
-      const cleanData=removeFalsyProperties(updateData, ["banner", "description"])
+      const cleanData = removeFalsyProperties(updateData, [
+        "banner",
+        "description",
+      ]);
 
       await addCategory(cleanData).unwrap();
 
-      toast({
-        title: "Success",
-        description: "Category added successfully!",
-        variant: "default",
-      });
+      toast.success("Category added successfully!");
       setModalOpen(false);
-    } catch (error) {
-      console.error("Error saving category:", error);
-      toast({
-        title: "Error",
-        description: "Failed to save category. Please try again.",
-        variant: "destructive",
-      });
+    } catch (error: unknown) {
+      const apiError = error as ApiError;
+      toast(apiError?.data?.message || "Category add error");
     }
   };
 
@@ -173,16 +161,20 @@ export default function AddCategory({ setModalOpen }: any) {
         </div>
         <div className="flex items-center gap-1">
           <input
-           className="w-5 h-5" 
+            className="w-5 h-5"
             type="checkbox"
             onChange={(e) => setValue("isShippedFree", e.target.checked)}
           />
           <span className="text-base font-semibold">Is shipped free?</span>
         </div>
-         <div className="flex items-center gap-1">
-            <input  className="w-5 h-5" type="checkbox" onChange={(e)=>setValue("isFullPay", e.target.checked)} />
-            <span className="text-base font-semibold">Is Full Pay?</span>
-          </div>
+        <div className="flex items-center gap-1">
+          <input
+            className="w-5 h-5"
+            type="checkbox"
+            onChange={(e) => setValue("isFullPay", e.target.checked)}
+          />
+          <span className="text-base font-semibold">Is Full Pay?</span>
+        </div>
         <div className="flex items-center gap-2">
           <InputWrapper label={""}>
             <label htmlFor="" className="block mb-1">
@@ -201,10 +193,12 @@ export default function AddCategory({ setModalOpen }: any) {
           <div>
             {preview && (
               <div className="relative w-20 h-20 border rounded-md overflow-hidden mt-4">
-                <img
+                <Image
                   src={preview}
                   alt="Preview"
                   className="w-full h-full object-cover"
+                  width={80}
+                  height={80}
                 />
                 <button
                   type="button"
@@ -250,10 +244,12 @@ export default function AddCategory({ setModalOpen }: any) {
           <div>
             {previewBanner && (
               <div className="relative w-20 h-20 border rounded-md overflow-hidden mt-4">
-                <img
+                <Image
                   src={previewBanner}
-                  alt="Preview"
+                  alt="Banner Preview"
                   className="w-full h-full object-cover"
+                  width={80}
+                  height={80}
                 />
                 <button
                   type="button"
@@ -282,16 +278,13 @@ export default function AddCategory({ setModalOpen }: any) {
 
       <div className="mt-10">
         <label className="mb-3 text-3xl block">Category Description</label>
-         <Controller
-                  name="description"
-                  control={control}
-                  render={({ field }) => (
-                    <TipTapEditor
-                      content={field.value}
-                      onUpdate={field.onChange}
-                    />
-                  )}
-                />
+        <Controller
+          name="description"
+          control={control}
+          render={({ field }) => (
+            <TipTapEditor content={field.value} onUpdate={field.onChange} />
+          )}
+        />
       </div>
 
       <div className="flex justify-between items-center gap-2 mb-6">

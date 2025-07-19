@@ -24,6 +24,7 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import Pagination from "@/components/common/Pagination";
 import { toast } from "react-hot-toast";
+import AddCategory from "./AddCategory";
 
 interface Category {
   id: number;
