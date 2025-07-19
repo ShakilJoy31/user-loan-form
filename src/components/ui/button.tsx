@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { useFontShifter } from "@/hooks/useFontShifter";
 
 const buttonVariants = cva(
-  "!cursor-pointer inline-flex !leading-5  items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 select-none duration-300",
+  "!cursor-pointer inline-flex !leading-5  items-center dark:bg-background dark:border dark:text-gray-300 justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 select-none duration-300",
   {
     variants: {
       variant: {

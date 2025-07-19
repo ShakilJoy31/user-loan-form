@@ -1,3 +1,4 @@
+"use client"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle, XCircle } from "lucide-react";
 import React, { useState } from "react";
@@ -131,11 +132,11 @@ export default function AddCategory({ setModalOpen }: AddCategoryProps) {
   return (
     <form
       onSubmit={handleSubmit(handleSaveCategory)}
-      className="p-6 bg-gray-100"
+      className="p-6 bg-gray-100 dark:bg-background"
     >
       <h1 className="text-2xl pb-4 font-semibold">Add Category</h1>
 
-      <div className="bg-white shadow rounded-lg grid grid-cols-3 items-center gap-4 py-3 px-5">
+      <div className="bg-white dark:bg-background shadow rounded-lg grid grid-cols-3 items-center gap-4 py-3 px-5">
         <div>
           <label>
             Serial Number <span className="text-red-600">✽</span>
@@ -175,7 +176,7 @@ export default function AddCategory({ setModalOpen }: AddCategoryProps) {
           />
           <span className="text-base font-semibold">Is Full Pay?</span>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 dark:bg-background">
           <InputWrapper label={""}>
             <label htmlFor="" className="block mb-1">
               Upload category logo<span className="text-red-600">✽</span>
@@ -190,7 +191,7 @@ export default function AddCategory({ setModalOpen }: AddCategoryProps) {
             </div>
           </InputWrapper>
 
-          <div>
+          <div >
             {preview && (
               <div className="relative w-20 h-20 border rounded-md overflow-hidden mt-4">
                 <Image

@@ -138,9 +138,9 @@ const TipTapEditor: FC<TipTapEditorProps> = ({ content, onUpdate }) => {
   }
 
   return (
-    <div className="w-full mx-auto p-4 bg-white rounded-lg shadow-lg">
+    <div className="w-full mx-auto p-4 bg-white dark:bg-background rounded-lg shadow-lg">
       {/* Main Toolbar */}
-      <div className="flex flex-wrap items-center gap-2 p-2 border-b border-gray-200">
+      <div className="flex flex-wrap items-center gap-2 p-2 border-b dark:border border-gray-200">
         <HeadingButtons editor={editor} />
         <BoldButton editor={editor} />
         <ItalicButton editor={editor} />
@@ -157,7 +157,7 @@ const TipTapEditor: FC<TipTapEditorProps> = ({ content, onUpdate }) => {
       {/* Floating Menu for quick actions */}
       {editor && (
         <FloatingMenu editor={editor} tippyOptions={{ duration: 100 }}>
-          <div className="flex gap-1 p-1 bg-white rounded shadow-lg border border-gray-200">
+          <div className="flex gap-1 p-1 bg-white dark:bg-background rounded shadow-lg border border-gray-200">
             <button
               type="button"
               onClick={() =>
@@ -165,8 +165,8 @@ const TipTapEditor: FC<TipTapEditorProps> = ({ content, onUpdate }) => {
               }
               className={`p-1 rounded ${
                 editor.isActive("heading", { level: 1 })
-                  ? "bg-blue-100"
-                  : "hover:bg-gray-100"
+                  ? "bg-blue-100 dark:bg-background"
+                  : "hover:bg-gray-100 hover:dark:bg-background"
               }`}
             >
               H1
@@ -179,7 +179,7 @@ const TipTapEditor: FC<TipTapEditorProps> = ({ content, onUpdate }) => {
               className={`p-1 rounded ${
                 editor.isActive("heading", { level: 2 })
                   ? "bg-blue-100"
-                  : "hover:bg-gray-100"
+                  : "hover:bg-gray-100 hover:dark:bg-background"
               }`}
             >
               H2
@@ -190,7 +190,7 @@ const TipTapEditor: FC<TipTapEditorProps> = ({ content, onUpdate }) => {
               className={`p-1 rounded ${
                 editor.isActive("bulletList")
                   ? "bg-blue-100"
-                  : "hover:bg-gray-100"
+                  : "hover:bg-gray-100 hover:dark:bg-background"
               }`}
             >
               List
@@ -201,7 +201,7 @@ const TipTapEditor: FC<TipTapEditorProps> = ({ content, onUpdate }) => {
               className={`p-1 rounded ${
                 editor.isActive("taskList")
                   ? "bg-blue-100"
-                  : "hover:bg-gray-100"
+                  : "hover:bg-gray-100 hover:dark:bg-background"
               }`}
             >
               Tasks
@@ -212,7 +212,7 @@ const TipTapEditor: FC<TipTapEditorProps> = ({ content, onUpdate }) => {
               className={`p-1 rounded ${
                 editor.isActive("codeBlock")
                   ? "bg-blue-100"
-                  : "hover:bg-gray-100"
+                  : "hover:bg-gray-100 hover:dark:bg-background"
               }`}
             >
               Code
@@ -224,7 +224,7 @@ const TipTapEditor: FC<TipTapEditorProps> = ({ content, onUpdate }) => {
       {/* Bubble Menu for selected text */}
       {editor && (
         <BubbleMenu editor={editor} tippyOptions={{ duration: 100 }}>
-          <div className="flex gap-1 p-1 bg-white rounded shadow-lg border border-gray-200">
+          <div className="flex gap-1 p-1 bg-white dark:bg-background rounded shadow-lg border border-gray-200">
             <HeadingButtons editor={editor} />
             {/* <BoldButton editor={editor} />
             <ItalicButton editor={editor} />

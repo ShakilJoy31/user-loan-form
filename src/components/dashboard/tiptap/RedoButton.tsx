@@ -1,5 +1,10 @@
-// RedoButton.tsx
-const RedoButton = ({ editor }) => {
+import { Editor } from "@tiptap/react";
+
+interface ImageButtonProps {
+  editor: Editor;
+}// RedoButton.tsx
+
+const RedoButton = ({ editor }:ImageButtonProps) => {
   return (
     <button
       onClick={() => editor.chain().focus().redo().run()}

@@ -1,4 +1,9 @@
-const UnderlineButton = ({ editor }) => {
+import { Editor } from "@tiptap/react";
+
+interface ImageButtonProps {
+  editor: Editor;
+}
+const UnderlineButton = ({ editor }:ImageButtonProps) => {
   return (
     <button
       type="button"

@@ -1,6 +1,9 @@
 import { useState } from 'react'
-
-const LinkButton = ({ editor }) => {
+import { Editor } from "@tiptap/core";
+interface ImageButtonProps {
+  editor: Editor;
+}
+const LinkButton = ({ editor }:ImageButtonProps) => {
   const [showInput, setShowInput] = useState(false)
   const [linkData, setLinkData] = useState({
     url: '',
@@ -46,7 +49,7 @@ const LinkButton = ({ editor }) => {
     })
   }
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e:React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target
     setLinkData(prev => ({
       ...prev,
@@ -84,7 +87,7 @@ const LinkButton = ({ editor }) => {
       </button>
 
       {showInput && (
-        <div className="absolute z-10 mt-1 p-4 bg-white rounded shadow-lg border border-gray-200 w-64">
+        <div className="absolute z-10 mt-1 p-4 bg-white dark:bg-background rounded shadow-lg border border-gray-200 w-64">
           <div className="space-y-3">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Link Text</label>
@@ -118,7 +121,7 @@ const LinkButton = ({ editor }) => {
                 name="openInNewTab"
                 checked={linkData.openInNewTab}
                 onChange={handleInputChange}
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 dark:bg-background border-gray-300 rounded"
               />
               <label htmlFor="openInNewTab" className="ml-2 block text-sm text-gray-700">
                 Open in new tab
@@ -144,7 +147,7 @@ const LinkButton = ({ editor }) => {
                   openInNewTab: false
                 })
               }}
-              className="px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+              className="px-3 py-1 text-sm bg-gray-200 dark:bg-background text-gray-700 dark:text-gray-300 rounded hover:bg-gray-300 hover:dark:bg-background dark:border"
             >
               Cancel
             </button>

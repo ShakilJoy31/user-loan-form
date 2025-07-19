@@ -1,6 +1,10 @@
+import { Editor } from "@tiptap/react";
 import { MdOutlineFormatBold } from "react-icons/md"
 
-const BoldButton = ({ editor }) => {
+interface ImageButtonProps {
+  editor: Editor;
+}
+const BoldButton = ({ editor }:ImageButtonProps) => {
   return (
     <button
       type="button"
