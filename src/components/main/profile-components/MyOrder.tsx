@@ -10,12 +10,15 @@ import product4 from "@/assets/Products_Image/products.jpg";
 import product5 from "@/assets/Products_Image/products.jpg";
 import { Button } from "@/components/ui/button";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
+import Pagination from "@/utils/helper/Pagination";
 
 const OrderTab = () => {
   const { translate } = useCustomTranslator();
   const [selectedOrders, setSelectedOrders] = useState<number[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(5); // Default to showing 5 items per page
 
-const orders = [
+  const orders = [
     {
         id: 1,
         image: product1,
@@ -56,8 +59,13 @@ const orders = [
         price: "800 Tk",
         date: "Aug 15",
     },
-];
+  ];
 
+  // Calculate paginated orders
+  const totalPages = Math.ceil(orders.length / pageSize);
+  const indexOfLastOrder = currentPage * pageSize;
+  const indexOfFirstOrder = indexOfLastOrder - pageSize;
+  const currentOrders = orders.slice(indexOfFirstOrder, indexOfLastOrder);
 
   const toggleOrder = (id: number) => {
     setSelectedOrders((prev) =>
@@ -66,11 +74,22 @@ const orders = [
   };
 
   const toggleAll = () => {
-    if (selectedOrders.length === orders.length) {
+    if (selectedOrders.length === currentOrders.length) {
       setSelectedOrders([]);
     } else {
-      setSelectedOrders(orders.map((order) => order.id));
+      setSelectedOrders(currentOrders.map((order) => order.id));
     }
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    // Optional: Scroll to top when page changes
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handlePageSizeChange = (size: number) => {
+    setPageSize(size);
+    setCurrentPage(1); // Reset to first page when changing page size
   };
 
   return (
@@ -96,7 +115,7 @@ const orders = [
                 <input
                   type="checkbox"
                   className="accent-[#EE5A2C]"
-                  checked={selectedOrders.length === orders.length}
+                  checked={selectedOrders.length === currentOrders.length && currentOrders.length > 0}
                   onChange={toggleAll}
                 />
               </th>
@@ -108,7 +127,7 @@ const orders = [
             </tr>
           </thead>
           <tbody className="text-sm">
-            {orders.map((order) => (
+            {currentOrders.map((order) => (
               <tr
                 key={order.id}
                 className={`border-b hover:bg-[#F1F1F1] rounded-lg ${
@@ -177,25 +196,15 @@ const orders = [
         </div>
       </div>
 
-      <div className="flex justify-center mt-4 gap-2">
-        <Button variant={'outline'} className="text-sm px-3 py-1 border border-gray-300 rounded-md hover:bg-gray-100">
-          {translate("পূর্ববর্তী", "Previous")}
-        </Button>
-        {[1, 2, 3].map((num) => (
-          <Button variant={'outline'}
-            key={num}
-            className={`text-sm px-3 py-1 border ${
-              num === 1
-                ? "bg-orange-500 text-white"
-                : "border-gray-300 hover:bg-gray-100"
-            } rounded-md`}
-          >
-            {num}
-          </Button>
-        ))}
-        <Button variant={'outline'} className="text-sm px-3 py-1 border border-gray-300 rounded-md hover:bg-gray-100">
-          {translate("পরবর্তী", "Next")}
-        </Button>
+      {/* Pagination */}
+      <div className="mt-6">
+        <Pagination
+          totalPages={totalPages}
+          currentPage={currentPage}
+          pageSize={pageSize}
+          onPageChange={handlePageChange}
+          onPageSizeChange={handlePageSizeChange}
+        />
       </div>
     </div>
   );

@@ -1,7 +1,8 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import { FiSearch } from "react-icons/fi";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
+import { useState } from "react";
+import Pagination from "@/utils/helper/Pagination";
 
 interface ReturnOrder {
   id: number;
@@ -15,6 +16,8 @@ interface ReturnOrder {
 
 const ReturnOrdersTab = () => {
   const { translate } = useCustomTranslator();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(5); // Default to showing 5 items per page
 
   const returnOrders: ReturnOrder[] = [
     {
@@ -28,59 +31,75 @@ const ReturnOrdersTab = () => {
     },
     {
       id: 2,
-      orderId: "#CUST001",
-      date: "01-01-2025",
-      customer: "Puja Saha",
+      orderId: "#CUST002",
+      date: "02-01-2025",
+      customer: "Rahul Sharma",
       reason: "CC",
       status: "Pending",
-      total: "240 Tk",
+      total: "320 Tk",
     },
     {
       id: 3,
-      orderId: "#CUST001",
-      date: "01-01-2025",
-      customer: "Puja Saha",
+      orderId: "#CUST003",
+      date: "03-01-2025",
+      customer: "Mita Roy",
       reason: "CC",
       status: "Pending",
-      total: "240 Tk",
+      total: "180 Tk",
     },
     {
       id: 4,
-      orderId: "#CUST001",
-      date: "01-01-2025",
-      customer: "Puja Saha",
+      orderId: "#CUST004",
+      date: "04-01-2025",
+      customer: "Arjun Patel",
       reason: "CC",
       status: "Pending",
-      total: "240 Tk",
+      total: "420 Tk",
     },
     {
       id: 5,
-      orderId: "#CUST001",
-      date: "01-01-2025",
-      customer: "Puja Saha",
+      orderId: "#CUST005",
+      date: "05-01-2025",
+      customer: "Neha Gupta",
       reason: "CC",
       status: "Pending",
-      total: "240 Tk",
+      total: "210 Tk",
     },
     {
       id: 6,
-      orderId: "#CUST001",
-      date: "01-01-2025",
-      customer: "Puja Saha",
+      orderId: "#CUST006",
+      date: "06-01-2025",
+      customer: "Suresh Kumar",
       reason: "CC",
       status: "Pending",
-      total: "240 Tk",
+      total: "350 Tk",
     },
     {
       id: 7,
-      orderId: "#CUST001",
-      date: "01-01-2025",
-      customer: "Puja Saha",
+      orderId: "#CUST007",
+      date: "07-01-2025",
+      customer: "Priya Singh",
       reason: "CC",
       status: "Pending",
-      total: "240 Tk",
+      total: "290 Tk",
     },
   ];
+
+  // Calculate paginated orders
+  const totalPages = Math.ceil(returnOrders.length / pageSize);
+  const indexOfLastOrder = currentPage * pageSize;
+  const indexOfFirstOrder = indexOfLastOrder - pageSize;
+  const currentOrders = returnOrders.slice(indexOfFirstOrder, indexOfLastOrder);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handlePageSizeChange = (size: number) => {
+    setPageSize(size);
+    setCurrentPage(1); // Reset to first page when changing page size
+  };
 
   return (
     <div className="bg-white p-6 rounded-xl shadow-sm">
@@ -116,9 +135,11 @@ const ReturnOrdersTab = () => {
             </tr>
           </thead>
           <tbody>
-            {returnOrders.map((item, index) => (
+            {currentOrders.map((item, index) => (
               <tr key={item.id} className="border-t border-gray-200 hover:bg-gray-50">
-                <td className="py-3 px-4">{String(index + 1).padStart(2, "0")}</td>
+                <td className="py-3 px-4">
+                  {String(index + 1 + (currentPage - 1) * pageSize).padStart(2, "0")}
+                </td>
                 <td className="py-3 px-4 font-semibold text-gray-800">{item.orderId}</td>
                 <td className="py-3 px-4 text-gray-600">{item.date}</td>
                 <td className="py-3 px-4 text-gray-800">{item.customer}</td>
@@ -136,24 +157,15 @@ const ReturnOrdersTab = () => {
         </table>
       </div>
 
-      <div className="flex justify-center mt-6 gap-2">
-        <Button variant={'outline'} className="text-sm px-3 py-1 border border-gray-300 rounded-md hover:bg-gray-100">
-          {translate("পূর্ববর্তী", "Previous")}
-        </Button>
-        {[1, 2, 3].map((page) => (
-          <Button variant={'outline'}
-            key={page}
-            className={`text-sm px-3 py-1 border rounded-md ${page === 1
-                ? "bg-orange-500 text-white border-orange-500"
-                : "border-gray-300 hover:bg-gray-100"
-              }`}
-          >
-            {page}
-          </Button>
-        ))}
-        <Button variant={'outline'} className="text-sm px-3 py-1 border border-gray-300 rounded-md hover:bg-gray-100">
-          {translate("পরবর্তী", "Next")}
-        </Button>
+      {/* Pagination */}
+      <div className="mt-6">
+        <Pagination
+          totalPages={totalPages}
+          currentPage={currentPage}
+          pageSize={pageSize}
+          onPageChange={handlePageChange}
+          onPageSizeChange={handlePageSizeChange}
+        />
       </div>
     </div>
   );

@@ -53,16 +53,16 @@ const HomeBanner = () => {
                         {/* Custom navigation buttons */}
                         <button
                             onClick={() => swiperRef.current?.slidePrev()}
-                            className="absolute left-2 top-1/2 transform -translate-y-1/2 z-30 text-white w-[20px] h-[35px] flex items-center justify-center bg-black/30 rounded"
+                            className="absolute hover:cursor-pointer left-2 top-1/2 transform -translate-y-1/2 z-30 text-white w-[20px] h-[35px] flex items-center justify-center rounded"
                         >
-                            <FaChevronLeft></FaChevronLeft>
+                            <FaChevronLeft size={35}></FaChevronLeft>
                         </button>
 
                         <button
                             onClick={() => swiperRef.current?.slideNext()}
-                            className="absolute right-2 top-1/2 transform -translate-y-1/2 z-30 text-white text-[20px] w-[20px] h-[35px] flex items-center justify-center bg-black/30 rounded"
+                            className="absolute hover:cursor-pointer right-2 top-1/2 transform -translate-y-1/2 z-30 text-white text-[20px] w-[20px] h-[35px] flex items-center justify-center rounded"
                         >
-                            <FaChevronRight></FaChevronRight>
+                            <FaChevronRight size={35}></FaChevronRight>
                         </button>
                         <Swiper
                             spaceBetween={0}
@@ -99,17 +99,16 @@ const HomeBanner = () => {
                                             </h2>
                                         </div>
 
-                                        <div className="absolute top-28 sm:top-[184px] left-4 sm:left-[38px] w-[150px] sm:w-[175px] h-12 sm:h-[54px] py-2 sm:py-[15px] px-4 sm:px-[30px] text-white bg-[#ee5a2c] rounded-[10px] flex justify-center items-center z-20">
+                                        <div className="absolute top-32 sm:top-[184px] left-4 sm:left-[38px] w-[150px] sm:w-[175px] h-12 sm:h-[54px] py-2 sm:py-[15px] px-4 sm:px-[30px] text-white bg-[#ee5a2c] rounded-[10px] flex justify-center items-center z-20">
                                             <button className="btn flex gap-2 sm:gap-3 text-sm sm:text-[16px] font-semibold items-center">
                                                 {slide.buttonText} <FaArrowRightLong />
                                             </button>
                                         </div>
 
-                                        <div className="max-w-[155px] max-h-[56px] absolute inset-0 top-[243px] mb-[57px] left-[555px] text-center z-20 md:max-w-[155px] md:max-h-[56px] md:absolute md:inset-0 md:top-[243px] md:mb-[57px] md:left-[555px] md:text-center md:z-20 ">
-                                            <h1 style={{ fontFamily: '"Poor Richard", sans-serif' }} className="font-normal text-xs sm:text-sm text-[#CDA73A]">
-                                                {slide.offerText}
-                                            </h1>
+                                        <div className="w-[155px] absolute right-[53px] bottom-[57px] z-50 ">
+                                            <p style={{ fontFamily: '"Poor Richard", sans-serif' }} className=" text-[#CDA73A] text-center text-[24px] "> {slide.offerText}</p>
                                         </div>
+
                                     </div>
                                 </SwiperSlide>
                             ))}
@@ -136,7 +135,7 @@ const HomeBanner = () => {
                                         <button className="w-full sm:max-w-[126px] border rounded-md py-1 sm:py-[4px] px-2 sm:px-[8px] border-gray-400">
                                             <div className="flex justify-center sm:justify-between items-center gap-2 sm:gap-[10px]">
                                                 <div>
-                                                  <FaApple></FaApple>
+                                                    <FaApple color={'white'} size={20}></FaApple>
                                                 </div>
 
                                                 <div>
@@ -153,7 +152,7 @@ const HomeBanner = () => {
                                         <button className="w-full sm:max-w-[126px] border rounded-md py-1 sm:py-[4px] px-2 sm:px-[8px] border-gray-400">
                                             <div className="flex justify-center sm:justify-between items-center gap-2 sm:gap-[10px]">
                                                 <div>
-                                                    <FaGooglePlay></FaGooglePlay>
+                                                    <FaGooglePlay color={'white'} size={20}></FaGooglePlay>
                                                 </div>
 
                                                 <div>
@@ -170,13 +169,13 @@ const HomeBanner = () => {
                                 </div>
 
                                 {/* scan */}
-                                <div className="mt-4 sm:mt-[36px] w-20 h-20 sm:w-[110px] sm:h-[110px]">
+                                <div className="mt-2 lg:mt-[46px] w-20 h-20 sm:w-[110px] sm:h-[110px]">
                                     <Image
                                         width={110}
                                         height={110}
                                         src={scan}
                                         alt="scan Image"
-                                        className="bg-cover w-full h-full bg-white"
+                                        className="bg-cover w-full max-h-[110px] bg-white"
                                     />
                                 </div>
                             </div>
