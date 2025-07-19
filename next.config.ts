@@ -1,7 +1,7 @@
+import nextI18NextConfig from './next-i18next.config';
+
 const nextConfig = {
-  images: {
-    domains: ['flagcdn.com'],
-  },
+  i18n: nextI18NextConfig.i18n,
 };
 
 export default nextConfig;
