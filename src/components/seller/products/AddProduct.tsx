@@ -118,7 +118,7 @@ const AddProducts = () => {
 
 
             {/* Product Description */}
-            <div className="border border-[#AAA] p-[24px] ">
+            <div className="border rounded-xl p-[24px] mt-6">
 
                 <div className="mt-10">
                     <label className="mb-3 text-[16px] block">Product Description</label>
