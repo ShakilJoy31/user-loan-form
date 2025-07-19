@@ -106,7 +106,7 @@ const HomeBanner = () => {
                                         </div>
 
                                         <div className="max-w-[155px] max-h-[56px] absolute inset-0 top-[243px] mb-[57px] left-[555px] text-center z-20 md:max-w-[155px] md:max-h-[56px] md:absolute md:inset-0 md:top-[243px] md:mb-[57px] md:left-[555px] md:text-center md:z-20 ">
-                                            <h1 className="font-normal text-xs sm:text-sm text-[#CDA73A]">
+                                            <h1 style={{ fontFamily: '"Poor Richard", sans-serif' }} className="font-normal text-xs sm:text-sm text-[#CDA73A]">
                                                 {slide.offerText}
                                             </h1>
                                         </div>
