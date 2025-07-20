@@ -8,6 +8,8 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { FcGoogle } from "react-icons/fc";
 import { Eye, EyeOff } from "lucide-react";
+import { shareWithCookies } from "@/utils/helper/shareWithCookies";
+import { appConfiguration } from "@/utils/constant/appConfiguration";
 
 export const SellerLogin = () => {
   const [email, setEmail] = useState('');
@@ -24,11 +26,17 @@ export const SellerLogin = () => {
     try {
       const payload = { email, password };
       const response = await loginSeller(payload).unwrap();
-      
+      console.log(response)
       if (response?.success === true) {
+        shareWithCookies(
+          "set",
+          `${appConfiguration.appCode}token`,
+          1440,
+          response?.accessToken
+        );
         router.push('/add-product');
       }
-     
+
     } catch (error: unknown) {
       let errorMessage = 'Login failed';
 
@@ -65,7 +73,7 @@ export const SellerLogin = () => {
           >
             Email*
           </label>
-          <input 
+          <input
             onChange={(e) => setEmail(e.target.value)}
             type="email"
             id="email"
@@ -83,7 +91,7 @@ export const SellerLogin = () => {
             Password*
           </label>
           <div className="relative">
-            <input 
+            <input
               onChange={(e) => setPassword(e.target.value)}
               type={showPassword ? "text" : "password"}
               id="password"

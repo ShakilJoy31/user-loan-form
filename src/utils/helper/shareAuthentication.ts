@@ -85,6 +85,7 @@ export const shareAuthentication = (): IAuthenticationProps => {
     "";
   let authData: JwtPayload = {} as JwtPayload;
 
+  console.log(token);
   if (token) {
     authData = jwtDecode<JwtPayload>(token);
   }

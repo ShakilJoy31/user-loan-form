@@ -6,6 +6,23 @@ import Variation from "./Variation";
 import ProductImageUploader from "./ProductImageUploader";
 import { Controller, useForm } from "react-hook-form";
 import TipTapEditor from "../../dashboard/tiptap/TipTapEditor";
+import { useSelector } from "react-redux";
+import { selectUser } from "@/redux/store";
+  import Cookies from 'js-cookie';
+import { jwtDecode } from 'jwt-decode';
+
+export const getUserInfoFromToken = () => {
+  const token = Cookies.get('__t_beta__token');
+  if (!token) return null;
+  try {
+    const decoded = jwtDecode(token);
+    // console.log('Decoded user info:', decoded);
+    return decoded;
+  } catch (error) {
+    console.error('Error decoding token:', error);
+    return null;
+  }
+};
 
 const AddProducts = () => {
     const [shopCategory, setShopCategory] = useState("Grocery");
@@ -14,7 +31,14 @@ const AddProducts = () => {
     const [seoDescription, setSeoDescription] = useState(
         "This item 15 delivers cutting-edge performance with the A16 Bionic chip, an immersive Super Retina XDR display, advanced dual-camera system, and exceptional battery life, all encased in stunning aerospace-grade aluminum."
     );
-    const { handleSubmit, setValue, watch, control } = useForm();
+    // const { handleSubmit, setValue, watch, control } = useForm();
+    const { control } = useForm();
+
+    // const user = useSelector(selectUser); 
+
+    const user = getUserInfoFromToken();
+    console.log(user);
+
 
     return (
         <div className="relative bg-white p-6 border rounded-md shadow-sm mt-[15px] ">
