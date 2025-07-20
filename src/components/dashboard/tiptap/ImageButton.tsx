@@ -72,13 +72,13 @@ const ImageButton = ({ editor }: ImageButtonProps) => {
           src: url,
           width: "100%",
           align: "left",
-        })
+        } as ImageAttributes)
         .run();
       closeDropdown();
     }
   };
 
- const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
@@ -88,8 +88,8 @@ const ImageButton = ({ editor }: ImageButtonProps) => {
           .focus()
           .setImage({
             src: e.target?.result as string,
-            width: selectedImage?.width || '100%',
-          })
+            width: selectedImage?.width || "100%",
+          } as ImageAttributes)
           .run();
         closeDropdown();
       };

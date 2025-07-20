@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle, XCircle } from "lucide-react";
 import React, { useEffect, useState } from "react";
@@ -11,6 +11,7 @@ import { removeFalsyProperties } from "@/utils/helper/removeFalsyProperties";
 import InputWrapper from "@/components/common/Wrapper/InputWrapper";
 import Image from "next/image";
 import toast from "react-hot-toast";
+import { Button } from "@/components/ui/button";
 
 interface ApiError {
   data?: {
@@ -20,10 +21,10 @@ interface ApiError {
 }
 
 interface CategoryFormValues {
-  id:number
+  id: number;
   name: string;
   serialNo: string;
-  description: string;
+  description?: string;
   isShippedFree: boolean;
   isFullPay: boolean;
   image: string;
@@ -35,10 +36,13 @@ interface CategoryFormData extends CategoryFormValues {
 
 interface AddCategoryProps {
   setModalOpen: (open: boolean) => void;
-  actionItem:CategoryFormData
+  actionItem?: CategoryFormData;
 }
 
-export default function EditCategory({ setModalOpen, actionItem }: AddCategoryProps) {
+export default function EditCategory({
+  setModalOpen,
+  actionItem,
+}: AddCategoryProps) {
   const [altText, setAltText] = useState("");
   const [altTextBanner, setAltTextBanner] = useState("");
   const [uploadedImage, setUploadedImage] = useState<File | undefined>(
@@ -50,16 +54,17 @@ export default function EditCategory({ setModalOpen, actionItem }: AddCategoryPr
   const [preview, setPreview] = useState<string | null>(null);
   const [previewBanner, setPreviewBanner] = useState<string | null>(null);
 
-  const { handleSubmit, setValue, watch, control } = useForm<CategoryFormValues>({
-    defaultValues: {
-      name: "",
-      isShippedFree: false,
-      serialNo: "",
-      description: "",
-      image: "",
-      isFullPay: false,
-    },
-  });
+  const { handleSubmit, setValue, watch, control } =
+    useForm<CategoryFormValues>({
+      defaultValues: {
+        name: "",
+        isShippedFree: false,
+        serialNo: "",
+        description: "",
+        image: "",
+        isFullPay: false,
+      },
+    });
 
   const name = watch("name");
   const serialNumber = watch("serialNo");
@@ -100,7 +105,7 @@ export default function EditCategory({ setModalOpen, actionItem }: AddCategoryPr
     }
   };
 
-  const handleSaveCategory = async (data:CategoryFormData) => {
+  const handleSaveCategory = async (data: CategoryFormData) => {
     if (!name.trim() || !serialNumber.toString().trim()) {
       toast.error("Both Serial Number and Category Name are required.");
       return;
@@ -123,7 +128,7 @@ export default function EditCategory({ setModalOpen, actionItem }: AddCategoryPr
         const response = await addThumbnail(formData).unwrap();
         imageUrl = response?.data[0];
       } catch (error) {
-         const apiError = error as ApiError;
+        const apiError = error as ApiError;
         toast.error(apiError?.data?.message || "Error uploading image");
         return;
       }
@@ -137,7 +142,7 @@ export default function EditCategory({ setModalOpen, actionItem }: AddCategoryPr
         const response = await addThumbnail(formData).unwrap();
         bannerUrl = response?.data[0];
       } catch (error) {
-         const apiError = error as ApiError;
+        const apiError = error as ApiError;
         toast.error(apiError?.data?.message || "Error uploading image");
         return;
       }
@@ -167,7 +172,7 @@ export default function EditCategory({ setModalOpen, actionItem }: AddCategoryPr
       toast.success("Category updated successfully!");
       setModalOpen(false);
     } catch (error) {
-     const apiError = error as ApiError;
+      const apiError = error as ApiError;
       toast(apiError?.data?.message || "Category add error");
     }
   };
@@ -175,11 +180,11 @@ export default function EditCategory({ setModalOpen, actionItem }: AddCategoryPr
   return (
     <form
       onSubmit={handleSubmit(handleSaveCategory)}
-      className="p-6 bg-gray-100"
+      className="p-6 bg-gray-100 dark:bg-background"
     >
       <h1 className="text-2xl pb-4 font-semibold">Edit Category</h1>
 
-      <div className="bg-white shadow rounded-lg grid grid-cols-3 items-center gap-4 py-3 px-5">
+      <div className="bg-white dark:bg-background shadow rounded-lg grid grid-cols-3 items-center gap-4 py-3 px-5">
         <div>
           <label>
             Serial Number <span className="text-red-600">✽</span>
@@ -270,7 +275,7 @@ export default function EditCategory({ setModalOpen, actionItem }: AddCategoryPr
           />
         </div>
       </div>
-      <div className="flex items-center gap-5 bg-white shadow rounded-lg p-4">
+      <div className="flex items-center gap-5 bg-white dark:bg-background shadow rounded-lg p-4">
         <div className="flex items-center gap-2">
           <InputWrapper label={""}>
             <label htmlFor="" className="block mb-1">
@@ -337,16 +342,18 @@ export default function EditCategory({ setModalOpen, actionItem }: AddCategoryPr
       <div className="flex justify-between items-center gap-2 mb-6">
         <div></div>
         <div className="flex justify-end gap-4 mt-6">
-          <button
+          <Button
             type="button"
             onClick={() => setModalOpen(false)}
-            className="px-4 py-2 border rounded hover:bg-gray-100"
+            className="px-4 py-2 "
+            variant={"default"}
           >
             Cancel
-          </button>
-          <button
+          </Button>
+          <Button
+            variant={"primary"}
             type="submit"
-            className="px-4 py-2 bg-primary text-white rounded hover:bg-blue-700"
+            className="px-4 py-2"
             disabled={isThumbnailUploading || isCategorySaving}
           >
             {isThumbnailUploading
@@ -354,7 +361,7 @@ export default function EditCategory({ setModalOpen, actionItem }: AddCategoryPr
               : isCategorySaving
               ? "Saving..."
               : "Update"}
-          </button>
+          </Button>
         </div>
       </div>
 

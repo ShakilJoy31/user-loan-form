@@ -4,9 +4,8 @@ import { FaShareAlt } from "react-icons/fa";
 import camera from "@/assets/Home/camera.png";
 import person from "@/assets/Home/person.png";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
-import Pagination from "@/utils/helper/Pagination";
+import Pagination from "@/components/common/Pagination";
 
 const BlogPageCards = () => {
   const { translate } = useCustomTranslator();
@@ -75,7 +74,6 @@ const BlogPageCardsGrid = () => {
     setCurrentPage(1); // Reset to first page when changing page size
   };
 
-  const { translate } = useCustomTranslator();
 
   return (
     <div className="px-[10px]">

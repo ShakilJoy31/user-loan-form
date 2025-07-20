@@ -1,8 +1,7 @@
 "use client";
 
-import { Bell, MessageSquare, Search, Menu } from "lucide-react";
+import { Bell, MessageSquare, Search, } from "lucide-react";
 import * as Avatar from "@radix-ui/react-avatar";
-import Image from "next/image";
 import avatar from "@/assets/Products_Image/man.avif";
 
 const SellerNavber = () => {

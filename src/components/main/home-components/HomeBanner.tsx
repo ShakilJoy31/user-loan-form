@@ -1,6 +1,4 @@
 "use client"
-import bannerImage from "@/assets/Home/banner.jpg";
-// import bannerCart from "@/BannerImage/Card.png";
 import { FaApple } from "react-icons/fa";
 import { FaGooglePlay } from "react-icons/fa";
 import scan from "@/assets/Home/qr.png";
@@ -20,29 +18,32 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import { useRef } from "react";
+import { useGetBannersQuery } from "@/redux/features/product/bannerApi";
+import ButtonLoader from "@/components/common/ButtonLoader";
+import DataLoader from "@/components/common/DataLoader";
+
+
+interface Banner {
+    id: string | number;
+    image: string;
+    title?: string;
+    subtitle?: string;
+    buttonText?: string;
+    offerText?: string;
+}
 
 const HomeBanner = () => {
     const swiperRef = useRef<SwiperType | null>(null);
-    // Sample data for swiper slides (replace with your actual data)
-    const slides = [
-        {
-            id: 1,
-            image: bannerImage,
-            title: "-20% Fall",
-            subtitle: "for all Dress",
-            buttonText: "Shop Now",
-            offerText: "Offer valid through 26 July"
-        },
-        // Add more slides as needed
-        {
-            id: 2,
-            image: bannerImage, // Use different image for other slides
-            title: "-30% Summer",
-            subtitle: "for all Shoes",
-            buttonText: "Shop Now",
-            offerText: "Offer valid through 30 July"
-        }
-    ];
+     const { data: response, isLoading, isError } = useGetBannersQuery({});
+      const banners: Banner[] = response?.data || [];
+    
+      if (isLoading) {
+        return <div className="w-full h-[346px] flex items-center justify-center"><ButtonLoader /></div>;
+    }
+    
+    if (isError || !banners.length) {
+        return <div className="w-full h-[346px] flex items-center justify-center"><DataLoader /></div>;
+    }
 
     return (
         <div className="w-full lg:max-w-[1288px] mx-auto lg:px-0 md:px-4 sm:px-6 ">
@@ -78,12 +79,12 @@ const HomeBanner = () => {
                                 swiperRef.current = swiper;
                             }}
                         >
-                            {slides.map((slide) => (
-                                <SwiperSlide key={slide.id}>
+                            {banners.map((banner: Banner) => (
+                                <SwiperSlide key={banner.id}>
                                     <div className="relative w-full h-full">
                                         <Image
                                             fill
-                                            src={slide.image}
+                                            src={banner.image} 
                                             alt="Banner Image"
                                             className="object-cover w-full h-full rounded-md"
                                             priority
@@ -91,31 +92,32 @@ const HomeBanner = () => {
                                         {/* Gradient overlay */}
                                         <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/30 to-black/90 z-10 rounded-md"></div>
 
-                                        {/* Slide content */}
+                                        {/* Slide content - adjust these based on your actual API response structure */}
                                         <div className="absolute top-4 left-4 sm:top-[33px] sm:left-[26px] z-20">
                                             <h2 className="max-w-[280px] text-2xl sm:text-3xl md:text-[40px] font-bold text-white leading-tight sm:leading-[30px]">
-                                                {slide.title}{" "}
-                                                <span className="text-white text-xl sm:text-2xl md:text-[28px]">{slide.subtitle}</span>
+                                                {banner.title || "-20% Fall"}{" "}
+                                                <span className="text-white text-xl sm:text-2xl md:text-[28px]">{banner.subtitle || "for all Dress"}</span>
                                             </h2>
                                         </div>
 
                                         <div className="absolute top-32 sm:top-[184px] left-4 sm:left-[38px] w-[150px] sm:w-[175px] h-12 sm:h-[54px] py-2 sm:py-[15px] px-4 sm:px-[30px] text-white bg-[#ee5a2c] rounded-[10px] flex justify-center items-center z-20">
                                             <button className="btn flex gap-2 sm:gap-3 text-sm sm:text-[16px] font-semibold items-center">
-                                                {slide.buttonText} <FaArrowRightLong />
+                                                {banner.buttonText || "Shop Now"} <FaArrowRightLong />
                                             </button>
                                         </div>
 
                                         <div className="w-[155px] absolute right-[53px] bottom-[57px] z-50 ">
-                                            <p style={{ fontFamily: '"Poor Richard", sans-serif' }} className=" text-[#CDA73A] text-center text-[24px] "> {slide.offerText}</p>
+                                            <p style={{ fontFamily: '"Poor Richard", sans-serif' }} className=" text-[#CDA73A] text-center text-[24px] "> 
+                                                {banner.offerText || "Offer valid through 26 july"}
+                                            </p>
                                         </div>
-
                                     </div>
                                 </SwiperSlide>
                             ))}
                         </Swiper>
                     </div>
 
-                    {/* Static section (no swiper) */}
+                    {/* Static section (no swiper) - remains unchanged */}
                     <div className="w-full  lg:w-[487px] h-auto p-4 sm:p-0 sm:mt-[15px] sm:ml-[14px] sm:mb-[36px] sm:mr-[24px] relative">
                         <div className="rounded-3xl backdrop-blur-[10px] bg-white/5 shadow-[inset_0_0_100px_rgba(204,215,255,0.15),0_5px_10px_rgba(0,0,0,0.05),0_15px_30px_rgba(0,0,0,0.05),0_30px_60px_rgba(0,0,0,0.10)] p-4 sm:p-0">
                             <div className="flex flex-col sm:flex-row justify-between items-center text-center gap-4 sm:gap-[17px] w-full sm:max-w-[480px] sm:pl-[20px]">

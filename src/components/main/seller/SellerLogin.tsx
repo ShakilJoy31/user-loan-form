@@ -46,6 +46,7 @@ export const SellerLogin = () => {
         errorMessage = apiError.data?.message || errorMessage;
         toast(errorMessage);
       } else if (error instanceof Error) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         errorMessage = error.message;
         toast(errorMessage);
       }

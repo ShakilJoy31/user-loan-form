@@ -11,6 +11,7 @@ import { useAddCategoryMutation } from "@/redux/features/product/categoryApi";
 import { useAddThumbnailMutation } from "@/redux/features/file/fileApi";
 import toast from "react-hot-toast";
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
 
 interface AddCategoryProps {
   setModalOpen: (open: boolean) => void;
@@ -226,7 +227,7 @@ export default function AddCategory({ setModalOpen }: AddCategoryProps) {
         </div>
       </div>
 
-      <div className="flex items-center gap-5 bg-white shadow rounded-lg p-4">
+      <div className="flex items-center gap-5 bg-white dark:bg-background shadow rounded-lg p-4">
         <div className="flex items-center gap-2">
           <InputWrapper label={""}>
             <label htmlFor="" className="block mb-1">
@@ -242,7 +243,7 @@ export default function AddCategory({ setModalOpen }: AddCategoryProps) {
             </div>
           </InputWrapper>
 
-          <div>
+          <div className="dark:bg-background">
             {previewBanner && (
               <div className="relative w-20 h-20 border rounded-md overflow-hidden mt-4">
                 <Image
@@ -291,16 +292,18 @@ export default function AddCategory({ setModalOpen }: AddCategoryProps) {
       <div className="flex justify-between items-center gap-2 mb-6">
         <div></div>
         <div className="flex justify-end gap-4 mt-6">
-          <button
+          <Button
             onClick={() => setModalOpen(false)}
+            variant={"default"}
             type="button"
-            className="px-4 py-2 border rounded hover:bg-gray-100"
+            className="px-4 py-2 "
           >
             Cancel
-          </button>
-          <button
+          </Button>
+          <Button
             type="submit"
-            className="px-4 py-2 bg-primary text-white rounded hover:bg-blue-700"
+            className="px-4 py-2 "
+            variant={"primary"}
             disabled={isThumbnailUploading || isCategorySaving}
           >
             {isThumbnailUploading
@@ -308,7 +311,7 @@ export default function AddCategory({ setModalOpen }: AddCategoryProps) {
               : isCategorySaving
               ? "Saving..."
               : "Save"}
-          </button>
+          </Button>
         </div>
       </div>
 

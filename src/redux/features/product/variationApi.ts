@@ -34,10 +34,10 @@ const variationApi = apiSlice.injectEndpoints({
 
     // UPDATE VARIATION
     updateVariation: builder.mutation({
-      query: ({ id, data }) => ({
+      query: ({ id, name }) => ({
         url: `/variation/update-variation/${id}`,
         method: "PUT",
-        body: data,
+        body: { name } ,
       }),
       invalidatesTags: ["variation"],
     }),
@@ -56,7 +56,7 @@ const variationApi = apiSlice.injectEndpoints({
     // ADD VARIATION OPTION
     createVariationOption: builder.mutation({
       query: (data) => ({
-        url: "/variation/create-variation-option",
+        url: "/variation-option/create-variation-option",
         method: "POST",
         body: data,
       }),
@@ -66,7 +66,7 @@ const variationApi = apiSlice.injectEndpoints({
     // GET ALL VARIATION OPTIONS
     getAllVariationOptions: builder.query({
       query: (data) => ({
-        url: `/variation/get-variation-option-all?page=${data?.page || 1}&size=${
+        url: `/variation-option/get-variation-option-all?page=${data?.page || 1}&size=${
           data?.size || fallback.querySize
         }&search=${data?.search || ""}&sortOrder=${data?.sort || "asc"}`,
       }),
@@ -76,7 +76,7 @@ const variationApi = apiSlice.injectEndpoints({
     // GET VARIATION OPTION BY ID
     getVariationOptionById: builder.query({
       query: (id) => ({
-        url: `/variation/get-variation-option-by-id/${id}`,
+        url: `/variation-option/get-variation-option-by-id/${id}`,
       }),
       providesTags: ["variation"],
     }),
@@ -84,7 +84,7 @@ const variationApi = apiSlice.injectEndpoints({
     // UPDATE VARIATION OPTION
     updateVariationOption: builder.mutation({
       query: ({ id, data }) => ({
-        url: `/variation/update-variation-option/${id}`,
+        url: `/variation-option/update-variation-option/${id}`,
         method: "PUT",
         body: data,
       }),
@@ -94,7 +94,7 @@ const variationApi = apiSlice.injectEndpoints({
     // DELETE VARIATION OPTION
     deleteVariationOption: builder.mutation({
       query: (id) => ({
-        url: `/variation/delete-variation-option/${id}`,
+        url: `/variation-option/delete-variation-option/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["variation"],
@@ -106,7 +106,7 @@ const variationApi = apiSlice.injectEndpoints({
       // CREATE CATEGORY-WISE VARIATION
     addCategoryWiseVariation: builder.mutation({
       query: (data) => ({
-        url: "/variation/create-category-wise-variation",
+        url: "/category-wise-variation/create-category-wise-variation",
         method: "POST",
         body: data,
       }),
@@ -116,7 +116,7 @@ const variationApi = apiSlice.injectEndpoints({
     // GET ALL CATEGORY-WISE VARIATIONS
     getAllCategoryWiseVariations: builder.query({
       query: (data) => ({
-        url: `/variation/get-category-wise-variation-all?page=${data?.page || 1}&size=${
+        url: `/category-wise-variation/get-category-wise-variation-all?page=${data?.page || 1}&size=${
           data?.size || fallback.querySize
         }&search=${data?.search || ""}&sortOrder=${data?.sort || "asc"}`,
       }),
@@ -126,7 +126,7 @@ const variationApi = apiSlice.injectEndpoints({
     // GET CATEGORY-WISE VARIATION BY ID
     getCategoryWiseVariationById: builder.query({
       query: (id) => ({
-        url: `/variation/get-category-wise-variation-by-id/${id}`,
+        url: `/category-wise-variation/get-category-wise-variation-by-id/${id}`,
       }),
       providesTags: ["variation"],
     }),
@@ -134,7 +134,7 @@ const variationApi = apiSlice.injectEndpoints({
     // UPDATE CATEGORY-WISE VARIATION
     updateCategoryWiseVariation: builder.mutation({
       query: ({ id, data }) => ({
-        url: `/variation/update-category-wise-variation/${id}`,
+        url: `/category-wise-variation/update-category-wise-variation/${id}`,
         method: "PUT",
         body: data,
       }),
@@ -144,7 +144,7 @@ const variationApi = apiSlice.injectEndpoints({
     // DELETE CATEGORY-WISE VARIATION
     deleteCategoryWiseVariation: builder.mutation({
       query: (id) => ({
-        url: `/variation/delete-category-wise-variation/${id}`,
+        url: `/category-wise-variation/delete-category-wise-variation/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["variation"],

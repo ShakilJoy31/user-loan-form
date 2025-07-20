@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, MessageSquare, Plus, Pencil, Code2, X } from "lucide-react";
+import { ChevronDown, MessageSquare, Plus,  X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import Variation from "./Variation";
 import ProductImageUploader from "./ProductImageUploader";

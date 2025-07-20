@@ -3,7 +3,7 @@ import { ComponentType } from "react";
 import { FaProductHunt } from "react-icons/fa";
 import { IconType } from "react-icons/lib";
 import { LuContact } from "react-icons/lu";
-import { MdCategory } from "react-icons/md";
+import { MdAssignmentTurnedIn, MdCategory, MdListAlt, MdLocationCity, MdLocationOn, MdMap, MdPeople } from "react-icons/md";
 
 type Language = "en" | "bn";
 
@@ -50,8 +50,8 @@ const adminDashboardProduct: INavigationLink = {
             en: "Variation List",
             bn: "বিভাগ অনুযায়ী তারতম্য"
           },
-          key: "variation",
-          href: "/proyojon-admin-portal/variation",
+          key: "variation-list",
+          href: "/proyojon-admin-portal/variation-list",
         },
         {
           icon: MdCategory,
@@ -560,9 +560,71 @@ const adminDashboardOffer: INavigationLink = {
   ],
 };
 
+const adminDashboardLocation: INavigationLink = {
+  icon: MdLocationOn, // Changed from MdCategory to MdLocationOn for locations
+  label: {
+    en: "Locations",
+    bn: "লোকেশনসমূহ",
+  },
+  key: "location",
+  href: "/proyojon-admin-portal/location",
+  subLinks: [
+    {
+      icon: MdLocationCity, // Appropriate icon for city
+      label: {
+        en: "City",
+        bn: "শহর",
+      },
+      key: "create-city",
+      href: "/proyojon-admin-portal/create-city",
+    }, 
+    {
+      icon: MdMap, // Appropriate icon for area
+      label: {
+        en: "Area",
+        bn: "এলাকা",
+      },
+      key: "create-area",
+      href: "/proyojon-admin-portal/create-area",
+    }, 
+  ],
+};
+
+const adminDashboardSeller: INavigationLink = {
+  icon: MdPeople, // Changed from MdCategory to MdPeople for sellers
+  label: {
+    en: "Seller",
+    bn: "বিক্রেতা",
+  },
+  key: "seller",
+  href: "/proyojon-admin-portal/seller",
+  subLinks: [
+    {
+      icon: MdAssignmentTurnedIn, // Icon for requests
+      label: {
+        en: "Seller Request",
+        bn: "বিক্রেতার অনুরোধ",
+      },
+      key: "seller-request",
+      href: "/proyojon-admin-portal/seller-request",
+    },  
+    {
+      icon: MdListAlt, // Icon for lists
+      label: {
+        en: "Seller List",
+        bn: "বিক্রেতার তালিকা",
+      },
+      key: "seller-list",
+      href: "/proyojon-admin-portal/seller-list",
+    },  
+  ],
+};
+
 export const adminNavigationLinks: INavigationLink[] = [
   { ...admindashboardRootLinks },
   { ...adminDashboardProduct },
   { ...adminDashboardOrders },
   { ...adminDashboardOffer },
+  { ...adminDashboardLocation },
+  { ...adminDashboardSeller },
 ];

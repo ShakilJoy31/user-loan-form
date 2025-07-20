@@ -7,11 +7,27 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 
-const thumbnails = [shopLogo.src, shopLogo.src, shopLogo.src, shopLogo.src];
+interface ProductImage {
+    id: number;
+    productId: number;
+    imageUrl: string;
+    alt: string | null;
+    createdAt: string;
+    updatedAt: string;
+}
 
-export default function ProductGallery() {
+interface ProductGalleryProps {
+    productImages?: ProductImage[];
+}
+
+export default function ProductGallery({ productImages = [] }: ProductGalleryProps) {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const { translate } = useCustomTranslator();
+
+    // Use product images if available, otherwise fall back to default thumbnails
+    const thumbnails = productImages.length > 0 
+        ? productImages.map(img => img.imageUrl) 
+        : [shopLogo.src, shopLogo.src, shopLogo.src, shopLogo.src];
 
     const nextImage = () => {
         setCurrentImageIndex((prevIndex) => 

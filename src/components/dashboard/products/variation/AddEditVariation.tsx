@@ -1,28 +1,32 @@
+"use client"
 import { useState, useEffect } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogFooter 
+} from "@/components/ui/dialog";
 import InputField from "@/components/ui/input";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import ButtonLoader from "@/components/common/ButtonLoader";
 import { Button } from "@/components/ui/button";
-import { useGetAllVariationsQuery } from "@/redux/features/product/variationApi";
 import toast from "react-hot-toast";
-interface VariationOption {
+import { useCustomTranslator } from "@/hooks/useCustomTranslator";
+
+interface Variation {
   id: number;
-  value: string;
-  variationId: number;
-  variation: {
-    name: string;
-  };
+  name: string;
 }
 
 interface AddEditVariationProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: { value: string; variationId: number }) => void;
-  initialData: VariationOption | null;
+  onSave: (id: number | null, name: string) => void;
+  currentVariation: Variation | null;
   loading: boolean;
-   err?: {
+    err?: {
     data?: {
       message?: string;
     };
@@ -32,56 +36,31 @@ interface AddEditVariationProps {
 const AddEditVariation = ({
   isOpen,
   onClose,
-  onSubmit,
-  initialData,
+  onSave,
+  currentVariation,
   loading,
   err,
 }: AddEditVariationProps) => {
-  const { data: variationsData } = useGetAllVariationsQuery({ page: 1, size: 1000 });
-  const [value, setValue] = useState(initialData?.value || "");
-  const [variationName, setVariationName] = useState(initialData?.variation.name || "");
+  const [name, setName] = useState(currentVariation?.name || "");
   const [error, setError] = useState<string | null>(null);
-
+  const { translate } = useCustomTranslator();
 
   useEffect(() => {
-    if (initialData) {
-      setValue(initialData.value);
-      setVariationName(initialData.variation.name);
-    } else {
-      setValue("");
-      setVariationName("");
-    }
+    setName(currentVariation?.name || "");
     setError(null);
-  }, [initialData]);
+  }, [currentVariation]);
 
   const handleSubmit = () => {
-    if (!value.trim()) {
-      setError("Value cannot be empty");
-      return;
-    }
-    if (!variationName.trim()) {
-      setError("Variation name cannot be empty");
-      return;
-    }
-
-    // Find the variation ID from the variations data
-    const selectedVariation = variationsData?.data.find(
-      (v: { name: string; }) => v.name.toLowerCase() === variationName.trim().toLowerCase()
-    );
-
-    if (!selectedVariation && !initialData?.variationId) {
-      setError("Variation not found");
+    if (!name.trim()) {
+      setError(translate("বৈচিত্র্যের নাম খালি রাখা যাবে না", "Variation name cannot be empty"));
       return;
     }
 
     try {
-      onSubmit({
-        value: value.trim(),
-        variationId: selectedVariation?.id || initialData?.variationId || 0
-      });
+      onSave(currentVariation?.id || null, name.trim());
     } catch (error) {
       console.error(error);
-      toast.error("Something went wrong! Please try again.");   
+      toast.error(translate("কিছু ভুল হয়েছে! দয়া করে আবার চেষ্টা করুন।", "Something went wrong! Please try again."));
       setError(null);
     }
   };
@@ -91,56 +70,43 @@ const AddEditVariation = ({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            {initialData ? "Edit Variation Option" : "Add Variation Option"}
+            {currentVariation ? translate("বৈচিত্র্য সম্পাদনা করুন", "Edit Variation") : translate("বৈচিত্র্য যোগ করুন", "Add Variation")}
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
           <InputField
             type="text"
-            label="Variation Name"
-            placeholder="Enter variation name"
-            value={variationName}
+            placeholder={translate("বৈচিত্র্যের নাম লিখুন", "Enter variation name")}
+            value={name}
             onChange={(e) => {
-              setVariationName(e.target.value);
+              setName(e.target.value);
               setError(null);
             }}
-            errorMessage={error && error.includes("Variation") ? error : undefined}
-          />
-
-          <InputField
-            type="text"
-            label="Value"
-            placeholder="Enter option value"
-            value={value}
-            onChange={(e) => {
-              setValue(e.target.value);
-              setError(null);
-            }}
-            errorMessage={error && error.includes("Value") ? error : undefined}
+            errorMessage={error || undefined}
           />
         </div>
 
         {err && "data" in err && (
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
-            <AlertTitle>Error</AlertTitle>
+            <AlertTitle>{translate("ত্রুটি", "Error")}</AlertTitle>
             <AlertDescription>
               {(err.data as { message?: string })?.message ||
-                "Something went wrong! Please try again."}
+                translate("কিছু ভুল হয়েছে! দয়া করে আবার চেষ্টা করুন।", "Something went wrong! Please try again.")}
             </AlertDescription>
           </Alert>
         )}
 
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>
-            Cancel
+            {translate("বাতিল", "Cancel")}
           </Button>
           <Button
             onClick={handleSubmit}
-            className="bg-blue-500 text-white"
-            disabled={!value.trim() || !variationName.trim()}
+            className="bg-[#EE5A2C] text-white"
+            disabled={!name.trim() || loading}
           >
-            {loading && <ButtonLoader />} Save
+            {loading && <ButtonLoader />} {translate("সংরক্ষণ করুন", "Save")}
           </Button>
         </DialogFooter>
       </DialogContent>

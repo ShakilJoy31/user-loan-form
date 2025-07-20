@@ -24,7 +24,7 @@ const InputField: React.FC<InputFieldProps> = ({
     <div className="flex flex-col w-full">
       {/* Label */}
       {label && (
-        <label className="mb-1 text-sm font-medium text-gray-700">
+        <label className="mb-1 text-sm font-medium text-gray-700 dark:bg-black dark:text-white">
           {label}
         </label>
       )}
@@ -44,7 +44,7 @@ const InputField: React.FC<InputFieldProps> = ({
           placeholder={placeholder}
           value={value}
           onChange={onChange}
-          className={`w-full px-4 py-1.5 border ${
+          className={`w-full px-4 py-1.5 border dark:bg-black dark:text-white ${
             errorMessage ? "border-red-500" : "border-gray-300"
           } rounded-md text-gray-700 focus:outline-none focus:ring-2 ${
             errorMessage ? "focus:ring-red-500" : "focus:ring-blue-500"

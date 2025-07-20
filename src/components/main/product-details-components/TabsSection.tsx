@@ -35,12 +35,12 @@ export default function TabsSection() {
                 ))}
             </div>
 
-            {/* Tab Content */}
+            {/* Specifications */}
             {activeTab === Tabs[0] && (
                 <div className="space-y-6 text-sm">
                     <div>
                         <h2 className="text-lg font-semibold text-gray-800">
-                            {translate("Awei F34 ফ্যান স্পেসিফিকেশন", "Awei F34 Fan Specifications")}
+                            {translate("Awei F34 ফ্যান স্পেসিফিকেশন", "Awei F34 Fan ")}
                         </h2>
                         <div className="mt-4 space-y-2 text-gray-700">
                             <SpecItem
@@ -81,6 +81,8 @@ export default function TabsSection() {
                 </div>
             )}
 
+            {/* Description" */}
+
             {activeTab === Tabs[1] && (
                 <div className="space-y-6 text-sm text-gray-700">
                     <div>
@@ -118,6 +120,8 @@ export default function TabsSection() {
                     </div>
                 </div>
             )}
+
+            {/* Review */}
 
             {activeTab === Tabs[2] && (
                 <div className="space-y-6 text-sm text-gray-700">

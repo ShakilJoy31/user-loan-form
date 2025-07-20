@@ -1,42 +1,138 @@
 "use client";
-import { useState } from "react";
 import { FiStar } from "react-icons/fi";
 import { BsDot } from "react-icons/bs";
 import { CiShare2 } from "react-icons/ci";
-import { Check } from "lucide-react";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 import { Button } from "@/components/ui/button";
 
-export default function ProductInfo() {
-    const [selectedColor, setSelectedColor] = useState("beige");
-    const [selectedSize, setSelectedSize] = useState("Small");
+interface VariationOption {
+    id: number;
+    value: string;
+    variationTypeId: number;
+}
+
+interface VariationType {
+    id: number;
+    name: string;
+    productId: number;
+    options: VariationOption[];
+}
+
+interface ProductItemOption {
+    option: {
+        id: number;
+        value: string;
+        variationType: {
+            id: number;
+            name: string;
+            productId: number;
+        };
+        variationTypeId: number;
+    };
+}
+
+interface ProductItem {
+    id: number;
+    productId: number;
+    sku: string;
+    price: number;
+    purchasePoint: number;
+    discountPrice: number;
+    stock: number;
+    barcode: string | null;
+    options: ProductItemOption[];
+}
+
+interface Brand {
+    id: number;
+    brand: string;
+    link: string;
+    image: string;
+    offerImage: string | null;
+    description: string | null;
+    isShippedFree: boolean;
+    createdAt: string;
+    updatedAt: string;
+}
+
+interface Category {
+    id: number;
+    name: string;
+    serialNo: number;
+    link: string;
+    image: string;
+    banner: string | null;
+    description: string | null;
+    isShippedFree: boolean;
+    isFullPay: boolean;
+    createdAt: string;
+    updatedAt: string;
+}
+
+interface ProductInfoProps {
+    productName: string;
+    brand: Brand;
+    category: Category;
+    rating: number;
+    ProductItem: ProductItem[];
+    VariationType: VariationType[];
+    sortDescription: string | null;
+    selectedOptions: Record<string, string>;
+    onOptionSelect: (variationName: string, optionValue: string) => void;
+}
+
+export default function ProductInfo({
+    productName,
+    brand,
+    rating,
+    ProductItem,
+    VariationType,
+    sortDescription,
+    selectedOptions,
+    onOptionSelect,
+}: ProductInfoProps) {
     const { translate } = useCustomTranslator();
 
-    const colors = [
-        { id: "beige", name: translate("বেইজ", "Beige"), bg: "bg-[#EFE5D4]" },
-        { id: "green", name: translate("সবুজ", "Green"), bg: "bg-[#B7CD6D]" },
-        { id: "blue", name: translate("নীল", "Blue"), bg: "bg-[#C2C6F0]" },
-        { id: "pink", name: translate("গোলাপী", "Pink"), bg: "bg-[#FBD2F5]" },
-        {
-            id: "half",
-            name: translate("অর্ধেক", "Half"),
-            bg: "bg-gradient-to-b from-[#E4B4A3] to-[#B7CD6D]",
-        },
-    ];
+    // Find the matching product item based on selected options
+    const findSelectedProductItem = (): ProductItem | undefined => {
+        return ProductItem.find(item => {
+            return Object.entries(selectedOptions).every(([variationName, optionValue]) => {
+                return item.options.some(
+                    itemOption => itemOption.option.variationType.name === variationName && 
+                                itemOption.option.value === optionValue
+                );
+            });
+        });
+    };
 
-    const sizes = [
-        translate("ছোট", "Small"),
-        translate("মাঝারি", "Medium"), 
-        translate("বড়", "Large"),
-        translate("অতিবড়", "Extra Large")
-    ];
+    const selectedProductItem = findSelectedProductItem();
+    const isSelectedCombinationAvailable = !!selectedProductItem;
+    
+    // Calculate stock status
+    const selectedStock = selectedProductItem?.stock || 0;
+    const inStock = isSelectedCombinationAvailable && selectedStock > 0;
+    const totalStock = ProductItem.reduce((sum, item) => sum + item.stock, 0);
+    const hasAnyStock = totalStock > 0;
+
+    // Get current price (use discount price if available)
+    const getCurrentPrice = () => {
+        if (!selectedProductItem) return null;
+        return selectedProductItem.discountPrice || selectedProductItem.price;
+    };
+
+    const currentPrice = getCurrentPrice();
+    const originalPrice = selectedProductItem?.price;
 
     return (
         <div className="space-y-6 mt-4 lg:mt-0">
+            {/* Brand and Compare/Share */}
             <div className="flex items-center justify-between">
-                <p className="text-orange-600 font-bold text-sm">ElectroHub</p>
+                <p className="text-orange-600 font-bold text-sm">{brand.brand}</p>
                 <div className="flex gap-x-2 items-center">
-                    <Button variant={'outline'} className="bg-[#F6F6F6] shadow-md px-3 py-1 rounded-full text-sm text-gray-500 hover:bg-gray-100 transition">
+                    <Button
+                        variant={"outline"}
+                        className="bg-[#F6F6F6] shadow-md px-3 py-1 rounded-full text-sm text-gray-500 hover:bg-gray-100 transition"
+                    >
                         {translate("তুলনা যোগ করুন", "Add to compare")}
                     </Button>
                     <span>
@@ -45,34 +141,56 @@ export default function ProductInfo() {
                 </div>
             </div>
 
+            {/* Stock Status */}
             <p className="text-sm text-gray-600">
                 {translate("স্ট্যাটাস:", "Status:")}{" "}
-                <span className="text-red-500 font-medium">
-                    {translate("স্টকে আছে", "In Stock")}
+                <span className={inStock ? "text-green-500 font-medium" : "text-red-500 font-medium"}>
+                    {inStock
+                        ? translate("স্টকে আছে", "In Stock")
+                        : hasAnyStock
+                            ? translate("অন্যান্য ভ্যারিয়েন্ট স্টকে আছে", "Other variants in stock")
+                            : translate("স্টকে নেই", "Out of Stock")}
                 </span>
             </p>
 
+            {/* Product Name */}
             <h1 className="text-2xl md:text-3xl font-semibold leading-tight text-gray-900">
-                {translate(
-                    "এলজি সি২ ৪২ (১০৬সিএম) ৪কে স্মার্ট ওলেড ইভো টিভি | ওয়েবওএস | সিনেমা এইচডিআর", 
-                    "LG C2 42 (106CM) 4K SMART OLED EVO TV | WEBOS | CINEMA HDR"
-                )}
+                {productName}
             </h1>
 
+            {/* Rating and Reviews */}
             <div className="flex items-center gap-4 text-sm text-gray-600">
                 <span className="flex items-center gap-1 text-yellow-500 font-medium">
                     <FiStar className="text-lg" />
-                    4.5
+                    {rating || "0"}
                 </span>
                 <span className="text-gray-800">
                     {translate("২৮৮ রিভিউ", "288 reviews")}
                 </span>
                 <BsDot className="text-lg text-gray-400" />
-                <span>
-                    {translate("২০+ বিক্রিত", "20+ Sold")}
-                </span>
+                <span>{translate("২০+ বিক্রিত", "20+ Sold")}</span>
             </div>
 
+            {/* Price Display */}
+            {currentPrice && (
+                <div className="flex items-center gap-3">
+                    <span className="text-2xl font-bold text-[#3A4980]">
+                        ৳{currentPrice.toLocaleString()}
+                    </span>
+                    {originalPrice && originalPrice > currentPrice && (
+                        <>
+                            <span className="text-lg line-through text-gray-500">
+                                ৳{originalPrice.toLocaleString()}
+                            </span>
+                            <span className="text-sm bg-red-100 text-red-600 px-2 py-1 rounded">
+                                {Math.round(((originalPrice - currentPrice) / originalPrice) * 100)}% OFF
+                            </span>
+                        </>
+                    )}
+                </div>
+            )}
+
+            {/* Special Offer Banner */}
             <div className="flex items-center gap-4 rounded-[12px] bg-[linear-gradient(180deg,#F2973E_27.72%,#FECA40_100%)] px-6 py-4 text-white w-full max-w-[404px]">
                 <div className="flex-1 text-left">
                     <p className="font-extrabold text-2xl">
@@ -96,25 +214,21 @@ export default function ProductInfo() {
                 </div>
             </div>
 
+            {/* Short Description */}
             <ul className="text-sm space-y-2 text-gray-600 list-disc list-inside pt-4">
-                <li>
-                    {translate("α9 Gen5 AI প্রসেসর সহ AI পিকচার প্রো এবং AI 4K আপস্কেলিং", "α9 Gen5 AI Processor with AI Picture Pro & AI 4K Upscaling")}
-                </li>
-                <li>
-                    {translate("পিক্সেল ডিমিং, পারফেক্ট ব্ল্যাক, 100% কালার ফিডেলিটি এবং কালার ভলিউম", "Pixel Dimming, Perfect Black, 100% Color Fidelity & Color Volume")}
-                </li>
-                <li>
-                    {translate("হ্যান্ডস-ফ্রি ভয়েস কন্ট্রোল, সর্বদা প্রস্তুত", "Hands-free Voice Control, Always Ready")}
-                </li>
-                <li>
-                    {translate("ডলবি ভিশন আইকিউ সহ প্রিসিশন ডিটেইল, ডলবি এটমস, ফিল্মমেকার মোড", "Dolby Vision IQ with Precision Detail, Dolby Atmos, Filmmaker Mode")}
-                </li>
-                <li>
-                    {translate("আই কমফোর্ট ডিসপ্লে: লো-ব্লু লাইট, ফ্লিকার-ফ্রি", "Eye Comfort Display: Low-Blue Light, Flicker-Free")}
-                </li>
+                {sortDescription ? (
+                    sortDescription
+                        .split("\n")
+                        .map((item, index) => <li key={index}>{item}</li>)
+                ) : (
+                    <li>
+                        {translate("কোনো বিবরণ পাওয়া যায়নি", "No description available")}
+                    </li>
+                )}
             </ul>
 
-            <div className="space-y-2 pt-4 border-t border-gray-300">
+              {/* color button */}
+      {/* <div className="space-y-2 pt-4 border-t border-gray-300">
                 <p className="text-sm font-medium text-gray-700">
                     {translate("একটি রং নির্বাচন করুন", "Choose a Color")}
                 </p>
@@ -142,45 +256,66 @@ export default function ProductInfo() {
                         </button>
                     ))}
                 </div>
-            </div>
+            </div> */}
 
-            <div className="space-y-2 pt-4 border-t border-gray-300 pb-2">
-                <p className="text-sm font-medium text-gray-700">
-                    {translate("একটি সাইজ নির্বাচন করুন", "Choose a Size")}
-                </p>
-                <div className="flex flex-wrap gap-3">
-                    {sizes.map((size) => (
-                        <label
-                            key={size}
-                            className={`relative cursor-pointer px-3 py-1.5 text-sm rounded-[8px] flex items-center gap-2 border transition ${
-                                selectedSize === size
-                                    ? "bg-[#EDF0F8] text-[#3A4980] border-[#3A4980]"
-                                    : "bg-[#F3F3F3] text-[#726C6C] border-transparent"
-                            }`}
-                        >
-                            <input
-                                type="radio"
-                                name="size"
-                                value={size}
-                                className="peer hidden"
-                                checked={selectedSize === size}
-                                onChange={() => setSelectedSize(size)}
-                            />
-                            <span
-                                className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
-                                    selectedSize === size ? "border-[#3A4980]" : "border-gray-400"
+            {/* Variation Options */}
+            {VariationType.map((variation) => (
+                <div
+                    key={variation.id}
+                    className="space-y-2 pt-4 border-t border-gray-300"
+                >
+                    <p className="text-sm font-medium text-gray-700">
+                        {translate(
+                            `একটি ${variation.name} নির্বাচন করুন`,
+                            `Choose a ${variation.name}`
+                        )}
+                    </p>
+                    <div className="flex flex-wrap gap-3">
+                        {variation.options.map((option) => (
+                            <label
+                                key={option.id}
+                                className={`relative cursor-pointer px-3 py-1.5 text-sm rounded-[8px] flex items-center gap-2 border transition ${
+                                    selectedOptions[variation.name] === option.value
+                                        ? "bg-[#EDF0F8] text-[#3A4980] border-[#3A4980]"
+                                        : "bg-[#F3F3F3] text-[#726C6C] border-transparent"
                                 }`}
                             >
-                                {selectedSize === size && (
-                                    <span className="w-2 h-2 bg-[#3A4980] rounded-full"></span>
-                                )}
-                            </span>
-                            {size}
-                        </label>
-                    ))}
+                                <input
+                                    type="radio"
+                                    name={variation.name}
+                                    value={option.value}
+                                    className="peer hidden"
+                                    checked={selectedOptions[variation.name] === option.value}
+                                    onChange={() =>
+                                        onOptionSelect(variation.name, option.value)
+                                    }
+                                />
+                                <span
+                                    className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
+                                        selectedOptions[variation.name] === option.value
+                                            ? "border-[#3A4980]"
+                                            : "border-gray-400"
+                                    }`}
+                                >
+                                    {selectedOptions[variation.name] === option.value && (
+                                        <span className="w-2 h-2 bg-[#3A4980] rounded-full"></span>
+                                    )}
+                                </span>
+                                {option.value}
+                            </label>
+                        ))}
+                    </div>
                 </div>
-                <hr className="border-t border-gray-300 mt-3" />
-            </div>
+            ))}
+
+            {/* Out of Stock Message */}
+            {Object.keys(selectedOptions).length > 0 && !isSelectedCombinationAvailable && (
+                <div className="text-red-500 font-medium text-sm">
+                    {translate("এই কম্বিনেশনের পণ্য স্টকে নেই", "This combination is out of stock")}
+                </div>
+            )}
+
+            <hr className="border-t border-gray-300 mt-3" />
         </div>
     );
 }
