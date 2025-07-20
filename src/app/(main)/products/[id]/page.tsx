@@ -83,6 +83,19 @@ interface ProductItem {
     options: ProductItemOption[];
 }
 
+interface Specification {
+  label: string;
+  value: string;
+}
+
+interface Review {
+  name: string;
+  daysAgo: number;
+  rating: number;
+  title: string;
+  content: string;
+}
+
 interface ProductData {
     id: number;
     productName: string;
@@ -96,7 +109,9 @@ interface ProductData {
     seoTitle: string | null;
     seoDescription: string | null;
     sortDescription: string | null;
-    description: string | null;
+    specifications?: Specification[]; 
+    description?: string | null; 
+    reviews?: Review[];
     createdAt: string;
     updatedAt: string;
     vendorId: number | null;
@@ -155,7 +170,7 @@ export default function ProductDetailsPage() {
     };
 
     return (
-        <div className="max-w-[1280px] mx-auto px-4 pt-[40px] pb-[99px] space-y-8">
+        <div className="max-w-[1280px] mx-auto px-4 pt-[40px] pb-[99px] space-y-8 dark:bg-black dark:text-white">
             <div className="flex items-center gap-x-2 pt-16">
                 <span className="hover:cursor-pointer">Home</span> / <span className="hover-cursor-pointer">Shop Details</span> / <span className="hover-cursor-pointer text-[#EE5A2C]">{productData?.productName || "Product"}</span>
             </div>
@@ -167,7 +182,7 @@ export default function ProductDetailsPage() {
                     <RecommendedProducts />
                 </div>
 
-                <div className="flex-1 space-y-4 w-full lg:w-1/2">
+                <div className="flex-1 space-y-4 w-full lg:w-1/2 ">
                     <ProductInfo 
                         productName={productData?.productName || ""}
                         brand={productData?.brand || { brand: "", id: 0, link: "", image: "", offerImage: null, description: null, isShippedFree: false, createdAt: "", updatedAt: "" }}
@@ -183,7 +198,13 @@ export default function ProductDetailsPage() {
                         productItems={productData?.ProductItem || []}
                         selectedOptions={selectedOptions}
                     />
-                    <TabsSection />
+                    <TabsSection 
+  specifications={productData?.specifications || null}
+  description={productData?.description || null}
+  reviews={productData?.reviews || null}
+  rating={productData?.rating || 0}
+  productName={productData?.productName || ""}
+/>
                 </div>
             </div>
             <RelatedShops />

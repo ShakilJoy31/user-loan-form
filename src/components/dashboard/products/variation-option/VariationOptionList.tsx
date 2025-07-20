@@ -213,13 +213,13 @@ const VariationOptionList = () => {
     
     return (
       <>
-        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-white">
           {dynamicIndex}
         </td>
-        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-white">
           {row.name}
         </td>
-        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-white">
           {variationName}
         </td>
         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">

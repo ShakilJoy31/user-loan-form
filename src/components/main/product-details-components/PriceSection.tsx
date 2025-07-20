@@ -56,20 +56,42 @@ export default function PriceSection({ productItems, selectedOptions }: PriceSec
     const matchingProduct = findMatchingProductItem();
     const unitPrice = matchingProduct?.price || 0;
     const unitDiscountPrice = matchingProduct?.discountPrice || 0;
-    const currentPrice = unitPrice * quantity;
-    const discountPrice = unitDiscountPrice * quantity;
+    const currentPrice = unitDiscountPrice > 0 ? unitDiscountPrice : unitPrice;
+    const subTotal = currentPrice * quantity;
+    const originalSubTotal = unitPrice * quantity;
+
+    const handleAddToCart = () => {
+        if (!matchingProduct) {
+            console.error("No matching product found for selected options");
+            return;
+        }
+
+        const cartItem = {
+            productId: matchingProduct.productId,
+            sku: matchingProduct.sku,
+            quantity: quantity,
+            price: currentPrice,
+            subTotal: subTotal
+        };
+        console.log("Add to cart payload:", [cartItem]);
+    };
 
     return (
-        <div className="space-y-4 mt-6">
-            <div className="text-2xl font-bold text-orange-600">
-                {currentPrice} {translate("টাকা", "Tk")}{" "}
-                {discountPrice > 0 && (
-                    <span className="line-through text-gray-400 text-base font-normal">
-                        {discountPrice} {translate("টাকা", "Tk")}
-                    </span>
-                )}
+        <div className="space-y-4 mt-6 dark:bg-black dark:text-white">
+            {/* Price Display Section */}
+            <div className="flex flex-col gap-1">
+                <div className="text-2xl font-bold text-orange-600">
+                    {subTotal} {translate("টাকা", "Tk")}
+                    {unitDiscountPrice > 0 && unitPrice !== unitDiscountPrice && (
+                        <span className="line-through text-gray-400 text-base font-normal ml-2">
+                            {originalSubTotal} {translate("টাকা", "Tk")}
+                        </span>
+                    )}
+                </div>
+               
             </div>
 
+            {/* Quantity Controls */}
             <div className="flex items-center gap-4 flex-wrap">
                 <div className="flex items-center border border-gray-300 rounded-full px-3 py-1 shadow-sm">
                     <button
@@ -89,14 +111,20 @@ export default function PriceSection({ productItems, selectedOptions }: PriceSec
                     </button>
                 </div>
 
+                {/* Action Buttons */}
                 <Button variant={'outline'} className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded-md font-semibold text-sm shadow-md">
                     {translate("এখনই কিনুন", "Buy Now")}
                 </Button>
-                <Button variant={'outline'} className="border border-gray-300 hover:bg-gray-100 px-5 py-2 rounded-md text-sm font-semibold flex items-center gap-2">
+                <Button 
+                    variant={'outline'} 
+                    className="border border-gray-300 hover:bg-gray-100 px-5 py-2 rounded-md text-sm font-semibold flex items-center gap-2"
+                    onClick={handleAddToCart}
+                >
                     {translate("কার্টে যোগ করুন", "Add to Cart")} <PiShoppingCartSimpleBold className="text-lg" />
                 </Button>
             </div>
 
+            {/* Additional Info */}
             <div className="flex flex-wrap items-center gap-6 text-sm text-gray-700 border-b border-gray-300 mt-4 py-4">
                 <div className="flex items-center gap-2 cursor-pointer hover:text-black">
                     <FiHeart className="text-base" />

@@ -124,11 +124,11 @@ export default function ProductInfo({
     const originalPrice = selectedProductItem?.price;
 
     return (
-        <div className="space-y-6 mt-4 lg:mt-0">
+        <div className="space-y-6 mt-4 lg:mt-0 dark:bg-black dark:text-white">
             {/* Brand and Compare/Share */}
-            <div className="flex items-center justify-between">
-                <p className="text-orange-600 font-bold text-sm">{brand.brand}</p>
-                <div className="flex gap-x-2 items-center">
+            <div className="flex items-center justify-between dark:bg-black dark:text-white">
+                <p className="text-orange-600 font-bold text-sm dark:bg-black dark:text-white">{brand.brand}</p>
+                <div className="flex gap-x-2 items-center dark:bg-black dark:text-white">
                     <Button
                         variant={"outline"}
                         className="bg-[#F6F6F6] shadow-md px-3 py-1 rounded-full text-sm text-gray-500 hover:bg-gray-100 transition"
@@ -142,7 +142,7 @@ export default function ProductInfo({
             </div>
 
             {/* Stock Status */}
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-600 dark:bg-black dark:text-white">
                 {translate("স্ট্যাটাস:", "Status:")}{" "}
                 <span className={inStock ? "text-green-500 font-medium" : "text-red-500 font-medium"}>
                     {inStock
@@ -154,12 +154,12 @@ export default function ProductInfo({
             </p>
 
             {/* Product Name */}
-            <h1 className="text-2xl md:text-3xl font-semibold leading-tight text-gray-900">
+            <h1 className="text-2xl md:text-3xl font-semibold leading-tight text-gray-900 dark:bg-black dark:text-white">
                 {productName}
             </h1>
 
             {/* Rating and Reviews */}
-            <div className="flex items-center gap-4 text-sm text-gray-600">
+            <div className="flex items-center gap-4 text-sm text-gray-600 dark:bg-black dark:text-white">
                 <span className="flex items-center gap-1 text-yellow-500 font-medium">
                     <FiStar className="text-lg" />
                     {rating || "0"}
@@ -173,7 +173,7 @@ export default function ProductInfo({
 
             {/* Price Display */}
             {currentPrice && (
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 dark:bg-black dark:text-white">
                     <span className="text-2xl font-bold text-[#3A4980]">
                         ৳{currentPrice.toLocaleString()}
                     </span>
@@ -191,7 +191,7 @@ export default function ProductInfo({
             )}
 
             {/* Special Offer Banner */}
-            <div className="flex items-center gap-4 rounded-[12px] bg-[linear-gradient(180deg,#F2973E_27.72%,#FECA40_100%)] px-6 py-4 text-white w-full max-w-[404px]">
+            <div className="dark:bg-black dark:text-white flex items-center gap-4 rounded-[12px] bg-[linear-gradient(180deg,#F2973E_27.72%,#FECA40_100%)] px-6 py-4 text-white w-full max-w-[404px]">
                 <div className="flex-1 text-left">
                     <p className="font-extrabold text-2xl">
                         {translate("২৫% ছাড়", "25% OFF")}
@@ -215,7 +215,7 @@ export default function ProductInfo({
             </div>
 
             {/* Short Description */}
-            <ul className="text-sm space-y-2 text-gray-600 list-disc list-inside pt-4">
+            <ul className="dark:bg-black dark:text-white text-sm space-y-2 text-gray-600 list-disc list-inside pt-4">
                 {sortDescription ? (
                     sortDescription
                         .split("\n")
@@ -262,15 +262,15 @@ export default function ProductInfo({
             {VariationType.map((variation) => (
                 <div
                     key={variation.id}
-                    className="space-y-2 pt-4 border-t border-gray-300"
+                    className="space-y-2 pt-4 border-t border-gray-300 dark:bg-black dark:text-white"
                 >
-                    <p className="text-sm font-medium text-gray-700">
+                    <p className="text-sm font-medium text-gray-700 dark:bg-black dark:text-white">
                         {translate(
                             `একটি ${variation.name} নির্বাচন করুন`,
                             `Choose a ${variation.name}`
                         )}
                     </p>
-                    <div className="flex flex-wrap gap-3">
+                    <div className="flex flex-wrap gap-3 dark:bg-black dark:text-white">
                         {variation.options.map((option) => (
                             <label
                                 key={option.id}

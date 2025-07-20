@@ -18,10 +18,10 @@ const Table = <T extends {
   onSelectAll,
 }: TableProps<T>) => {
   return (
-    <div className="overflow-x-auto rounded-lg shadow-sm border border-gray-100 bg-white">
-      <table className="min-w-full divide-y divide-gray-200">
+    <div className="overflow-x-auto rounded-lg shadow-sm border border-gray-100 bg-white dark:bg-black dark:text-white">
+      <table className="min-w-full divide-y divide-gray-200 dark:bg-black dark:text-white">
         {/* Table Header */}
-        <thead className="bg-gray-50">
+        <thead className="bg-gray-50 dark:bg-black dark:text-white">
           <tr>
             {/* "Select All" Checkbox in Header */}
             {onRowSelect && onSelectAll && (
@@ -40,7 +40,7 @@ const Table = <T extends {
               <th 
                 key={index} 
                 scope="col" 
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                className="px-6 dark:bg-black dark:text-white py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
                 {header}
               </th>
@@ -49,13 +49,13 @@ const Table = <T extends {
         </thead>
 
         {/* Table Body */}
-        <tbody className="bg-white divide-y divide-gray-200">
+        <tbody className="bg-white divide-y divide-gray-200 dark:bg-black dark:text-white">
           {data.map((row, index) => (
             <tr 
               key={row.id} 
-              className={`transition-colors ${selectedRows.some(selectedOrder => selectedOrder.id === row.id) 
+              className={`transition-colors dark:text-white ${selectedRows.some(selectedOrder => selectedOrder.id === row.id) 
                 ? 'bg-blue-50' 
-                : 'hover:bg-gray-50'}`}
+                : 'hover:bg-gray-50 hover:dark:bg-black'}`}
             >
               {/* Row Selection Checkbox */}
               {onRowSelect && (

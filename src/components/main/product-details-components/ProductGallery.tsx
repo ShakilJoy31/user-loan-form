@@ -42,7 +42,7 @@ export default function ProductGallery({ productImages = [] }: ProductGalleryPro
     };
 
     return (
-        <div className="w-full space-y-[16px] flex flex-col">
+        <div className="w-full space-y-[16px] flex flex-col dark:bg-black dark:text-white">
             {/* Main Image */}
             <div className="">
                 <Image 
@@ -51,12 +51,12 @@ export default function ProductGallery({ productImages = [] }: ProductGalleryPro
                     alt={translate("প্রধান পণ্য", "Main Product")}
                     width={350}
                     height={350}
-                    className="border w-full h-full lg:w-[502px] lg:h-[439px] bg-[#F7EDE1] pt-[24px] pr-[42px] pb-[17px] pl-[34px]"
+                    className="border w-full h-full dark:bg-black dark:text-white lg:w-[502px] lg:h-[439px] bg-[#F7EDE1] pt-[24px] pr-[42px] pb-[17px] pl-[34px]"
                 />
             </div>
 
             {/* Thumbnails with arrows */}
-            <div className="flex items-center gap-4 w-full">
+            <div className="flex items-center gap-4 w-full dark:bg-black dark:text-white">
                 <Button variant={'outline'}
                     onClick={prevImage}
                     className="p-2 text-gray-600 hover:text-[#f15a29] transition-colors"
@@ -70,14 +70,14 @@ export default function ProductGallery({ productImages = [] }: ProductGalleryPro
                         <div
                             key={idx}
                             onClick={() => setCurrentImageIndex(idx)}
-                            className={`rounded-[16px] overflow-hidden border-2 ${currentImageIndex === idx ? 'border-[#1A432E]' : 'border-transparent'}`}
+                            className={`rounded-[16px] overflow-hidden border-2 dark:bg-black dark:text-white ${currentImageIndex === idx ? 'border-[#1A432E]' : 'border-transparent'}`}
                         >
                             <Image
                                 src={thumb}
                                 alt={translate(`থাম্বনেইল ${idx}`, `Thumbnail ${idx}`)}
                                 width={70}
                                 height={70}
-                                className="rounded-[16px] cursor-pointer"
+                                className="rounded-[16px] cursor-pointer dark:bg-black dark:text-white"
                             />
                         </div>
                     ))}

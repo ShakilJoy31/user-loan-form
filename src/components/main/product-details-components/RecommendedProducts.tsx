@@ -63,14 +63,14 @@ export const RecommendedProducts = () => {
     }));
 
     return (
-        <div className="bg-white p-4 rounded-xl border border-gray-300 shadow-sm lg:max-w-[524px] max-w-full">
+        <div className="dark:bg-black dark:text-white bg-white p-4 rounded-xl border border-gray-300 shadow-sm lg:max-w-[524px] max-w-full">
             <h3 className="text-lg font-semibold mb-4">
                 {translate("প্রস্তাবিত পণ্য", "Recommended Products")}
             </h3>
             <ul className="space-y-4">
                 {translatedProducts.map((product, index) => (
-                    <li key={index} className="flex justify-between border-b border-gray-300 last:border-0 pb-4">
-                        <div className="flex items-start space-x-4 w-full">
+                    <li key={index} className="dark:bg-black dark:text-white flex justify-between border-b border-gray-300 last:border-0 pb-4">
+                        <div className="dark:bg-black dark:text-white flex items-start space-x-4 w-full">
                             <Image
                                 src={product.image}
                                 alt={product.name}
@@ -78,7 +78,7 @@ export const RecommendedProducts = () => {
                                 height={100}
                                 className="w-14 h-14 rounded object-cover"
                             />
-                            <div className='w-full'>
+                            <div className='w-full dark:bg-black dark:text-white'>
                                 <p className="font-semibold text-sm">{product.name}</p>
                                 <p className="text-xs text-gray-500">
                                     {translate("সাইজ:", "Size:")} {product.size}

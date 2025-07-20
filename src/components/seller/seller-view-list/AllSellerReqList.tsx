@@ -205,7 +205,7 @@ const AllSellerReqList = () => {
   return (
     <div className="bg-gray-100 min-h-screen p-4 dark:bg-black dark:text-white">
       <div className="flex justify-between items-center mb-5">
-        <h1 className="text-2xl font-semibold">{translate("বিক্রেতা তালিকা", "Seller List")}</h1>
+        <h1 className="text-2xl font-semibold">{translate("বিক্রেতা অনুরোধের তালিকা", "Seller Request List")}</h1>
       </div>
 
       <div className="flex justify-between dark:bg-black dark:text-white items-center bg-white px-4 rounded-lg">

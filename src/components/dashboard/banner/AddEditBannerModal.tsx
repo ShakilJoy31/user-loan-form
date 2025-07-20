@@ -14,6 +14,7 @@ import Image from "next/image";
 import { useAddThumbnailMutation } from "@/redux/features/file/fileApi";
 import InputWrapper from "@/components/common/Wrapper/InputWrapper";
 import ButtonLoader from "@/components/common/ButtonLoader";
+import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 
 interface BannerFormData {
   link: string;
@@ -48,6 +49,7 @@ export default function AddEditBannerModal({
   const [preview, setPreview] = useState<string | null>(null);
   const [altText, setAltText] = useState("");
   const [link, setLink] = useState("");
+  const { translate } = useCustomTranslator();
 
   const [addThumbnail, { isLoading: addThumbnailLoading }] = useAddThumbnailMutation();
 
@@ -67,7 +69,7 @@ export default function AddEditBannerModal({
     const selectedFile = e.target.files?.[0];
     if (selectedFile) {
       if (!selectedFile.type.startsWith('image/')) {
-        setError("Please upload an image file");
+        setError(translate("একটি ইমেজ ফাইল আপলোড করুন", "Please upload an image file"));
         return;
       }
       setFile(selectedFile);
@@ -80,12 +82,12 @@ export default function AddEditBannerModal({
     setError(null);
 
     if (!link.trim()) {
-      setError("Please enter a link");
+      setError(translate("একটি লিংক লিখুন", "Please enter a link"));
       return;
     }
 
     if (!file && !preview) {
-      setError("Please upload an image");
+      setError(translate("একটি ইমেজ আপলোড করুন", "Please upload an image"));
       return;
     }
 
@@ -109,7 +111,7 @@ export default function AddEditBannerModal({
         }
       } catch (err) {
         console.error("Error uploading file:", err);
-        setError("Failed to upload image. Please try again.");
+        setError(translate("ইমেজ আপলোড করতে ব্যর্থ হয়েছে। আবার চেষ্টা করুন।", "Failed to upload image. Please try again."));
         return;
       }
     }
@@ -127,27 +129,27 @@ export default function AddEditBannerModal({
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>
-            {currentBanner ? "Edit Banner" : "Add Banner"}
+            {currentBanner ? translate("ব্যানার সম্পাদনা করুন", "Edit Banner") : translate("ব্যানার যোগ করুন", "Add Banner")}
           </DialogTitle>
         </DialogHeader>
         
         <div className="space-y-4">
-          <InputWrapper label="Link">
+          <InputWrapper label={translate("লিংক", "Link")}>
             <Input
               type="text"
-              placeholder="Enter link (e.g., test/link)"
+              placeholder={translate("লিংক লিখুন (যেমনঃ test/link)", "Enter link (e.g., test/link)")}
               value={link}
               onChange={(e) => setLink(e.target.value)}
             />
           </InputWrapper>
 
-          <InputWrapper label="Banner Image (1920×600px)">
+          <InputWrapper label={translate("ব্যানার ইমেজ (1920×600px)", "Banner Image (1920×600px)")}>
             <div className="border-2 border-dashed rounded-md p-4">
               <input
                 type="file"
                 accept="image/*"
                 onChange={handleFileChange}
-                className="block w-full text-sm text-gray-500
+                className="block w-full text-sm text-gray-500 
                 file:mr-4 file:py-2 file:px-4
                 file:rounded-md file:border-0
                 file:text-sm file:font-semibold
@@ -155,7 +157,7 @@ export default function AddEditBannerModal({
                 hover:file:bg-blue-100"
               />
               <p className="mt-2 text-xs text-gray-500">
-                Recommended size: 1920×600px
+                {translate("প্রস্তাবিত সাইজ: 1920×600px", "Recommended size: 1920×600px")}
               </p>
             </div>
           </InputWrapper>
@@ -182,9 +184,9 @@ export default function AddEditBannerModal({
             </div>
           )}
 
-          <InputWrapper label="Alt Text">
+          <InputWrapper label={translate("অল্টারনেটিভ টেক্সট", "Alt Text")}>
             <Input
-              placeholder="Enter image description for accessibility"
+              placeholder={translate("অ্যাক্সেসিবিলিটির জন্য ইমেজ বর্ণনা লিখুন", "Enter image description for accessibility")}
               value={altText}
               onChange={(e) => setAltText(e.target.value)}
             />
@@ -200,10 +202,10 @@ export default function AddEditBannerModal({
           {err && "data" in err && (
             <Alert variant="destructive">
               <AlertCircle className="h-4 w-4" />
-              <AlertTitle>Error</AlertTitle>
+              <AlertTitle>{translate("ত্রুটি", "Error")}</AlertTitle>
               <AlertDescription>
                 {(err.data as { message?: string })?.message ||
-                  "Something went wrong! Please try again."}
+                  translate("কিছু ভুল হয়েছে! দয়া করে আবার চেষ্টা করুন।", "Something went wrong! Please try again.")}
               </AlertDescription>
             </Alert>
           )}
@@ -211,13 +213,13 @@ export default function AddEditBannerModal({
 
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>
-            Cancel
+            {translate("বাতিল", "Cancel")}
           </Button>
           <Button
             onClick={handleSave}
             disabled={addThumbnailLoading || loading || !link || (!file && !preview)}
           >
-            {addThumbnailLoading || loading ? <ButtonLoader /> : "Save"}
+            {addThumbnailLoading || loading ? <ButtonLoader /> : translate("সংরক্ষণ করুন", "Save")}
           </Button>
         </DialogFooter>
       </DialogContent>

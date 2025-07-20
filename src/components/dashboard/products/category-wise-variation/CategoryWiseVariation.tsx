@@ -217,16 +217,16 @@ const CategoryWiseVariation = () => {
     
     return (
       <>
-        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-white hover:dark:text-white">
           {dynamicIndex}
         </td>
-        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-white hover:dark:text-white">
           {row.category?.name || translate("N/A", "N/A")}
         </td>
-        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-white hover:dark:text-white">
           {(row.variation?.name)}
         </td>
-        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-white hover:dark:text-white">
           {row.isRequired ? (
             <span className="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">
               {translate("প্রয়োজনীয়", "Required")}
