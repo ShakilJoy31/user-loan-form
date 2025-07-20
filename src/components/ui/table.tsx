@@ -7,7 +7,9 @@ interface TableProps<T extends { id: string | number }> {
   onSelectAll?: () => void;
 }
 
-const Table = <T extends { id: string | number }>({
+const Table = <T extends {
+    image?: string; id: string | number 
+}>({
   headers,
   data,
   renderRow,

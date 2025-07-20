@@ -124,6 +124,39 @@ export const authApi = apiSlice.injectEndpoints({
       invalidatesTags: ["seller-login"],
     }),
 
+    //seller req list api
+     // GET ALL SELLER REQUESTS
+    getAllSellerRequests: builder.query({
+      query: (data: { page?: number; size?: number; search?: string; sort?: string }) => ({
+        url: `/user/get-seller-request?page=${data?.page || 1}&size=${
+          data?.size || 10
+        }&search=${data?.search || ""}&sortOrder=${data?.sort || "desc"}`,
+      }),
+      providesTags: ["seller-login"],
+    }),
+
+    // UPDATE SELLER STATUS (e.g., approve/reject)
+    updateSellerStatus: builder.mutation({
+      query: ({ id, data }: { id: number | string; data: { status: string } }) => ({
+        url: `/user/update-seller-status/${id}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["seller-login"],
+    }),
+
+
+    //all seller list
+      // GET ALL SELLERS
+    getAllSellers: builder.query({
+      query: (data: { page?: number; size?: number; search?: string; sort?: string }) => ({
+        url: `/user/get-seller-all?page=${data?.page || 1}&size=${
+          data?.size || 10
+        }&search=${data?.search || ""}&sortOrder=${data?.sort || "desc"}`,
+      }),
+      providesTags: ["seller-login"],
+    }),
+
 
   }),
 });
@@ -143,4 +176,9 @@ export const {
   useGetAreaByIdQuery,
   useUpdateAreaMutation,
   useDeleteAreaMutation,
+  //seller req list
+  useGetAllSellerRequestsQuery,
+  useUpdateSellerStatusMutation,
+  //seller all list
+  useGetAllSellersQuery,
 } = authApi;

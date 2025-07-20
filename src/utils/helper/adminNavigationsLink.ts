@@ -3,7 +3,7 @@ import { ComponentType } from "react";
 import { FaProductHunt } from "react-icons/fa";
 import { IconType } from "react-icons/lib";
 import { LuContact } from "react-icons/lu";
-import { MdCategory } from "react-icons/md";
+import { MdAssignmentTurnedIn, MdCategory, MdListAlt, MdLocationCity, MdLocationOn, MdMap, MdPeople } from "react-icons/md";
 
 type Language = "en" | "bn";
 
@@ -561,32 +561,62 @@ const adminDashboardOffer: INavigationLink = {
 };
 
 const adminDashboardLocation: INavigationLink = {
-  icon: MdCategory,
+  icon: MdLocationOn, // Changed from MdCategory to MdLocationOn for locations
   label: {
     en: "Locations",
-    bn: "অফার",
+    bn: "লোকেশনসমূহ",
   },
   key: "location",
   href: "/proyojon-admin-portal/location",
   subLinks: [
-   {
-      icon: FaProductHunt,
+    {
+      icon: MdLocationCity, // Appropriate icon for city
       label: {
         en: "City",
-        bn: "অফার তৈরি করুন",
+        bn: "শহর",
       },
       key: "create-city",
       href: "/proyojon-admin-portal/create-city",
     }, 
-   {
-      icon: FaProductHunt,
+    {
+      icon: MdMap, // Appropriate icon for area
       label: {
         en: "Area",
-        bn: "অফার তৈরি করুন",
+        bn: "এলাকা",
       },
       key: "create-area",
       href: "/proyojon-admin-portal/create-area",
     }, 
+  ],
+};
+
+const adminDashboardSeller: INavigationLink = {
+  icon: MdPeople, // Changed from MdCategory to MdPeople for sellers
+  label: {
+    en: "Seller",
+    bn: "বিক্রেতা",
+  },
+  key: "seller",
+  href: "/proyojon-admin-portal/seller",
+  subLinks: [
+    {
+      icon: MdAssignmentTurnedIn, // Icon for requests
+      label: {
+        en: "Seller Request",
+        bn: "বিক্রেতার অনুরোধ",
+      },
+      key: "seller-request",
+      href: "/proyojon-admin-portal/seller-request",
+    },  
+    {
+      icon: MdListAlt, // Icon for lists
+      label: {
+        en: "Seller List",
+        bn: "বিক্রেতার তালিকা",
+      },
+      key: "seller-list",
+      href: "/proyojon-admin-portal/seller-list",
+    },  
   ],
 };
 
@@ -596,4 +626,5 @@ export const adminNavigationLinks: INavigationLink[] = [
   { ...adminDashboardOrders },
   { ...adminDashboardOffer },
   { ...adminDashboardLocation },
+  { ...adminDashboardSeller },
 ];

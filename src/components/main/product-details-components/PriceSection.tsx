@@ -6,20 +6,68 @@ import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 
-export default function PriceSection() {
+interface ProductItemOption {
+    option: {
+        id: number;
+        value: string;
+        variationType: {
+            id: number;
+            name: string;
+            productId: number;
+        };
+        variationTypeId: number;
+    };
+}
+
+interface ProductItem {
+    id: number;
+    productId: number;
+    sku: string;
+    price: number;
+    purchasePoint: number;
+    discountPrice: number;
+    stock: number;
+    barcode: string | null;
+    options: ProductItemOption[];
+}
+
+interface PriceSectionProps {
+    productItems: ProductItem[];
+    selectedOptions: Record<string, string>;
+}
+
+export default function PriceSection({ productItems, selectedOptions }: PriceSectionProps) {
     const [quantity, setQuantity] = useState(1);
     const { translate } = useCustomTranslator();
 
     const increaseQty = () => setQuantity((q) => q + 1);
     const decreaseQty = () => setQuantity((q) => (q > 1 ? q - 1 : 1));
 
+    const findMatchingProductItem = (): ProductItem | undefined => {
+        return productItems.find(item => {
+            return item.options.every(itemOption => {
+                const variationTypeName = itemOption.option.variationType.name;
+                const selectedValue = selectedOptions[variationTypeName];
+                return itemOption.option.value === selectedValue;
+            });
+        });
+    };
+
+    const matchingProduct = findMatchingProductItem();
+    const unitPrice = matchingProduct?.price || 0;
+    const unitDiscountPrice = matchingProduct?.discountPrice || 0;
+    const currentPrice = unitPrice * quantity;
+    const discountPrice = unitDiscountPrice * quantity;
+
     return (
         <div className="space-y-4 mt-6">
             <div className="text-2xl font-bold text-orange-600">
-                400 {translate("টাকা", "Tk")}{" "}
-                <span className="line-through text-gray-400 text-base font-normal">
-                    50.99 {translate("টাকা", "Tk")}
-                </span>
+                {currentPrice} {translate("টাকা", "Tk")}{" "}
+                {discountPrice > 0 && (
+                    <span className="line-through text-gray-400 text-base font-normal">
+                        {discountPrice} {translate("টাকা", "Tk")}
+                    </span>
+                )}
             </div>
 
             <div className="flex items-center gap-4 flex-wrap">
