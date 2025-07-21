@@ -93,9 +93,9 @@ const OrderTab = () => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-xl shadow-sm">
+    <div className="bg-white p-6 dark:bg-black dark:text-white shadow-sm">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold text-gray-800">
+        <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
           {translate("পণ্য", "Products")}
         </h2>
         <div className="relative">
@@ -108,9 +108,9 @@ const OrderTab = () => {
       </div>
 
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
+        <table className="min-w-full divide-y divide-gray-200 dark:border dark:border-white dark:rounded-md">
           <thead>
-            <tr className="bg-gray-50 text-sm text-gray-600 text-left">
+            <tr className="bg-gray-50 text-sm text-gray-600 text-left dark:bg-black dark:text-white">
               <th className="px-4 py-2">
                 <input
                   type="checkbox"
@@ -130,7 +130,7 @@ const OrderTab = () => {
             {currentOrders.map((order) => (
               <tr
                 key={order.id}
-                className={`border-b hover:bg-[#F1F1F1] rounded-lg ${
+                className={`border-b hover:bg-[#F1F1F1] rounded-lg dark:bg-black ${
                   selectedOrders.includes(order.id) ? "bg-gray-50" : ""
                 }`}
               >
@@ -151,16 +151,16 @@ const OrderTab = () => {
                     className="rounded-md object-cover w-12 h-12"
                   />
                   <div>
-                    <p className="font-medium text-gray-800">{order.name}</p>
-                    <p className="text-xs text-gray-500">{order.category}</p>
+                    <p className="font-medium text-gray-800 dark:text-white">{order.name}</p>
+                    <p className="text-xs text-gray-500 dark:text-white">{order.category}</p>
                   </div>
                 </td>
                 <td className="px-4 py-4">
-                  <span className="bg-[#FDEFEA] text-[#5A5A5A] rounded-md px-2 py-1 text-sm">
+                  <span className="bg-[#FDEFEA] text-[#5A5A5A] rounded-md px-2 py-1 text-sm dark:text-white">
                     {order.price}
                   </span>
                 </td>
-                <td className="px-4 py-4 text-gray-600">{order.date}</td>
+                <td className="px-4 py-4 text-gray-600 dark:text-white">{order.date}</td>
                 <td className="px-4 py-4">
                   <Button variant={'outline'} className="bg-[#EE5A2C] text-white font-bold text-xs px-4 py-2 rounded-full">
                     {translate("অর্ডার ট্র্যাক করুন", "Track order")}

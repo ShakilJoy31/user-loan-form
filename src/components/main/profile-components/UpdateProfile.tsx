@@ -12,10 +12,10 @@ export default function UpdateProfile() {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <div className="bg-white rounded-xl p-6 shadow-sm">
+    <div className="bg-white p-6 shadow-sm dark:bg-black dark:text-white">
       <div className="flex items-start justify-between mb-6">
         <div>
-          <h2 className="text-lg font-semibold text-gray-800">
+          <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
             {translate("অ্যাকাউন্ট বিবরণ সম্পাদনা করুন", "Edit Account Details")}
           </h2>
         </div>
@@ -46,7 +46,7 @@ export default function UpdateProfile() {
       <form className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm text-gray-700 mb-1">
+            <label className="block text-sm text-gray-700 mb-1 dark:text-white">
               {translate("প্রথম নাম", "First Name")}
             </label>
             <input
@@ -57,7 +57,7 @@ export default function UpdateProfile() {
           </div>
 
           <div>
-            <label className="block text-sm text-gray-700 mb-1">
+            <label className="block text-sm text-gray-700 mb-1 dark:text-white">
               {translate("শেষ নাম", "Last Name")}
             </label>
             <input
@@ -68,7 +68,7 @@ export default function UpdateProfile() {
           </div>
 
           <div className="relative">
-            <label className="block text-sm text-gray-700 mb-1">
+            <label className="block text-sm text-gray-700 mb-1 dark:text-white">
               {translate("পাসওয়ার্ড", "Password")}
             </label>
             <input
@@ -86,7 +86,7 @@ export default function UpdateProfile() {
           </div>
 
           <div className="relative">
-            <label className="block text-sm text-gray-700 mb-1">
+            <label className="block text-sm text-gray-700 mb-1 dark:text-white">
               {translate("যোগাযোগ নম্বর", "Contact Number")}
             </label>
             <div className="flex items-center border border-gray-300 rounded-md px-3 py-2">
@@ -108,7 +108,7 @@ export default function UpdateProfile() {
           </div>
 
           <div>
-            <label className="block text-sm text-gray-700 mb-1">
+            <label className="block text-sm text-gray-700 mb-1 dark:text-white">
               {translate("ইমেইল", "E-mail")}
             </label>
             <input
@@ -119,7 +119,7 @@ export default function UpdateProfile() {
           </div>
 
           <div className="relative">
-            <label className="block text-sm text-gray-700 mb-1">
+            <label className="block text-sm text-gray-700 mb-1 dark:text-white">
               {translate("জন্ম তারিখ", "Date of Birth")}
             </label>
             <div className="flex items-center border border-gray-300 rounded-md px-3 py-2">
@@ -134,7 +134,7 @@ export default function UpdateProfile() {
         </div>
 
         <div>
-          <label className="block text-sm text-gray-700 mb-1">
+          <label className="block text-sm text-gray-700 mb-1 dark:text-white">
             {translate("ঠিকানা", "Address")}
           </label>
           <input
@@ -145,7 +145,7 @@ export default function UpdateProfile() {
         </div>
 
         <div>
-          <label className="block text-sm text-gray-700 mb-1">
+          <label className="block text-sm text-gray-700 mb-1 dark:text-white">
             {translate("রক্তের গ্রুপ", "Blood Group")}
           </label>
           <select

@@ -40,13 +40,13 @@ const ShippingAddressTab = () => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-xl shadow-sm">
+    <div className="bg-white p-6  dark:bg-black dark:text-white shadow-sm">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6">
         <div>
-          <h2 className="text-xl font-semibold text-gray-800">
+          <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
             {translate("শিপিং ঠিকানা", "Shipping Address")}
           </h2>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-gray-500 dark:text-white">
             {translate("আপনার অর্ডার স্ট্যাটাস ট্র্যাক করুন", "Track your order Status")}
           </p>
         </div>
@@ -63,20 +63,20 @@ const ShippingAddressTab = () => {
         </div>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-4 ">
         {addresses.map((address) => (
           <div
             key={address.id}
-            className="border rounded-lg px-4 py-3 relative"
+            className="border rounded-lg px-4 py-3 relative dark:bg-black dark:text-white dark:border dark:border-white"
           >
             <div className="flex items-center gap-2 mb-3">
               <FiMapPin className="text-gray-500" />
-              <p className="text-sm font-medium text-gray-800">
+              <p className="text-sm font-medium text-gray-800 dark:text-white">
                 {translate("ঠিকানা", "Address")} {address.id}
               </p>
             </div>
 
-            <div className="text-sm space-y-1 pl-6 text-gray-700">
+            <div className="text-sm space-y-1 pl-6 text-gray-700 dark:text-white">
               <p>
                 <span className="font-semibold">
                   {translate("শহর:", "City:")}

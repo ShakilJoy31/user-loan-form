@@ -15,16 +15,16 @@ export default function ChangePasswordTab() {
     const { translate } = useCustomTranslator();
 
     return (
-        <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm min-h-screen">
+        <div className="bg-white p-4 sm:p-6 dark:bg-black dark:text-white shadow-sm min-h-screen">
             <div className="grid grid-cols-1 lg:grid-cols-[376px_458px] gap-4 lg:gap-6 justify-center">
                 {/* Profile Info Card */}
-                <div className="w-full lg:w-[376px] border rounded-lg p-5 shadow-sm relative">
+                <div className="w-full lg:w-[376px] border rounded-lg p-5 shadow-sm relative  dark:border dark:border-white">
                     <div className="absolute top-6 right-3 flex gap-2 text-gray-400">
                         <FiEdit2 className="cursor-pointer hover:text-gray-600" />
                         <FiShare2 className="cursor-pointer hover:text-gray-600" />
                     </div>
 
-                    <h3 className="text-base font-semibold mb-4 text-gray-800">{translate("প্রোফাইল", "Profile")}</h3>
+                    <h3 className="text-base font-semibold mb-4 text-gray-800 dark:text-white">{translate("প্রোফাইল", "Profile")}</h3>
 
                     <div className="flex flex-col items-center text-center">
                         <div className="w-[70px] h-[70px] rounded-full overflow-hidden border-2 border-gray-200">
@@ -36,25 +36,25 @@ export default function ChangePasswordTab() {
                                 className="w-full h-full object-cover"
                             />
                         </div>
-                        <h4 className="text-sm font-medium text-gray-800 mt-2">Wade Warren</h4>
-                        <p className="text-sm text-gray-500">wade.warren@example.com</p>
+                        <h4 className="text-sm font-medium text-gray-800 mt-2 dark:text-white">Wade Warren</h4>
+                        <p className="text-sm text-gray-500 dark:text-white">wade.warren@example.com</p>
 
-                        <p className="text-sm text-gray-500 mt-[24px] mb-[12px]">
+                        <p className="text-sm text-gray-500 mt-[24px] mb-[12px] dark:text-white">
                             {translate("সোশ্যাল মিডিয়ার সাথে লিঙ্ক করা", "Linked with Social media")}
                         </p>
 
                         <div className="flex items-center justify-center gap-4 mt-2">
                             <div className="flex gap-x-[8px] items-center text-xs text-gray-600">
-                                <BsGoogle size={20} className="text-[#EA4335]" />
-                                <span className="text-[11px] text-red-500">@Linked</span>
+                                <BsGoogle size={20} className="text-[#EA4335] dark:text-white" />
+                                <span className="text-[11px] text-red-500 dark:text-white">@Linked</span>
                             </div>
                             <div className="flex gap-x-[8px] items-center text-xs text-gray-600">
-                                <BsFacebook size={20} className="text-[#1877F2]" />
-                                <span className="text-[11px] text-red-500">@Linked</span>
+                                <BsFacebook size={20} className="text-[#1877F2] dark:text-white" />
+                                <span className="text-[11px] text-red-500 dark:text-white">@Linked</span>
                             </div>
                             <div className="flex gap-x-[8px] items-center text-xs text-gray-600">
-                                <BsTwitter size={20} className="text-black" />
-                                <span className="text-[11px] text-red-500">@Linked</span>
+                                <BsTwitter size={20} className="text-black dark:text-white" />
+                                <span className="text-[11px] text-red-500 dark:text-white">@Linked</span>
                             </div>
                         </div>
 
@@ -65,9 +65,9 @@ export default function ChangePasswordTab() {
                 </div>
 
                 {/* Change Password Card */}
-                <div className="w-full lg:w-[458px] border rounded-lg p-5 shadow-sm relative">
+                <div className="w-full lg:w-[458px] border rounded-lg p-5 shadow-sm relative  dark:border dark:border-white">
                     <div className="flex justify-between items-start mb-5">
-                        <h3 className="text-base font-semibold text-gray-800">
+                        <h3 className="text-base font-semibold text-gray-800 dark:text-white">
                             {translate("পাসওয়ার্ড পরিবর্তন করুন", "Change Password")}
                         </h3>
                         <Button variant={'outline'} className="text-sm text-orange-500 flex items-center gap-1">
@@ -78,7 +78,7 @@ export default function ChangePasswordTab() {
                     <form className="space-y-4">
                         {/* Current Password */}
                         <div>
-                            <label className="text-sm font-medium text-gray-700 block mb-1">
+                            <label className="text-sm font-medium text-gray-700 block mb-1 dark:text-white">
                                 {translate("বর্তমান পাসওয়ার্ড", "Current Password")}
                             </label>
                             <div className="relative">
@@ -95,14 +95,14 @@ export default function ChangePasswordTab() {
                                     {showCurrent ? <FaEyeSlash /> : <FaEye />}
                                 </button>
                             </div>
-                            <p className="text-xs text-orange-500 mt-1 underline cursor-pointer hover:text-orange-600">
+                            <p className="text-xs text-orange-500 mt-1 underline cursor-pointer hover:text-orange-600 dark:text-white">
                                 {translate("বর্তমান পাসওয়ার্ড ভুলে গেছেন? এখানে ক্লিক করুন", "Forgot Current Password? Click here")}
                             </p>
                         </div>
 
                         {/* New Password */}
                         <div>
-                            <label className="text-sm font-medium text-gray-700 block mb-1">
+                            <label className="text-sm font-medium text-gray-700 block mb-1 dark:text-white">
                                 {translate("নতুন পাসওয়ার্ড", "New Password")}
                             </label>
                             <div className="relative">
@@ -123,7 +123,7 @@ export default function ChangePasswordTab() {
 
                         {/* Re-enter Password */}
                         <div>
-                            <label className="text-sm font-medium text-gray-700 block mb-1">
+                            <label className="text-sm font-medium text-gray-700 block mb-1 dark:text-white">
                                 {translate("পাসওয়ার্ড পুনরায় লিখুন", "Re-enter Password")}
                             </label>
                             <div className="relative">

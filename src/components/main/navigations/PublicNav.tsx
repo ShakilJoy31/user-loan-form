@@ -148,7 +148,7 @@ const PublicNav = () => {
                       <div className="mt-2 space-y-2">
                         <div className="flex justify-between items-center">
                           <Link
-                            href="/my-profile"
+                            href="/my-profile/update-profile"
                             className="flex items-center gap-2 py-1 transition-colors hover:text-orange-500 dark:hover:text-orange-300"
                           >
                             My Account

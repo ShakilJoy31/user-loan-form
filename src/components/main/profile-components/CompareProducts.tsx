@@ -60,20 +60,20 @@ export default function CompareTab() {
     ];
 
     return (
-        <div className="bg-white p-6 rounded-xl shadow-sm">
+        <div className="bg-white p-6 dark:bg-black dark:text-white shadow-sm">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-6 gap-4 border-b border-gray-300 pb-[14px]">
                 <div>
-                    <h2 className="text-xl font-semibold text-gray-800">
+                    <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
                         {translate("পণ্য তুলনা করুন", "Compare products")}
                     </h2>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-500 dark:text-white">
                         {translate("আপনার অর্ডার স্ট্যাটাস ট্র্যাক করুন", "Track your order Status")}
                     </p>
                 </div>
             </div>
 
             <div className="flex items-center justify-between mb-[23px] gap-4 flex-wrap">
-                <Button variant={'outline'} className="bg-[#F6F6F6] gap-x-[4px] shadow-md px-3 py-1 rounded-full text-sm text-gray-500 hover:bg-gray-100 transition">
+                <Button variant={'outline'} className="bg-[#F6F6F6] dark:bg-black dark:text-white dark:border dark:border-white gap-x-[4px] shadow-md px-3 py-1 rounded-full text-sm text-gray-500 hover:bg-gray-100 transition">
                     {translate("তুলনা যোগ করুন", "Add to compare")} <span><IoMdGitCompare /></span>
                 </Button>
 
@@ -81,7 +81,7 @@ export default function CompareTab() {
                     <input
                         type="text"
                         placeholder={translate("একটি পণ্য অনুসন্ধান করুন", "Search for a product")}
-                        className="text-sm bg-[#F9FAFB] text-black rounded-md pl-10 pr-3 py-2 w-[220px] focus:outline-none focus:ring-1 focus:ring-orange-500"
+                        className="text-sm bg-[#F9FAFB] dark:bg-black dark:text-white dark:border dark:border-white text-black rounded-md pl-10 pr-3 py-2 w-[220px] focus:outline-none focus:ring-1 focus:ring-orange-500"
                     />
                     <FiSearch
                         size={16}
@@ -91,11 +91,11 @@ export default function CompareTab() {
             </div>
 
             <div className="overflow-x-auto rounded-lg">
-                <table className="min-w-[700px] w-full text-sm text-left">
+                <table className="min-w-[700px] w-full text-sm text-left dark:bg-black dark:text-white dark:border dark:border-white">
                     <thead>
                         <tr className="text-gray-700">
                             <th className="py-3 px-4 text-sm font-medium w-[160px]">
-                                <p className="text-sm text-[#EB4335] underline hover:text-red-600">
+                                <p className="text-sm text-[#EB4335] underline hover:text-red-600 dark:text-white">
                                     {translate("সব মুছে ফেলুন", "Remove all")}
                                 </p>
                             </th>
@@ -117,15 +117,15 @@ export default function CompareTab() {
                         {properties.map((property, index) => (
                             <tr
                                 key={index}
-                                className={`${index % 2 !== 1 ? "bg-[#FFF1E9]" : "bg-white"}`}
+                                className={`${index % 2 !== 1 ? "bg-[#FFF1E9] dark:bg-black" : "bg-white dark:bg-black"}`}
                             >
-                                <td className={`py-3 px-4 font-medium bg-[#FDEFEA] ${properties.length === index + 1 ? '' : 'border-b border-[#EE5A2C]'}`}>
+                                <td className={`py-3 px-4 font-medium bg-[#FDEFEA] dark:bg-black dark:text-white dark:border dark:border-white ${properties.length === index + 1 ? '' : 'border-b border-[#EE5A2C]'}`}>
                                     {property.label}
                                 </td>
                                 {compareProducts.map((product, idx) => (
                                     <td
                                         key={idx}
-                                        className="py-3 px-4 text-center align-middle"
+                                        className="py-3 px-4 text-center align-middle dark:bg-black dark:text-white dark:border dark:border-white"
                                     >
                                         {property.key === "image" ? (
                                             <Image
@@ -136,7 +136,7 @@ export default function CompareTab() {
                                                 className="inline-block rounded-md mx-auto"
                                             />
                                         ) : property.key === "description" ? (
-                                            <div className="text-xs text-gray-600 flex flex-col">
+                                            <div className="text-xs text-gray-600 flex flex-col dark:text-white">
                                                 <p className="mb-2">{product.description}</p>
                                                 <div className="flex items-center gap-x-[7px] justify-center">
                                                     <span className="p-2 bg-white rounded-sm"><FiShoppingCart size={14} color={'#642612'} /></span>
@@ -146,7 +146,7 @@ export default function CompareTab() {
                                                 </div>
                                             </div>
                                         ) : (
-                                            <span className="text-gray-800">
+                                            <span className="text-gray-800 dark:text-white">
                                                 {product[property.key as keyof typeof product]}
                                             </span>
                                         )}

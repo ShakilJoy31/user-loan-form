@@ -6,7 +6,7 @@ export default function AdditionalInfoCard() {
 
     return (
         <div>
-            <h2 className="text-gray-700 font-semibold text-[15px] dark:bg-black dark:text-white">
+            <h2 className="text-gray-700 font-semibold text-[15px]  dark:text-white">
                 {translate("অতিরিক্ত তথ্য", "Additional information")}
             </h2>
             <div className="dark:bg-black dark:text-white w-full bg-white border border-gray-300 rounded-xl p-5 space-y-4 lg:max-w-[524px] max-w-full">

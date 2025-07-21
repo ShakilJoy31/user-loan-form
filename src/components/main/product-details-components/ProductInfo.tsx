@@ -114,21 +114,18 @@ export default function ProductInfo({
     const totalStock = ProductItem.reduce((sum, item) => sum + item.stock, 0);
     const hasAnyStock = totalStock > 0;
 
-    // Get current price (use discount price if available)
-    const getCurrentPrice = () => {
-        if (!selectedProductItem) return null;
-        return selectedProductItem.discountPrice || selectedProductItem.price;
-    };
-
-    const currentPrice = getCurrentPrice();
-    const originalPrice = selectedProductItem?.price;
+    // Calculate prices with discount logic
+    const originalPrice = selectedProductItem?.price || 0;
+    const discountAmount = selectedProductItem?.discountPrice || 0;
+    const currentPrice = originalPrice - discountAmount;
+    const hasDiscount = discountAmount > 0 && discountAmount < originalPrice;
 
     return (
-        <div className="space-y-6 mt-4 lg:mt-0 dark:bg-black dark:text-white">
+        <div className="space-y-6 mt-4 lg:mt-0  dark:text-white">
             {/* Brand and Compare/Share */}
-            <div className="flex items-center justify-between dark:bg-black dark:text-white">
-                <p className="text-orange-600 font-bold text-sm dark:bg-black dark:text-white">{brand.brand}</p>
-                <div className="flex gap-x-2 items-center dark:bg-black dark:text-white">
+            <div className="flex items-center justify-between  dark:text-white">
+                <p className="text-orange-600 font-bold text-sm  dark:text-white">{brand.brand}</p>
+                <div className="flex gap-x-2 items-center  dark:text-white">
                     <Button
                         variant={"outline"}
                         className="bg-[#F6F6F6] shadow-md px-3 py-1 rounded-full text-sm text-gray-500 hover:bg-gray-100 transition"
@@ -142,7 +139,7 @@ export default function ProductInfo({
             </div>
 
             {/* Stock Status */}
-            <p className="text-sm text-gray-600 dark:bg-black dark:text-white">
+            <p className="text-sm text-gray-600  dark:text-white">
                 {translate("স্ট্যাটাস:", "Status:")}{" "}
                 <span className={inStock ? "text-green-500 font-medium" : "text-red-500 font-medium"}>
                     {inStock
@@ -154,12 +151,12 @@ export default function ProductInfo({
             </p>
 
             {/* Product Name */}
-            <h1 className="text-2xl md:text-3xl font-semibold leading-tight text-gray-900 dark:bg-black dark:text-white">
+            <h1 className="text-2xl md:text-3xl font-semibold leading-tight text-gray-900  dark:text-white">
                 {productName}
             </h1>
 
             {/* Rating and Reviews */}
-            <div className="flex items-center gap-4 text-sm text-gray-600 dark:bg-black dark:text-white">
+            <div className="flex items-center gap-4 text-sm text-gray-600  dark:text-white">
                 <span className="flex items-center gap-1 text-yellow-500 font-medium">
                     <FiStar className="text-lg" />
                     {rating || "0"}
@@ -172,18 +169,18 @@ export default function ProductInfo({
             </div>
 
             {/* Price Display */}
-            {currentPrice && (
-                <div className="flex items-center gap-3 dark:bg-black dark:text-white">
+            {originalPrice > 0 && (
+                <div className="flex items-center gap-3  dark:text-white">
                     <span className="text-2xl font-bold text-[#3A4980]">
-                        ৳{currentPrice.toLocaleString()}
+                        {currentPrice.toLocaleString()} TK
                     </span>
-                    {originalPrice && originalPrice > currentPrice && (
+                    {hasDiscount && (
                         <>
                             <span className="text-lg line-through text-gray-500">
-                                ৳{originalPrice.toLocaleString()}
+                                {originalPrice.toLocaleString()} TK
                             </span>
                             <span className="text-sm bg-red-100 text-red-600 px-2 py-1 rounded">
-                                {Math.round(((originalPrice - currentPrice) / originalPrice) * 100)}% OFF
+                                {Math.round((discountAmount / originalPrice) * 100)}% OFF
                             </span>
                         </>
                     )}
@@ -191,7 +188,7 @@ export default function ProductInfo({
             )}
 
             {/* Special Offer Banner */}
-            <div className="dark:bg-black dark:text-white flex items-center gap-4 rounded-[12px] bg-[linear-gradient(180deg,#F2973E_27.72%,#FECA40_100%)] px-6 py-4 text-white w-full max-w-[404px]">
+            <div className=" dark:text-white flex items-center gap-4 rounded-[12px] bg-[linear-gradient(180deg,#F2973E_27.72%,#FECA40_100%)] px-6 py-4 text-white w-full max-w-[404px]">
                 <div className="flex-1 text-left">
                     <p className="font-extrabold text-2xl">
                         {translate("২৫% ছাড়", "25% OFF")}
@@ -215,7 +212,7 @@ export default function ProductInfo({
             </div>
 
             {/* Short Description */}
-            <ul className="dark:bg-black dark:text-white text-sm space-y-2 text-gray-600 list-disc list-inside pt-4">
+            <ul className=" dark:text-white text-sm space-y-2 text-gray-600 list-disc list-inside pt-4">
                 {sortDescription ? (
                     sortDescription
                         .split("\n")
@@ -227,7 +224,7 @@ export default function ProductInfo({
                 )}
             </ul>
 
-              {/* color button */}
+             {/* color button */}
       {/* <div className="space-y-2 pt-4 border-t border-gray-300">
                 <p className="text-sm font-medium text-gray-700">
                     {translate("একটি রং নির্বাচন করুন", "Choose a Color")}
@@ -262,15 +259,15 @@ export default function ProductInfo({
             {VariationType.map((variation) => (
                 <div
                     key={variation.id}
-                    className="space-y-2 pt-4 border-t border-gray-300 dark:bg-black dark:text-white"
+                    className="space-y-2 pt-4 border-t border-gray-300  dark:text-white"
                 >
-                    <p className="text-sm font-medium text-gray-700 dark:bg-black dark:text-white">
+                    <p className="text-sm font-medium text-gray-700  dark:text-white">
                         {translate(
                             `একটি ${variation.name} নির্বাচন করুন`,
                             `Choose a ${variation.name}`
                         )}
                     </p>
-                    <div className="flex flex-wrap gap-3 dark:bg-black dark:text-white">
+                    <div className="flex flex-wrap gap-3  dark:text-white">
                         {variation.options.map((option) => (
                             <label
                                 key={option.id}

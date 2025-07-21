@@ -13,7 +13,7 @@ const Promotion = () => {
   const { translate } = useCustomTranslator();
 
   return (
-    <div className="w-full lg:max-w-[413px] bg-[#F4F8FF] text-black rounded-2xl p-4 sm:p-5 md:p-[20px]">
+    <div className="w-full lg:max-w-[413px] bg-[#F4F8FF] text-black rounded-2xl p-4 sm:p-5 md:p-[20px] dark:bg-black dark:text-white">
       <h2 className="text-lg sm:text-xl md:text-2xl font-bold my-3 sm:my-4 md:my-[20px]">{translate("বিশেষ প্রচার", "Special Promotions")}</h2>
       <div className="flex-col">
         <Image

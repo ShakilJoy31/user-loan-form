@@ -7,7 +7,7 @@ export default function DeliveryOptionsCard() {
 
     return (
         <div>
-            <h2 className="text-gray-700 font-semibold text-[15px] dark:bg-black dark:text-white">
+            <h2 className="text-gray-700 font-semibold text-[15px]  dark:text-white">
                 {translate("ডেলিভারি অপশন", "Delivery options")}
             </h2>
             <div className="dark:bg-black dark:text-white w-full bg-white border border-gray-300 rounded-xl lg:max-w-[524px] max-w-full p-5 space-y-4">

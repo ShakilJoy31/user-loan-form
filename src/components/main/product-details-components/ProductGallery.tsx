@@ -42,7 +42,7 @@ export default function ProductGallery({ productImages = [] }: ProductGalleryPro
     };
 
     return (
-        <div className="w-full space-y-[16px] flex flex-col dark:bg-black dark:text-white">
+        <div className="w-full space-y-[16px] flex flex-col  dark:text-white">
             {/* Main Image */}
             <div className="">
                 <Image 
@@ -56,7 +56,7 @@ export default function ProductGallery({ productImages = [] }: ProductGalleryPro
             </div>
 
             {/* Thumbnails with arrows */}
-            <div className="flex items-center gap-4 w-full dark:bg-black dark:text-white">
+            <div className="flex items-center gap-4 w-full  dark:text-white">
                 <Button variant={'outline'}
                     onClick={prevImage}
                     className="p-2 text-gray-600 hover:text-[#f15a29] transition-colors"

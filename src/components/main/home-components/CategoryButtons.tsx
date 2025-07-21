@@ -88,10 +88,10 @@ const ScrollableButtonGroup = ({
   );
 
   return (
-    <div className="relative w-full h-[47px] lg:h-[57px] overflow-hidden bg-[#FDEFEA] rounded-tl-full rounded-bl-full px-2 xl:px-0">
+    <div className="relative w-full h-[47px] lg:h-[57px] overflow-hidden bg-[#FDEFEA] rounded-tl-full rounded-bl-full px-2 lg:px-0 dark:bg-black ">
       <div
         ref={containerRef}
-        className="flex h-full items-center overflow-x-auto scrollbar-hide cursor-grab active:cursor-grabbing"
+        className="flex h-full items-center overflow-x-auto scrollbar-hide cursor-grab active:cursor-grabbing dark:bg-black"
         style={{
           scrollbarWidth: "none",
           msOverflowStyle: "none",
@@ -111,7 +111,7 @@ const ScrollableButtonGroup = ({
             className={`flex-shrink-0 h-full flex items-center justify-center whitespace-nowrap px-3 sm:px-4 rounded-full transition-colors duration-200 cursor-pointer text-xs sm:text-sm ${
               activeButtonId === button.id
                 ? "bg-[#EE5A2C] text-white"
-                : "text-[#808089] hover:bg-[#EE5A2C] hover:text-white"
+                : "text-[#808089] hover:bg-[#EE5A2C] hover:text-white dark:text-white dark:hover:text-white"
             }`}
           >
             {button.label}

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import AdditionalInfoCard from "@/components/main/product-details-components/AdditionalInfo";
 import DeliveryOptions from "@/components/main/product-details-components/DeliveryOptions";
@@ -11,76 +11,76 @@ import TabsSection from "@/components/main/product-details-components/TabsSectio
 import { useEffect, useState } from "react";
 
 interface ProductImage {
-    id: number;
-    productId: number;
-    imageUrl: string;
-    alt: string | null;
-    createdAt: string;
-    updatedAt: string;
+  id: number;
+  productId: number;
+  imageUrl: string;
+  alt: string | null;
+  createdAt: string;
+  updatedAt: string;
 }
 
 interface Brand {
-    id: number;
-    brand: string;
-    link: string;
-    image: string;
-    offerImage: string | null;
-    description: string | null;
-    isShippedFree: boolean;
-    createdAt: string;
-    updatedAt: string;
+  id: number;
+  brand: string;
+  link: string;
+  image: string;
+  offerImage: string | null;
+  description: string | null;
+  isShippedFree: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 interface Category {
-    id: number;
-    name: string;
-    serialNo: number;
-    link: string;
-    image: string;
-    banner: string | null;
-    description: string | null;
-    isShippedFree: boolean;
-    isFullPay: boolean;
-    createdAt: string;
-    updatedAt: string;
+  id: number;
+  name: string;
+  serialNo: number;
+  link: string;
+  image: string;
+  banner: string | null;
+  description: string | null;
+  isShippedFree: boolean;
+  isFullPay: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 interface VariationOption {
-    id: number;
-    value: string;
-    variationTypeId: number;
+  id: number;
+  value: string;
+  variationTypeId: number;
 }
 
 interface VariationType {
-    id: number;
-    name: string;
-    productId: number;
-    options: VariationOption[];
+  id: number;
+  name: string;
+  productId: number;
+  options: VariationOption[];
 }
 
 interface ProductItemOption {
-    option: {
-        id: number;
-        value: string;
-        variationType: {
-            id: number;
-            name: string;
-            productId: number;
-        };
-        variationTypeId: number;
+  option: {
+    id: number;
+    value: string;
+    variationType: {
+      id: number;
+      name: string;
+      productId: number;
     };
+    variationTypeId: number;
+  };
 }
 
 interface ProductItem {
-    id: number;
-    productId: number;
-    sku: string;
-    price: number;
-    purchasePoint: number;
-    discountPrice: number;
-    stock: number;
-    barcode: string | null;
-    options: ProductItemOption[];
+  id: number;
+  productId: number;
+  sku: string;
+  price: number;
+  purchasePoint: number;
+  discountPrice: number;
+  stock: number;
+  barcode: string | null;
+  options: ProductItemOption[];
 }
 
 interface Specification {
@@ -96,118 +96,174 @@ interface Review {
   content: string;
 }
 
+interface UserCompanyInfo {
+  id: number;
+  userId: number;
+  shopName: string;
+  ownerName: string;
+  designation: string;
+  city: string;
+  area: string;
+  tradeLicense: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface Seller {
+  name: string;
+  UserCompanyInfo: UserCompanyInfo;
+}
+
 interface ProductData {
+  id: number;
+  productName: string;
+  productLink: string;
+  type: string;
+  categoryId: number;
+  subCategoryId: number;
+  brandId: number;
+  sellerId: number | null;
+  rating: number;
+  seoTitle: string | null;
+  seoDescription: string | null;
+  sortDescription: string | null;
+  specifications?: Specification[];
+  description?: string | null;
+  reviews?: Review[];
+  createdAt: string;
+  updatedAt: string;
+  vendorId: number | null;
+  brand: Brand;
+  category: Category;
+  subCategory: {
     id: number;
-    productName: string;
-    productLink: string;
-    type: string;
+    name: string;
+    link: string;
     categoryId: number;
-    subCategoryId: number;
-    brandId: number;
-    sellerId: number | null;
-    rating: number;
-    seoTitle: string | null;
-    seoDescription: string | null;
-    sortDescription: string | null;
-    specifications?: Specification[]; 
-    description?: string | null; 
-    reviews?: Review[];
+    parentSubCategoryId: number | null;
+    isShippedFree: boolean;
     createdAt: string;
     updatedAt: string;
-    vendorId: number | null;
-    brand: Brand;
-    category: Category;
-    subCategory: {
-        id: number;
-        name: string;
-        link: string;
-        categoryId: number;
-        parentSubCategoryId: number | null;
-        isShippedFree: boolean;
-        createdAt: string;
-        updatedAt: string;
-    };
-    ProductImage: ProductImage[];
-    VariationType: VariationType[];
-    ProductItem: ProductItem[];
+  };
+  ProductImage: ProductImage[];
+  VariationType: VariationType[];
+  ProductItem: ProductItem[];
+  seller?: Seller;
 }
 
 export default function ProductDetailsPage() {
-    const [productData, setProductData] = useState<ProductData | null>(null);
-    const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
+  const [productData, setProductData] = useState<ProductData | null>(null);
+  const [selectedOptions, setSelectedOptions] = useState<
+    Record<string, string>
+  >({});
 
-    useEffect(() => {
-        const fetchProductData = async () => {
-            try {
-                const response = await fetch('https://proyojon-backend.vercel.app/api/v1/product/get-product-by-id/samsung-galaxy-a25');
-                const data = await response.json();
-                console.log('Product data:', data?.data);
-                setProductData(data?.data as ProductData);
-                
-                // Initialize selected options with first variation of each type
-                if (data?.data?.VariationType) {
-                  const initialOptions: Record<string, string> = {};
-                  data.data.VariationType.forEach((variation: VariationType) => {
-                    if (variation.options.length > 0) {
-                      initialOptions[variation.name] = variation.options[0].value;
-                    }
-                  });
-                  setSelectedOptions(initialOptions);
-                }
-            } catch (error) {
-                console.error('Error fetching product data:', error);
+  useEffect(() => {
+    const fetchProductData = async () => {
+      try {
+        const response = await fetch(
+          "https://proyojon-backend.vercel.app/api/v1/product/get-product-by-id/samsung-galaxy-a25"
+        );
+        const data = await response.json();
+        console.log("Product data:", data?.data);
+        setProductData(data?.data as ProductData);
+
+        // Initialize selected options with first variation of each type
+        if (data?.data?.VariationType) {
+          const initialOptions: Record<string, string> = {};
+          data.data.VariationType.forEach((variation: VariationType) => {
+            if (variation.options.length > 0) {
+              initialOptions[variation.name] = variation.options[0].value;
             }
-        };
-
-        fetchProductData();
-    }, []);
-
-    const handleOptionSelect = (variationName: string, optionValue: string) => {
-      setSelectedOptions(prev => ({
-        ...prev,
-        [variationName]: optionValue
-      }));
+          });
+          setSelectedOptions(initialOptions);
+        }
+      } catch (error) {
+        console.error("Error fetching product data:", error);
+      }
     };
 
-    return (
-        <div className="max-w-[1280px] mx-auto px-4 pt-[40px] pb-[99px] space-y-8 dark:bg-black dark:text-white">
-            <div className="flex items-center gap-x-2 pt-16">
-                <span className="hover:cursor-pointer">Home</span> / <span className="hover-cursor-pointer">Shop Details</span> / <span className="hover-cursor-pointer text-[#EE5A2C]">{productData?.productName || "Product"}</span>
-            </div>
-            <div className="flex flex-col lg:flex-row gap-x-[122px]">
-                <div className="space-y-4 w-full lg:w-1/2">
-                    <ProductGallery productImages={productData?.ProductImage || []} />
-                    <AdditionalInfoCard />
-                    <DeliveryOptions />
-                    <RecommendedProducts />
-                </div>
+    fetchProductData();
+  }, []);
 
-                <div className="flex-1 space-y-4 w-full lg:w-1/2 ">
-                    <ProductInfo 
-                        productName={productData?.productName || ""}
-                        brand={productData?.brand || { brand: "", id: 0, link: "", image: "", offerImage: null, description: null, isShippedFree: false, createdAt: "", updatedAt: "" }}
-                        category={productData?.category || { name: "", id: 0, serialNo: 0, link: "", image: "", banner: null, description: null, isShippedFree: false, isFullPay: false, createdAt: "", updatedAt: "" }}
-                        rating={productData?.rating || 0}
-                        ProductItem={productData?.ProductItem || []}
-                        VariationType={productData?.VariationType || []}
-                        sortDescription={productData?.sortDescription || null}
-                        selectedOptions={selectedOptions}
-                        onOptionSelect={handleOptionSelect}
-                    />
-                    <PriceSection 
-                        productItems={productData?.ProductItem || []}
-                        selectedOptions={selectedOptions}
-                    />
-                    <TabsSection 
-  specifications={productData?.specifications || null}
-  description={productData?.description || null}
-  reviews={productData?.reviews || null}
-  rating={productData?.rating || 0}
-  productName={productData?.productName || ""}
-/>
-                </div>
-            </div>
-            <RelatedShops />
+  const handleOptionSelect = (variationName: string, optionValue: string) => {
+    setSelectedOptions((prev) => ({
+      ...prev,
+      [variationName]: optionValue,
+    }));
+  };
+
+  return (
+    <div className="max-w-[1280px] mx-auto px-4 pt-[40px] pb-[99px] space-y-8 ">
+      <div className="flex items-center gap-x-2 pt-16">
+        <span className="hover:cursor-pointer">Home</span> /{" "}
+        <span className="hover-cursor-pointer">Shop Details</span> /{" "}
+        <span className="hover-cursor-pointer text-[#EE5A2C]">
+          {productData?.productName || "Product"}
+        </span>
+      </div>
+      <div className="flex flex-col lg:flex-row gap-x-[122px]">
+        <div className="space-y-4 w-full lg:w-1/2">
+          <ProductGallery productImages={productData?.ProductImage || []} />
+          <AdditionalInfoCard />
+          <DeliveryOptions />
+          <RecommendedProducts />
         </div>
-    );
+
+        <div className="flex-1 space-y-4 w-full lg:w-1/2 ">
+          <ProductInfo
+            productName={productData?.productName || ""}
+            brand={
+              productData?.brand || {
+                brand: "",
+                id: 0,
+                link: "",
+                image: "",
+                offerImage: null,
+                description: null,
+                isShippedFree: false,
+                createdAt: "",
+                updatedAt: "",
+              }
+            }
+            category={
+              productData?.category || {
+                name: "",
+                id: 0,
+                serialNo: 0,
+                link: "",
+                image: "",
+                banner: null,
+                description: null,
+                isShippedFree: false,
+                isFullPay: false,
+                createdAt: "",
+                updatedAt: "",
+              }
+            }
+            rating={productData?.rating || 0}
+            ProductItem={productData?.ProductItem || []}
+            VariationType={productData?.VariationType || []}
+            sortDescription={productData?.sortDescription || null}
+            selectedOptions={selectedOptions}
+            onOptionSelect={handleOptionSelect}
+          />
+          {productData && (
+            <PriceSection
+              productItems={productData.ProductItem}
+              selectedOptions={selectedOptions}
+              productData={productData}
+            />
+          )}
+          <TabsSection
+            specifications={productData?.specifications || null}
+            description={productData?.description || null}
+            reviews={productData?.reviews || null}
+            rating={productData?.rating || 0}
+            productName={productData?.productName || ""}
+          />
+        </div>
+      </div>
+      <RelatedShops />
+    </div>
+  );
 }

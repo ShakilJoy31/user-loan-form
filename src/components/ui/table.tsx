@@ -54,7 +54,7 @@ const Table = <T extends {
             <tr 
               key={row.id} 
               className={`transition-colors dark:text-white ${selectedRows.some(selectedOrder => selectedOrder.id === row.id) 
-                ? 'bg-blue-50' 
+                ? 'bg-blue-50 dark:bg-black dark:text-white' 
                 : 'hover:bg-gray-50 hover:dark:bg-black'}`}
             >
               {/* Row Selection Checkbox */}

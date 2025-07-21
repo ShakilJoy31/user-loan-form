@@ -13,12 +13,12 @@ const WalletPoint = () => {
 
   // Mock data for the table
   const activities = [
-    { id: 1, orderId: "#CUST001", name: "ম্যাজিক কার্পেট", date: "০১-০১-২০২৫", amount: -228 },
-    { id: 2, orderId: "#CUST002", name: "জাদুর আলখাল্লা", date: "০২-০১-২০২৫", amount: -150 },
-    { id: 3, orderId: "#CUST003", name: "উড়ন্ত গালিচা", date: "০৩-০১-২০২৫", amount: -320 },
-    { id: 4, orderId: "#CUST004", name: "অদৃশ্য টুপি", date: "০৪-০১-২০২৫", amount: -180 },
-    { id: 5, orderId: "#CUST005", name: "ড্রাগনের ডিম", date: "০৫-০১-২০২৫", amount: -420 },
-    { id: 6, orderId: "#CUST006", name: "জাদুর লাঠি", date: "০৬-০১-২০২৫", amount: -210 },
+   { id: 1, orderId: "#CUST001", name: "Magic Carpet", date: "01-01-2025", amount: -228 },
+{ id: 2, orderId: "#CUST002", name: "Magical Robe", date: "02-01-2025", amount: -150 },
+{ id: 3, orderId: "#CUST003", name: "Flying Carpet", date: "03-01-2025", amount: -320 },
+{ id: 4, orderId: "#CUST004", name: "Invisible Hat", date: "04-01-2025", amount: -180 },
+{ id: 5, orderId: "#CUST005", name: "Dragon Egg", date: "05-01-2025", amount: -420 },
+{ id: 6, orderId: "#CUST006", name: "Magic Wand", date: "06-01-2025", amount: -210 }
   ];
 
   // Calculate paginated activities
@@ -39,12 +39,12 @@ const WalletPoint = () => {
   };
 
   return (
-    <div className="lg:mt-[45px] space-y-6 md:space-y-10 px-4 sm:px-0">
+    <div className="lg:mt-[45px] space-y-6 md:space-y-10 px-4 sm:px-0 dark:bg-black dark:text-white">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-[30px] justify-center">
         {[1, 2, 3].map((_, i) => (
           <div
             key={i}
-            className={`w-full h-full min-h-[160px] sm:min-h-[190px] rounded-[14px] ${
+            className={`w-full h-full min-h-[160px] sm:min-h-[190px] rounded-[14px] dark:bg-black dark:text-white dark:border dark:border-white ${
               i === 0 && 'bg-[#E6F9FF]'
             } ${
               i === 1 && 'bg-[#F8E6FB]'
@@ -75,16 +75,16 @@ const WalletPoint = () => {
         ))}
       </div>
 
-      <div className="bg-white rounded-lg border shadow-sm pb-4">
+      <div className="bg-white rounded-lg border shadow-sm pb-4 dark:bg-black dark:text-white">
         <div className="flex flex-col sm:flex-row justify-between items-center pb-3 p-4 gap-4 sm:gap-0">
           <h2 className="text-lg sm:text-xl font-semibold">
             {translate("সাম্প্রতিক কার্যক্রম", "Recent activities")}
           </h2>
-          <div className="relative w-full sm:w-auto">
+          <div className="relative w-full sm:w-auto ">
             <input
               type="text"
               placeholder={translate("একটি পণ্য অনুসন্ধান করুন", "Search for a product")}
-              className="text-sm bg-[#F9FAFB] text-black rounded-md pl-10 pr-3 py-2 w-full sm:w-[220px] focus:outline-none focus:ring-1 focus:ring-orange-500"
+              className="text-sm bg-[#F9FAFB] text-black rounded-md pl-10 pr-3 py-2 w-full sm:w-[220px] dark:bg-black dark:text-white dark:border dark:border-white focus:outline-none focus:ring-1 focus:ring-orange-500"
             />
             <FiSearch
               size={16}
@@ -94,7 +94,7 @@ const WalletPoint = () => {
         </div>
         <div className="overflow-x-auto">
           <table className="min-w-full text-sm text-left">
-            <thead className="bg-[#FDEFEA] text-[#0F172A] font-semibold">
+            <thead className="bg-[#FDEFEA] text-[#0F172A] font-semibold dark:bg-black dark:text-white">
               <tr>
                 <th className="py-3 px-2 sm:px-4">{translate("অর্ডার আইডি", "Order Id")}</th>
                 <th className="py-3 px-2 sm:px-4">{translate("নাম", "Name")}</th>
@@ -104,7 +104,7 @@ const WalletPoint = () => {
             </thead>
             <tbody className="text-gray-700">
               {currentActivities.map((activity, ) => (
-                <tr key={activity.id} className="border-t border-[#808089]">
+                <tr key={activity.id} className="border-t border-[#808089] dark:bg-black dark:text-white">
                   <td className="py-3 px-2 sm:px-4">{activity.orderId}</td>
                   <td className="py-3 px-2 sm:px-4">{translate(activity.name, activity.name)}</td>
                   <td className="py-3 px-2 sm:px-4">{translate(activity.date, activity.date)}</td>
@@ -127,7 +127,7 @@ const WalletPoint = () => {
         </div>
       </div>
 
-      <div className="bg-white border rounded-lg shadow-sm p-4 sm:p-5 space-y-4">
+      <div className="bg-white border rounded-lg shadow-sm p-4 sm:p-5 space-y-4 dark:bg-black dark:text-white">
         <h2 className="text-lg font-semibold">
           {translate("পয়েন্ট রিডেম্পশন তথ্য", "Points Redemption Information")}
         </h2>

@@ -42,7 +42,7 @@ export default function TabsSection({
   const [activeTab, setActiveTab] = useState(Tabs[0]);
 
   return (
-    <div className="mt-10 space-y-6 dark:bg-black dark:text-white">
+    <div className="mt-10 space-y-6  dark:text-white">
       {/* Tabs */}
       <div className="dark:bg-black dark:text-white flex items-center gap-4 justify-between bg-[#FDEFEA] rounded-full p-[5px] h-[56px] ">
         {Tabs.map((tab) => (
@@ -65,7 +65,7 @@ export default function TabsSection({
       {activeTab === Tabs[0] && (
         <div className="space-y-6 text-sm">
           <div>
-            <h2 className="text-lg font-semibold text-gray-800 dark:bg-black dark:text-white">
+            <h2 className="text-lg font-semibold text-gray-800  dark:text-white">
               {translate(`${productName} Specifications`, `${productName} Specifications`)}
             </h2>
             {specifications ? (
@@ -79,7 +79,7 @@ export default function TabsSection({
                 ))}
               </div>
             ) : (
-              <p className="mt-3 text-gray-500 dark:bg-black dark:text-white">
+              <p className="mt-3 text-gray-500  dark:text-white">
                 {translate("স্পেসিফিকেশন পাওয়া যায়নি", "No specifications available")}
               </p>
             )}
@@ -92,20 +92,20 @@ export default function TabsSection({
       {activeTab === Tabs[1] && (
         <div className="space-y-6 text-sm text-gray-700">
           <div>
-            <h2 className="text-lg font-semibold text-gray-800 dark:bg-black dark:text-white">
+            <h2 className="text-lg font-semibold text-gray-800  dark:text-white">
               {translate("পণ্যের বিবরণ", "Product Description")}
             </h2>
             {description ? (
               <p className="mt-3">{description}</p>
             ) : (
-              <p className="mt-3 text-gray-500 dark:bg-black dark:text-white">
+              <p className="mt-3 text-gray-500  dark:text-white">
                 {translate("বিবরণ পাওয়া যায়নি", "No description available")}
               </p>
             )}
           </div>
           <BenefitsSection />
           <div>
-            <h2 className="text-lg font-semibold text-gray-800 dark:bg-black dark:text-white">
+            <h2 className="text-lg font-semibold text-gray-800  dark:text-white">
               {translate("পণ্যের বিবরণ", "Product Details")}
             </h2>
             <ul className="mt-3 space-y-2">
@@ -132,7 +132,7 @@ export default function TabsSection({
       {activeTab === Tabs[2] && (
         <div className="space-y-6 text-sm text-gray-700">
           <div>
-            <h2 className="text-lg font-semibold text-gray-800 dark:bg-black dark:text-white">
+            <h2 className="text-lg font-semibold text-gray-800  dark:text-white">
               {translate("গ্রাহকদের প্রতিক্রিয়া", "Customers Feedback")}
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 dark:bg-black dark:text-white">
@@ -165,7 +165,7 @@ export default function TabsSection({
           </div>
 
           {/* Reviews List */}
-          <div className="space-y-6 dark:bg-black dark:text-white">
+          <div className="space-y-6  dark:text-white">
             {reviews && reviews.length > 0 ? (
               <>
                 {reviews.map((review, index) => (
@@ -185,39 +185,39 @@ export default function TabsSection({
                 </div>
               </>
             ) : (
-              <p className="text-gray-500 dark:bg-black dark:text-white">
+              <p className="text-gray-500  dark:text-white">
                 {translate("কোন রিভিউ পাওয়া যায়নি", "No reviews available")}
               </p>
             )}
           </div>
 
           {/* Write a Review */}
-          <div className="pt-4 dark:bg-black dark:text-white">
-            <h3 className="text-base font-semibold text-gray-800 dark:bg-black dark:text-white">
+          <div className="pt-4  dark:text-white">
+            <h3 className="text-base font-semibold text-gray-800  dark:text-white">
               {translate("একটি রিভিউ লিখুন", "Write a Review")}
             </h3>
-            <p className="mt-1 dark:bg-black dark:text-white">
+            <p className="mt-1  dark:text-white">
               {translate("পণ্যটি কেমন?", `What is it like to ${productName}?`)}
             </p>
-            <div className="flex gap-1 mt-2 dark:bg-black dark:text-white">
+            <div className="flex gap-1 mt-2  dark:text-white">
               {[...Array(5)].map((_, i) => (
                 <Star key={i} className="text-yellow-400" size={18} fill="currentColor" />
               ))}
             </div>
-            <div className="mt-[30px] dark:bg-black dark:text-white">
+            <div className="mt-[30px]  dark:text-white">
               <h1>{translate("রিভিউ শিরোনাম", "Review Title")}</h1>
               <input
                 type="text"
                 placeholder={translate("রিভিউ শিরোনাম", "Review Title")}
-                className="w-full dark:bg-black dark:text-white px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-300"
+                className="w-full  dark:text-white px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-300"
               />
             </div>
-            <div className="mt-[30px] dark:bg-black dark:text-white">
+            <div className="mt-[30px]  dark:text-white">
               <h1>{translate("রিভিউ বিষয়বস্তু", "Review Content")}</h1>
               <textarea
                 placeholder={translate("রিভিউ বিষয়বস্তু", "Review Content")}
                 rows={4}
-                className="w-full dark:bg-black dark:text-white px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-300"
+                className="w-full  dark:text-white px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-300"
               />
             </div>
 
@@ -283,12 +283,12 @@ function BenefitsSection() {
 
     return (
         <div>
-            <h2 className="text-lg font-semibold text-gray-800 dark:bg-black dark:text-white">
+            <h2 className="text-lg font-semibold text-gray-800  dark:text-white">
                 {translate("সুবিধা", "Benefits")}
             </h2>
-            <ul className="mt-3 space-y-2 dark:bg-black dark:text-white">
+            <ul className="mt-3 space-y-2  dark:text-white">
                 {benefits.map((benefit, i) => (
-                    <li key={i} className="flex items-start gap-2 text-gray-700 dark:bg-black dark:text-white">
+                    <li key={i} className="flex items-start gap-2 text-gray-700  dark:text-white">
                         <CheckCircle2 className="text-blue-500 mt-1" size={16} />
                         <span>{benefit}</span>
                     </li>
