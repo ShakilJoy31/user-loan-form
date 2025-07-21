@@ -169,8 +169,8 @@ const SellerCreate = () => {
 
 const onSubmit = async (data: RegisterDataProps) => {
   // Create a new object without confirmPassword
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { confirmPassword, ...submitData } = data;
+   console.log(confirmPassword)
   
   try {
     await createSeller(submitData).unwrap();

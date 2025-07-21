@@ -12,39 +12,6 @@ const Home = () => {
   const [activeButton, setActiveButton] = useState("all");
   const { translate } = useCustomTranslator();
 
-  const buttons = [
-    { id: "all", label: translate("সব বিভাগ", "All Categories") },
-    { id: "electronics", label: translate("স্টকে ফ্যাশন এবং পোশাক", "Fashion Fashion and Appearl in Stock") },
-    { id: "smartphones", label: translate("স্মার্টফোন", "Smartphones") },
-    { id: "laptops", label: translate("ল্যাপটপ এবং কম্পিউটার", "Laptops & Computers") },
-    { id: "tvs", label: translate("টিভি ও হোম থিয়েটার", "TVs & Home Theater") },
-    { id: "audio", label: translate("অডিও ও হেডফোন", "Audio & Headphones") },
-    { id: "cameras", label: translate("ক্যামেরা ও ফটোগ্রাফি", "Cameras & Photography") },
-    { id: "appliances", label: translate("গৃহ সরঞ্জাম", "Home Appliances") },
-    { id: "furniture", label: translate("ফার্নিচার", "Furniture") },
-    { id: "living", label: translate("লিভিং রুম", "Living Room") },
-    { id: "bedroom", label: translate("বেডরুম", "Bedroom") },
-    { id: "kitchen", label: translate("রান্নাঘর ও ডাইনিং", "Kitchen & Dining") },
-    { id: "home", label: translate("ঘর সাজানোর সামগ্রী", "Home Decor") },
-    { id: "lighting", label: translate("লাইটিং", "Lighting") },
-    { id: "clothing", label: translate("পোশাক", "Clothing") },
-    { id: "mens", label: translate("পুরুষদের ফ্যাশন", "Men's Fashion") },
-    { id: "womens", label: translate("মহিলাদের ফ্যাশন", "Women's Fashion") },
-    { id: "kids", label: translate("শিশু ও বেবি", "Kids & Baby") },
-    { id: "footwear", label: translate("জুতো", "Footwear") },
-    { id: "accessories", label: translate("অ্যাকসেসরিজ", "Accessories") },
-    { id: "jewelry", label: translate("জুয়েলারি ও ঘড়ি", "Jewelry & Watches") },
-    { id: "beauty", label: translate("সৌন্দর্য ও ব্যক্তিগত যত্ন", "Beauty & Personal Care") },
-    { id: "health", label: translate("স্বাস্থ্য ও সুস্থতা", "Health & Wellness") },
-    { id: "groceries", label: translate("কাচাবাজার", "Groceries") },
-    { id: "toys", label: translate("খেলনা ও গেমস", "Toys & Games") },
-    { id: "sports", label: translate("ক্রীড়া ও আউটডোর", "Sports & Outdoors") },
-    { id: "automotive", label: translate("অটোমোটিভ", "Automotive") },
-    { id: "books", label: translate("বই ও মিডিয়া", "Books & Media") },
-    { id: "office", label: translate("অফিস সরঞ্জাম", "Office Supplies") },
-    { id: "pet", label: translate("পোষা প্রাণীর সরঞ্জাম", "Pet Supplies") }
-  ];
-
   return (
     <div className="min-h-screen mt-16 pt-[32px]">
       <div className='max-w-[1288px] mx-auto px-4 lg:px-0'>
@@ -58,7 +25,6 @@ const Home = () => {
       {/* Full-width container for buttons only */}
       <div className="relative pl-4 md:pl-[calc((100vw-1288px)/2)]">
         <ScrollableButtonGroup
-          buttons={buttons}
           activeButtonId={activeButton}
           onButtonClick={(id) => setActiveButton(String(id))}
         />

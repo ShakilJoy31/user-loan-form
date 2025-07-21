@@ -14,11 +14,11 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { 
+import {
   useCreateVariationMutation,
-  useDeleteVariationMutation, 
-  useGetAllVariationsQuery, 
-  useUpdateVariationMutation, 
+  useDeleteVariationMutation,
+  useGetAllVariationsQuery,
+  useUpdateVariationMutation,
 } from "@/redux/features/product/variationApi";
 import DataLoader from "@/components/common/DataLoader";
 import ButtonLoader from "@/components/common/ButtonLoader";
@@ -80,11 +80,11 @@ const VariationList = () => {
     search: searchTerm,
   });
 
-  const [createVariation, { isLoading: addLoading, error: addError }] = 
+  const [createVariation, { isLoading: addLoading, error: addError }] =
     useCreateVariationMutation();
-  const [updateVariation, { isLoading: editLoading, error: editError }] = 
+  const [updateVariation, { isLoading: editLoading, error: editError }] =
     useUpdateVariationMutation();
-  const [deleteVariation, { isLoading: deleteLoading, error: deleteError }] = 
+  const [deleteVariation, { isLoading: deleteLoading, error: deleteError }] =
     useDeleteVariationMutation();
 
   const variations = data?.data || [];
@@ -116,8 +116,8 @@ const VariationList = () => {
 
   const handleRowSelect = (row: Variation) => {
     setSelectedRows((prev) =>
-      prev.some(selected => selected.id === row.id) 
-        ? prev.filter(selected => selected.id !== row.id) 
+      prev.some(selected => selected.id === row.id)
+        ? prev.filter(selected => selected.id !== row.id)
         : [...prev, row]
     );
   };
@@ -138,9 +138,9 @@ const VariationList = () => {
       toast.success(translate("নির্বাচিত বৈচিত্র্যগুলো সফলভাবে মুছে ফেলা হয়েছে", "Selected variations deleted successfully"));
       setSelectedRows([]);
       refetch();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      toast.error(translate("নির্বাচিত বৈচিত্র্যগুলো মুছতে ব্যর্থ হয়েছে", "Failed to delete selected variations"));
+      const apiError = error as ApiError;
+      toast.error(apiError?.data?.message || '');
     }
   };
 
@@ -182,7 +182,7 @@ const VariationList = () => {
 
   const renderRow = (row: Variation, index: number) => {
     const dynamicIndex = index + 1 + (pagination.page - 1) * pagination.size;
-    
+
     return (
       <>
         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
@@ -259,11 +259,10 @@ const VariationList = () => {
           <button
             onClick={handleDeleteSelected}
             disabled={selectedRows.length === 0}
-            className={`px-4 py-1.5 -mt-1 rounded border ${
-              selectedRows.length > 0
+            className={`px-4 py-1.5 -mt-1 rounded border ${selectedRows.length > 0
                 ? "text-red-500 border-red-500 hover:bg-red-50"
                 : "text-gray-400 border-gray-300 cursor-not-allowed"
-            }`}
+              }`}
           >
             <FiTrash2 className="inline-block mr-1" /> {translate("নির্বাচিত মুছুন", "Delete Selected")}
           </button>
@@ -293,9 +292,9 @@ const VariationList = () => {
           <AlertTitle>{translate("ত্রুটি", "Error")}</AlertTitle>
           <AlertDescription>
             {(deleteError as ApiError)?.data?.message ||
-             (addError as ApiError)?.data?.message ||
-             (editError as ApiError)?.data?.message ||
-             translate("কিছু ভুল হয়েছে! দয়া করে আবার চেষ্টা করুন।", "Something went wrong! Please try again.")}
+              (addError as ApiError)?.data?.message ||
+              (editError as ApiError)?.data?.message ||
+              translate("কিছু ভুল হয়েছে! দয়া করে আবার চেষ্টা করুন।", "Something went wrong! Please try again.")}
           </AlertDescription>
         </Alert>
       )}

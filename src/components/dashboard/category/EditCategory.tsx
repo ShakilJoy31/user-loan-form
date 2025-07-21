@@ -12,13 +12,7 @@ import InputWrapper from "@/components/common/Wrapper/InputWrapper";
 import Image from "next/image";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
-
-interface ApiError {
-  data?: {
-    message?: string;
-  };
-  status?: number;
-}
+import { ApiError } from "@/types/apiError";
 
 interface CategoryFormValues {
   id: number;

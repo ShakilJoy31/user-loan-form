@@ -10,8 +10,11 @@ import { FcGoogle } from "react-icons/fc";
 import { Eye, EyeOff } from "lucide-react";
 import { shareWithCookies } from "@/utils/helper/shareWithCookies";
 import { appConfiguration } from "@/utils/constant/appConfiguration";
+import { loadUserFromToken } from "@/utils/helper/loadUserFromToken";
+import { useDispatch } from "react-redux";
 
 export const SellerLogin = () => {
+  const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -34,6 +37,7 @@ export const SellerLogin = () => {
           1440,
           response?.accessToken
         );
+        loadUserFromToken(dispatch);
         router.push('/add-product');
       }
 
@@ -46,7 +50,6 @@ export const SellerLogin = () => {
         errorMessage = apiError.data?.message || errorMessage;
         toast(errorMessage);
       } else if (error instanceof Error) {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         errorMessage = error.message;
         toast(errorMessage);
       }

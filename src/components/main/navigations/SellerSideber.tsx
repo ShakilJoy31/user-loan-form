@@ -18,7 +18,6 @@ import {
   ExternalLink,
   Menu,
   ChevronsRight,
-  LogOut,
 } from "lucide-react";
 import { MdLogout } from "react-icons/md";
 import Image from "next/image";
@@ -29,7 +28,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
-import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -96,17 +94,18 @@ const SellerSideber = () => {
           href: "/add-product",
         },
         {
+          key: "product-list",
+          icon: <Package size={16} />,
+          label: "Product List",
+          href: "/products-list",
+        },
+        {
           key: "product-media",
           icon: <ImageIcon size={16} />,
           label: "Product Media",
           href: "/seller/products/media",
         },
-        {
-          key: "product-list",
-          icon: <Package size={16} />,
-          label: "Product List",
-          href: "/seller/products",
-        },
+        
         {
           key: "product-reviews",
           icon: <MessageSquare size={16} />,

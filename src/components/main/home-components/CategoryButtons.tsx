@@ -15,13 +15,16 @@ interface Category {
   // other properties...
 }
 
+interface ScrollableButtonGroupProps {
+  activeButtonId?: string | number;
+  onButtonClick?: (id: string | number) => void;
+}
+
+
 const ScrollableButtonGroup = ({
   activeButtonId,
   onButtonClick,
-}: {
-  activeButtonId?: string | number;
-  onButtonClick?: (id: string | number) => void;
-}) => {
+} : ScrollableButtonGroupProps ) => {
   // Fetch categories from API
   const { data: categories, isLoading, isError } = useGetAllCategoryQuery({});
 

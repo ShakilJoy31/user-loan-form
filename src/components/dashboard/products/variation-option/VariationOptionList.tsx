@@ -14,11 +14,11 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import AddEditVariationOptionList from "./AddEditVariationOptionList";
-import { 
-  useCreateVariationOptionMutation, 
-  useDeleteVariationOptionMutation, 
-  useGetAllVariationOptionsQuery, 
-  useUpdateVariationOptionMutation 
+import {
+  useCreateVariationOptionMutation,
+  useDeleteVariationOptionMutation,
+  useGetAllVariationOptionsQuery,
+  useUpdateVariationOptionMutation
 } from "@/redux/features/product/variationApi";
 import DataLoader from "@/components/common/DataLoader";
 import ButtonLoader from "@/components/common/ButtonLoader";
@@ -27,6 +27,7 @@ import Pagination from "@/components/common/Pagination";
 import Table from "@/components/ui/table";
 import { useGetAllVariationsQuery } from "@/redux/features/product/variationApi";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
+import { ApiError } from "@/types/apiError";
 
 interface VariationOption {
   id: number;
@@ -78,16 +79,16 @@ const VariationOptionList = () => {
   });
 
   // Fetch all variations to map IDs to names
-  const { data: variationsData } = useGetAllVariationsQuery({ 
-    page: 1, 
-    size: 1000 
+  const { data: variationsData } = useGetAllVariationsQuery({
+    page: 1,
+    size: 1000
   });
 
-  const [createVariationOption, { isLoading: addLoading }] = 
+  const [createVariationOption, { isLoading: addLoading }] =
     useCreateVariationOptionMutation();
-  const [updateVariationOption, { isLoading: editLoading }] = 
+  const [updateVariationOption, { isLoading: editLoading }] =
     useUpdateVariationOptionMutation();
-  const [deleteVariationOption, { isLoading: deleteLoading }] = 
+  const [deleteVariationOption, { isLoading: deleteLoading }] =
     useDeleteVariationOptionMutation();
 
   const variationOptions = data?.data || [];
@@ -140,9 +141,10 @@ const VariationOptionList = () => {
       await deleteVariationOption(id).unwrap();
       toast.success(translate("বৈচিত্র্য অপশন সফলভাবে মুছে ফেলা হয়েছে", "Variation Option deleted successfully"));
       refetch();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      toast.error(translate("বৈচিত্র্য অপশন মুছতে ব্যর্থ হয়েছে", "Failed to delete variation option"));
+
+      const apiError = error as ApiError;
+      toast.error(apiError?.data?.message || '');
     }
   };
 
@@ -160,16 +162,17 @@ const VariationOptionList = () => {
       }
       setIsModalOpen(false);
       refetch();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      toast.error(translate("আপনার অনুরোধ প্রক্রিয়া করার সময় একটি ত্রুটি ঘটেছে", "An error occurred while processing your request"));
+      const apiError = error as ApiError;
+      toast.error(apiError?.data?.message || '');
+
     }
   };
 
   const handleRowSelect = (row: VariationOption) => {
     setSelectedRows((prev) =>
-      prev.some(selected => selected.id === row.id) 
-        ? prev.filter(selected => selected.id !== row.id) 
+      prev.some(selected => selected.id === row.id)
+        ? prev.filter(selected => selected.id !== row.id)
         : [...prev, row]
     );
   };
@@ -184,15 +187,15 @@ const VariationOptionList = () => {
 
   const handleBulkDelete = async () => {
     try {
-      await Promise.all(selectedRows.map(row => 
+      await Promise.all(selectedRows.map(row =>
         deleteVariationOption(row.id).unwrap()
       ));
       toast.success(translate(`${selectedRows.length} টি বৈচিত্র্য অপশন সফলভাবে মুছে ফেলা হয়েছে`, `${selectedRows.length} variation options deleted successfully`));
       setSelectedRows([]);
       refetch();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      toast.error(translate("নির্বাচিত অপশনগুলো মুছতে ব্যর্থ হয়েছে", "Failed to delete selected options"));
+      const apiError = error as ApiError;
+      toast.error(apiError?.data?.message || '');
     }
   };
 
@@ -202,7 +205,7 @@ const VariationOptionList = () => {
 
   const headers = [
     translate("SL", "SL"),
-    translate("নাম", "Name"), 
+    translate("নাম", "Name"),
     translate("বৈচিত্র্য", "Variation"),
     translate("ক্রিয়া", "Actions")
   ];
@@ -210,7 +213,7 @@ const VariationOptionList = () => {
   const renderRow = (row: VariationOption, index: number) => {
     const dynamicIndex = index + 1 + (pagination.page - 1) * pagination.size;
     const variationName = variationMap[row.variationId] || translate("অজানা বৈচিত্র্য", "Unknown Variation");
-    
+
     return (
       <>
         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -233,7 +236,7 @@ const VariationOptionList = () => {
             </button>
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <button 
+                <button
                   className="text-red-500 hover:text-red-700 p-1 rounded hover:bg-red-50 cursor-pointer"
                   title={translate("মুছুন", "Delete")}
                 >

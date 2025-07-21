@@ -12,7 +12,16 @@ export const authApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["seller-login"],
     }),
-    
+
+
+    // Get seller by id....
+    getSellerUserById: builder.query({
+      query: (id) => ({
+        url: `/user/get-user-by-id/${id}`,
+      }),
+      providesTags: ["seller-login"],
+    }),
+
 
     createSeller: builder.mutation({
       query: (credentials) => ({
@@ -24,7 +33,7 @@ export const authApi = apiSlice.injectEndpoints({
     }),
 
 
-     // CREATE CITY
+    // CREATE CITY
     addCity: builder.mutation({
       query: (data) => ({
         url: "/city/create-city",
@@ -37,9 +46,8 @@ export const authApi = apiSlice.injectEndpoints({
     // GET ALL CITIES
     getAllCities: builder.query({
       query: (data) => ({
-        url: `/city/get-city-all?page=${data?.page || 1}&size=${
-          data?.size || fallback.querySize
-        }&search=${data?.search || ""}&sortOrder=${data?.sort || "asc"}`,
+        url: `/city/get-city-all?page=${data?.page || 1}&size=${data?.size || fallback.querySize
+          }&search=${data?.search || ""}&sortOrder=${data?.sort || "asc"}`,
       }),
       providesTags: ["seller-login"],
     }),
@@ -73,7 +81,7 @@ export const authApi = apiSlice.injectEndpoints({
 
     // area
 
-     addArea: builder.mutation({
+    addArea: builder.mutation({
       query: (data: { cityId: number; name: string }) => ({
         url: "/area/create-area",
         method: "POST",
@@ -85,9 +93,8 @@ export const authApi = apiSlice.injectEndpoints({
     // GET ALL AREAS
     getAllAreas: builder.query({
       query: (data: { page?: number; size?: number; search?: string; sort?: string }) => ({
-        url: `/area/get-area-all?page=${data?.page || 1}&size=${
-          data?.size || fallback.querySize
-        }&search=${data?.search || ""}&sortOrder=${data?.sort || "asc"}`,
+        url: `/area/get-area-all?page=${data?.page || 1}&size=${data?.size || fallback.querySize
+          }&search=${data?.search || ""}&sortOrder=${data?.sort || "asc"}`,
       }),
       providesTags: ["seller-login"],
     }),
@@ -126,12 +133,11 @@ export const authApi = apiSlice.injectEndpoints({
     }),
 
     //seller req list api
-     // GET ALL SELLER REQUESTS
+    // GET ALL SELLER REQUESTS
     getAllSellerRequests: builder.query({
       query: (data: { page?: number; size?: number; search?: string; sort?: string }) => ({
-        url: `/user/get-seller-request?page=${data?.page || 1}&size=${
-          data?.size || 10
-        }&search=${data?.search || ""}&sortOrder=${data?.sort || "desc"}`,
+        url: `/user/get-seller-request?page=${data?.page || 1}&size=${data?.size || 10
+          }&search=${data?.search || ""}&sortOrder=${data?.sort || "desc"}`,
       }),
       providesTags: ["seller-login"],
     }),
@@ -148,12 +154,11 @@ export const authApi = apiSlice.injectEndpoints({
 
 
     //all seller list
-      // GET ALL SELLERS
+    // GET ALL SELLERS
     getAllSellers: builder.query({
       query: (data: { page?: number; size?: number; search?: string; sort?: string }) => ({
-        url: `/user/get-seller-all?page=${data?.page || 1}&size=${
-          data?.size || 10
-        }&search=${data?.search || ""}&sortOrder=${data?.sort || "desc"}`,
+        url: `/user/get-seller-all?page=${data?.page || 1}&size=${data?.size || 10
+          }&search=${data?.search || ""}&sortOrder=${data?.sort || "desc"}`,
       }),
       providesTags: ["seller-login"],
     }),
@@ -172,7 +177,7 @@ export const {
   useUpdateCityMutation,
   useDeleteCityMutation,
   //area
-   useAddAreaMutation,
+  useAddAreaMutation,
   useGetAllAreasQuery,
   useGetAreaByIdQuery,
   useUpdateAreaMutation,
@@ -182,4 +187,5 @@ export const {
   useUpdateSellerStatusMutation,
   //seller all list
   useGetAllSellersQuery,
+  useGetSellerUserByIdQuery
 } = authApi;

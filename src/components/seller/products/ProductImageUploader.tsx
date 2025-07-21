@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useRef, ChangeEvent } from "react";
+import { useState, useRef, ChangeEvent, useEffect } from "react";
 import { Plus, X, RefreshCw, Image as ImageIcon } from "lucide-react";
 import Image from "next/image";
 import { useAddThumbnailMutation } from "@/redux/features/file/fileApi";
 import toast from "react-hot-toast";
+import ButtonLoader from "@/components/common/ButtonLoader";
 
 interface UploadedImage {
   id: number;
@@ -14,12 +15,62 @@ interface UploadedImage {
   isMain?: boolean;
 }
 
-export default function ProductImageUploader() {
+interface ProductImageUploaderProps {
+  onImagesUpdate: (imageUrls: string[]) => void;
+  initialImages?: string[];
+  isUploading?: boolean;
+  onUploadStart?: () => void;
+}
+
+
+export default function ProductImageUploader({
+  onImagesUpdate,
+  initialImages = []
+}: ProductImageUploaderProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [addThumbnail, { isLoading: isUploading }] = useAddThumbnailMutation();
-  const [altText, setAltText] = useState("");
   const [gallery, setGallery] = useState<UploadedImage[]>([]);
-  const [uploadProgress, ] = useState<Record<number, number>>({});
+  const hasInitialized = useRef(false);
+
+  // Initialize with initial images
+  useEffect(() => {
+    if (!hasInitialized.current && initialImages && initialImages.length > 0) {
+      const initialGallery = initialImages
+        .filter(url => url && isValidUrl(url))
+        .map((url, index) => ({
+          id: Date.now() + index,
+          src: ensureAbsoluteUrl(url),
+          altText: "",
+          isMain: index === 0
+        }));
+      setGallery(initialGallery);
+      hasInitialized.current = true;
+    }
+  }, [initialImages]);
+
+  // Helper function to ensure URL is absolute
+  const ensureAbsoluteUrl = (url: string): string => {
+    if (!url) return '';
+    try {
+      new URL(url);
+      return url; // Already absolute
+    } catch {
+      // If relative URL, prepend with base URL (adjust this based on your setup)
+      return `${process.env.NEXT_PUBLIC_API_BASE_URL || ''}${url.startsWith('/') ? url : `/${url}`}`;
+    }
+  };
+
+  // Helper function to validate URLs
+  const isValidUrl = (url: string) => {
+    if (!url) return false;
+    try {
+      new URL(ensureAbsoluteUrl(url));
+      return true;
+    } catch (e) {
+      console.log(e);
+      return false;
+    }
+  };
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -60,6 +111,7 @@ export default function ProductImageUploader() {
     );
   };
 
+  // Update the handleUploadImages function in ProductImageUploader.tsx
   const handleUploadImages = async () => {
     if (gallery.length === 0) {
       toast.error("Please add at least one image");
@@ -79,7 +131,13 @@ export default function ProductImageUploader() {
 
         try {
           const response = await addThumbnail(formData).unwrap();
-          return { id: img.id, url: response?.data[0] };
+          console.log(response);
+          // Ensure the URL is absolute and valid
+          const uploadedUrl = response?.data;
+          if (!uploadedUrl) {
+            throw new Error("No URL returned from server");
+          }
+          return { id: img.id, url: uploadedUrl };
         } catch (error) {
           console.error("Upload failed for image:", img.id, error);
           return { id: img.id, error: true };
@@ -88,39 +146,72 @@ export default function ProductImageUploader() {
 
     try {
       const results = await Promise.all(uploadPromises);
-      setGallery((prev) =>
-        prev.map((img) => {
-          const result = results.find((r) => r?.id === img.id);
-          if (result && !result.error) {
-            return { ...img, src: result.url, file: undefined };
+
+      // Update gallery with uploaded URLs
+      const updatedGallery = gallery.map((img) => {
+        const result = results.find((r) => r?.id === img.id);
+        if (result && !result.error && result.url) {
+          // Revoke the object URL to free memory
+          if (img.src.startsWith('blob:')) {
+            URL.revokeObjectURL(img.src);
           }
-          return img;
-        })
-      );
+          return { ...img, src: result.url, file: undefined };
+        }
+        return img;
+      });
+
+      setGallery(updatedGallery);
       toast.success("Images uploaded successfully!");
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
+      // Return the updated URLs to the parent
+      const uploadedUrls = updatedGallery
+        .filter(img => !img.file)
+        .map(img => img.src);
+      onImagesUpdate(uploadedUrls);
+
     } catch (error) {
+      console.log(error);
       toast.error("Some images failed to upload");
     }
   };
 
-  const handleAltTextChange = (id: number, text: string) => {
-    setGallery((prev) =>
-      prev.map((img) => (img.id === id ? { ...img, altText: text } : img))
+
+  // Clean up object URLs when component unmounts
+  useEffect(() => {
+    return () => {
+      gallery.forEach(img => {
+        if (img.src.startsWith('blob:')) {
+          URL.revokeObjectURL(img.src);
+        }
+      });
+    };
+  }, [gallery]);
+
+  // Safe image rendering function
+  const renderImage = (src: string, alt: string, props: {
+    width?: number,
+    height?: number,
+    fill?: boolean,
+    className: string
+  }) => {
+    const absoluteSrc = ensureAbsoluteUrl(src);
+    if (!isValidUrl(absoluteSrc)) {
+      return (
+        <div className="flex items-center justify-center w-full h-full bg-gray-100">
+          <span className="text-gray-500">Invalid image</span>
+        </div>
+      );
+    }
+
+    return (
+      <Image
+        src={absoluteSrc}
+        alt={alt}
+        unoptimized={absoluteSrc.startsWith('blob:')}
+        {...props}
+      />
     );
   };
-
-  const getHostedImageUrls = () => {
-    return gallery
-      .filter(img => !img.file) // Only return images that have been uploaded
-      .map(img => ({
-        url: img.src,
-        altText: img.altText || "",
-        isMain: img.isMain || false
-      }));
-  };
-
-  console.log(getHostedImageUrls)
 
   return (
     <div className="border rounded-xl p-6 w-full bg-white">
@@ -133,13 +224,15 @@ export default function ProductImageUploader() {
       <div className="border rounded-lg h-[260px] flex items-center justify-center relative mb-5">
         {gallery.some((img) => img.isMain) ? (
           <>
-            <Image
-              src={gallery.find((img) => img.isMain)!.src}
-              alt="Main Product"
-              width={180}
-              height={180}
-              className="object-contain max-h-[230px]"
-            />
+            {renderImage(
+              gallery.find((img) => img.isMain)!.src,
+              gallery.find((img) => img.isMain)!.altText || "Main Product",
+              {
+                width: 180,
+                height: 180,
+                className: "object-contain max-h-[230px]"
+              }
+            )}
             <button
               className="absolute bottom-2 right-2 border rounded px-3 py-1 text-sm text-gray-700 hover:text-black hover:bg-gray-50 flex items-center gap-1"
               onClick={() => {
@@ -160,50 +253,36 @@ export default function ProductImageUploader() {
         )}
       </div>
 
-     <div className="flex justify-between">
-       <div className="w-auto lg:w-[449px] pt-[40px]">
-        <label className="block text-sm font-semibold text-gray-800 mb-1">
-          Alternative Text <span className="text-red-500">*</span>
-        </label>
-        <div className="relative">
-          <input
-            type="text"
-            value={altText}
-            onChange={(e) => setAltText(e.target.value)}
-            placeholder="Enter alt text"
-            className="w-full px-3 py-2 pr-10 border rounded-md text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-300"
-          />
-          <div className="absolute inset-y-0 right-0 flex items-center pr-2">
-            <button
-              className="w-8 h-8 rounded-full border flex items-center justify-center text-gray-500 hover:bg-gray-100"
-              onClick={() => {
-                setGallery((prev) => prev.map((img) => ({ ...img, altText })));
-              }}
-            >
-              <Plus className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-      </div>
 
-      <div className="flex items-center gap-3 mb-6">
+      <div className="flex items-center gap-3">
         {gallery.map((img) => (
           <div
             key={img.id}
             className="relative w-[99px] h-[99px] rounded-md overflow-hidden border"
+            onClick={() => handleSetMainImage(img.id)}
           >
-            <Image
-              src={img.src}
-              alt={`Thumb-${img.id}`}
-              fill
-              className="object-cover"
-            />
+            {renderImage(
+              img.src,
+              img.altText || `Thumb-${img.id}`,
+              {
+                fill: true,
+                className: "object-cover"
+              }
+            )}
             <button
               className="absolute -top-1 -right-1 w-5 h-5 bg-white rounded-full shadow text-gray-500 hover:text-black"
-              onClick={() => handleRemoveImage(img.id)}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleRemoveImage(img.id);
+              }}
             >
               <X className="w-4 h-4" />
             </button>
+            {img.isMain && (
+              <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs text-center py-1">
+                Main
+              </div>
+            )}
           </div>
         ))}
 
@@ -222,9 +301,17 @@ export default function ProductImageUploader() {
           />
         </div>
       </div>
-     </div>
 
-
+      <div className="flex justify-end">
+        <button
+          type="button"
+          onClick={handleUploadImages}
+          disabled={isUploading}
+          className="px-4 py-2 bg-[#F05323] text-white rounded-md hover:bg-[#e34724] disabled:opacity-50"
+        >
+          {isUploading ? <ButtonLoader></ButtonLoader> : "Upload Images"}
+        </button>
+      </div>
     </div>
   );
 }

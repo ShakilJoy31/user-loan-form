@@ -1,14 +1,83 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { X } from "lucide-react";
 
-const OptionPill = ({ label }: { label: string }) => (
+// Types for variations
+interface VariationValue {
+  id: number;
+  variationId: number;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface Variation {
+  id: number;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+  VariationValue: VariationValue[];
+}
+
+interface OptionPillProps {
+  label: string;
+  onRemove?: () => void;
+}
+
+interface VariationProps {
+  variations: Variation[];
+  variationCombinations: Array<{
+    sku: string;
+    optionValues: string[];
+    price: number;
+    stock: number;
+  }>;
+  onCombinationChange: (updatedCombinations: Array<{
+    sku: string;
+    optionValues: string[];
+    price: number;
+    stock: number;
+  }>) => void;
+}
+
+const OptionPill: React.FC<OptionPillProps> = ({ label, onRemove }) => (
   <div className="flex items-center border border-[#F17152] text-sm px-3 py-1 rounded-full text-[#F17152] bg-white">
     <span>{label}</span>
-    <X className="w-3.5 h-3.5 ml-1" />
+    {onRemove && (
+      <X
+        className="w-3.5 h-3.5 ml-1 cursor-pointer"
+        onClick={onRemove}
+      />
+    )}
   </div>
 );
 
-const Variation: React.FC = () => {
+const VariationComponent: React.FC<VariationProps> = ({
+  variations,
+  variationCombinations,
+  onCombinationChange
+}) => {
+
+  const [localCombinations, setLocalCombinations] = useState(variationCombinations);
+
+  // Sync with parent when props change
+  useEffect(() => {
+    setLocalCombinations(variationCombinations);
+  }, [variationCombinations]);
+
+  const handleInputChange = (index: number, field: 'price' | 'stock', value: string) => {
+    // Remove leading zeros and convert to number
+    const numericValue = value === '' ? 0 : Number(value.replace(/^0+/, ''));
+    const updated = [...localCombinations];
+
+    updated[index] = {
+      ...updated[index],
+      [field]: numericValue
+    };
+
+    setLocalCombinations(updated);
+    onCombinationChange(updated);
+  };
+
   return (
     <div className="py-4">
       <div className="border rounded-xl p-6">
@@ -24,139 +93,79 @@ const Variation: React.FC = () => {
             <div>Options</div>
           </div>
 
-          {/* Weight */}
-          <div className="grid grid-cols-2 items-start gap-4 px-4 py-4 border-b">
-            <div className="text-sm font-medium text-gray-700 pt-1">Weight</div>
-            <div className="flex flex-wrap gap-2">
-              <OptionPill label="25 KG" />
-              <div className="flex items-center border border-gray-300 text-sm px-3 py-1 rounded-full">
-                50 KG
+          {/* Render each variation */}
+          {variations.map((variation) => (
+            <div
+              key={variation.id}
+              className="grid grid-cols-2 items-start gap-4 px-4 py-4 border-b"
+            >
+              <div className="text-sm font-medium text-gray-700 pt-1">
+                {variation.name}
               </div>
-              <div className="flex items-center border border-gray-300 text-sm px-3 py-1 rounded-full">
-                100 KG
-              </div>
-            </div>
-          </div>
-
-          {/* Type of Rice */}
-          <div className="grid grid-cols-2 items-start gap-4 px-4 py-4 border-b">
-            <div className="text-sm font-medium text-gray-700 pt-1">
-              Type of Rice
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <OptionPill label="Bashmati (Imported)" />
-              <div className="flex items-center border border-gray-300 text-sm px-3 py-1 rounded-full">
-                Atop
-              </div>
-              <div className="flex items-center border border-gray-300 text-sm px-3 py-1 rounded-full">
-                Chinigura
+              <div className="flex flex-wrap gap-2">
+                {variation.VariationValue.map((value) => (
+                  <OptionPill
+                    key={value.id}
+                    label={value.name}
+                  />
+                ))}
               </div>
             </div>
-          </div>
-
-          {/* Quality Grade */}
-          <div className="grid grid-cols-2 items-start gap-4 px-4 py-4">
-            <div className="text-sm font-medium text-gray-700 pt-1">
-              Quality Grade
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <OptionPill label="Standard (Loose)" />
-              <div className="flex items-center border border-gray-300 text-sm px-3 py-1 rounded-full">
-                Polished
-              </div>
-              <div className="flex items-center border border-gray-300 text-sm px-3 py-1 rounded-full">
-                Broken grain
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
 
         {/* Auto Generated Variants */}
-        <div className="mt-6">
-          <p className="text-sm font-medium text-green-700 mb-2">
-            Auto Generated Variants:
-          </p>
+        {variationCombinations.length > 0 && (
+          <div className="mt-6">
+            <p className="text-sm font-medium text-green-700 mb-2">
+              Auto Generated Variants:
+            </p>
 
-          <div className="border rounded-xl overflow-x-auto">
-            {/* Table Header */}
-            <div className="grid grid-cols-6 bg-[#FDEFEA] text-sm font-semibold text-gray-800 px-4 py-3 border-b min-w-[700px]">
-              <div className="col-span-2">Options</div>
-              <div>Price</div>
-              <div>Discount Price</div>
-              <div>Purchas Point</div>
-              <div>Stock</div>
+            <div className="border rounded-xl overflow-x-auto">
+              {/* Table Header */}
+              <div className="grid grid-cols-4 bg-[#FDEFEA] text-sm font-semibold text-gray-800 px-4 py-3 border-b min-w-[700px]">
+                <div className="col-span-2">SKU</div>
+                <div className="col-span-1">Price</div>
+                <div className="col-span-1">Stock</div>
+              </div>
+
+              {/* Generate rows for each variation combination */}
+             {localCombinations.map((combination, index) => (
+          <div 
+            key={`${combination.sku}-${index}`}
+            className="grid grid-cols-4 items-center gap-3 px-4 py-3 border-b min-w-[700px]"
+          >
+            <div className="col-span-2">
+              <div className="text-sm font-medium text-gray-700">
+                {combination.sku}
+              </div>
             </div>
 
-            {/* Row 1 */}
-            <div className="grid grid-cols-6 items-center gap-3 px-4 py-3 border-b min-w-[700px]">
-              <div className="col-span-2 flex flex-wrap gap-2">
-                <OptionPill label="25 KG" />
-                <div className="flex items-center border border-gray-300 text-sm px-3 py-1 rounded-full">
-                  50 KG
-                </div>
-                <div className="flex items-center border border-gray-300 text-sm px-3 py-1 rounded-full">
-                  100 KG
-                </div>
-              </div>
-              <input
-                type="text"
-                defaultValue="400 Tk"
-                className="w-full px-3 py-2 text-sm border rounded-md"
-              />
-              <input
-                type="text"
-                defaultValue="10%"
-                className="w-full px-3 py-2 text-sm border rounded-md"
-              />
-              <input
-                type="text"
-                defaultValue="100"
-                className="w-full px-3 py-2 text-sm border rounded-md"
-              />
-              <input
-                type="text"
-                defaultValue="22"
-                className="w-full px-3 py-2 text-sm border rounded-md"
-              />
-            </div>
+            {/* Price Input */}
+            <input
+              type="number"
+              value={combination.price === 0 ? '' : combination.price}
+              onChange={(e) => handleInputChange(index, 'price', e.target.value)}
+              placeholder="Price"
+              className="w-full px-3 py-2 text-sm border rounded-md col-span-1"
+            />
 
-            {/* Row 2 */}
-            <div className="grid grid-cols-6 items-center gap-3 px-4 py-3 min-w-[700px]">
-              <div className="col-span-2 flex flex-wrap gap-2">
-                <OptionPill label="25 KG" />
-                <div className="flex items-center border border-gray-300 text-sm px-3 py-1 rounded-full">
-                  50 KG
-                </div>
-                <div className="flex items-center border border-gray-300 text-sm px-3 py-1 rounded-full">
-                  100 KG
-                </div>
-              </div>
-              <input
-                type="text"
-                defaultValue="400 Tk"
-                className="w-full px-3 py-2 text-sm border rounded-md"
-              />
-              <input
-                type="text"
-                defaultValue="10%"
-                className="w-full px-3 py-2 text-sm border rounded-md"
-              />
-              <input
-                type="text"
-                defaultValue="100"
-                className="w-full px-3 py-2 text-sm border rounded-md"
-              />
-              <input
-                type="text"
-                defaultValue="45"
-                className="w-full px-3 py-2 text-sm border rounded-md"
-              />
+            {/* Stock Input */}
+            <input
+              type="number"
+              value={combination.stock === 0 ? '' : combination.stock}
+              onChange={(e) => handleInputChange(index, 'stock', e.target.value)}
+              placeholder="Stock"
+              className="w-full px-3 py-2 text-sm border rounded-md col-span-1"
+            />
+          </div>
+        ))}
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
 };
 
-export default Variation;
+export default VariationComponent;
