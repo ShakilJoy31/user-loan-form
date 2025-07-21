@@ -310,6 +310,7 @@ const AddEditCategoryWiseVariation = ({
               <p className="text-sm text-red-500 mt-1">{error}</p>
             )}
           </div>
+          
 
           <div className="space-y-2">
             <label className="flex items-center space-x-2 cursor-pointer">
