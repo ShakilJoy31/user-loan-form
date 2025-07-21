@@ -2,7 +2,6 @@
 
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
-import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { P } from "@/components/ui/paragraph";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
@@ -10,14 +9,6 @@ import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 export default function NotFound() {
   const router = useRouter();
   const { translate } = useCustomTranslator();
-  
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      router.push("/");
-    }, 5000);
-    
-    return () => clearTimeout(timer);
-  }, [router]);
 
   return (
     <div>
