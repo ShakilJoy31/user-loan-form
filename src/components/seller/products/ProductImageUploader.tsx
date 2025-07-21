@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useRef, ChangeEvent } from "react";
+import { useState, useRef, ChangeEvent, useEffect } from "react";
 import { Plus, X, RefreshCw, Image as ImageIcon } from "lucide-react";
 import Image from "next/image";
 import { useAddThumbnailMutation } from "@/redux/features/file/fileApi";
 import toast from "react-hot-toast";
+import ButtonLoader from "@/components/common/ButtonLoader";
 
 interface UploadedImage {
   id: number;
@@ -14,19 +15,69 @@ interface UploadedImage {
   isMain?: boolean;
 }
 
-export default function ProductImageUploader() {
+interface ProductImageUploaderProps {
+  onImagesUpdate: (imageUrls: string[]) => void;
+  initialImages?: string[];
+  isUploading?: boolean;
+  onUploadStart?: () => void;
+}
+
+
+export default function ProductImageUploader({
+  onImagesUpdate,
+  initialImages = []
+}: ProductImageUploaderProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [addThumbnail, { isLoading: isUploading }] = useAddThumbnailMutation();
-  const [altText, setAltText] = useState("");
   const [gallery, setGallery] = useState<UploadedImage[]>([]);
-  const [uploadProgress, ] = useState<Record<number, number>>({});
+  const hasInitialized = useRef(false);
+
+  // Initialize with initial images
+  useEffect(() => {
+    if (!hasInitialized.current && initialImages && initialImages.length > 0) {
+      const initialGallery = initialImages
+        .filter(url => url && isValidUrl(url))
+        .map((url, index) => ({
+          id: Date.now() + index,
+          src: ensureAbsoluteUrl(url),
+          altText: "",
+          isMain: index === 0
+        }));
+      setGallery(initialGallery);
+      hasInitialized.current = true;
+    }
+  }, [initialImages]);
+
+  // Helper function to ensure URL is absolute
+  const ensureAbsoluteUrl = (url: string): string => {
+    if (!url) return '';
+    try {
+      new URL(url);
+      return url; // Already absolute
+    } catch {
+      // If relative URL, prepend with base URL (adjust this based on your setup)
+      return `${process.env.NEXT_PUBLIC_API_BASE_URL || ''}${url.startsWith('/') ? url : `/${url}`}`;
+    }
+  };
+
+  // Helper function to validate URLs
+  const isValidUrl = (url: string) => {
+    if (!url) return false;
+    try {
+      new URL(ensureAbsoluteUrl(url));
+      return true;
+    } catch (e) {
+      console.log(e);
+      return false;
+    }
+  };
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
     const newImages: UploadedImage[] = [];
-    
+
     Array.from(files).forEach((file, index) => {
       const id = Date.now() + index;
       newImages.push({
@@ -34,18 +85,17 @@ export default function ProductImageUploader() {
         src: URL.createObjectURL(file),
         file,
         altText: "",
-        isMain: gallery.length === 0 && index === 0 // Set first image as main if gallery is empty
+        isMain: gallery.length === 0 && index === 0,
       });
     });
 
-    setGallery(prev => [...prev, ...newImages]);
+    setGallery((prev) => [...prev, ...newImages]);
   };
 
   const handleRemoveImage = (id: number) => {
-    setGallery(prev => {
-      const newGallery = prev.filter(img => img.id !== id);
-      // If we removed the main image, set the first image as main (if any)
-      if (newGallery.length > 0 && prev.find(img => img.id === id)?.isMain) {
+    setGallery((prev) => {
+      const newGallery = prev.filter((img) => img.id !== id);
+      if (newGallery.length > 0 && prev.find((img) => img.id === id)?.isMain) {
         newGallery[0].isMain = true;
       }
       return newGallery;
@@ -53,14 +103,15 @@ export default function ProductImageUploader() {
   };
 
   const handleSetMainImage = (id: number) => {
-    setGallery(prev =>
-      prev.map(img => ({
+    setGallery((prev) =>
+      prev.map((img) => ({
         ...img,
-        isMain: img.id === id
+        isMain: img.id === id,
       }))
     );
   };
 
+  // Update the handleUploadImages function in ProductImageUploader.tsx
   const handleUploadImages = async () => {
     if (gallery.length === 0) {
       toast.error("Please add at least one image");
@@ -68,9 +119,9 @@ export default function ProductImageUploader() {
     }
 
     const uploadPromises = gallery
-      .filter(img => img.file) // Only upload images with files (not already uploaded)
+      .filter((img) => img.file)
       .map(async (img) => {
-        if (!img.file) return { id: img.id, url: img.src }; // Skip if already uploaded
+        if (!img.file) return { id: img.id, url: img.src };
 
         const formData = new FormData();
         formData.append("image", img.file);
@@ -80,7 +131,13 @@ export default function ProductImageUploader() {
 
         try {
           const response = await addThumbnail(formData).unwrap();
-          return { id: img.id, url: response?.data[0] };
+          console.log(response);
+          // Ensure the URL is absolute and valid
+          const uploadedUrl = response?.data;
+          if (!uploadedUrl) {
+            throw new Error("No URL returned from server");
+          }
+          return { id: img.id, url: uploadedUrl };
         } catch (error) {
           console.error("Upload failed for image:", img.id, error);
           return { id: img.id, error: true };
@@ -89,188 +146,170 @@ export default function ProductImageUploader() {
 
     try {
       const results = await Promise.all(uploadPromises);
-      
-      // Update gallery with uploaded URLs
-      setGallery(prev =>
-        prev.map(img => {
-          const result = results.find(r => r?.id === img.id);
-          if (result && !result.error) {
-            return { ...img, src: result.url, file: undefined }; // Remove file after upload
-          }
-          return img;
-        })
-      );
 
+      // Update gallery with uploaded URLs
+      const updatedGallery = gallery.map((img) => {
+        const result = results.find((r) => r?.id === img.id);
+        if (result && !result.error && result.url) {
+          // Revoke the object URL to free memory
+          if (img.src.startsWith('blob:')) {
+            URL.revokeObjectURL(img.src);
+          }
+          return { ...img, src: result.url, file: undefined };
+        }
+        return img;
+      });
+
+      setGallery(updatedGallery);
       toast.success("Images uploaded successfully!");
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
+      // Return the updated URLs to the parent
+      const uploadedUrls = updatedGallery
+        .filter(img => !img.file)
+        .map(img => img.src);
+      onImagesUpdate(uploadedUrls);
+
     } catch (error) {
+      console.log(error);
       toast.error("Some images failed to upload");
     }
   };
 
-  const handleAltTextChange = (id: number, text: string) => {
-    setGallery(prev =>
-      prev.map(img => 
-        img.id === id ? { ...img, altText: text } : img
-      )
+
+  // Clean up object URLs when component unmounts
+  useEffect(() => {
+    return () => {
+      gallery.forEach(img => {
+        if (img.src.startsWith('blob:')) {
+          URL.revokeObjectURL(img.src);
+        }
+      });
+    };
+  }, [gallery]);
+
+  // Safe image rendering function
+  const renderImage = (src: string, alt: string, props: {
+    width?: number,
+    height?: number,
+    fill?: boolean,
+    className: string
+  }) => {
+    const absoluteSrc = ensureAbsoluteUrl(src);
+    if (!isValidUrl(absoluteSrc)) {
+      return (
+        <div className="flex items-center justify-center w-full h-full bg-gray-100">
+          <span className="text-gray-500">Invalid image</span>
+        </div>
+      );
+    }
+
+    return (
+      <Image
+        src={absoluteSrc}
+        alt={alt}
+        unoptimized={absoluteSrc.startsWith('blob:')}
+        {...props}
+      />
     );
   };
 
-  const getHostedImageUrls = () => {
-    return gallery
-      .filter(img => !img.file) // Only return images that have been uploaded
-      .map(img => ({
-        url: img.src,
-        altText: img.altText || "",
-        isMain: img.isMain || false
-      }));
-  };
-
-  console.log(getHostedImageUrls)
-
   return (
-    <div className="border rounded-xl p-6 w-full">
-      <h3 className="text-[18px] font-semibold text-gray-800 mb-4">
+    <div className="border rounded-xl p-6 w-full bg-white">
+      <h3 className="text-lg font-semibold text-gray-900 mb-4">
         Upload Product Image
       </h3>
 
-      <div className="border rounded-xl bg-white p-4">
-        {/* Main Image Preview */}
-        {gallery.some(img => img.isMain) && (
-          <div className="flex items-center justify-between border rounded-md px-4 py-4 mb-4">
-            <div className="flex-1 flex justify-center">
-              {gallery.find(img => img.isMain) && (
-                <Image
-                  src={gallery.find(img => img.isMain)!.src}
-                  alt="Main Product"
-                  width={180}
-                  height={180}
-                  className="object-contain h-[180px] w-auto"
-                />
-              )}
-            </div>
-            <button 
-              className="text-sm text-gray-600 hover:text-black flex items-center gap-1"
+      <p className="text-sm font-semibold text-gray-700 mb-2">Product Image</p>
+
+      <div className="border rounded-lg h-[260px] flex items-center justify-center relative mb-5">
+        {gallery.some((img) => img.isMain) ? (
+          <>
+            {renderImage(
+              gallery.find((img) => img.isMain)!.src,
+              gallery.find((img) => img.isMain)!.altText || "Main Product",
+              {
+                width: 180,
+                height: 180,
+                className: "object-contain max-h-[230px]"
+              }
+            )}
+            <button
+              className="absolute bottom-2 right-2 border rounded px-3 py-1 text-sm text-gray-700 hover:text-black hover:bg-gray-50 flex items-center gap-1"
               onClick={() => {
-                const currentMain = gallery.find(img => img.isMain);
-                if (currentMain) {
-                  handleRemoveImage(currentMain.id);
-                }
+                const main = gallery.find((img) => img.isMain);
+                if (main) handleRemoveImage(main.id);
               }}
             >
-              <RefreshCw className="w-4 h-4" />
-              Replace
+              <RefreshCw className="w-4 h-4" /> Replace
             </button>
-          </div>
+          </>
+        ) : (
+          <button
+            className="flex items-center gap-1 px-3 py-1 border border-[#EE5A2C] rounded-md text-sm text-gray-600 hover:text-black hover:bg-gray-50"
+            onClick={() => fileInputRef.current?.click()}
+          >
+            <ImageIcon className="w-4 h-4" /> Browse
+          </button>
         )}
+      </div>
 
-        {/* Alternative Text */}
-        <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-800 mb-1">
-            Alternative Text <span className="text-red-500">*</span>
-          </label>
-          <div className="flex gap-2">
-            <div className="relative flex-1">
-              <ImageIcon className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
-              <input
-                type="text"
-                value={altText}
-                onChange={(e) => setAltText(e.target.value)}
-                placeholder="Enter default alt text for all images"
-                className="w-full pl-9 pr-2 py-2 border rounded-md text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-300"
-              />
-            </div>
-            <button 
-              className="px-3 rounded-md bg-orange-500 text-white text-sm hover:bg-orange-600"
-              onClick={() => {
-                setGallery(prev => 
-                  prev.map(img => ({ ...img, altText: altText }))
-                );
-                toast.success("Alt text applied to all images");
+
+      <div className="flex items-center gap-3">
+        {gallery.map((img) => (
+          <div
+            key={img.id}
+            className="relative w-[99px] h-[99px] rounded-md overflow-hidden border"
+            onClick={() => handleSetMainImage(img.id)}
+          >
+            {renderImage(
+              img.src,
+              img.altText || `Thumb-${img.id}`,
+              {
+                fill: true,
+                className: "object-cover"
+              }
+            )}
+            <button
+              className="absolute -top-1 -right-1 w-5 h-5 bg-white rounded-full shadow text-gray-500 hover:text-black"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleRemoveImage(img.id);
               }}
             >
-              Apply to All
+              <X className="w-4 h-4" />
             </button>
-          </div>
-        </div>
-
-        {/* Gallery Thumbnails */}
-        <div className="mb-4">
-          <div className="flex flex-wrap items-center gap-3">
-            {gallery.map((img) => (
-              <div
-                key={img.id}
-                className={`relative border rounded-md overflow-hidden w-[70px] h-[70px] flex-shrink-0 ${img.isMain ? 'ring-2 ring-orange-500' : ''}`}
-              >
-                <Image
-                  src={img.src}
-                  alt={`Thumbnail ${img.id}`}
-                  fill
-                  className="object-cover"
-                />
-                <button
-                  className="absolute top-0 right-0 bg-black/60 text-white rounded-bl-md p-0.5"
-                  onClick={() => handleRemoveImage(img.id)}
-                >
-                  <X className="w-4 h-4" />
-                </button>
-                {!img.isMain && (
-                  <button
-                    className="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-xs p-0.5 text-center"
-                    onClick={() => handleSetMainImage(img.id)}
-                  >
-                    Set Main
-                  </button>
-                )}
-                <div className="absolute bottom-0 left-0 right-0 bg-white/90 p-1">
-                  <input
-                    type="text"
-                    value={img.altText || ''}
-                    onChange={(e) => handleAltTextChange(img.id, e.target.value)}
-                    placeholder="Alt text"
-                    className="w-full text-xs p-0.5 border-none bg-transparent focus:outline-none"
-                  />
-                </div>
-                {uploadProgress[img.id] > 0 && (
-                  <div className="absolute top-0 left-0 right-0 h-1 bg-gray-200">
-                    <div 
-                      className="h-full bg-orange-500" 
-                      style={{ width: `${uploadProgress[img.id]}%` }}
-                    ></div>
-                  </div>
-                )}
+            {img.isMain && (
+              <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs text-center py-1">
+                Main
               </div>
-            ))}
-
-            {/* Add Image Placeholder */}
-            <div 
-              className="border border-dashed rounded-md w-[70px] h-[70px] flex items-center justify-center text-orange-500 cursor-pointer hover:bg-orange-50 transition"
-              onClick={() => fileInputRef.current?.click()}
-            >
-              <div className="flex flex-col items-center text-[11px] font-medium">
-                <Plus className="w-4 h-4 mb-1" />
-                Add Image
-              </div>
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleFileChange}
-                className="hidden"
-                accept="image/*"
-                multiple
-              />
-            </div>
+            )}
           </div>
-        </div>
+        ))}
 
-        {/* Upload Button */}
+        <div
+          className="w-[200px] h-[99px] border border-dashed rounded-md flex flex-col items-center justify-center text-orange-500 cursor-pointer hover:bg-orange-50 text-xs font-medium"
+          onClick={() => fileInputRef.current?.click()}
+        >
+          <Plus className="w-4 h-4 mb-1" /> Add Image
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            className="hidden"
+            accept="image/*"
+            multiple
+          />
+        </div>
+      </div>
+
+      <div className="flex justify-end">
         <button
           type="button"
           onClick={handleUploadImages}
-          disabled={isUploading || gallery.length === 0}
-          className={`mt-4 w-full py-2 rounded-md text-white ${isUploading || gallery.length === 0 ? 'bg-gray-400 cursor-not-allowed' : 'bg-orange-500 hover:bg-orange-600'}`}
+          disabled={isUploading}
+          className="px-4 py-2 bg-[#F05323] text-white rounded-md hover:bg-[#e34724] disabled:opacity-50"
         >
-          {isUploading ? 'Uploading...' : 'Upload Images'}
+          {isUploading ? <ButtonLoader></ButtonLoader> : "Upload Images"}
         </button>
       </div>
     </div>

@@ -6,7 +6,7 @@ import avatar from "@/assets/Products_Image/man.avif";
 
 const SellerNavber = () => {
   return (
-    <header className="w-full bg-white px-4 md:px-6 py-3 md:py-4 flex items-center justify-between border-b sticky top-0 z-20">
+    <header className="w-full bg-white px-4 md:px-6 py-3 md:py-4 flex items-center justify-between sticky top-0 z-20">
       {/* Left side: Welcome Text */}
       <h1 className="text-lg md:text-xl font-semibold text-gray-900">
         Welcome To The Dashboard

@@ -18,8 +18,8 @@ import {
   ExternalLink,
   Menu,
   ChevronsRight,
-  LogOut,
 } from "lucide-react";
+import { MdLogout } from "react-icons/md";
 import Image from "next/image";
 import { useState } from "react";
 import homeLogo from '@/assets/Logo/admin-sideber-logo.png';
@@ -28,7 +28,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
-import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -95,17 +94,18 @@ const SellerSideber = () => {
           href: "/add-product",
         },
         {
+          key: "product-list",
+          icon: <Package size={16} />,
+          label: "Product List",
+          href: "/products-list",
+        },
+        {
           key: "product-media",
           icon: <ImageIcon size={16} />,
           label: "Product Media",
           href: "/seller/products/media",
         },
-        {
-          key: "product-list",
-          icon: <Package size={16} />,
-          label: "Product List",
-          href: "/seller/products",
-        },
+        
         {
           key: "product-reviews",
           icon: <MessageSquare size={16} />,
@@ -161,7 +161,7 @@ const SellerSideber = () => {
         }`}
       >
         {/* Logo and Toggle */}
-        <div className="p-4 flex items-center justify-between border-b">
+        <div className="p-4 flex items-center justify-between">
           <Link href="/">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
@@ -291,6 +291,7 @@ const SellerSideber = () => {
               />
               <Avatar.Fallback delayMs={600}>PS</Avatar.Fallback>
             </Avatar.Root>
+
             {isOpen && (
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
@@ -302,34 +303,11 @@ const SellerSideber = () => {
                 <p className="text-xs text-gray-500">Storepublic@market.com</p>
               </motion.div>
             )}
-          </div>
-
-          {isOpen && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: isOpen ? 1 : 0 }}
-              transition={{ duration: 0.2 }}
-              className="space-y-2"
-            >
-              <Link
-                href="/seller/shop"
-                className="flex items-center justify-between px-3 py-2 border rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 transition"
-              >
-                <span>Your Shop</span>
-                <ExternalLink size={14} />
-              </Link>
-
-              <AlertDialog>
+            <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    className="w-full flex items-center justify-center gap-2"
-                  >
-                    <LogOut size={16} />
-                    <span>Logout</span>
-                  </Button>
+                 <span className="hover:cursor-pointer"><MdLogout size={20}></MdLogout></span>
                 </AlertDialogTrigger>
+
                 <AlertDialogContent>
                   <AlertDialogHeader>
                     <AlertDialogTitle>Are you sure you want to logout?</AlertDialogTitle>
@@ -345,6 +323,26 @@ const SellerSideber = () => {
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
+
+            
+          </div>
+
+          {isOpen && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: isOpen ? 1 : 0 }}
+              transition={{ duration: 0.2 }}
+              className="space-y-2"
+            >
+              <Link
+                href="/seller/shop"
+                className="flex items-center justify-between px-3 py-2 border rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 transition"
+              >
+                <span>Your Shop</span>
+                <ExternalLink size={20} />
+              </Link>
+
+              
             </motion.div>
           )}
         </div>

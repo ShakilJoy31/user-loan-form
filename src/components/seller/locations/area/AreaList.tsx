@@ -139,9 +139,9 @@ const AreaList = () => {
       toast.success(translate("নির্বাচিত এলাকাগুলি সফলভাবে মুছে ফেলা হয়েছে", "Selected areas deleted successfully"));
       setSelectedRows([]);
       refetch();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      toast.error(translate("নির্বাচিত এলাকাগুলি মুছতে ব্যর্থ হয়েছে", "Failed to delete selected areas"));
+      const apiError = error as ApiError;
+        toast.error(apiError?.data?.message || "Error uploading image");
     }
   };
 

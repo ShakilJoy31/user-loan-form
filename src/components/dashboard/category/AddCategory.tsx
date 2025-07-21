@@ -12,16 +12,12 @@ import { useAddThumbnailMutation } from "@/redux/features/file/fileApi";
 import toast from "react-hot-toast";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { ApiError } from "@/types/apiError";
 
 interface AddCategoryProps {
   setModalOpen: (open: boolean) => void;
 }
-interface ApiError {
-  data?: {
-    message?: string;
-  };
-  status?: number;
-}
+
 export default function AddCategory({ setModalOpen }: AddCategoryProps) {
   const [altTextBanner, setAltTextBanner] = useState("");
   const [altText, setAltText] = useState("");

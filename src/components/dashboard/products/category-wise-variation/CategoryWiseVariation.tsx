@@ -14,11 +14,11 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import AddEditCategoryWiseVariation from "./AddEditCategoryWiseVariation";
-import { 
-  useAddCategoryWiseVariationMutation, 
-  useDeleteCategoryWiseVariationMutation, 
-  useGetAllCategoryWiseVariationsQuery, 
-  useUpdateCategoryWiseVariationMutation 
+import {
+  useAddCategoryWiseVariationMutation,
+  useDeleteCategoryWiseVariationMutation,
+  useGetAllCategoryWiseVariationsQuery,
+  useUpdateCategoryWiseVariationMutation
 } from "@/redux/features/product/variationApi";
 import DataLoader from "@/components/common/DataLoader";
 import ButtonLoader from "@/components/common/ButtonLoader";
@@ -28,6 +28,7 @@ import Table from "@/components/ui/table";
 import { useGetAllCategoryQuery } from "@/redux/features/product/categoryApi";
 import { useGetAllVariationsQuery } from "@/redux/features/product/variationApi";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
+import { ApiError } from "@/types/apiError";
 
 interface Variation {
   id: number;
@@ -87,11 +88,11 @@ const CategoryWiseVariation = () => {
   const { data: categoriesData } = useGetAllCategoryQuery({ page: 1, size: 1000 });
   const { data: variationsData } = useGetAllVariationsQuery({ page: 1, size: 1000 });
 
-  const [createCategoryWiseVariation, { isLoading: addLoading }] = 
+  const [createCategoryWiseVariation, { isLoading: addLoading }] =
     useAddCategoryWiseVariationMutation();
-  const [updateCategoryWiseVariation, { isLoading: editLoading }] = 
+  const [updateCategoryWiseVariation, { isLoading: editLoading }] =
     useUpdateCategoryWiseVariationMutation();
-  const [deleteCategoryWiseVariation, { isLoading: deleteLoading }] = 
+  const [deleteCategoryWiseVariation, { isLoading: deleteLoading }] =
     useDeleteCategoryWiseVariationMutation();
 
   const categoryWiseVariations = data?.data || [];
@@ -144,9 +145,9 @@ const CategoryWiseVariation = () => {
       await deleteCategoryWiseVariation(id).unwrap();
       toast.success(translate("ক্যাটাগরি অনুযায়ী বৈচিত্র্য সফলভাবে মুছে ফেলা হয়েছে", "Category-wise variation deleted successfully"));
       refetch();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      toast.error(translate("ক্যাটাগরি অনুযায়ী বৈচিত্র্য মুছতে ব্যর্থ হয়েছে", "Failed to delete category-wise variation"));
+      const apiError = error as ApiError;
+      toast.error(apiError?.data?.message || '');
     }
   };
 
@@ -164,16 +165,16 @@ const CategoryWiseVariation = () => {
       }
       setIsModalOpen(false);
       refetch();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      toast.error(translate("আপনার অনুরোধ প্রক্রিয়া করার সময় একটি ত্রুটি ঘটেছে", "An error occurred while processing your request"));
+       const apiError = error as ApiError;
+      toast.error(apiError?.data?.message || '');
     }
   };
 
   const handleRowSelect = (row: CategoryWiseVariation) => {
     setSelectedRows((prev) =>
-      prev.some(selected => selected.id === row.id) 
-        ? prev.filter(selected => selected.id !== row.id) 
+      prev.some(selected => selected.id === row.id)
+        ? prev.filter(selected => selected.id !== row.id)
         : [...prev, row]
     );
   };
@@ -188,15 +189,15 @@ const CategoryWiseVariation = () => {
 
   const handleBulkDelete = async () => {
     try {
-      await Promise.all(selectedRows.map(row => 
+      await Promise.all(selectedRows.map(row =>
         deleteCategoryWiseVariation(row.id).unwrap()
       ));
       toast.success(translate(`${selectedRows.length} টি ক্যাটাগরি অনুযায়ী বৈচিত্র্য সফলভাবে মুছে ফেলা হয়েছে`, `${selectedRows.length} category-wise variations deleted successfully`));
       setSelectedRows([]);
       refetch();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      toast.error(translate("নির্বাচিত আইটেম মুছতে ব্যর্থ হয়েছে", "Failed to delete selected items"));
+       const apiError = error as ApiError;
+      toast.error(apiError?.data?.message || '');
     }
   };
 
@@ -214,7 +215,7 @@ const CategoryWiseVariation = () => {
 
   const renderRow = (row: CategoryWiseVariation, index: number) => {
     const dynamicIndex = index + 1 + (pagination.page - 1) * pagination.size;
-    
+
     return (
       <>
         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-white hover:dark:text-white">
@@ -248,7 +249,7 @@ const CategoryWiseVariation = () => {
             </button>
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <button 
+                <button
                   className="text-red-500 cursor-pointer hover:text-red-700 p-1 rounded hover:bg-red-50"
                   title={translate("মুছুন", "Delete")}
                 >

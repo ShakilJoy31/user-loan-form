@@ -133,9 +133,9 @@ const CityList = () => {
       toast.success(translate("নির্বাচিত শহরগুলি সফলভাবে মুছে ফেলা হয়েছে", "Selected cities deleted successfully"));
       setSelectedRows([]);
       refetch();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      toast.error(translate("নির্বাচিত শহরগুলি মুছতে ব্যর্থ হয়েছে", "Failed to delete selected cities"));
+      const apiError = error as ApiError;
+        toast.error(apiError?.data?.message || "Error uploading image");
     }
   };
 

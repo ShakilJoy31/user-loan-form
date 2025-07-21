@@ -14,7 +14,7 @@ export default function SellerDashboardLayout({
       </div>
       
       {/* Main content area */}
-      <div className="flex-1 lg:ml-[70px] xl:ml-[260px] transition-all duration-300">
+      <div className="flex-1 lg:ml-[260px] transition-all duration-300">
         {/* Navbar */}
         <SellerNavber />
         
