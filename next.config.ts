@@ -12,6 +12,7 @@ const nextConfig = {
     ],
   },
   // ... other config options
+  staticPageGenerationTimeout: 300
 }
 
 module.exports = nextConfig
