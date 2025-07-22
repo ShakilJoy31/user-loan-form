@@ -122,6 +122,19 @@ export const userApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["customer", "products"],
     }),
+
+
+    //customer order api
+    // CREATE ORDER
+createOrder: builder.mutation({
+  query: (orderData) => ({
+    url: "/order/create-order",
+    method: "POST",
+    body: orderData,
+  }),
+  invalidatesTags: ["customer"], 
+}),
+
   }),
 });
 
@@ -137,5 +150,6 @@ export const {
   useGetUserActivityLogQuery,
   useGetDashboardActivityLogQuery,
   useGetUserNotificationQuery,
-  useDeleteCasheMutation
+  useDeleteCasheMutation,
+  useCreateOrderMutation
 } = userApi;

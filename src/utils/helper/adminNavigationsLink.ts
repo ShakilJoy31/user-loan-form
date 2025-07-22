@@ -413,7 +413,7 @@ const adminDashboardOrders: INavigationLink = {
         bn: "শিপিং পদ্ধতি",
       },
       key: "shipping-method",
-      href: "/kry-admin-portal/shipping-method",
+      href: "/proyojon-admin-portal/shipping-method",
     },
     {
       icon: List,
