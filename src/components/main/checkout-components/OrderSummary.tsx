@@ -4,25 +4,85 @@ import { Button } from "@/components/ui/button";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { useGetSingleShippingMethodQuery } from "@/redux/features/order/shippingMethodApi";
+import { useSelector } from "react-redux";
+import { selectUser } from "@/redux/store";
+import { useCreateOrderMutation } from "@/redux/features/user/userApi";
 
 interface CartItem {
   productId: number;
   sku: string;
   quantity: number;
   price: number;
-  discountPrice?: number; // Optional field
+  discountPrice?: number;
   subTotal: number;
   sellerShopName: string;
   sellerId: number;
   productName: string;
   productImage: string;
-  size?: string; // Optional field
-  color?: string; // Optional field
+  size?: string;
+  color?: string;
 }
 
-export default function OrderSummary() {
+interface OrderItem {
+  productId: number;
+  sku: string;
+  quantity: number;
+}
+
+interface SellerOrder {
+  sellerId: number;
+  products: OrderItem[];
+}
+
+interface ShippingAddress {
+  city: string;
+  zone: string;
+  area: string;
+   name: string | null;
+  email: string | null;
+  phone: string;
+  address: string;
+}
+
+interface OrderData {
+  userId: string| null;
+  customerNote: string;
+  shippingMethod: string;
+  shippingCharge: number;
+  paymentMethod: string;
+  shippingAddress: ShippingAddress;
+  orderItems: SellerOrder[];
+}
+
+interface OrderSummaryProps {
+  selectedShippingMethodId?: string | null;
+  formData: {
+    note: string;
+    shippingMethod: string;
+    shippingMethodId: string;
+    paymentMethod: string;
+    city: string;
+    zone: string;
+    area: string;
+    addressLine1: string;
+  };
+
+}
+
+export default function OrderSummary({ 
+  selectedShippingMethodId,
+  formData,
+}: OrderSummaryProps) {
   const { translate } = useCustomTranslator();
   const [cartItem, setCartItem] = useState<CartItem[]>([]);
+  const user = useSelector(selectUser);
+  console.log(user)
+  
+  const { data: shippingMethodData } = useGetSingleShippingMethodQuery(
+    selectedShippingMethodId || '',
+    { skip: !selectedShippingMethodId }
+  );
 
   useEffect(() => {
     loadCartData();
@@ -33,13 +93,10 @@ export default function OrderSummary() {
     if (cartData) {
       try {
         const parsedCart: CartItem[] = JSON.parse(cartData);
-        console.log("order summary data from localStorage:", parsedCart);
         setCartItem(Array.isArray(parsedCart) ? parsedCart : [parsedCart]);
       } catch (error) {
         console.error("Error parsing cart data:", error);
       }
-    } else {
-      console.log("No cart data found in localStorage");
     }
   };
 
@@ -67,7 +124,7 @@ export default function OrderSummary() {
   const handleDecrement = (productId: number, sku: string) => {
     const updatedCart = cartItem.map(item => {
       if (item.productId === productId && item.sku === sku) {
-        const newQuantity = Math.max(1, item.quantity - 1); // Don't allow quantity less than 1
+        const newQuantity = Math.max(1, item.quantity - 1);
         const newSubTotal = (item.discountPrice || item.price) * newQuantity;
         return {
           ...item,
@@ -80,16 +137,90 @@ export default function OrderSummary() {
     updateCartInLocalStorage(updatedCart);
   };
 
-  // Calculate totals based on cart items
+  // Calculate totals
   const subTotal = cartItem.reduce(
     (sum, item) => sum + (item.subTotal || (item.discountPrice || item.price) * item.quantity),
     0
   );
-  const deliveryCharge = 0;
+  const deliveryCharge = shippingMethodData?.data?.price || 0;
   const discountPercentage = 0;
   const discountAmount = subTotal * (discountPercentage / 100);
   const total = subTotal + deliveryCharge - discountAmount;
-  const payableOnDelivery = total;
+
+const [createOrder] = useCreateOrderMutation();
+
+const handleProceedToPay = async () => {
+  if (!formData.shippingMethodId) {
+    toast.error(translate("শিপিং মেথড নির্বাচন করুন", "Please select shipping method"));
+    return;
+  }
+
+  if (!formData.paymentMethod) {
+    toast.error(translate("পেমেন্ট মেথড নির্বাচন করুন", "Please select payment method"));
+    return;
+  }
+
+  if (!formData.city || !formData.zone || !formData.area || !formData.addressLine1) {
+    toast.error(translate("অনুগ্রহ করে আপনার সম্পূর্ণ ঠিকানা লিখুন", "Please enter your complete address"));
+    return;
+  }
+
+  const orderItems = cartItem.reduce<SellerOrder[]>((acc, item) => {
+    const existingSeller = acc.find(seller => seller.sellerId === item.sellerId);
+    
+    if (existingSeller) {
+      existingSeller.products.push({
+        productId: item.productId,
+        sku: item.sku,
+        quantity: item.quantity
+      });
+    } else {
+      acc.push({
+        sellerId: item.sellerId,
+        products: [{
+          productId: item.productId,
+          sku: item.sku,
+          quantity: item.quantity
+        }]
+      });
+    }
+    return acc;
+  }, []);
+
+  const orderData: OrderData = {
+    userId: user.id,
+    customerNote: formData.note,
+    shippingMethod: formData.shippingMethod,
+    shippingCharge: deliveryCharge,
+    paymentMethod: formData.paymentMethod,
+    shippingAddress: {
+      city: formData.city,
+      zone: formData.zone,
+      area: formData.area,
+      name: user.name,
+      email: user.email,
+      phone: user.phone || "01837308476",
+      address: formData.addressLine1
+    },
+    orderItems: orderItems
+  };
+
+  try {
+    const response = await createOrder(orderData).unwrap();
+    
+    toast.success(translate("অর্ডার সফলভাবে তৈরি হয়েছে", "Order created successfully"));
+    console.log("Order creation response:", response);
+    
+  } catch (error) {
+    console.error("Order creation failed:", error);
+    toast.error(
+      translate(
+        "অর্ডার তৈরি করতে সমস্যা হয়েছে", 
+        "There was a problem creating your order"
+      )
+    );
+  }
+};
 
   return (
     <div className="w-full p-4 bg-white rounded-lg border border-gray-300 shadow-sm overflow-y-auto">
@@ -112,26 +243,24 @@ export default function OrderSummary() {
             />
             <div className="text-sm flex-1">
               <h4 className="font-semibold">{item.productName}</h4>
-              {item?.size ? (
+              {item?.size && (
                 <p>
                   <span className="text-gray-600">
                     {translate("সাইজ:", "Size:")}
-                  </span>{" "}
-                  {item.size || translate("N/A", "N/A")}
+                  </span> {item.size}
                 </p>
-              ) : null}
-              {item?.color ? (
+              )}
+              {item?.color && (
                 <p>
                   <span className="text-gray-600">
                     {translate("রং:", "Color:")}
-                  </span>{" "}
-                  {item.color || translate("N/A", "N/A")}
+                  </span> {item.color}
                 </p>
-              ) : null}
+              )}
               <p className="text-red-600 font-bold">
-                {(item.discountPrice || item.price)} {translate("টাকা", "Tk")}{" "}
+                {(item.discountPrice || item.price)} {translate("টাকা", "Tk")}
                 {item.discountPrice && (
-                  <span className="line-through text-gray-400 font-normal">
+                  <span className="line-through text-gray-400 font-normal ml-2">
                     {item.price} {translate("টাকা", "Tk")}
                   </span>
                 )}
@@ -177,24 +306,22 @@ export default function OrderSummary() {
       <div className="space-y-2 text-sm text-gray-700 mt-4">
         <div className="flex justify-between">
           <span>{translate("সাব-টোটাল", "Sub-Total")}</span>
-          <span>{translate(`${subTotal} টাকা`, `${subTotal} Tk`)}</span>
+          <span>{subTotal} {translate("টাকা", "Tk")}</span>
         </div>
         <div className="flex justify-between">
           <span>{translate("ডেলিভারি চার্জ", "Delivery Charges")}</span>
-          <span>
-            {translate(`${deliveryCharge} টাকা`, `${deliveryCharge} Tk`)}
-          </span>
+          <span>{deliveryCharge} {translate("টাকা", "Tk")}</span>
         </div>
         <div className="flex justify-between">
           <span>{translate("ডিসকাউন্ট", "Discount")}</span>
           <span className="text-red-500 font-semibold">
-            {translate(`${discountPercentage}%`, `${discountPercentage}%`)}
+            {discountPercentage}%
           </span>
         </div>
         <div className="flex justify-between text-base font-semibold">
           <span>{translate("মোট", "Total")}</span>
           <span className="text-red-600">
-            {translate(`${total} টাকা`, `${total} Tk`)}
+            {total} {translate("টাকা", "Tk")}
           </span>
         </div>
       </div>
@@ -203,30 +330,13 @@ export default function OrderSummary() {
 
       <div className="flex items-center justify-between text-sm font-semibold">
         <span>{translate("মোট পরিমাণ", "Total Amount")}</span>
-        <span>{translate(`${total} টাকা`, `${total} Tk`)}</span>
+        <span>{total} {translate("টাকা", "Tk")}</span>
       </div>
 
       <Button
         variant={"outline"}
         className="mt-6 w-full bg-[#EE5A2C] hover:bg-orange-800 text-white hover:text-white font-semibold py-2 rounded"
-        onClick={() => {
-          console.log("Proceeding to pay with cart data:", cartItem);
-          console.log("Order Summary:", {
-            subTotal,
-            deliveryCharge,
-            discountPercentage,
-            discountAmount,
-            total,
-            sellerIds: cartItem.map(item => item.sellerId),
-            payableOnDelivery,
-          });
-          toast.success(
-            translate(
-              "পেমেন্ট প্রক্রিয়া শুরু হয়েছে",
-              "Payment process initiated"
-            )
-          );
-        }}
+        onClick={handleProceedToPay}
       >
         {translate("পেমেন্ট করুন", "Proceed To Pay")}
       </Button>

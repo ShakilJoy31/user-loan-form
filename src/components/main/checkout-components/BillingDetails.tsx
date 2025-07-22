@@ -1,10 +1,26 @@
+
 "use client";
 import Image from "next/image";
-import React, { useState, ChangeEvent, FormEvent } from "react";
+import React, { useState, ChangeEvent} from "react";
 import collectionBanner from "@/assets/Logo/payment-icons.png";
 import { Button } from "@/components/ui/button";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
-import toast from "react-hot-toast";
+import { useGetShippingMethodsQuery } from "@/redux/features/order/shippingMethodApi";
+
+interface ShippingMethod {
+  id: string;
+  name: string;
+  method: string;
+  shipped: string;
+  price: number;
+  estimatedDelivery: string;
+}
+
+interface BillingAndPaymentProps {
+  onShippingMethodSelect: (methodId: string) => void;
+  onFormDataChange: (data: FormData) => void;
+  initialFormData: FormData;
+}
 
 interface FormData {
   addressOption: string;
@@ -16,56 +32,54 @@ interface FormData {
   paymentMethod: string;
   promoCode: string;
   note: string;
+  shippingMethod: string; 
+  shippingMethodId: string; 
 }
 
-const initialFormData: FormData = {
-  addressOption: "new",
-  addressLine1: "",
-  city: "",
-  zone: "",
-  country: "",
-  area: "",
-  paymentMethod: "cash",
-  promoCode: "",
-  note: "",
-};
-
-const BillingAndPayment = () => {
+const BillingAndPayment: React.FC<BillingAndPaymentProps> = ({ 
+  onShippingMethodSelect,
+  onFormDataChange,
+  initialFormData
+}) => {
   const { translate } = useCustomTranslator();
   const [formData, setFormData] = useState<FormData>(initialFormData);
-
+  const { data: shippingMethodsData, isLoading, isError } = useGetShippingMethodsQuery({});
+console.log(shippingMethodsData)
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
+    const updatedFormData = {
+      ...formData,
       [name]: value,
-    }));
+    };
+    setFormData(updatedFormData);
+    onFormDataChange(updatedFormData);
   };
 
   const handleRadioChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
+    const updatedFormData = {
+      ...formData,
       [name]: value,
-    }));
+    };
+    setFormData(updatedFormData);
+    onFormDataChange(updatedFormData);
   };
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    console.log("Form Data:", formData);
-
-    // Reset form after submission
-    setFormData(initialFormData);
-
-    toast.success(
-      translate(
-        "আপনার অর্ডার সফলভাবে জমা হয়েছে",
-        "Your order has been submitted successfully"
-      )
-    );
+const handleShippingMethodSelect = (methodId: string) => {
+  const selectedMethod = shippingMethodsData?.data?.find((m: ShippingMethod) => m.id === methodId);
+  const updatedFormData = {
+    ...formData,
+    shippingMethod: selectedMethod?.shipped || '', // Store the "shipped" value
+    shippingMethodId: methodId, // Store the ID for reference
   };
+  setFormData(updatedFormData);
+  onFormDataChange(updatedFormData);
+  onShippingMethodSelect(methodId); // Pass ID separately if needed for display
+};
+
+  
 
   return (
     <div className="space-y-6">
@@ -156,7 +170,7 @@ const BillingAndPayment = () => {
         </div>
 
         <div className="mt-5">
-            <textarea
+          <textarea
             name="addressLine1"
             value={formData.addressLine1}
             onChange={handleInputChange}
@@ -171,12 +185,54 @@ const BillingAndPayment = () => {
           <p className="text-sm font-medium mb-2">
             {translate("শিপিং পদ্ধতি", "Shipping Method")}
           </p>
-          <div className="flex items-center gap-2 bg-[#E8F1F8] border border-blue-100 px-4 py-3 rounded-md max-w-[425px] ">
-            <input type="radio" checked readOnly className="accent-red-500" />
-            <span className="text-sm text-[#EE5A2C] font-medium">
-              {translate("ঢাকার বাইরে শিপিং", "Shipping out side Dhaka")}
-            </span>
-          </div>
+          
+          {isLoading ? (
+            <div className="text-sm text-gray-500">
+              {translate("লোড হচ্ছে...", "Loading...")}
+            </div>
+          ) : isError ? (
+            <div className="text-sm text-red-500">
+              {translate("শিপিং পদ্ধতি লোড করতে ব্যর্থ", "Failed to load shipping methods")}
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {shippingMethodsData?.data?.map((method: ShippingMethod) => (
+                <div 
+                  key={method.id}
+                  onClick={() => handleShippingMethodSelect(method.id)}
+                  className={`flex items-center gap-2 border ${
+                    formData.shippingMethod === method.id 
+                      ? 'border-[#EE5A2C] bg-[#E8F1F8]' 
+                      : 'border-gray-200'
+                  } rounded-md px-4 py-3 cursor-pointer`}
+                >
+                  <input
+                    type="radio"
+                    id={`shipping-${method.id}`}
+                    name="shippingMethod"
+                    value={method.id}
+                    checked={formData.shippingMethodId === method.id}
+                    onChange={() => handleShippingMethodSelect(method.id)}
+                    className="accent-[#F53E32]"
+                  />
+                  <label 
+                    htmlFor={`shipping-${method.id}`}
+                    className="flex-1 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 cursor-pointer"
+                  >
+                    <span className="text-sm font-medium text-[#EE5A2C]">
+                      {method.name}
+                    </span>
+                    <span className="text-xs text-gray-600">
+                      {method.shipped || `${translate("ডেলিভারি", "Delivery")}: ${method.estimatedDelivery}`}
+                    </span>
+                    <span className="text-sm font-medium">
+                      {method.price} {translate("টাকা", "TK")}
+                    </span>
+                  </label>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         <h2 className="text-lg font-semibold mb-4 mt-[60px]">
@@ -196,8 +252,8 @@ const BillingAndPayment = () => {
               <input
                 type="radio"
                 name="paymentMethod"
-                value="cash"
-                checked={formData.paymentMethod === "cash"}
+                value="COD"
+                checked={formData.paymentMethod === "COD"}
                 onChange={handleRadioChange}
                 className="accent-[#F53E32]"
               />
@@ -207,23 +263,12 @@ const BillingAndPayment = () => {
               <input
                 type="radio"
                 name="paymentMethod"
-                value="upi"
-                checked={formData.paymentMethod === "upi"}
+                value="ONLINE"
+                checked={formData.paymentMethod === "ONLINE"}
                 onChange={handleRadioChange}
                 className="accent-[#F53E32]"
               />
-              UPI
-            </label>
-            <label className="flex items-center gap-2">
-              <input
-                type="radio"
-                name="paymentMethod"
-                value="bank"
-                checked={formData.paymentMethod === "bank"}
-                onChange={handleRadioChange}
-                className="accent-[#F53E32]"
-              />
-              {translate("ব্যাংক ট্রান্সফার", "Bank Transfer")}
+              Online (SSL Commerce)
             </label>
           </div>
         </div>
@@ -301,15 +346,6 @@ const BillingAndPayment = () => {
             rows={3}
           />
         </div>
-
-        {/* Place Order Button */}
-        <Button
-          variant={"outline"}
-          className="bg-orange-500 w-[222px] text-white font-semibold text-base py-3 rounded-md hover:bg-orange-600 transition-colors"
-          onClick={handleSubmit}
-        >
-          {translate("অর্ডার করুন", "Place Order")}
-        </Button>
       </div>
     </div>
   );
