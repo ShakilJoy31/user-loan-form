@@ -2,21 +2,25 @@
 
 import BillingAndPayment from "@/components/main/checkout-components/BillingDetails";
 import OrderSummary from "@/components/main/checkout-components/OrderSummary";
-import { ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import React from "react";
+import { IoMdArrowBack } from "react-icons/io";
 
 const CheckoutPage: React.FC = () => {
     const router = useRouter();
     return (
         <main className="max-w-[1280px] mx-auto px-4 mt-16 pt-[40px] pb-10">
-            <p
-                onClick={() => router.back()}
-                className="flex text-sm text-black hover:cursor-pointer hover:text-orange-600 pb-[39px]"
-            >
-                <ArrowLeft size={18} className="mr-1" />
-                Back
-            </p>
+           <div className="mb-4 lg:mb-10 text-[#EE5A2C] text-[16px]">
+                   <Button 
+                   onClick={() => router.back()}
+                     variant="outline" 
+                     className="p-2 h-auto text-[#EE5A2C] flex items-center gap-1"
+                   >
+                     <IoMdArrowBack />
+                     Back
+                   </Button>
+                 </div>
             <div className="flex flex-col lg:flex-row gap-6">
                 <div className="w-full lg:w-[416px] lg:h-[683px]">
                     <OrderSummary />

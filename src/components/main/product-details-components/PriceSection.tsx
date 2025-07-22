@@ -140,7 +140,6 @@ interface CartItem {
   productId: number;
   sku: string;
   quantity: number;
-  discountPrice: number | 0; 
   price: number;
   subTotal: number;
   sellerShopName: string;
@@ -197,13 +196,12 @@ export default function PriceSection({ productItems, selectedOptions, productDat
     productId: matchingProduct.productId,
     sku: matchingProduct.sku,
     quantity: quantity,
-    price: unitPrice,
-    discountPrice: unitDiscountPrice, 
+    price: currentPrice,
     subTotal: subTotal,
     sellerShopName: productData.seller?.UserCompanyInfo?.shopName || "Unknown Shop",
     sellerId: productData.seller?.id || productData.sellerId || 0,
     productName: productData.productName,
-    productImage: productData.ProductImage?.[0]?.imageUrl
+    productImage: productData.ProductImage?.[0]?.imageUrl,
   };
 
   const existingCartString = localStorage.getItem('cart');
@@ -265,7 +263,7 @@ const handleAddToWishlist = () => {
   const wishlistItem = {
     id: productData.id,
     title: productData.productName,
-    price: unitPrice,
+    price: currentPrice,
     rating: productData.rating,
     reviewCount: productData.reviews?.length || 0,
     date: new Date().toLocaleString('en-US', {
@@ -284,8 +282,7 @@ const handleAddToWishlist = () => {
     productId: matchingProduct.productId,
     sku: matchingProduct.sku,
     quantity: quantity,
-    price: unitPrice,
-    discountPrice: unitDiscountPrice,
+    price: currentPrice,
     subTotal: subTotal,
     sellerShopName: productData.seller?.UserCompanyInfo?.shopName || "Unknown Shop",
     sellerId: productData.seller?.id || productData.sellerId || 0,

@@ -246,6 +246,7 @@ export default function ProductDetailsPage() {
             sortDescription={productData?.sortDescription || null}
             selectedOptions={selectedOptions}
             onOptionSelect={handleOptionSelect}
+            productData={productData} 
           />
           {productData && (
             <PriceSection

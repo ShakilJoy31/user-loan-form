@@ -4,6 +4,7 @@ import { BsDot } from "react-icons/bs";
 import { CiShare2 } from "react-icons/ci";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 interface VariationOption {
     id: number;
@@ -79,17 +80,84 @@ interface ProductInfoProps {
     sortDescription: string | null;
     selectedOptions: Record<string, string>;
     onOptionSelect: (variationName: string, optionValue: string) => void;
+    productData: ProductData | null; 
 }
+
+interface ProductData {
+  id: number;
+  productName: string;
+  productLink: string;
+  type: string;
+  categoryId: number;
+  subCategoryId: number;
+  brandId: number;
+  sellerId: number | null;
+  rating: number;
+  seoTitle: string | null;
+  seoDescription: string | null;
+  sortDescription: string | null;
+  specifications?: { label: string; value: string }[];
+  description?: string | null;
+  reviews?: { name: string; daysAgo: number; rating: number; title: string; content: string }[];
+  createdAt: string;
+  updatedAt: string;
+  vendorId: number | null;
+  brand: Brand;
+  category: Category;
+  subCategory: {
+    id: number;
+    name: string;
+    link: string;
+    categoryId: number;
+    parentSubCategoryId: number | null;
+    isShippedFree: boolean;
+    createdAt: string;
+    updatedAt: string;
+  };
+  ProductImage: ProductImage[];
+  VariationType: VariationType[];
+  ProductItem: ProductItem[];
+  seller?: Seller;
+}
+
+interface ProductImage {
+  id: number;
+  productId: number;
+  imageUrl: string;
+  alt: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface Seller {
+  id?: number;
+  name: string;
+  UserCompanyInfo: UserCompanyInfo;
+}
+
+interface UserCompanyInfo {
+  id: number;
+  userId: number;
+  shopName: string;
+  ownerName: string;
+  designation: string;
+  city: string;
+  area: string;
+  tradeLicense: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 
 export default function ProductInfo({
     productName,
-    brand,
     rating,
     ProductItem,
     VariationType,
     sortDescription,
     selectedOptions,
     onOptionSelect,
+    productData,
 }: ProductInfoProps) {
     const { translate } = useCustomTranslator();
 
@@ -124,7 +192,9 @@ export default function ProductInfo({
         <div className="space-y-6 mt-4 lg:mt-0  dark:text-white">
             {/* Brand and Compare/Share */}
             <div className="flex items-center justify-between  dark:text-white">
-                <p className="text-orange-600 font-bold text-sm  dark:text-white">{brand.brand}</p>
+                <Link href={`/products/all-products/${productData?.seller?.UserCompanyInfo?.shopName}`}>
+                <p className="text-orange-600 font-bold text-sm  dark:text-white">{productData?.seller?.UserCompanyInfo?.shopName}</p>
+                </Link>
                 <div className="flex gap-x-2 items-center  dark:text-white">
                     <Button
                         variant={"outline"}

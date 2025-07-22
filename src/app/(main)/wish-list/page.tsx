@@ -195,7 +195,7 @@ const WishList = () => {
         {wishlistItems.map((item) => (
           <div 
             key={item.wishlistItem.id}
-            className="relative rounded-lg w-full shadow-md transition-shadow dark:border dark:border-white"
+            className="relative rounded-lg w-full shadow-lg transition-shadow dark:border dark:border-white"
           >
             {/* Delete Button with Confirmation Modal */}
             <AlertDialog>
@@ -227,13 +227,13 @@ const WishList = () => {
             </AlertDialog>
 
             {/* Product Image */}
-            <div className="flex justify-center mb-3 bg-gray-50 dark:bg-black">
+            <div className="flex justify-center mb-3">
               <Image
                 src={item.wishlistItem.image}
                 alt={item.wishlistItem.title}
                 width={113}
                 height={168}
-                className="object-contain h-40"
+                className="object-contain h-40 w-full border rounded-md"
               />
             </div>
             <div className="p-3">

@@ -17,6 +17,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import toast from "react-hot-toast";
+import Link from "next/link";
 
 interface CartItem {
   productId: number;
@@ -107,10 +108,10 @@ const handleDeleteItem = (productId: number, sku: string) => {
 
   // Calculate order summary values
   const subtotal = cartItem.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const totalDiscount = cartItem.reduce((sum, item) => sum + (item.discountPrice * item.quantity), 0);
+  // const totalDiscount = cartItem.reduce((sum, item) => sum + (item.discountPrice * item.quantity), 0);
 
   const deliveryFee = 0; // Fixed delivery fee
-  const total = subtotal - totalDiscount + deliveryFee;
+  const total = subtotal ;
 
   return (
     <div className="mt-16 lg:pt-[40px] max-w-[1280px] mx-auto px-4 mb-10 lg:mb-[136px] ">
@@ -151,6 +152,7 @@ const handleDeleteItem = (productId: number, sku: string) => {
                           </div>
                           <div>
                             <P className="text-xs md:text-sm font-medium dark:bg-black dark:text-white">{item.productName}</P>
+                            <P className="text-xs text-gray-500 dark:bg-black dark:text-white">{item.sku.slice(19, 50)}</P>
                             <P className="text-xs text-gray-500 dark:bg-black dark:text-white">Seller: {item.sellerShopName}</P>
                           </div>
                         </div>
@@ -239,7 +241,7 @@ const handleDeleteItem = (productId: number, sku: string) => {
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-500  dark:text-white">Discount</span>
-                <span className="text-primary">-{totalDiscount.toFixed(2)}Tk</span>
+                <span className="text-primary">-{0}Tk</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-500  dark:text-white">Delivery Fee</span>
@@ -268,9 +270,11 @@ const handleDeleteItem = (productId: number, sku: string) => {
               </Button>
             </div>
 
-            <Button className="w-full bg-[#EE5A2C] text-white py-2 rounded-md">
+            <Link href={"/checkout"}>
+            <Button className="w-full bg-[#EE5A2C] hover:bg-orange-800 hover:text-white text-white py-2 rounded-md">
               Proceed To Pay
             </Button>
+            </Link>
           </div>
         </div>
       </div>
