@@ -23,6 +23,7 @@ import {
 import { useRouter } from "next/navigation";
 import { highlightMatches } from "@/utils/helper/highlightMatches";
 import { ProductResponse } from "@/types/seller/addProduct";
+import Image from "next/image";
 
 const ProductsList = () => {
     const user = useSelector(selectUser);
@@ -248,7 +249,7 @@ const ProductsList = () => {
                                             <div className="flex items-center">
                                                 {product.ProductImage?.[0]?.imageUrl && (
                                                     <div className="flex-shrink-0 h-10 w-10">
-                                                        <img className="h-10 w-10 rounded-md" src={product.ProductImage[0].imageUrl} alt={product.productName} />
+                                                        <Image width={100} height={100} className="h-10 w-10 rounded-md" src={product.ProductImage[0].imageUrl} alt={product.productName} />
                                                     </div>
                                                 )}
                                                 <div className="ml-4">
