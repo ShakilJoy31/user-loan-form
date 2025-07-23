@@ -2,7 +2,6 @@
 
 import { ChevronDown, MessageSquare, Plus, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import VariationComponent from "./Variation";
 import ProductImageUploader from "./ProductImageUploader";
 import { Controller, useForm } from "react-hook-form";
 import TipTapEditor from "../../dashboard/tiptap/TipTapEditor";
@@ -10,16 +9,75 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectUser } from "@/redux/store";
 import { useGetSellerUserByIdQuery } from "@/redux/features/seller-auth/sellerLogin";
 import DataLoader from "@/components/common/DataLoader";
-import { useCreateProductMutation, useGetBrandsQuery } from "@/redux/features/seller-api/productApi";
+import { useGetBrandsQuery, useEditProductByIdMutation } from "@/redux/features/seller-api/productApi";
 import ButtonLoader from "@/components/common/ButtonLoader";
 import toast from "react-hot-toast";
 import { loadUserFromToken } from "@/utils/helper/loadUserFromToken";
-import { Brand, Category, ProductFormData, SubCategory, UserShopCategory, Variation } from "@/types/seller/productInterface";
+import { Brand, Category, ProductFormData, SubCategory, UserShopCategory, Variation, VariationValue } from "@/types/seller/productInterface";
+import { usePathname } from "next/navigation";
+import { useGetProductByIdQuery } from "@/redux/features/seller-api/productApi";
+import VariationComponent from "./EditVariationComponent";
 
-const AddProducts = () => {
+interface ProductImage {
+    id: number;
+    imageUrl: string;
+    alt?: string | null;
+}
+
+interface ProductVariationType {
+    id: number;
+    name: string;
+    productId: number;
+    options: {
+        id: number;
+        value: string;
+        variationTypeId: number;
+    }[];
+}
+
+
+interface ProductItem {
+    id: number;
+    sku: string;
+    price: number;
+    purchasePoint: number;
+    discountPrice: number;
+    stock: number;
+    options: {
+        option: string;
+    }[];
+}
+
+interface ProductData {
+    id: number;
+    productName: string;
+    productLink: string;
+    type: string;
+    categoryId: number;
+    subCategoryId: number;
+    brandId: number;
+    sellerId: number;
+    rating: number;
+    seoTitle: string | null;
+    seoDescription: string | null;
+    sortDescription: string | null;
+    description: string | null;
+    createdAt: string;
+    updatedAt: string;
+    ProductImage: ProductImage[];
+    VariationType: ProductVariationType[];
+    ProductItem: ProductItem[];
+    brand: {
+        brand: string;
+    };
+}
+
+const EditProducts = () => {
     const user = useSelector(selectUser);
     const [isUserLoaded, setIsUserLoaded] = useState(false);
     const dispatch = useDispatch();
+    const pathname = usePathname();
+    const productId = pathname?.split('/')?.pop();
 
     // Load user on initial render if not already loaded
     useEffect(() => {
@@ -34,10 +92,14 @@ const AddProducts = () => {
 
     const { data: sellerUser, isLoading: sellerUserLoading } = useGetSellerUserByIdQuery(
         user?.id,
-        { skip: !user.id || !isUserLoaded } // Skip if no user ID or user not loaded
+        { skip: !user.id || !isUserLoaded }
     );
 
-    const [createProduct, { isLoading: productUploadLoading }] = useCreateProductMutation();
+    const { data: productData, isLoading: productLoading } = useGetProductByIdQuery(productId || '', {
+        skip: !productId
+    });
+
+    const [editProductById, { isLoading: productUpdateLoading }] = useEditProductByIdMutation();
     const { data: brandData, isLoading: brandLoading } = useGetBrandsQuery(undefined);
 
     const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
@@ -56,6 +118,7 @@ const AddProducts = () => {
             stock: number;
             discount?: number;
             purchasePoint?: number;
+            id?: number;
         }>
     >([]);
 
@@ -64,6 +127,7 @@ const AddProducts = () => {
         control,
         setValue,
         watch,
+        reset,
         formState: { errors }
     } = useForm<ProductFormData>({
         defaultValues: {
@@ -88,7 +152,6 @@ const AddProducts = () => {
         return sellerUser?.data?.UserShopCategory?.map((item: UserShopCategory) => item.category) || [];
     }, [sellerUser?.data?.UserShopCategory]);
 
-
     const subCategories: SubCategory[] = selectedCategory
         ? categories.find((cat: Category) => cat.id === selectedCategory)?.ProductSubCategory || []
         : [];
@@ -98,8 +161,8 @@ const AddProducts = () => {
 
     // Get all variations from all categories
     const allVariations = useMemo(() => {
-        return categories.flatMap(category =>
-            category.CategoryWishVariations.map(item => item.variation)
+        return categories.flatMap((category: Category) =>
+            category.CategoryWishVariations.map((item) => item.variation)
         );
     }, [categories]);
 
@@ -107,9 +170,9 @@ const AddProducts = () => {
     const generateVariationCombinations = useCallback((variations: Variation[]) => {
         if (variations.length === 0) return [];
 
-        const variationOptions = variations.map(v => ({
+        const variationOptions = variations.map((v: Variation) => ({
             name: v.name,
-            options: v.VariationValue.map(opt => opt.name)
+            options: v.VariationValue.map((opt: VariationValue) => opt.name)
         }));
 
         const combinations: { optionValues: string[] }[] = [];
@@ -134,6 +197,7 @@ const AddProducts = () => {
         }));
     }, []);
 
+
     useEffect(() => {
         if (!hasInitializedVariations && allVariations.length > 0) {
             const combinations = generateVariationCombinations(allVariations);
@@ -148,28 +212,125 @@ const AddProducts = () => {
         }
     }, [hasInitializedVariations, allVariations, generateVariationCombinations, setValue]);
 
+    // Initialize form with product data when loaded
+
+    useEffect(() => {
+        if (productData?.data && !productLoading) {
+            const product = productData.data as ProductData;
+
+            // Set basic form values
+            reset({
+                name: product.productName,
+                categoryId: product.categoryId,
+                subCategoryId: product.subCategoryId,
+                brandId: product.brandId,
+                images: product.ProductImage.map((img: ProductImage) => img.imageUrl),
+                tags: [], // Adjust based on your data structure
+                description: product.description || "",
+                longDescription: product.sortDescription || "",
+                seoDescription: product.seoDescription || "",
+                seoTitle: product.seoTitle || "",
+                type: product.type
+            });
+
+            // Set dropdown values
+            console.log(product)
+            setSelectedCategory(product.categoryId);
+            setSelectedSubCategory(product.subCategoryId);
+            // The tag prefilled.
+            // setSelectedTags()
+            setSelectedBrand(product.brandId);
+            setSelectedBrandName(product.brand?.brand || "");
+            setSelectedType(product.type);
+
+            // Transform variations data to match the expected format
+            const variations = product.VariationType.map((v: ProductVariationType) => ({
+                id: v.id,
+                name: v.name,
+                VariationValue: v.options.map((o) => ({
+                    id: o.id,
+                    name: o.value,
+                    variationId: v.id
+                }))
+            }));
+
+            // Transform product items to match the expected format
+            const combinations = product.ProductItem.map((item: ProductItem) => ({
+                id: item.id,
+                sku: item.sku,
+                optionValues: item.options.map((opt) => opt.option),
+                price: item.price,
+                stock: item.stock,
+                discount: item.discountPrice,
+                purchasePoint: item.purchasePoint
+            }));
+
+            // Initialize custom values (if any)
+            const customVals: Record<number, string[]> = {};
+            variations.forEach(variation => {
+                const customOptions = combinations
+                    .flatMap(c => c.optionValues)
+                    .filter(val => !variation.VariationValue.some(v => v.name === val));
+
+                if (customOptions.length > 0) {
+                    customVals[variation.id] = customOptions;
+                }
+            });
+
+            // Get all variations from categories (if needed)
+            const allVars = categories.flatMap((category: Category) =>
+                category.CategoryWishVariations.map((item) => item.variation)
+            );
+
+            setCustomValues(customVals);
+            setVariationCombinations(combinations);
+            setHasInitializedVariations(true);
+
+            // Set the form values for variations and items
+            setValue('variations', variations.map(v => ({
+                name: v.name,
+                options: v.VariationValue.map(opt => opt.name)
+            })));
+            setValue('items', combinations);
+        }
+    }, [productData, productLoading, reset, categories]);
+
+
+
 
     const [imageUrls, setImageUrls] = useState<string[]>([]);
+
+    // Initialize image URLs
+    useEffect(() => {
+        if (productData?.data?.ProductImage) {
+            setImageUrls((productData.data as ProductData).ProductImage.map((img: ProductImage) => img.imageUrl));
+        }
+    }, [productData]);
 
     const handleImagesUpdate = useCallback((urls: string[]) => {
         setImageUrls(urls);
     }, []);
 
     const handleCombinationChange = useCallback((updatedCombinations: typeof variationCombinations) => {
-        setVariationCombinations(updatedCombinations);
+        // setVariationCombinations(updatedCombinations);
         setValue('items', updatedCombinations);
     }, [setValue]);
 
     // Handle form submission
     const onSubmit = async (data: ProductFormData) => {
-        if (!imageUrls) {
+        if (!imageUrls || imageUrls.length === 0) {
             toast.error("Please upload product images first");
             return;
         }
 
+        if (!productId) {
+            toast.error("Product ID is missing");
+            return;
+        }
+
         // Format variations for payload
-        const payloadVariations = allVariations.map(v => {
-            const predefinedOptions = v.VariationValue.map(opt => opt.name);
+        const payloadVariations = allVariations.map((v: Variation) => {
+            const predefinedOptions = v.VariationValue.map((opt: VariationValue) => opt.name);
             const customOptions = customValues[v.id] || [];
             return {
                 name: v.name,
@@ -178,14 +339,16 @@ const AddProducts = () => {
         });
 
         const payload = {
+            id: productId,
             name: data.name,
             categoryId: selectedCategory,
             subCategoryId: selectedSubCategory,
             brandId: selectedBrand,
             images: imageUrls,
             tags: selectedTags,
-            variations: payloadVariations,  // Use the formatted variations
-            items: variationCombinations.map(item => ({
+            variations: payloadVariations,
+            items: variationCombinations.map((item) => ({
+                id: item.id, // Include ID for existing items
                 sku: item.sku,
                 price: item.price,
                 stock: item.stock,
@@ -199,14 +362,16 @@ const AddProducts = () => {
             type: selectedType,
             seoTitle: data.seoTitle
         };
-        console.log(payload)
-        const result = await createProduct(payload);
+
+        const result = await editProductById({id: productId, data:payload});
         if (result?.data?.success) {
             toast.success(result?.data?.message);
+        } else {
+            // toast.error(result?.error?.data?.message || "Failed to update product");
         }
     };
 
-    if (!isUserLoaded || sellerUserLoading) {
+    if (!isUserLoaded || sellerUserLoading || productLoading) {
         return <div className="flex justify-center"><DataLoader /></div>;
     }
 
@@ -216,10 +381,14 @@ const AddProducts = () => {
 
     if (!sellerUser?.data?.active) {
         if (sellerUserLoading) {
-            return <div className="flex justify-center">{<DataLoader></DataLoader>}</div>
+            return <div className="flex justify-center"><DataLoader /></div>;
         } else {
-            return <div className="flex justify-center">This seller is not active yet.</div>
+            return <div className="flex justify-center">This seller is not active yet.</div>;
         }
+    }
+
+    if (!productData?.data) {
+        return <div className="flex justify-center">Product not found</div>;
     }
 
     return (
@@ -234,7 +403,7 @@ const AddProducts = () => {
                 {/* First Row */}
                 <div className="flex justify-between items-center my-6">
                     <h2 className="text-lg font-semibold text-gray-800">
-                        Add products via Category
+                        Edit Product
                     </h2>
 
                     {/* Buttons */}
@@ -243,7 +412,7 @@ const AddProducts = () => {
                             type="submit"
                             className="bg-[#F4552F] hover:bg-[#e34724] text-white text-sm font-medium px-4 py-2 rounded-md hover:cursor-pointer"
                         >
-                            Publish Product
+                            Update Product
                         </button>
                         <button
                             type="button"
@@ -366,17 +535,27 @@ const AddProducts = () => {
 
                 {/* Variation Section */}
                 <VariationComponent
-                    variations={allVariations}
+                    variations={productData?.data?.VariationType.map((v: { id: number; name: string; options: { id: number; value: any; }[]; }) => ({
+                        id: v.id,
+                        name: v.name,
+                        VariationValue: v.options.map((o: { id: number; value: any; }) => ({
+                            id: o.id,
+                            name: o.value,
+                            variationId: v.id
+                        }))
+                    })) || []}
                     variationCombinations={variationCombinations}
                     onCombinationChange={handleCombinationChange}
                     customValues={customValues}
                     onCustomValuesChange={setCustomValues}
                 />
+
+
                 {/* Image Uploader Section */}
                 <div className="mt-6">
                     <ProductImageUploader
                         onImagesUpdate={handleImagesUpdate}
-                        initialImages={[]}
+                        initialImages={(productData.data as ProductData).ProductImage.map((img: ProductImage) => img.imageUrl)}
                     />
                 </div>
 
@@ -417,7 +596,7 @@ const AddProducts = () => {
                         type="submit"
                         className="px-6 py-2 rounded-md bg-[#F05323] text-white font-semibold hover:cursor-pointer"
                     >
-                        {productUploadLoading ? <ButtonLoader /> : 'Publish Product'}
+                        {productUpdateLoading ? <ButtonLoader /> : 'Update Product'}
                     </button>
                 </div>
             </form>
@@ -501,21 +680,21 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
     }, []);
 
     const toggleOption = (opt: string, e: React.MouseEvent) => {
-        e.preventDefault(); // Prevent default behavior
-        e.stopPropagation(); // Stop event bubbling
+        e.preventDefault();
+        e.stopPropagation();
         const newSelected = selected.includes(opt)
-            ? selected.filter((o) => o !== opt)
+            ? selected.filter((o: string) => o !== opt)
             : [...selected, opt];
         onChange(newSelected);
     };
 
     const removeTag = (tag: string, e: React.MouseEvent) => {
-        e.preventDefault(); // Prevent default behavior
-        e.stopPropagation(); // Stop event bubbling
-        onChange(selected.filter((t) => t !== tag));
+        e.preventDefault();
+        e.stopPropagation();
+        onChange(selected.filter((t: string) => t !== tag));
     };
 
-    const filteredOptions = options.filter((opt) =>
+    const filteredOptions = options.filter((opt: string) =>
         opt.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
@@ -534,7 +713,7 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
             >
                 <div className="flex flex-wrap gap-1">
                     {selected.length > 0 ? (
-                        selected.map((tag) => (
+                        selected.map((tag: string) => (
                             <span
                                 key={tag}
                                 className="flex items-center gap-1 bg-orange-100 text-orange-700 px-2 py-0.5 rounded text-xs"
@@ -567,12 +746,12 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             autoFocus
-                            onClick={(e) => e.stopPropagation()} // Prevent click from closing dropdown
+                            onClick={(e) => e.stopPropagation()}
                         />
                     </div>
                     <div className="max-h-60 overflow-y-auto">
                         {filteredOptions.length > 0 ? (
-                            filteredOptions.map((opt) => (
+                            filteredOptions.map((opt: string) => (
                                 <div
                                     key={opt}
                                     className={`px-3 py-2 text-sm cursor-pointer hover:bg-gray-50 ${selected.includes(opt) ? "bg-orange-50 text-orange-600" : ""}`}
@@ -593,4 +772,5 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
         </div>
     );
 };
-export default AddProducts;
+
+export default EditProducts;

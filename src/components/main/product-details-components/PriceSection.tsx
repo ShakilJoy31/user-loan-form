@@ -162,9 +162,9 @@ export default function PriceSection({ productItems, selectedOptions, productDat
   const findMatchingProductItem = (): ProductItem | undefined => {
     return productItems.find(item => {
       return item.options.every(itemOption => {
-        const variationTypeName = itemOption.option.variationType.name;
+        const variationTypeName = itemOption?.option?.variationType?.name;
         const selectedValue = selectedOptions[variationTypeName];
-        return itemOption.option.value === selectedValue;
+        return itemOption?.option?.value === selectedValue;
       });
     });
   };

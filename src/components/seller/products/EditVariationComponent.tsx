@@ -27,6 +27,7 @@ interface VariationProps {
     stock: number;
     discount?: number;
     purchasePoint?: number;
+    id?: number;
   }>;
   onCombinationChange: (updatedCombinations: Array<{
     sku: string;
@@ -35,16 +36,18 @@ interface VariationProps {
     stock: number;
     discount?: number;
     purchasePoint?: number;
+    id?: number;
   }>) => void;
   customValues: Record<number, string[]>;
   onCustomValuesChange: (values: Record<number, string[]>) => void;
 }
 
-
 const VariationComponent: React.FC<VariationProps> = ({
   variations,
   variationCombinations,
-  onCombinationChange, customValues, onCustomValuesChange
+  onCombinationChange,
+  customValues,
+  onCustomValuesChange
 }) => {
   const { translate } = useCustomTranslator();
   const [selectedValues, setSelectedValues] = useState<Record<number, Array<{ id: number, name: string }>>>({});
@@ -53,40 +56,6 @@ const VariationComponent: React.FC<VariationProps> = ({
   const dropdownRefs = useRef<Record<number, HTMLDivElement | null>>({});
   const inputRefs = useRef<Record<number, HTMLInputElement | null>>({});
 
-  // Initialize state when variations change
-  useEffect(() => {
-    const initialSelectedValues: Record<number, Array<{ id: number, name: string }>> = {};
-    const initialCustomValues: Record<number, string[]> = {};
-    const initialIsOpenMap: Record<number, boolean> = {};
-
-    variations.forEach(variation => {
-      initialSelectedValues[variation.id] = [];
-      initialCustomValues[variation.id] = [];
-      initialIsOpenMap[variation.id] = false;
-    });
-
-    setSelectedValues(initialSelectedValues);
-    onCustomValuesChange(initialCustomValues);
-    setIsOpenMap(initialIsOpenMap);
-  }, []);
-
-  // Handle clicks outside dropdowns
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      Object.entries(dropdownRefs.current).forEach(([variationId, ref]) => {
-        if (ref && !ref.contains(event.target as Node)) {
-          setIsOpenMap(prev => ({ ...prev, [variationId]: false }));
-        }
-      });
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  // Generate combinations when selections change
   const generateCombinations = useCallback(() => {
     const combinations: Array<{
       sku: string;
@@ -153,14 +122,77 @@ const VariationComponent: React.FC<VariationProps> = ({
   }, [selectedValues, customValues, variations, onCombinationChange]);
 
 
-
-
-  // Then use this effect:
   useEffect(() => {
     generateCombinations();
-  }, [generateCombinations]); // Now this is safe
+  }, [generateCombinations, selectedValues, customValues]);
 
+  // Initialize state when variations change
+useEffect(() => {
+  const initialSelectedValues: Record<number, Array<{ id: number, name: string }>> = {};
+  const initialCustomValues: Record<number, string[]> = {};
+  const initialIsOpenMap: Record<number, boolean> = {};
 
+  variations.forEach(variation => {
+    initialSelectedValues[variation.id] = [];
+    initialCustomValues[variation.id] = [];
+    initialIsOpenMap[variation.id] = false;
+  });
+
+  // Initialize with existing values from variationCombinations
+  if (variationCombinations.length > 0) {
+    variations.forEach(variation => {
+      // Get all unique values used for this variation in the combinations
+      const usedValues = new Set<string>();
+      variationCombinations.forEach(comb => {
+        comb.optionValues.forEach(val => {
+          // Check if this value belongs to current variation
+          const isForThisVariation = variations.some(v => 
+            v.VariationValue.some(opt => opt.name === val) || 
+            (customValues[variation.id] || []).includes(val));
+          
+          if (isForThisVariation) {
+            usedValues.add(val);
+          }
+        });
+      });
+
+      // Separate predefined and custom values
+      const predefinedValues = variation.VariationValue
+        .filter(v => usedValues.has(v.name))
+        .map(v => ({ id: v.id, name: v.name }));
+
+      const customVals = Array.from(usedValues)
+        .filter(val => !variation.VariationValue.some(v => v.name === val));
+
+      if (predefinedValues.length > 0) {
+        initialSelectedValues[variation.id] = predefinedValues;
+      }
+      if (customVals.length > 0) {
+        initialCustomValues[variation.id] = customVals;
+      }
+    });
+  }
+
+  setSelectedValues(initialSelectedValues);
+  onCustomValuesChange(initialCustomValues);
+  setIsOpenMap(initialIsOpenMap);
+}, [variations]);
+
+  // Handle clicks outside dropdowns
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      Object.entries(dropdownRefs.current).forEach(([variationId, ref]) => {
+        if (ref && !ref.contains(event.target as Node)) {
+          setIsOpenMap(prev => ({ ...prev, [variationId]: false }));
+        }
+      });
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const handleInputChange = (index: number, field: 'price' | 'stock' | 'discount' | 'purchasePoint', value: string) => {
     const numericValue = value === '' ? undefined : Number(value.replace(/^0+/, ''));
@@ -175,7 +207,6 @@ const VariationComponent: React.FC<VariationProps> = ({
   };
 
   const toggleDropdown = (variationId: number) => {
-    
     setIsOpenMap(prev => {
       const newState = !prev[variationId];
       if (newState) {
@@ -187,24 +218,21 @@ const VariationComponent: React.FC<VariationProps> = ({
     });
   };
 
-
-
   const handleValueSelect = (variationId: number, valueId: number, valueName: string) => {
     setSelectedValues(prev => {
       const currentValues = prev[variationId] || [];
       const isSelected = currentValues.some(v => v.id === valueId);
 
+      const newValues = isSelected
+        ? currentValues.filter(v => v.id !== valueId)
+        : [...currentValues, { id: valueId, name: valueName }];
+
       return {
         ...prev,
-        [variationId]: isSelected
-          ? currentValues.filter(v => v.id !== valueId)
-          : [...currentValues, { id: valueId, name: valueName }]
+        [variationId]: newValues
       };
     });
-
-    setSearchTerm("");
   };
-
 
   const handleAddCustomValue = (variationId: number, e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && searchTerm.trim()) {
@@ -218,16 +246,15 @@ const VariationComponent: React.FC<VariationProps> = ({
     }
   };
 
-
   const removeValue = (variationId: number, value: { id: number, name: string }) => {
     if (value.id === -1) {
-      // Remove custom value - use the current state
+      // Remove custom value
       onCustomValuesChange({
         ...customValues,
         [variationId]: (customValues[variationId] || []).filter(name => name !== value.name)
       });
     } else {
-      // Remove predefined value - this can stay the same
+      // Remove predefined value
       setSelectedValues(prev => ({
         ...prev,
         [variationId]: (prev[variationId] || []).filter(v => v.id !== value.id)
@@ -256,12 +283,6 @@ const VariationComponent: React.FC<VariationProps> = ({
     const custom = (customValues[variationId] || []).map(name => ({ id: -1, name }));
     return [...predefined, ...custom];
   };
-
-
-
-
-
-
 
   return (
     <div className="py-4">
@@ -300,35 +321,38 @@ const VariationComponent: React.FC<VariationProps> = ({
                       </span>
                     ) : (
                       <div className="flex flex-wrap gap-2">
-                        {getAllValuesForVariation(variation.id).map((value) => (
-                          <div
-                            key={`${value.id}-${value.name}`}
-                            className="bg-gray-100 px-2 py-1 rounded-md text-sm flex items-center justify-between"
-                          >
-                            <span className="truncate">{value.name}</span>
-                            <button type='button'
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                removeValue(variation.id, value);
-                              }}
-                              className="ml-1 text-gray-400 hover:text-gray-600"
+                        {getAllValuesForVariation(variation.id).map((value) => {
+                          const isSelected = selectedValues[variation.id]?.some(v => v.id === value.id);
+                          if (!isSelected) return
+                          return (
+                            <div
+                              key={`${value.id}-${value.name}`}
+                              className="bg-gray-100 px-2 py-1 rounded-md text-sm flex items-center justify-between"
                             >
-                              <X size={14} />
-                            </button>
-                          </div>
-                        ))}
+
+                              <div className="flex items-center">
+                                <span className="truncate">{value.name}</span>
+                                <button type='button'
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    removeValue(variation.id, value);
+                                  }}
+                                  className="ml-1 text-gray-400 hover:text-gray-600"
+                                >
+                                  <X size={14} />
+                                </button>
+                              </div>
+
+                            </div>
+                          );
+                        })}
                       </div>
                     )}
                     <input
                       type="text"
                       ref={el => { inputRefs.current[variation.id] = el; }}
                       value={isOpenMap[variation.id] ? searchTerm : ""}
-                      onChange={(e) => {
-                        console.log('function triggered.')
-                        setSearchTerm(e.target.value);
-                        generateCombinations()
-                        if (!isOpenMap[variation.id]) setIsOpenMap(prev => ({ ...prev, [variation.id]: true }));
-                      }}
+                      onChange={(e) => setSearchTerm(e.target.value)}
                       onKeyDown={(e) => handleAddCustomValue(variation.id, e)}
                       onFocus={() => {
                         if (!isOpenMap[variation.id]) setIsOpenMap(prev => ({ ...prev, [variation.id]: true }));
@@ -406,7 +430,6 @@ const VariationComponent: React.FC<VariationProps> = ({
                                     onClick={() => {
                                       handleValueSelect(variation.id, value.id, value.name);
                                       generateCombinations();
-                                      console.log('checkjdfhsgdjfg')
                                     }}
                                   >
                                     <div
@@ -425,28 +448,7 @@ const VariationComponent: React.FC<VariationProps> = ({
                         )}
 
                       {/* Custom values */}
-                      {(customValues[variation.id] || []).filter(name =>
-                        name.toLowerCase().includes(searchTerm.toLowerCase())
-                      ).length > 0 && (
-                          <>
-                            <div className="px-4 py-1 text-xs text-gray-500">
-                              {translate("কাস্টম অপশন", "Custom options")}
-                            </div>
-                            {(customValues[variation.id] || [])
-                              .filter(name => name.toLowerCase().includes(searchTerm.toLowerCase()))
-                              .map((name) => (
-                                <div
-                                  key={name}
-                                  className="px-4 py-2 cursor-pointer hover:bg-gray-100 flex items-center"
-                                >
-                                  <div className="mr-2 h-4 w-4 border rounded flex items-center justify-center bg-[#EE5A2C] border-[#EE5A2C]">
-                                    <Check className="h-3 w-3 text-white" />
-                                  </div>
-                                  <span className="text-[#EE5A2C]">{name}</span>
-                                </div>
-                              ))}
-                          </>
-                        )}
+
 
                       {variation.VariationValue.filter(value =>
                         value.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -493,10 +495,9 @@ const VariationComponent: React.FC<VariationProps> = ({
                   key={`${combination.sku}-${index}`}
                   className="grid grid-cols-8 items-center gap-3 px-4 py-3 border-b min-w-[900px]"
                 >
-
                   <div className="col-span-1">
                     <div className="text-sm font-medium text-gray-700 text-center">
-                      {index+1}
+                      {index + 1}
                     </div>
                   </div>
 

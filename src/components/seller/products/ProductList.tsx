@@ -1,7 +1,7 @@
 "use client";
 
 import { Eye, Edit, Trash2 } from "lucide-react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectUser } from "@/redux/store";
 import DataLoader from "@/components/common/DataLoader";
 import Pagination from "@/components/common/Pagination";
@@ -22,11 +22,32 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useRouter } from "next/navigation";
 import { highlightMatches } from "@/utils/helper/highlightMatches";
-import { ProductResponse } from "@/types/seller/addProduct";
+import { ProductResponse } from "@/types/seller/productInterface";
+import { useGetSellerUserByIdQuery } from "@/redux/features/seller-auth/sellerLogin";
+import { loadUserFromToken } from "@/utils/helper/loadUserFromToken";
 
 const ProductsList = () => {
-    const user = useSelector(selectUser);
-    // State for pagination and filters
+       const user = useSelector(selectUser);
+    const [isUserLoaded, setIsUserLoaded] = useState(false);
+    const dispatch = useDispatch();
+
+    // Load user on initial render if not already loaded
+    useEffect(() => {
+        if (!user.id) {
+            loadUserFromToken(dispatch).then(() => {
+                setIsUserLoaded(true);
+            });
+        } else {
+            setIsUserLoaded(true);
+        }
+    }, [dispatch, user.id]);
+
+    const { data: sellerUser, isLoading: sellerUserLoading } = useGetSellerUserByIdQuery(
+        user?.id,
+        { skip: !user.id || !isUserLoaded } // Skip if no user ID or user not loaded
+    );
+
+
     const [page, setPage] = useState<number>(1);
     const [size, setSize] = useState<number>(10);
     const [searchTerm, setSearchTerm] = useState<string>("");
@@ -116,12 +137,20 @@ const ProductsList = () => {
         }
     }
 
-    if (productsLoading) {
-        return <div className="flex justify-center w-full"><DataLoader /></div>;
+    if (!isUserLoaded || sellerUserLoading) {
+        return <div className="flex justify-center"><DataLoader /></div>;
     }
 
     if (!user.id) {
-        return <div className="flex justify-center w-full">Please login to access this page</div>;
+        return <div className="flex justify-center">Please login to access this page</div>;
+    }
+
+    if (!sellerUser?.data?.active) {
+        if (sellerUserLoading) {
+            return <div className="flex justify-center">{<DataLoader></DataLoader>}</div>
+        } else {
+            return <div className="flex justify-center">This seller is not active yet.</div>
+        }
     }
 
     return (
@@ -276,11 +305,11 @@ const ProductsList = () => {
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                             <div className="flex space-x-2">
-                                                <button onClick={() => router.push(`/products-list/view-product/${product.productLink}`)} className="text-blue-600 hover:text-blue-900">
+                                                <button onClick={() => router.push(`/products/${product?.productLink}`)} className="text-blue-600 hover:cursor-pointer hover:text-blue-900">
                                                     <Eye size={18} />
                                                 </button>
 
-                                                <button className="text-indigo-600 hover:text-indigo-900">
+                                                <button onClick={() => router.push(`/products-list/edit-product/${product.productLink}`)} className="text-indigo-600 hover:text-indigo-900 hover:cursor-pointer">
                                                     <Edit size={18} />
                                                 </button>
 
@@ -288,7 +317,7 @@ const ProductsList = () => {
                                                     <AlertDialogTrigger asChild>
                                                         <button
                                                             onClick={() => setProductToDelete(product.id)}
-                                                            className="text-red-600 hover:text-red-900"
+                                                            className="text-red-600 hover:text-red-900 hover:cursor-pointer"
                                                         >
                                                             <Trash2 size={18} />
                                                         </button>

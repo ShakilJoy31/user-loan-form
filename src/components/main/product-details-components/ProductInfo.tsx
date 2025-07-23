@@ -98,8 +98,8 @@ export default function ProductInfo({
         return ProductItem.find(item => {
             return Object.entries(selectedOptions).every(([variationName, optionValue]) => {
                 return item.options.some(
-                    itemOption => itemOption.option.variationType.name === variationName && 
-                                itemOption.option.value === optionValue
+                    itemOption => itemOption?.option?.variationType?.name === variationName && 
+                                itemOption?.option?.value === optionValue
                 );
             });
         });

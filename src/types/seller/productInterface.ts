@@ -85,11 +85,13 @@ export interface ProductFormData {
         name: string;
         options: string[];
     }[];
-    items: {
+    items: {  // Remove the outer Array<> wrapper
         sku: string;
+        optionValues: string[];
         price: number;
         stock: number;
-        optionValues: string[];
+        discount?: number;
+        purchasePoint?: number;
     }[];
     description: string;
     longDescription: string;
@@ -98,7 +100,6 @@ export interface ProductFormData {
     giftProductId?: number;
     seoTitle?: string;
 }
-
 
 
 
@@ -241,6 +242,7 @@ export interface ProductItemOption {
 }
 
 export interface ProductItem {
+    discount: number;
     id: number;
     productId: number;
     sku: string;
@@ -271,6 +273,7 @@ export interface Seller {
 }
 
 export interface ProductResponse {
+    tags: never[];
     id: number;
     productName: string;
     productLink: string;
@@ -294,3 +297,4 @@ export interface ProductResponse {
     VariationType: ProductVariationType[];
     ProductItem: ProductItem[];
 }
+
