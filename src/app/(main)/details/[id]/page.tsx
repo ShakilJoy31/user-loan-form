@@ -1,9 +1,12 @@
 "use client"
-import { useEffect, useState } from "react";
-import ShopDetailsInfo from "./ShopDetailsInfo";
-import ShopDetailsMap from "./ShopDetailsMap";
-import { useParams } from "next/navigation";
+import DataLoader from "@/components/common/DataLoader";
+import DetailsPromotion from "@/components/main/details-components/DetailsPromotion";
+import FindShopsAndLocation from "@/components/main/details-components/FindShopsAndLocation";
+import NewArrive from "@/components/main/details-components/NewArrive";
+import TopProduct from "@/components/main/details-components/TopProduct";
 import { useGetSellerProductByIdQuery } from "@/redux/features/seller-api/productApi";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 interface ShopPageResponse {
     success: boolean;
@@ -97,11 +100,11 @@ interface RelatedShop {
     };
 }
 
-const FindShopsAndLocation = () => {
-        const [productDetailsData, setProductDetailsData] = useState<ShopPageResponse | null>(null);
+const Details = () => {
+            const [productDetailsData, setProductDetailsData] = useState<ShopPageResponse | null>(null);
     
        const { id } = useParams<{ id: string }>();
-    const { data: singleProductsDetails } = useGetSellerProductByIdQuery(id || "");
+    const { data: singleProductsDetails, isLoading, isError } = useGetSellerProductByIdQuery(id || "");
     console.log("singleProductsDetails", singleProductsDetails)
     
     useEffect(() => {
@@ -110,26 +113,23 @@ const FindShopsAndLocation = () => {
       }
     }, [singleProductsDetails]);
 
+    if(isLoading){
+        return <div><DataLoader /></div>
+    }
+    if(isError){
+        return <div>Something is wrong please try again later error</div>
+    }
     return (
-        <div className="px-[20px]">
-        <div className="mt-10 lg:mt-0 lg:max-w-[653px] h-auto lg:max-h-[1511px]  w-full shadow-lg rounded-[20px] pb-[19px] bg-[#FBFBFB]">
-             <div className="pt-[42px] pl-[21px] pr-[12px]">
-               {productDetailsData &&  <ShopDetailsMap shopProfile={productDetailsData?.shopProfile} success={false} statusCode={0} message={""} meta={{
-                        page: 0,
-                        size: 0,
-                        total: 0,
-                        totalPage: 0
-                    }} />}
-             </div>
-
-             <div className="pt-[14px] pl-[21px] pr-[12px]">
-                {productDetailsData && <ShopDetailsInfo shopProfile={productDetailsData?.shopProfile} 
-                    relatedShop= {productDetailsData?.relatedShop}
-                    />}
-             </div>
-        </div>
+        <div className="lg:px-4 mt-16 lg:pt-[51px] lg:flex gap-[21px] lg:mb-[80px] mx-auto max-w-[1280px]">
+            <DetailsPromotion />
+            <FindShopsAndLocation />
+            <div>
+                {productDetailsData && <TopProduct topProducts={productDetailsData?.data} />}
+                
+                {productDetailsData && <NewArrive newArrival={productDetailsData?.newArrival} />}
+            </div>
         </div>
     );
 };
 
-export default FindShopsAndLocation;
+export default Details;

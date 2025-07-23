@@ -47,6 +47,15 @@ export const authApi = apiSlice.injectEndpoints({
             invalidatesTags: ["seller-login"],
         }),
 
+        //single seller products
+         getSellerProductById: builder.query({
+            query: (slug) => ({
+                url: `user/get-shop-page/${slug}`,
+            }),
+            providesTags: ["seller-login"],
+        }),
+
+
     }),
 });
 
@@ -55,5 +64,6 @@ export const {
     useGetBrandsQuery,
     useGetAllProductsQuery,
     useDeleteProductMutation,
-    useGetProductByIdQuery
+    useGetProductByIdQuery,
+    useGetSellerProductByIdQuery,
 } = authApi;

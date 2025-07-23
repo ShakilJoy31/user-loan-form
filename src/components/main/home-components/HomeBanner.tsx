@@ -92,24 +92,10 @@ const HomeBanner = () => {
                                         {/* Gradient overlay */}
                                         <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/30 to-black/90 z-10 rounded-md"></div>
 
-                                        {/* Slide content - adjust these based on your actual API response structure */}
-                                        <div className="absolute top-4 left-4 sm:top-[33px] sm:left-[26px] z-20">
-                                            <h2 className="max-w-[280px] text-2xl sm:text-3xl md:text-[40px] font-bold text-white leading-tight sm:leading-[30px]">
-                                                {banner.title || "-20% Fall"}{" "}
-                                                <span className="text-white text-xl sm:text-2xl md:text-[28px]">{banner.subtitle || "for all Dress"}</span>
-                                            </h2>
-                                        </div>
-
-                                        <div className="absolute top-32 sm:top-[184px] left-4 sm:left-[38px] w-[150px] sm:w-[175px] h-12 sm:h-[54px] py-2 sm:py-[15px] px-4 sm:px-[30px] text-white bg-[#ee5a2c] rounded-[10px] flex justify-center items-center z-20">
+                                        <div className="absolute bottom-8 left-4 sm:left-[38px] w-[150px] sm:w-[175px] h-12 sm:h-[54px] py-2 sm:py-[15px] px-4 sm:px-[30px] text-white bg-[#ee5a2c] rounded-[10px] flex justify-center items-center z-20">
                                             <button className="btn flex gap-2 sm:gap-3 text-sm sm:text-[16px] font-semibold items-center">
                                                 {banner.buttonText || "Shop Now"} <FaArrowRightLong />
                                             </button>
-                                        </div>
-
-                                        <div className="w-[155px] absolute right-[53px] bottom-[57px] z-50 ">
-                                            <p style={{ fontFamily: '"Poor Richard", sans-serif' }} className=" text-[#CDA73A] text-center text-[24px] "> 
-                                                {banner.offerText || "Offer valid through 26 july"}
-                                            </p>
                                         </div>
                                     </div>
                                 </SwiperSlide>

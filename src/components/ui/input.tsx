@@ -4,7 +4,7 @@ interface InputFieldProps {
   label?: string;
   type?: string;
   placeholder?: string;
-  value: string;
+  value: string | number;
   name?: string;
   min?: string;
   step?: string;

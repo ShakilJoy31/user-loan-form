@@ -265,7 +265,7 @@ const handleDeleteItem = (productId: number, sku: string) => {
                   className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md bg-gray-50 focus:outline-none focus:ring-1 focus:ring-primary dark:bg-black dark:text-white"
                 />
               </div>
-              <Button className="bg-[#EE5A2C] text-white px-4 py-2 max-w-[126px] max-h-[48px] whitespace-nowrap">
+              <Button className="bg-[#EE5A2C] mt-[2px] text-white px-4 py-2 max-w-[126px] max-h-[48px] whitespace-nowrap">
                 Apply Code
               </Button>
             </div>

@@ -90,7 +90,7 @@ const DropdownSearch = () => {
       <div className="flex flex-col sm:flex-row gap-2 w-full">
         {/* City Dropdown */}
         <div className="relative flex-1 min-w-[120px]">
-          <label className="block text-sm font-medium text-gray-700 mb-1">City*</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
           <div className="relative">
             <div
               className="w-full min-h-[42px] px-4 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C] cursor-text flex items-center"
@@ -155,7 +155,7 @@ const DropdownSearch = () => {
 
         {/* Area Dropdown */}
         <div className="relative flex-1 min-w-[120px]">
-          <label className="block text-sm font-medium text-gray-700 mb-1">Area*</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Area</label>
           <div className="relative">
             <div
               className={`w-full min-h-[42px] px-4 py-2 pr-10 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C] cursor-text flex items-center ${
@@ -230,7 +230,7 @@ const DropdownSearch = () => {
 
         {/* Shop Category Dropdown */}
         <div className="relative flex-1 min-w-[150px]">
-          <label className="block text-sm font-medium text-gray-700 mb-1">Shop Category*</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Shop Category</label>
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}

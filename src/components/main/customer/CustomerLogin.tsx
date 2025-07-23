@@ -6,8 +6,13 @@ import { FcGoogle } from "react-icons/fc";
 import { RiFacebookCircleFill } from "react-icons/ri";
 import { FaApple, FaEye, FaEyeSlash } from "react-icons/fa";
 import { useState } from "react";
+import Link from "next/link";
 
-export const CustomerLogin = () => {
+interface CustomerLoginProps {
+  setActiveTab: (tab: "login" | "create") => void;
+}
+
+export const CustomerLogin = ({ setActiveTab }: CustomerLoginProps) => {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   return (
@@ -67,11 +72,21 @@ export const CustomerLogin = () => {
 
         <Button
           type="submit"
-          className="w-full bg-[#EE5A2C] text-white py-3 rounded-md hover:bg-orange-800 transition mt-6"
+          className="w-full bg-[#EE5A2C] text-white h-auto max-h-[63px] py-[18px] rounded-full md:rounded-md hover:bg-orange-800 transition mt-6"
         >
           Sign In
         </Button>
       </form>
+
+       <div className="font-medium text-[14px] mt-[16px]">
+              <p className="text-gray-300">Already have an account?   <Link href="" onClick={(e) => {
+            e.preventDefault(); 
+            setActiveTab("create"); 
+          }}>
+            <span className="text-[#EE5A2C] hover:underline">Sign Up</span>
+          </Link>
+          </p>
+            </div>
 
       <div className="text-gray-300 flex justify-between items-center mt-[35px] md:hidden">
         <hr className="w-[30%] border border-gray-300" />

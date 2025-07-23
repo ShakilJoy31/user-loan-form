@@ -1,19 +1,55 @@
 "use client"
 import Image from "next/image";
-import ElectroHub from "@/assets/Home/ElectroHub.png";
 import { FaFacebook, FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
 import ShopCard from "../home-components/ShopCard";
-import shopLogo from '@/assets/Logo/shop-logo.png'
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 
-const ShopDetailsInfo = () => {
+interface ShopDetailsInfoProps {
+    shopProfile: {
+        id: number;
+        name: string;
+        email: string;
+        contactNo: string;
+        UserCompanyInfo: {
+            id: number;
+            userId: number;
+            shopName: string;
+            profileImage: string;
+            bannerImage: string;
+            slug: string;
+            ownerName: string;
+            designation: string;
+            city: string;
+            area: string;
+            tradeLicense: string;
+            map: string;
+            about: string | null;
+            createdAt: string;
+            updatedAt: string;
+        };
+    };
+    relatedShop: {
+        id: number;
+        shopName: string;
+        city: string;
+        area: string;
+        slug: string;
+        profileImage: string | null;
+        bannerImage: string | null;
+        avatar: string;
+        user: {
+            UserShopCategory: {
+                category: {
+                    name: string;
+                };
+            }[];
+        };
+    }[];
+}
+
+const ShopDetailsInfo = ({shopProfile, relatedShop}: ShopDetailsInfoProps) => {
     const { translate } = useCustomTranslator();
-    const shops = Array(3).fill({
-  name: "FashionFiesta",
-  location: "Banani",
-  categories: ["Clothing", "Accessories"],
-  logoUrl: shopLogo.src,
-});
+
 
   return (
     <div>
@@ -27,12 +63,12 @@ const ShopDetailsInfo = () => {
         <div className="flex-1 space-y-3 sm:space-y-4 pr-6 lg:pr-0">
           <div className="bg-white max-w-[298px] w-full max-h-[50px]  rounded-lg py-3 sm:py-[14px] px-3 ">
             <span className="font-semibold text-[#EE5A2C]">Shop Type:</span>{" "}
-            <span className="text-gray-400">Electronics & Gadgets Store</span>
+            <span className="text-gray-400">{shopProfile?.UserCompanyInfo?.slug}</span>
           </div>
 
           <div className="bg-white max-w-[298px] w-full max-h-[50px] rounded-lg py-3 sm:py-[14px] px-3 sm:px-[8px]">
             <span className="font-semibold text-[#EE5A2C]">Email:</span>{" "}
-            <span className="text-gray-400">support@techzonebd.com</span>
+            <span className="text-gray-400">{shopProfile?.email}</span>
           </div>
 
           <div className="bg-white max-w-[298px] w-full max-h-[50px] rounded-lg py-3 sm:py-[14px] px-3 sm:px-[8px]">
@@ -46,7 +82,7 @@ const ShopDetailsInfo = () => {
         <div className="flex-1 space-y-3 sm:space-y-4 pr-6 lg:pr-0">
           <div className="bg-white max-w-[298px] w-full max-h-[50px] rounded-lg py-3 sm:py-[14px] px-3 sm:px-[8px]">
             <span className="font-semibold text-[#EE5A2C]">Phone Number:</span>{" "}
-            <span className="text-gray-400">+880 1712 345678</span>
+            <span className="text-gray-400">{shopProfile?.contactNo}</span>
           </div>
 
           <div className="bg-white max-w-[298px] w-full max-h-[50px] rounded-lg py-3 sm:py-[14px] px-3 sm:px-[8px]">
@@ -72,7 +108,7 @@ const ShopDetailsInfo = () => {
             <Image
               width={56}
               height={56}
-              src={ElectroHub}
+              src={shopProfile?.UserCompanyInfo?.profileImage}
               alt="ElectroHub"
               className="w-full h-auto object-cover"
             />
@@ -146,13 +182,17 @@ const ShopDetailsInfo = () => {
       </h2>
 
      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 pr-6">
-         {shops.map((shop, index) => (
+         {relatedShop?.map((shop, index) => (
           <ShopCard
-            key={index}
-            name={shop.name}
-            location={shop.location}
-            categories={shop.categories}
-            logoUrl={shop.logoUrl}
+              key={index}
+              shopName={shop.shopName}
+              area={shop.area}
+              city={shop.city}
+              user={shop.user}
+              profileImage={shop.profileImage}
+              avatar={shop.avatar}
+              slug={shop.slug}
+              id={shop.id} bannerImage={null}    
           />
         ))}
      </div>

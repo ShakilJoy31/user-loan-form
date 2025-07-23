@@ -11,6 +11,8 @@ interface UserCompanyInfo {
   shopName: string;
   ownerName: string;
   designation: string;
+  profileImage: string | null;
+  bannerImage: string | null; 
   city: string;
   area: string;
   tradeLicense: string;
@@ -22,7 +24,9 @@ interface ShopProfileProps {
   id: number;
   name: string;
   contactNo: string;
+  profileImage: string | null;
   avatar: string;
+  bannerImage: string | null; 
   UserCompanyInfo: UserCompanyInfo;
 }
 
@@ -33,9 +37,9 @@ interface SingleSellerProfileProps {
 const SingleSellerProfile: React.FC<SingleSellerProfileProps> = ({
   shopProfile,
 }) => {
-  const { name, contactNo, avatar, UserCompanyInfo } = shopProfile;
+  const { name, contactNo, profileImage, avatar, UserCompanyInfo } = shopProfile;
 
-  const { shopName, ownerName, designation, city, area, tradeLicense } =
+  const { shopName, ownerName, designation, bannerImage, city, area, tradeLicense } =
     UserCompanyInfo;
 
   return (
@@ -43,6 +47,23 @@ const SingleSellerProfile: React.FC<SingleSellerProfileProps> = ({
       <div className="absolute top-6 right-3 flex gap-2 text-gray-400">
         <FiEdit2 className="cursor-pointer hover:text-gray-600" />
         <FiShare2 className="cursor-pointer hover:text-gray-600" />
+      </div>
+
+      {/* banner image */}
+            <div className="w-full border border-gray-200 h-auto max-h-[200px] rounded-lg overflow-hidden mb-4">
+        {bannerImage ? (
+          <Image
+            src={bannerImage}
+            alt="shop banner"
+            width={1200}
+            height={200}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <div className="w-full h-full bg-gray-100 flex items-center justify-center dark:bg-gray-700">
+            <span className="text-gray-400 dark:text-gray-300">No banner image</span>
+          </div>
+        )}
       </div>
 
       <h3 className="text-base font-semibold mb-4 text-gray-800 dark:text-white">
@@ -54,7 +75,7 @@ const SingleSellerProfile: React.FC<SingleSellerProfileProps> = ({
         <div className="flex flex-col items-center lg:items-start lg:w-1/3">
           <div className="w-[70px] h-[70px] rounded-full overflow-hidden border-2 border-gray-200">
             <Image
-              src={avatar || "/default-avatar.jpg"}
+              src={profileImage || avatar}
               alt="user avatar"
               width={70}
               height={70}

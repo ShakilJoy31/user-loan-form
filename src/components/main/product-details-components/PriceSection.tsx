@@ -56,15 +56,15 @@ interface VariationType {
 }
 
 interface ProductItemOption {
-  option: {
-    id: number;
-    value: string;
-    variationType: {
-      id: number;
-      name: string;
-      productId: number;
+  option?: {
+    id?: number;
+    value?: string;
+    variationType?: {
+      id?: number;
+      name?: string;
+      productId?: number;
     };
-    variationTypeId: number;
+    variationTypeId?: number;
   };
 }
 
@@ -158,15 +158,19 @@ export default function PriceSection({ productItems, selectedOptions, productDat
   const [quantity, setQuantity] = useState(1);
   const { translate } = useCustomTranslator();
 
-  const findMatchingProductItem = (): ProductItem | undefined => {
-    return productItems.find(item => {
-      return item.options.every(itemOption => {
-        const variationTypeName = itemOption.option.variationType.name;
-        const selectedValue = selectedOptions[variationTypeName];
-        return itemOption.option.value === selectedValue;
-      });
-    });
-  };
+const findMatchingProductItem = (): ProductItem | undefined => {
+  if (Object.keys(selectedOptions).length === 0) {
+    return productItems[0];
+  }
+
+  return productItems.find(item => {
+    const skuParts = item.sku.split('-');
+    
+    return Object.values(selectedOptions).every(optionValue => 
+      skuParts.includes(optionValue.toLowerCase())
+    );
+  });
+};
 
   const matchingProduct = findMatchingProductItem();
   const unitPrice = matchingProduct?.price || 0;

@@ -45,6 +45,55 @@ export const bannerApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["banner"],
     }),
+
+    //Advertise banner
+
+      // CREATE ADVERTISE BANNER
+    addAdvertiseBanner: builder.mutation({
+      query: (data) => ({
+        url: "/advertise-banner/create-advertise-banner",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["banner"],
+    }),
+
+    // GET ALL ADVERTISE BANNERS
+    getAdvertiseBanners: builder.query({
+      query: (data) => ({
+        url: `/advertise-banner/get-advertise-banner-all?page=${data?.page || 1}&size=${
+          data?.size || fallback.querySize
+        }&search=${data?.search || ""}&sortOrder=${data?.sort || "asc"}`,
+      }),
+      providesTags: ["banner"],
+    }),
+
+    // GET SINGLE ADVERTISE BANNER
+    getSingleAdvertiseBanner: builder.query({
+      query: (id) => ({
+        url: `/advertise-banner/get-advertise-banner-by-id/${id}`,
+      }),
+      providesTags: ["banner"],
+    }),
+
+    // UPDATE ADVERTISE BANNER
+    updateAdvertiseBanner: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/advertise-banner/update-advertise-banner/${id}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["banner"],
+    }),
+
+    // DELETE ADVERTISE BANNER
+    deleteAdvertiseBanner: builder.mutation({
+      query: (id) => ({
+        url: `/advertise-banner/delete-advertise-banner/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["banner"],
+    }),
   }),
 });
 
@@ -54,4 +103,10 @@ export const {
   useGetBannersQuery,
   useGetSingleBannerQuery,
   useUpdateBannerMutation,
+  //advertise banner
+  useAddAdvertiseBannerMutation,
+  useGetAdvertiseBannersQuery,
+  useGetSingleAdvertiseBannerQuery,
+  useUpdateAdvertiseBannerMutation,
+  useDeleteAdvertiseBannerMutation,
 } = bannerApi;

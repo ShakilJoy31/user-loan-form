@@ -44,7 +44,7 @@ interface Area {
 
 const SellerCreate = () => {
   const { translate } = useCustomTranslator();
-  const [activeTab, setActiveTab] = useState<"create" | "login">("create");
+  const [activeTab, setActiveTab] = useState<"login" | "create">("login");
   const [currentStep, setCurrentStep] = useState<
     "shop" | "personal" | "verify" | "password"
   >("shop");
@@ -663,7 +663,7 @@ const onSubmit = async (data: RegisterDataProps) => {
                   </form>
                 </>
               ) : (
-                <SellerLogin />
+                <SellerLogin setActiveTab={setActiveTab} />
               )}
             </div>
           </>

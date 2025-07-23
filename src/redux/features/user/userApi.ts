@@ -123,16 +123,37 @@ export const userApi = apiSlice.injectEndpoints({
       invalidatesTags: ["customer", "products"],
     }),
 
-
     //customer order api
     // CREATE ORDER
-createOrder: builder.mutation({
-  query: (orderData) => ({
-    url: "/order/create-order",
-    method: "POST",
-    body: orderData,
-  }),
-  invalidatesTags: ["customer"], 
+    createOrder: builder.mutation({
+      query: (orderData) => ({
+        url: "/order/create-order",
+        method: "POST",
+        body: orderData,
+      }),
+      invalidatesTags: ["customer"],
+    }),
+
+    //home page filter api:
+    getFilteredShops: builder.query({
+  query: (params) => {
+    const {
+      city = "",
+      area = "",
+      categoryId = "",
+      search = "",
+    } = params || {};
+    return {
+      url: `/user/get-filter-shop`,
+      params: {
+        city,
+        area,
+        categoryId,
+        search,
+      },
+    };
+  },
+  providesTags: ["customer"],
 }),
 
   }),
@@ -151,5 +172,6 @@ export const {
   useGetDashboardActivityLogQuery,
   useGetUserNotificationQuery,
   useDeleteCasheMutation,
-  useCreateOrderMutation
+  useCreateOrderMutation,
+  useGetFilteredShopsQuery
 } = userApi;

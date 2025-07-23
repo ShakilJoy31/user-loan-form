@@ -8,7 +8,7 @@ import { CustomerLogin } from "./CustomerLogin";
 import { FcGoogle } from "react-icons/fc";
 
 const CustomerCreate = () => {
-  const [activeTab, setActiveTab] = useState<"create" | "login">("create");
+  const [activeTab, setActiveTab] = useState<"login" | "create">("login");
   const [currentStep, setCurrentStep] = useState<"personal" | "verify" | "password">("personal");
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -289,10 +289,6 @@ const handlePersonalDetailsSubmit = (e: React.FormEvent) => {
                     </Button>
                   </form>
 
-                  <div className="text-[14px] mt-[16px] mb-[20px] lg:mb-[40px]">
-                    <p className="text-gray-300">Already have an account? <span className="text-[#EE5A2C]">Log in</span></p>
-                  </div>
-
                     <div className="hidden md:block">
                       <div className="text-gray-300 flex justify-between items-center mt-[35px] ">
                         <hr className="w-[30%] border border-gray-300" />
@@ -311,7 +307,7 @@ const handlePersonalDetailsSubmit = (e: React.FormEvent) => {
                      </div>
                 </>
               ) : (
-                <CustomerLogin />
+                <CustomerLogin setActiveTab={setActiveTab} />
               )}
             </div>
           </>
