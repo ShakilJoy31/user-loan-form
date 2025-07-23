@@ -6,7 +6,7 @@ import { useLoginSellerMutation } from "@/redux/features/seller-auth/sellerLogin
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { FcGoogle } from "react-icons/fc";
+// import { FcGoogle } from "react-icons/fc";
 import { Eye, EyeOff } from "lucide-react";
 import { shareWithCookies } from "@/utils/helper/shareWithCookies";
 import { appConfiguration } from "@/utils/constant/appConfiguration";
@@ -126,7 +126,7 @@ export const SellerLogin = ({ setActiveTab }: SellerLoginProps) => {
         </Button>
       </form>
 
-      <div className="font-medium text-[14px] mt-[16px]">
+      <div className="font-medium text-[14px] mt-[16px] text-center">
         <p className="text-gray-300">Already have an account?   <Link href="" onClick={(e) => {
       e.preventDefault(); 
       setActiveTab("create"); 
@@ -136,12 +136,12 @@ export const SellerLogin = ({ setActiveTab }: SellerLoginProps) => {
     </p>
       </div>
 
-      <div className="flex justify-center mt-5 lg:mt-10 w-full">
+      {/* <div className="flex justify-center mt-5 lg:mt-10 w-full">
         <Button variant={"outline"} className="w-full py-[18px]">
           <FcGoogle />
           <span className="ml-1 text-[16px] font-normal">Sign Up with Google</span>
         </Button>
-      </div>
+      </div> */}
     </div>
   );
 };

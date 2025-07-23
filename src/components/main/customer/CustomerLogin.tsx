@@ -1,67 +1,117 @@
 "use client";
 
+import ButtonLoader from "@/components/common/ButtonLoader";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { FcGoogle } from "react-icons/fc";
-import { RiFacebookCircleFill } from "react-icons/ri";
-import { FaApple, FaEye, FaEyeSlash } from "react-icons/fa";
 import { useState } from "react";
+import toast from "react-hot-toast";
+// import { FcGoogle } from "react-icons/fc";
+// import { RiFacebookCircleFill } from "react-icons/ri";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { shareWithCookies } from "@/utils/helper/shareWithCookies";
+import { appConfiguration } from "@/utils/constant/appConfiguration";
+import { loadUserFromToken } from "@/utils/helper/loadUserFromToken";
+import { useDispatch } from "react-redux";
 import Link from "next/link";
+import { useLoginCustomerMutation } from "@/redux/features/user/userApi";
 
 interface CustomerLoginProps {
   setActiveTab: (tab: "login" | "create") => void;
 }
 
 export const CustomerLogin = ({ setActiveTab }: CustomerLoginProps) => {
-  const router = useRouter();
+  const dispatch = useDispatch();
+  const [contactNo, setContactNo] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [loginCustomer] = useLoginCustomerMutation();
+  const [signInLoader, setSignInLoader] = useState(false);
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSignInLoader(true);
+
+    try {
+      const payload = { contactNo, password };
+      const response = await loginCustomer(payload).unwrap();
+      
+      if (response?.success === true) {
+        shareWithCookies(
+          "set",
+          `${appConfiguration.appCode}token`,
+          1440,
+          response?.accessToken
+        );
+        loadUserFromToken(dispatch);
+        router.push('/my-profile/update-profile'); 
+      }
+
+    } catch (error: unknown) {
+      let errorMessage = 'Login failed';
+
+      if (typeof error === 'object' && error !== null && 'data' in error) {
+        const apiError = error as { data?: { message?: string } };
+        errorMessage = apiError.data?.message || errorMessage;
+        toast.error(errorMessage);
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+        toast.error(errorMessage);
+      }
+    } finally {
+      setSignInLoader(false);
+    }
+  };
+
   return (
     <div>
-      <form className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4">
         <p className="text-gray-600 mb-6 text-center">
-          Login to your seller account
+          Login to your customer account
         </p>
 
-        {/* Email */}
+        {/* Phone number */}
         <div>
           <label
-            htmlFor="email"
+            htmlFor="contactNo"
             className="block text-sm font-medium text-gray-700 mb-1"
           >
-            Email*
+            contactNo*
           </label>
           <input
-            type="email"
-            id="email"
-            placeholder="Enter your email"
+            onChange={(e) => setContactNo(e.target.value)}
+            type="number"
+            id="contactNo"
+            placeholder="Enter your phoneNo"
             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
           />
         </div>
 
         {/* Password */}
-         <div>
-             <label
-               htmlFor="password"
-               className="block text-sm font-medium text-gray-700 mb-1"
-             >
-               Password*
-             </label>
-             <div className="relative">
-               <input
-                 type={showPassword ? "text" : "password"}
-                 id="password"
-                 placeholder="Enter your password"
-                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C] pr-10"
-               />
-               <button
-                 type="button"
-                 className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700"
-                 onClick={() => setShowPassword(!showPassword)}
-               >
-                 {showPassword ? <FaEyeSlash /> : <FaEye />}
-               </button>
-             </div>
-           </div>
+        <div>
+          <label
+            htmlFor="password"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Password*
+          </label>
+          <div className="relative">
+            <input
+              onChange={(e) => setPassword(e.target.value)}
+              type={showPassword ? "text" : "password"}
+              id="password"
+              placeholder="Enter your password"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C] pr-10"
+            />
+            <button
+              type="button"
+              className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </button>
+          </div>
+        </div>
 
         <h2
           onClick={() => router.push("/forget-password")}
@@ -73,33 +123,35 @@ export const CustomerLogin = ({ setActiveTab }: CustomerLoginProps) => {
         <Button
           type="submit"
           className="w-full bg-[#EE5A2C] text-white h-auto max-h-[63px] py-[18px] rounded-full md:rounded-md hover:bg-orange-800 transition mt-6"
+          disabled={signInLoader}
         >
-          Sign In
+          {signInLoader ? <ButtonLoader /> : 'Sign In'}
         </Button>
       </form>
 
-       <div className="font-medium text-[14px] mt-[16px]">
-              <p className="text-gray-300">Already have an account?   <Link href="" onClick={(e) => {
+      <div className="font-medium text-[14px] mt-[16px] text-center">
+        <p className="text-gray-300">Don&apos;t have an account?{' '}
+          <Link href="" onClick={(e) => {
             e.preventDefault(); 
             setActiveTab("create"); 
           }}>
             <span className="text-[#EE5A2C] hover:underline">Sign Up</span>
           </Link>
-          </p>
-            </div>
+        </p>
+      </div>
 
-      <div className="text-gray-300 flex justify-between items-center mt-[35px] md:hidden">
+      {/* <div className="text-gray-300 flex justify-between items-center mt-[35px] md:hidden">
         <hr className="w-[30%] border border-gray-300" />
         <p className="text-[14px]">Or Sign in with</p>
         <hr className="w-[30%] border border-gray-300" />
       </div>
 
       <div className="hidden md:block">
-        <div className="flex justify-center mt-5 lg:mt-10 w-full ">
+        <div className="flex justify-center mt-5 lg:mt-10 w-full">
           <Button variant={"outline"} className="w-full py-[18px]">
             <FcGoogle />
             <span className="ml-1 text-[16px] font-normal">
-              Sign Up with Google
+              Sign In with Google
             </span>
           </Button>
         </div>
@@ -108,13 +160,13 @@ export const CustomerLogin = ({ setActiveTab }: CustomerLoginProps) => {
         <Button variant={"outline"} className="rounded-full">
           <FcGoogle />
         </Button>
-        <Button variant={"outline"} className="rounded-full ">
+        <Button variant={"outline"} className="rounded-full">
           <RiFacebookCircleFill />
         </Button>
-        <Button variant={"outline"} className="rounded-full ">
+        <Button variant={"outline"} className="rounded-full">
           <FaApple />
         </Button>
-      </div>
+      </div> */}
     </div>
   );
 };

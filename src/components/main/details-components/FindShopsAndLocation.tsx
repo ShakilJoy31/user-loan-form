@@ -36,6 +36,12 @@ interface ShopPageResponse {
             about: string | null;
             createdAt: string;
             updatedAt: string;
+            storeHours: string;
+            deliveryAvailable: string
+            pickupAvailable: string;
+            products: string;
+            homeAppliances: string;
+            accessories: string
         };
         UserShopCategory: {
             id: number;
@@ -112,7 +118,7 @@ const FindShopsAndLocation = () => {
 
     return (
         <div className="px-[20px]">
-        <div className="mt-10 lg:mt-0 lg:max-w-[653px] h-auto lg:max-h-[1511px]  w-full shadow-lg rounded-[20px] pb-[19px] bg-[#FBFBFB]">
+        <div className="mt-10 lg:mt-0 lg:max-w-[653px] h-auto lg:max-h-[1711px]  w-full shadow-lg rounded-[20px] pb-[19px] bg-[#FBFBFB]">
              <div className="pt-[42px] pl-[21px] pr-[12px]">
                {productDetailsData &&  <ShopDetailsMap shopProfile={productDetailsData?.shopProfile} success={false} statusCode={0} message={""} meta={{
                         page: 0,

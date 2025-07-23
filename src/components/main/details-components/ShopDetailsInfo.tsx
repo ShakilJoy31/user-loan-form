@@ -26,6 +26,12 @@ interface ShopDetailsInfoProps {
             about: string | null;
             createdAt: string;
             updatedAt: string;
+            storeHours: string;
+            deliveryAvailable: string
+            pickupAvailable: string;
+            products: string;
+            homeAppliances: string;
+            accessories: string
         };
     };
     relatedShop: {
@@ -49,7 +55,7 @@ interface ShopDetailsInfoProps {
 
 const ShopDetailsInfo = ({shopProfile, relatedShop}: ShopDetailsInfoProps) => {
     const { translate } = useCustomTranslator();
-
+console.log("shopProfile", shopProfile)
 
   return (
     <div>
@@ -75,7 +81,7 @@ const ShopDetailsInfo = ({shopProfile, relatedShop}: ShopDetailsInfoProps) => {
             <span className="font-semibold text-[#EE5A2C]">
               Delivery Available:
             </span>{" "}
-            <span className="text-gray-400">All over Bangladesh</span>
+            <span className="text-gray-400">{shopProfile?.UserCompanyInfo?.deliveryAvailable}</span>
           </div>
         </div>
 
@@ -87,14 +93,14 @@ const ShopDetailsInfo = ({shopProfile, relatedShop}: ShopDetailsInfoProps) => {
 
           <div className="bg-white max-w-[298px] w-full max-h-[50px] rounded-lg py-3 sm:py-[14px] px-3 sm:px-[8px]">
             <span className="font-semibold text-[#EE5A2C]">Store Hours:</span>{" "}
-            <span className="text-gray-400">Sat-Thu, 10 AM – 9 PM</span>
+            <span className="text-gray-400">{shopProfile?.UserCompanyInfo?.storeHours}</span>
           </div>
 
           <div className="bg-white max-w-[298px] w-full max-h-[50px] rounded-lg py-3 sm:py-[14px] px-3 sm:px-[8px]">
             <span className="font-semibold text-[#EE5A2C]">
               Pickup Available:
             </span>{" "}
-            <span className="text-gray-400">In-store pickup</span>
+            <span className="text-gray-400">{shopProfile?.UserCompanyInfo?.pickupAvailable}</span>
           </div>
         </div>
       </div>
@@ -141,6 +147,16 @@ const ShopDetailsInfo = ({shopProfile, relatedShop}: ShopDetailsInfoProps) => {
 
       <h3 className="text-lg sm:text-xl font-medium mb-4  sm:px-2 md:px-0">
         {
+            translate("আমরা কি বিক্রি করছি", "About Us")
+        }
+      </h3>
+
+      <p>{shopProfile?.UserCompanyInfo?.about}</p>
+
+      <hr className="border-gray-300 my-4" />
+
+      <h3 className="text-lg sm:text-xl font-medium mb-4  sm:px-2 md:px-0">
+        {
             translate("আমরা কি বিক্রি করছি", "What are we selling")
         }
       </h3>
@@ -153,7 +169,7 @@ const ShopDetailsInfo = ({shopProfile, relatedShop}: ShopDetailsInfoProps) => {
                 {translate("অ্যাকসেসরিজ:", "Accessories:")}
               </td>
               <td className="text-[#833218] py-1 pl-2 sm:pl-4">
-                {translate("ক্যাবল, চার্জার, পাওয়ার ব্যাংক", "Cables, Chargers, Power Banks")}
+                {shopProfile?.UserCompanyInfo?.accessories}
               </td>
             </tr>
             <tr>
@@ -161,7 +177,7 @@ const ShopDetailsInfo = ({shopProfile, relatedShop}: ShopDetailsInfoProps) => {
                 {translate("হোম অ্যাপ্লায়েন্স:", "Home Appliances:")}
               </td>
               <td className="text-[#833218] py-1 pl-2 sm:pl-4">
-                {translate("মাইক্রোওয়েভ, ব্লেন্ডার, ফ্যান","Microwave, Blender, Fan")}
+                {shopProfile?.UserCompanyInfo?.homeAppliances}
               </td>
             </tr>
             <tr>
@@ -169,7 +185,7 @@ const ShopDetailsInfo = ({shopProfile, relatedShop}: ShopDetailsInfoProps) => {
                 {translate("প্রোডাক্টস:", "Products:")}
               </td>
               <td className="text-gray-400 py-1 pl-2 sm:pl-4">
-                {translate(" স্মার্টফোন, ল্যাপটপ ও ট্যাবলেট, স্মার্টওয়াচ", "Smartphones, Laptops & Tablets, Smartwatches")}
+                {shopProfile?.UserCompanyInfo?.products}
               </td>
             </tr>
           </tbody>

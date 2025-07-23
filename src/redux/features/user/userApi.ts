@@ -156,6 +156,27 @@ export const userApi = apiSlice.injectEndpoints({
   providesTags: ["customer"],
 }),
 
+  //customer register
+   // CREATE A NEW customer
+    createCustomerRegister: builder.mutation({
+      query: (userData) => ({
+        url: "/auth/create-customer",
+        method: "POST",
+        body: userData, 
+      }),
+      invalidatesTags: ["customer"],
+    }),
+
+    //login customer
+    loginCustomer: builder.mutation({
+      query: (userData) => ({
+        url: "/auth/login-customer",
+        method: "POST",
+        body: userData, 
+      }),
+      invalidatesTags: ["customer"],
+    }),
+
   }),
 });
 
@@ -173,5 +194,7 @@ export const {
   useGetUserNotificationQuery,
   useDeleteCasheMutation,
   useCreateOrderMutation,
-  useGetFilteredShopsQuery
+  useGetFilteredShopsQuery,
+  useCreateCustomerRegisterMutation,
+  useLoginCustomerMutation,
 } = userApi;

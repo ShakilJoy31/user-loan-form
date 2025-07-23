@@ -1,6 +1,4 @@
 "use client"
-import Image from "next/image";
-import map from "@/assets/Home/map.png"
 import { FaStar } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
@@ -53,13 +51,13 @@ const ShopDetailsMap = ({shopProfile}: ShopPageResponse) => {
                 }
             </h2>
             <div className=" mx-auto">
-                <Image 
-                width={614}
-                height={256}
-                src={ map}
-                alt="map"
-                className="w-full h-auto object-cover"
-                />
+                 <div className="w-full h-[256px] overflow-hidden relative">
+  <div 
+    className="w-full h-full" 
+    dangerouslySetInnerHTML={{ __html: shopProfile?.UserCompanyInfo?.map || '' }}
+  >
+  </div>
+</div>
 
                  {/* Shop information section matching the image */}
                 <div className="my-4 flex justify-between items-center">
@@ -82,7 +80,7 @@ const ShopDetailsMap = ({shopProfile}: ShopPageResponse) => {
                         </div>
                      <div className="max-w-[140px] max-h-[40px] mt-3 text-white bg-[#EE5A2C] font-medium rounded-lg">
                          <Link href={`/products/all-product/${shopProfile?.UserCompanyInfo?.slug}`}>
-                         <Button className="py-[8px] px-[15px]">
+                         <Button variant={"outline"} className="py-[8px] px-[15px] text-white bg-[#EE5A2C]">
                         Shop Now →
                     </Button>
                          </Link>
