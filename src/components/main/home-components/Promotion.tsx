@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 import { useGetAdvertiseBannersQuery } from "@/redux/features/product/bannerApi";
 import Link from "next/link";
+import DataLoader from "@/components/common/DataLoader";
 
 interface Banner {
   id: number;
@@ -26,9 +27,17 @@ interface Banner {
 
 const Promotion = () => {
   const { translate } = useCustomTranslator();
-  const { data } = useGetAdvertiseBannersQuery({});
+  const { data, isLoading, isError } = useGetAdvertiseBannersQuery({});
   console.log(data?.data);
   const banners: Banner[] = data?.data || [];
+
+  if(isLoading || !data){
+    return <div><DataLoader /></div>
+  }
+
+  if(isError){
+    return <p>Failed to load data error</p>
+  }
 
   return (
     <div className="w-full lg:max-w-[413px] bg-[#F4F8FF] text-black rounded-2xl p-4 sm:p-5 md:p-[20px] dark:bg-black dark:text-white">

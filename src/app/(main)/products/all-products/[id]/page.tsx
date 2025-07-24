@@ -1,4 +1,5 @@
-"use client"
+"use client";
+import DataLoader from "@/components/common/DataLoader";
 import SingleSellerAllProducts from "@/components/main/product-details-components/SingleSellerAllProducts";
 import SingleSellerProfile from "@/components/main/product-details-components/SingleSellerProfile";
 import { useGetSellerProductByIdQuery } from "@/redux/features/seller-api/productApi";
@@ -17,8 +18,8 @@ interface UserCompanyInfo {
   tradeLicense: string;
   createdAt: string;
   updatedAt: string;
-   profileImage: string | null;
-  bannerImage: string | null; 
+  profileImage: string | null;
+  bannerImage: string | null;
 }
 
 interface ShopProfile {
@@ -28,7 +29,7 @@ interface ShopProfile {
   UserCompanyInfo: UserCompanyInfo;
   avatar: string;
   profileImage: string | null;
-  bannerImage: string | null; 
+  bannerImage: string | null;
 }
 
 interface Brand {
@@ -82,32 +83,51 @@ interface ApiResponse {
 }
 
 const SingleSellerProducts = () => {
-    const [sellerData, setSellerData] = useState<ApiResponse | null>(null);
+  const [sellerData, setSellerData] = useState<ApiResponse | null>(null);
 
-   const { id } = useParams<{ id: string }>();
-const { data: sellerSingleProducts } = useGetSellerProductByIdQuery(id || "");
-console.log("sellerSingleProducts", sellerSingleProducts)
+  const { id } = useParams<{ id: string }>();
+  const {
+    data: sellerSingleProducts,
+    isLoading,
+    isError,
+  } = useGetSellerProductByIdQuery(id || "");
+  console.log("sellerSingleProducts", sellerSingleProducts);
 
-useEffect(() => {
-  if (sellerSingleProducts) {
-    setSellerData(sellerSingleProducts);
-  }
-}, [sellerSingleProducts]);
-    
+  useEffect(() => {
+    if (sellerSingleProducts) {
+      setSellerData(sellerSingleProducts);
+    }
+  }, [sellerSingleProducts]);
+
+  if (isLoading || !sellerData) {
     return (
-        <div className="max-w-[1280px] mx-auto px-4 pt-[40px] pb-[99px] space-y-8 ">
-            <div className="flex items-center gap-x-2 pt-16">
-                <span className="hover:cursor-pointer">Home</span> /{" "}
-                <span className="hover-cursor-pointer">Shop Details</span> /{" "}
-            </div>
-
-            
-                {sellerData && <SingleSellerProfile shopProfile={sellerData.shopProfile} />}
-            <div>
-                {sellerData && <SingleSellerAllProducts products={sellerData.data} />}
-            </div>
-        </div>
+      <div className="flex justify-center mt-40">
+        <DataLoader />
+      </div>
     );
+  }
+
+  if (isError) {
+    return <p>Filed to load data</p>;
+  }
+
+  return (
+    <div className="max-w-[1280px] mx-auto px-4 pt-[40px] pb-[99px] space-y-8 ">
+      <div className="flex items-center gap-x-2 pt-16">
+        <span className="hover:cursor-pointer">Home</span> /{" "}
+        <span className="hover-cursor-pointer">Shop Details</span> /{" "}
+      </div>
+
+        <SingleSellerProfile shopProfile={sellerData.shopProfile} />
+    
+      <div>
+          <SingleSellerAllProducts
+            shopProfile={sellerData.shopProfile}
+            products={sellerData.data}
+          />
+      </div>
+    </div>
+  );
 };
 
 export default SingleSellerProducts;

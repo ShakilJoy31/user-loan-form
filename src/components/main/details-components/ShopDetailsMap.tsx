@@ -79,7 +79,7 @@ const ShopDetailsMap = ({shopProfile}: ShopPageResponse) => {
                             <FaRegHeart />
                         </div>
                      <div className="max-w-[140px] max-h-[40px] mt-3 text-white bg-[#EE5A2C] font-medium rounded-lg">
-                         <Link href={`/products/all-product/${shopProfile?.UserCompanyInfo?.slug}`}>
+                         <Link href={`/products/all-products/${shopProfile?.UserCompanyInfo?.slug}`}>
                          <Button variant={"outline"} className="py-[8px] px-[15px] text-white bg-[#EE5A2C]">
                         Shop Now →
                     </Button>

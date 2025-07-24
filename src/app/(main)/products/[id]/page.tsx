@@ -190,8 +190,8 @@ export default function ProductDetailsPage() {
     }));
   };
 
-  if (isLoading) {
-    return <div><DataLoader /></div>;
+  if (isLoading || !productsDetails) {
+    return <div className="flex justify-center mt-40"><DataLoader /></div>;
   }
 
   if (isError || !productData) {

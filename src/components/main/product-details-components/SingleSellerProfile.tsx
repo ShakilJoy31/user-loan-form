@@ -42,6 +42,7 @@ const SingleSellerProfile: React.FC<SingleSellerProfileProps> = ({
   const { shopName, ownerName, designation, bannerImage, city, area, tradeLicense } =
     UserCompanyInfo;
 
+
   return (
     <div className="w-full border rounded-lg p-5 shadow-sm relative dark:border dark:border-white">
       <div className="absolute top-6 right-3 flex gap-2 text-gray-400">
@@ -50,7 +51,7 @@ const SingleSellerProfile: React.FC<SingleSellerProfileProps> = ({
       </div>
 
       {/* banner image */}
-            <div className="w-full border border-gray-200 h-auto max-h-[200px] rounded-lg overflow-hidden mb-4">
+            <div className="w-full border border-gray-200 h-auto  rounded-lg overflow-hidden mb-4">
         {bannerImage ? (
           <Image
             src={bannerImage}
@@ -124,8 +125,7 @@ const SingleSellerProfile: React.FC<SingleSellerProfileProps> = ({
         </div>
 
         {/* Right Section - Shop Information in a single div */}
-        <div className="">
-          <div className="flex flex-col md:flex-row justify-between gap-4">
+        <div className="flex justify-center">
             <div>
               <h5 className="font-medium text-gray-800 dark:text-white mb-2">
                 Shop Information
@@ -147,8 +147,7 @@ const SingleSellerProfile: React.FC<SingleSellerProfileProps> = ({
                 {tradeLicense}
               </p>
             </div>
-          </div>
-        </div>
+            </div>
       </div>
     </div>
   );

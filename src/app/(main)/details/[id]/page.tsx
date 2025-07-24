@@ -18,6 +18,69 @@ interface ShopPageResponse {
         total: number;
         totalPage: number;
     };
+     shopProfile: ShopProfile; 
+    data: Product[];
+    newArrival: Product[];
+    relatedShop: RelatedShop[];
+}
+
+interface ShopProfile {
+    id: number;
+    name: string;
+    email: string;
+    contactNo: string;
+    UserCompanyInfo: {
+        id: number;
+        userId: number;
+        shopName: string;
+        profileImage: string;
+        bannerImage: string;
+        slug: string;
+        ownerName: string;
+        designation: string;
+        city: string;
+        area: string;
+        tradeLicense: string;
+        map: string;
+        about: string | null;
+        createdAt: string;
+        updatedAt: string;
+    };
+    UserShopCategory: {
+        id: number;
+        userId: number;
+        categoryId: number;
+        createdAt: string;
+        updatedAt: string;
+    }[];
+}
+
+interface Product {
+    id: number;
+    productName: string;
+    productLink: string;
+    brand: {
+        brand: string;
+        image: string;
+    };
+    ProductItem: {
+        id: number;
+        productId: number;
+        sku: string;
+        price: number;
+        purchasePoint: number;
+        discountPrice: number;
+        stock: number;
+        barcode: string | null;
+    }[];
+    ProductImage: {
+        id: number;
+        productId: number;
+        imageUrl: string;
+        alt: string | null;
+        createdAt: string;
+        updatedAt: string;
+    }[];
     shopProfile: {
         id: number;
         name: string;
@@ -49,37 +112,6 @@ interface ShopPageResponse {
         }[];
 
     };
-    data: Product[];
-    newArrival: Product[];
-    relatedShop: RelatedShop[];
-}
-
-interface Product {
-    id: number;
-    productName: string;
-    productLink: string;
-    brand: {
-        brand: string;
-        image: string;
-    };
-    ProductItem: {
-        id: number;
-        productId: number;
-        sku: string;
-        price: number;
-        purchasePoint: number;
-        discountPrice: number;
-        stock: number;
-        barcode: string | null;
-    }[];
-    ProductImage: {
-        id: number;
-        productId: number;
-        imageUrl: string;
-        alt: string | null;
-        createdAt: string;
-        updatedAt: string;
-    }[];
 }
 
 interface RelatedShop {
@@ -113,8 +145,8 @@ const Details = () => {
       }
     }, [singleProductsDetails]);
 
-    if(isLoading){
-        return <div><DataLoader /></div>
+    if(isLoading || !productDetailsData){
+        return <div className="flex justify-center mt-40"><DataLoader /></div>
     }
     if(isError){
         return <div>Something is wrong please try again later error</div>
@@ -124,9 +156,13 @@ const Details = () => {
             <DetailsPromotion />
             <FindShopsAndLocation />
             <div>
-                {productDetailsData && <TopProduct topProducts={productDetailsData?.data} />}
+                 <TopProduct 
+                 shopProfile={productDetailsData?.shopProfile} 
+                 topProducts={productDetailsData?.data} />
                 
-                {productDetailsData && <NewArrive newArrival={productDetailsData?.newArrival} />}
+                 <NewArrive 
+                 shopProfile={[productDetailsData.shopProfile]} 
+                 newArrival={productDetailsData?.newArrival} />
             </div>
         </div>
     );

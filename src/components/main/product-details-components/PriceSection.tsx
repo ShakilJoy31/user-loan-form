@@ -6,6 +6,7 @@ import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 interface ProductImage {
   id: number;
@@ -157,6 +158,7 @@ interface PriceSectionProps {
 export default function PriceSection({ productItems, selectedOptions, productData }: PriceSectionProps) {
   const [quantity, setQuantity] = useState(1);
   const { translate } = useCustomTranslator();
+  const router = useRouter();
 
 const findMatchingProductItem = (): ProductItem | undefined => {
   if (Object.keys(selectedOptions).length === 0) {
@@ -334,6 +336,42 @@ const handleAddToWishlist = () => {
 };
 
 
+ const handleBuyNow = () => {
+  if (!matchingProduct) {
+    console.error("No matching product found for selected options");
+    toast.error("No matching product found for selected options");
+    return;
+  }
+
+  const existingCartString = localStorage.getItem('cart');
+  let existingCart: CartItem[] = [];
+  
+  try {
+    existingCart = existingCartString ? JSON.parse(existingCartString) : [];
+  } catch (error) {
+    console.error("Error parsing cart data from localStorage", error);
+    toast.error("Failed to load your cart. Please try again.");
+    existingCart = [];
+  }
+
+  // Check if the exact same product (same productId and sku) already exists in cart
+  const existingItem = existingCart.find(item => 
+    item.productId === matchingProduct.productId && 
+    item.sku === matchingProduct.sku
+  );
+
+  if (existingItem) {
+    toast.error(`${productData.productName} is already in your cart`);
+    return; 
+  }
+
+  // If product isn't in cart, add it and redirect to checkout
+  handleAddToCart();
+  router.push("/checkout");
+};
+
+
+
   return (
     <div className="space-y-4 mt-6">
       {/* Price Display Section */}
@@ -371,7 +409,9 @@ const handleAddToWishlist = () => {
         </div>
 
         {/* Action Buttons */}
-        <Button variant={'outline'} className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded-md font-semibold text-sm shadow-md">
+        <Button 
+        onClick={handleBuyNow}
+        variant={'outline'} className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded-md font-semibold text-sm shadow-md">
           {translate("এখনই কিনুন", "Buy Now")}
         </Button>
         <Button 

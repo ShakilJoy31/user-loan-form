@@ -73,7 +73,7 @@ const ShopCard: React.FC<Shop> = ({ shopName, area, city, user, profileImage, av
           Shop Now
         </Button> */}
         
-        <Link href={`/products/all-product/${slug}`}>
+        <Link href={`/products/all-products/${slug}`}>
         <Button variant={"outline"} className="bg-[#EE5A2C] dark:bg-black dark:text-white dark:border dark:border-white dark:rounded-md text-white text-[10px] sm:text-[12px] px-2 sm:px-3 py-1 rounded font-medium">
           Shop Now
         </Button>

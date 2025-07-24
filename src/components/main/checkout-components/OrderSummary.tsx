@@ -207,6 +207,17 @@ const handleProceedToPay = async () => {
 
   try {
     const response = await createOrder(orderData).unwrap();
+
+        // Remove ordered products from localStorage
+    const orderedSkus = cartItem.map(item => item.sku);
+    const cartData = localStorage.getItem("cart");
+    
+    if (cartData) {
+      const currentCart: CartItem[] = JSON.parse(cartData);
+      const updatedCart = currentCart.filter(item => !orderedSkus.includes(item.sku));
+      localStorage.setItem("cart", JSON.stringify(updatedCart));
+      setCartItem(updatedCart);
+    }
     
     toast.success(translate("অর্ডার সফলভাবে তৈরি হয়েছে", "Order created successfully"));
     console.log("Order creation response:", response);
