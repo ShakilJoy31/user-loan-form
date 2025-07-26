@@ -1,11 +1,11 @@
 
-import PaymentCancel from '@/components/main/checkout-components/PaymentCancel';
+import PaymentCancelList from '@/components/main/payments/PaymentCancelList';
 import React from 'react';
 
 const PaymentCanceled = () => {
     return (
         <div>
-            <PaymentCancel />
+            <PaymentCancelList />
         </div>
     );
 };

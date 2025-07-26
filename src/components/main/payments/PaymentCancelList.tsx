@@ -7,7 +7,7 @@ import { usePaymentInstanceMutation } from "@/redux/features/user/paymentApi";
 import toast from "react-hot-toast";
 import ButtonLoader from "@/components/common/ButtonLoader";
 
-const PaymentFaileded = () => {
+const PaymentCancelList = () => {
   const { id } = useParams();
 
   const [paymentInstance, { isLoading: instanceloading }] =
@@ -54,7 +54,7 @@ const PaymentFaileded = () => {
         </motion.div>
 
         <h1 className="text-2xl font-bold text-gray-800 mt-5">
-          Payment Failed
+          Payment Cancelled
         </h1>
         <p className="text-gray-600 mt-2 text-center">
           Oops! Something went wrong. Your payment was not processed.
@@ -80,4 +80,4 @@ const PaymentFaileded = () => {
   );
 };
 
-export default PaymentFaileded;
+export default PaymentCancelList;
