@@ -114,6 +114,8 @@ export default function CategoryList() {
     }
   };
 
+
+
   if (isLoading) {
     return <DataLoader />;
   }

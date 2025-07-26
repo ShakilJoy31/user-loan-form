@@ -94,7 +94,10 @@ const HomeBanner = () => {
 
                                         <div className="absolute hover:bg-orange-800 hover:text-white bottom-8 left-4 sm:left-[38px] w-[150px] sm:w-[175px] h-12 sm:h-[54px] py-2 sm:py-[15px] px-4 sm:px-[30px] text-white bg-[#ee5a2c] rounded-[10px] flex justify-center items-center z-20">
                                            <Link href={`/products/all-products/${banner?.link}`}>
-                                            <button className="btn cursor-pointer flex gap-2 sm:gap-3 text-sm sm:text-[16px] font-semibold items-center">
+                                            <button className="btn cursor-pointer flex gap-2 sm:gap-3 text-sm sm:text-[16px] font-semibold items-center"
+                                            onMouseEnter={() => swiperRef.current?.autoplay.stop()}
+                            onMouseLeave={() => swiperRef.current?.autoplay.start()}
+                                            >
                                                 {"Shop Now"} <FaArrowRightLong />
                                             </button>
                                            </Link>

@@ -19,6 +19,45 @@ import { selectUser } from "@/redux/store";
 import { loadUserFromToken } from "@/utils/helper/loadUserFromToken";
 import { useGetSellerUserByIdQuery } from "@/redux/features/seller-auth/sellerLogin";
 
+interface CartItem {
+  productId: number;
+  sku: string;
+  quantity: number;
+  price: number;
+  discountPrice: number;
+  subTotal: number;
+  sellerShopName: string;
+  sellerId: number;
+  productName: string;
+  productImage: string;
+}
+
+interface WishlistItem {
+  id: number;
+  title: string;
+  price: number;
+  rating: number;
+  reviewCount: number;
+  date: string;
+  image: string;
+}
+
+interface ProductData {
+  id: number;
+  productName: string;
+  brand: string;
+  category: string;
+}
+
+interface WishlistEntry {
+  wishlistItem: WishlistItem;
+  cartItem: CartItem;
+  selectedOptions: Record<string, string>;
+  productData: ProductData;
+  timestamp: string;
+}
+
+
 const PublicNav = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -78,6 +117,49 @@ const PublicNav = () => {
         { skip: !user.id || !isUserLoaded } // Skip if no user ID or user not loaded
     );
 
+
+    // cart
+     const [cartItem, setCartItem] = useState<CartItem[]>([]);
+      
+      useEffect(() => {
+        const cartData = localStorage.getItem('cart');
+        if (cartData) {
+          try {
+            const parsedCart: CartItem[] = JSON.parse(cartData);
+            console.log("Cart data from localStorage:", parsedCart);
+            setCartItem(parsedCart);
+          } catch (error) {
+            console.error("Error parsing cart data:", error);
+          }
+        } else {
+          console.log("No cart data found in localStorage");
+        }
+      }, []); 
+
+
+      //wish list
+      const [wishlistItems, setWishlistItems] = useState<WishlistEntry[]>([]);
+      useEffect(() => {
+          const fetchWishlistData = () => {
+            try {
+              const wishlistData = localStorage.getItem('wishlist');
+              if (wishlistData) {
+                const parsedWishlist = JSON.parse(wishlistData);
+                console.log("wishlist", parsedWishlist)
+                // If the data is an object, convert it to an array
+                const itemsArray: WishlistEntry[] = Array.isArray(parsedWishlist) 
+                  ? parsedWishlist 
+                  : [parsedWishlist];
+                setWishlistItems(itemsArray);
+              }
+            } catch (error) {
+              console.error("Error parsing wishlist data:", error);
+            }
+          };
+      
+          fetchWishlistData();
+        }, []);
+
     console.log(customerInfo?.data)
 
   return (
@@ -95,13 +177,15 @@ const PublicNav = () => {
             </Button>
 
             {/* Logo */}
-            <div className="text-lg font-semibold md:ml-0 mx-auto md:mx-0">
+            <div 
+            onClick={() => router.push("/")}
+            className="text-lg font-semibold md:ml-0 mx-auto md:mx-0">
               <Image
                 width={100}
                 height={100}
                 src={navbarLogo}
                 alt="Logo"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover cursor-pointer"
               />
             </div>
 
@@ -124,17 +208,26 @@ const PublicNav = () => {
 
                 <Button
                   onClick={() => router.push('/wish-list')}
-                  className="p-2 rounded-full bg-white text-black hover:bg-orange-600 ">
+                  className="p-2 rounded-full bg-white text-black hover:bg-orange-600 relative ">
                   <Heart size={20} />
+                 {
+                  wishlistItems?.length > 0 && (
+                     <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-1 leading-none transform translate-x-1/2 -translate-y-1/2">
+                    {wishlistItems?.length}
+                  </span>
+                  )
+                 }
                 </Button>
 
                 <Button
                   onClick={() => router.push('/shopping-cart')}
                   className="p-2 rounded-full bg-white text-black hover:bg-orange-600 relative ">
                   <ShoppingCart size={20} />
-                  <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-1 leading-none transform translate-x-1/2 -translate-y-1/2">
-                    1
-                  </span>
+                  {cartItem?.length > 0 && (
+  <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-1 leading-none transform translate-x-1/2 -translate-y-1/2">
+    {cartItem.length}
+  </span>
+)}
                 </Button>
 
                 {/* Avatar Dropdown */}

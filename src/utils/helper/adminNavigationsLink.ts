@@ -3,7 +3,15 @@ import { ComponentType } from "react";
 import { FaProductHunt } from "react-icons/fa";
 import { IconType } from "react-icons/lib";
 import { LuContact } from "react-icons/lu";
-import { MdAssignmentTurnedIn, MdCategory, MdListAlt, MdLocationCity, MdLocationOn, MdMap, MdPeople } from "react-icons/md";
+import {
+  MdAssignmentTurnedIn,
+  MdCategory,
+  MdListAlt,
+  MdLocationCity,
+  MdLocationOn,
+  MdMap,
+  MdPeople,
+} from "react-icons/md";
 
 type Language = "en" | "bn";
 
@@ -35,20 +43,20 @@ const adminDashboardProduct: INavigationLink = {
   key: "product-list",
   href: "/proyojon-admin-portal/product-list",
   subLinks: [
-     {
+    {
       icon: MdCategory,
       label: {
         en: "Variation",
-        bn: "সমস্ত পণ্য"
+        bn: "সমস্ত পণ্য",
       },
       key: "variation-list",
       href: "/proyojon-admin-portal/variation-list",
       subSubLinks: [
-         {
+        {
           icon: MdCategory,
           label: {
             en: "Variation List",
-            bn: "বিভাগ অনুযায়ী তারতম্য"
+            bn: "বিভাগ অনুযায়ী তারতম্য",
           },
           key: "variation-list",
           href: "/proyojon-admin-portal/variation-list",
@@ -57,7 +65,7 @@ const adminDashboardProduct: INavigationLink = {
           icon: MdCategory,
           label: {
             en: "Variation Option",
-            bn: "বিভাগ অনুযায়ী তারতম্য"
+            bn: "বিভাগ অনুযায়ী তারতম্য",
           },
           key: "variation-option",
           href: "/proyojon-admin-portal/variation-option",
@@ -66,7 +74,7 @@ const adminDashboardProduct: INavigationLink = {
           icon: MdCategory,
           label: {
             en: "Category Wise Variation",
-            bn: "পণ্যের বৈচিত্র্য অপশন"
+            bn: "পণ্যের বৈচিত্র্য অপশন",
           },
           key: "category-wise-variation",
           href: "/proyojon-admin-portal/category-wise-variation",
@@ -306,15 +314,6 @@ const adminDashboardProduct: INavigationLink = {
         {
           icon: MdCategory,
           label: {
-            en: "Advertise Banner",
-            bn: "ব্যানার তালিকা",
-          },
-          key: "advertise-banner",
-          href: "/proyojon-admin-portal/advertise-banner",
-        },
-        {
-          icon: MdCategory,
-          label: {
             en: "Small Banner List",
             bn: "ছোট ব্যানার তালিকা",
           },
@@ -359,7 +358,7 @@ const adminDashboardOrders: INavigationLink = {
     bn: "অর্ডার",
   },
   key: "order-list",
-  href: "/kry-admin-portal/order-list",
+  href: "/proyojon-admin-portal/order-list",
   subLinks: [
     {
       icon: List,
@@ -368,7 +367,7 @@ const adminDashboardOrders: INavigationLink = {
         bn: "অর্ডার তৈরি করুন",
       },
       key: "create-order",
-      href: "/kry-admin-portal/create-order",
+      href: "/proyojon-admin-portal/create-order",
     },
     {
       icon: List,
@@ -377,7 +376,7 @@ const adminDashboardOrders: INavigationLink = {
         bn: "অর্ডার তালিকা",
       },
       key: "order-list",
-      href: "/kry-admin-portal/order-list",
+      href: "/proyojon-admin-portal/order-list",
     },
     {
       icon: List,
@@ -386,7 +385,7 @@ const adminDashboardOrders: INavigationLink = {
         bn: "প্রি-অর্ডার তালিকা",
       },
       key: "pre-order-list",
-      href: "/kry-admin-portal/pre-order-list",
+      href: "/proyojon-admin-portal/pre-order-list",
     },
     {
       icon: List,
@@ -395,7 +394,7 @@ const adminDashboardOrders: INavigationLink = {
         bn: "প্রি-অর্ডার ফর্ম তালিকা",
       },
       key: "pre-order-form-list",
-      href: "/kry-admin-portal/pre-order-form-list",
+      href: "/proyojon-admin-portal/pre-order-form-list",
     },
     {
       icon: List,
@@ -404,7 +403,7 @@ const adminDashboardOrders: INavigationLink = {
         bn: "অর্ডার রিটার্ন",
       },
       key: "return-order-list",
-      href: "/kry-admin-portal/return-order-list",
+      href: "/proyojon-admin-portal/return-order-list",
     },
     {
       icon: List,
@@ -413,7 +412,7 @@ const adminDashboardOrders: INavigationLink = {
         bn: "ট্র্যাকিং",
       },
       key: "tracking",
-      href: "/kry-admin-portal/tracking",
+      href: "/proyojon-admin-portal/tracking",
     },
     {
       icon: List,
@@ -431,7 +430,7 @@ const adminDashboardOrders: INavigationLink = {
         bn: "নোটিশ",
       },
       key: "notice",
-      href: "/kry-admin-portal/notice",
+      href: "/proyojon-admin-portal/notice",
     },
     {
       icon: MdCategory,
@@ -440,7 +439,7 @@ const adminDashboardOrders: INavigationLink = {
         bn: "ঘোষণা",
       },
       key: "announcement",
-      href: "/kry-admin-portal/announcement",
+      href: "/proyojon-admin-portal/announcement",
       subSubLinks: [
         {
           icon: List,
@@ -449,7 +448,7 @@ const adminDashboardOrders: INavigationLink = {
             bn: "শিরোনাম ঘোষণা",
           },
           key: "title-announcement",
-          href: "/kry-admin-portal/title-announcement",
+          href: "/proyojon-admin-portal/title-announcement",
         },
         {
           icon: List,
@@ -458,7 +457,7 @@ const adminDashboardOrders: INavigationLink = {
             bn: "পপআপ যোগ করুন",
           },
           key: "add-popup",
-          href: "/kry-admin-portal/add-popup",
+          href: "/proyojon-admin-portal/add-popup",
         },
         {
           icon: List,
@@ -467,7 +466,7 @@ const adminDashboardOrders: INavigationLink = {
             bn: "পপআপসমূহ",
           },
           key: "popup-list",
-          href: "/kry-admin-portal/popup-list",
+          href: "/proyojon-admin-portal/popup-list",
         },
         {
           icon: List,
@@ -476,7 +475,7 @@ const adminDashboardOrders: INavigationLink = {
             bn: "পপআপ সেটিং",
           },
           key: "popup-setting",
-          href: "/kry-admin-portal/popup-setting",
+          href: "/proyojon-admin-portal/popup-setting",
         },
       ],
     },
@@ -487,7 +486,7 @@ const adminDashboardOrders: INavigationLink = {
         bn: "কুপন",
       },
       key: "coupon",
-      href: "/kry-admin-portal/coupon",
+      href: "/proyojon-admin-portal/coupon",
       subSubLinks: [
         {
           icon: List,
@@ -495,8 +494,8 @@ const adminDashboardOrders: INavigationLink = {
             en: "Coupon Report",
             bn: "কুপন রিপোর্ট",
           },
-          key: "coupon-report",
-          href: "/kry-admin-portal/discount_list",
+          key: "discount-list",
+          href: "/proyojon-admin-portal/discount-list",
         },
       ],
     },
@@ -586,7 +585,7 @@ const adminDashboardLocation: INavigationLink = {
       },
       key: "create-city",
       href: "/proyojon-admin-portal/create-city",
-    }, 
+    },
     {
       icon: MdMap, // Appropriate icon for area
       label: {
@@ -595,7 +594,7 @@ const adminDashboardLocation: INavigationLink = {
       },
       key: "create-area",
       href: "/proyojon-admin-portal/create-area",
-    }, 
+    },
   ],
 };
 
@@ -616,7 +615,7 @@ const adminDashboardSeller: INavigationLink = {
       },
       key: "seller-request",
       href: "/proyojon-admin-portal/seller-request",
-    },  
+    },
     {
       icon: MdListAlt, // Icon for lists
       label: {
@@ -625,8 +624,18 @@ const adminDashboardSeller: INavigationLink = {
       },
       key: "seller-list",
       href: "/proyojon-admin-portal/seller-list",
-    },  
+    },
   ],
+};
+
+const adminDashboardAdvertiseBanner: INavigationLink = {
+  icon: MdCategory,
+  label: {
+    en: "Advertise Banner",
+    bn: "ব্যানার তালিকা",
+  },
+  key: "advertise-banner",
+  href: "/proyojon-admin-portal/advertise-banner",
 };
 
 export const adminNavigationLinks: INavigationLink[] = [
@@ -636,4 +645,5 @@ export const adminNavigationLinks: INavigationLink[] = [
   { ...adminDashboardOffer },
   { ...adminDashboardLocation },
   { ...adminDashboardSeller },
+  { ...adminDashboardAdvertiseBanner },
 ];

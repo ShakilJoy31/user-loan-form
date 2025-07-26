@@ -361,7 +361,7 @@ const handleAddToWishlist = () => {
   );
 
   if (existingItem) {
-    toast.error(`${productData.productName} is already in your cart`);
+    router.push("/checkout");
     return; 
   }
 

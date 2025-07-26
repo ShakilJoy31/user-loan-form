@@ -20,6 +20,7 @@ interface UserCompanyInfo {
   updatedAt: string;
   profileImage: string | null;
   bannerImage: string | null;
+  about: string;
 }
 
 interface ShopProfile {
@@ -58,6 +59,11 @@ interface ProductImage {
 }
 
 interface Product {
+    category: {
+    name: string;
+  };
+  reviews: string;
+  rating: number;
   id: number;
   productName: string;
   productLink: string;
@@ -73,6 +79,83 @@ interface Meta {
   totalPage: number;
 }
 
+interface Product {
+    id: number;
+    productName: string;
+    productLink: string;
+    brand: {
+        brand: string;
+        image: string;
+    };
+    ProductItem: {
+        id: number;
+        productId: number;
+        sku: string;
+        price: number;
+        purchasePoint: number;
+        discountPrice: number;
+        stock: number;
+        barcode: string | null;
+    }[];
+    ProductImage: {
+        id: number;
+        productId: number;
+        imageUrl: string;
+        alt: string | null;
+        createdAt: string;
+        updatedAt: string;
+    }[];
+    shopProfile: {
+        id: number;
+        name: string;
+        email: string;
+        contactNo: string;
+        UserCompanyInfo: {
+            id: number;
+            userId: number;
+            shopName: string;
+            profileImage: string;
+            bannerImage: string;
+            slug: string;
+            ownerName: string;
+            designation: string;
+            city: string;
+            area: string;
+            tradeLicense: string;
+            map: string;
+            about: string | null;
+            createdAt: string;
+            updatedAt: string;
+        };
+        UserShopCategory: {
+            id: number;
+            userId: number;
+            categoryId: number;
+            createdAt: string;
+            updatedAt: string;
+        }[];
+
+    };
+}
+
+interface RelatedShop {
+    id: number;
+    shopName: string;
+    city: string;
+    area: string;
+    slug: string;
+    profileImage: string | null;
+    bannerImage: string | null;
+    avatar: string;
+    user: {
+        UserShopCategory: {
+            category: {
+                name: string;
+            };
+        }[];
+    };
+}
+
 interface ApiResponse {
   success: boolean;
   statusCode: number;
@@ -80,6 +163,8 @@ interface ApiResponse {
   meta: Meta;
   shopProfile: ShopProfile;
   data: Product[];
+  newArrival: Product[];
+  relatedShop: RelatedShop[];
 }
 
 const SingleSellerProducts = () => {
@@ -118,12 +203,16 @@ const SingleSellerProducts = () => {
         <span className="hover-cursor-pointer">Shop Details</span> /{" "}
       </div>
 
-        <SingleSellerProfile shopProfile={sellerData.shopProfile} />
+        <SingleSellerProfile 
+
+        shopProfile={sellerData.shopProfile} />
     
       <div>
           <SingleSellerAllProducts
             shopProfile={sellerData.shopProfile}
             products={sellerData.data}
+             newArrival={sellerData?.newArrival}
+             relatedShop= {sellerData?.relatedShop}
           />
       </div>
     </div>

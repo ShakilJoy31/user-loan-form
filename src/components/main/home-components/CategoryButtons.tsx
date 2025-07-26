@@ -1,14 +1,18 @@
 "use client";
 
 import { useGetAllCategoryQuery } from "@/redux/features/product/categoryApi";
+import Image from "next/image";
 import { useState, useRef } from "react";
 
 interface CategoryButton {
   id: string | number;
-  label: string;
+  link: string;
+  image: string;
 }
 
 interface Category {
+  image: string;
+  link: string;
   name: string;
   id: string | number;
   title: string;
@@ -20,13 +24,13 @@ interface ScrollableButtonGroupProps {
   onButtonClick?: (id: string | number) => void;
 }
 
-
 const ScrollableButtonGroup = ({
   activeButtonId,
   onButtonClick,
-} : ScrollableButtonGroupProps ) => {
+}: ScrollableButtonGroupProps) => {
   // Fetch categories from API
   const { data: categories, isLoading, isError } = useGetAllCategoryQuery({});
+  console.log("category", categories);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -86,9 +90,12 @@ const ScrollableButtonGroup = ({
   const buttons: CategoryButton[] = categories.data.map(
     (category: Category) => ({
       id: category.id,
-      label: category.name,
+      link: category.link,
+      image: category.image,
     })
   );
+
+  console.log("buttons", buttons);
 
   return (
     <div className="relative w-full h-[47px] lg:h-[57px] overflow-hidden bg-[#FDEFEA] rounded-tl-full rounded-bl-full px-2 lg:px-0 dark:bg-black ">
@@ -111,13 +118,22 @@ const ScrollableButtonGroup = ({
           <span
             key={button.id}
             onClick={() => onButtonClick?.(button.id)}
-            className={`flex-shrink-0 h-full flex items-center justify-center whitespace-nowrap px-3 sm:px-4 rounded-full transition-colors duration-200 cursor-pointer text-xs sm:text-sm ${
+            className={`flex-shrink-0 h-full flex items-center justify-center whitespace-nowrap px-3 sm:px-4 rounded-full transition-colors duration-200 cursor-pointer text-xs sm:text-sm font-semibold gap-1 ${
               activeButtonId === button.id
                 ? "bg-[#EE5A2C] text-white"
                 : "text-[#808089] hover:bg-[#EE5A2C] hover:text-white dark:text-white dark:hover:text-white"
             }`}
           >
-            {button.label}
+            {button.image && (
+              <Image
+                width={20}
+                height={20}
+                src={button.image}
+                alt=""
+                className="w-4 h-4 object-contain"
+              />
+            )}
+            {button.link}
           </span>
         ))}
 

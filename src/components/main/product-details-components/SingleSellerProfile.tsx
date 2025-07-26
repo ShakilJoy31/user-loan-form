@@ -1,9 +1,9 @@
 "use client"
-import { Button } from "@/components/ui/button";
+// import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import React from "react";
 import { FiEdit2, FiShare2 } from "react-icons/fi";
-import { BsGoogle, BsFacebook, BsTwitter } from "react-icons/bs";
+// import { BsGoogle, BsFacebook, BsTwitter } from "react-icons/bs";
 
 interface UserCompanyInfo {
   id: number;
@@ -18,6 +18,7 @@ interface UserCompanyInfo {
   tradeLicense: string;
   createdAt: string;
   updatedAt: string;
+  about: string;
 }
 
 interface ShopProfileProps {
@@ -37,10 +38,12 @@ interface SingleSellerProfileProps {
 const SingleSellerProfile: React.FC<SingleSellerProfileProps> = ({
   shopProfile,
 }) => {
-  const { name, contactNo, profileImage, avatar, UserCompanyInfo } = shopProfile;
+  const { name, contactNo, avatar, UserCompanyInfo } = shopProfile;
 
-  const { shopName, ownerName, designation, bannerImage, city, area, tradeLicense } =
+  const { shopName, ownerName, about, profileImage, designation, bannerImage, city, area } =
     UserCompanyInfo;
+
+    console.log(shopProfile)
 
 
   return (
@@ -51,7 +54,7 @@ const SingleSellerProfile: React.FC<SingleSellerProfileProps> = ({
       </div>
 
       {/* banner image */}
-            <div className="w-full border border-gray-200 h-auto  rounded-lg overflow-hidden mb-4">
+            <div className="w-full border border-gray-200 h-[300px]  rounded-lg overflow-hidden mb-4">
         {bannerImage ? (
           <Image
             src={bannerImage}
@@ -88,7 +91,7 @@ const SingleSellerProfile: React.FC<SingleSellerProfileProps> = ({
           </h4>
           <p className="text-sm text-gray-500 dark:text-white">{contactNo}</p>
 
-          <p className="text-sm text-gray-500 mt-6 mb-3 dark:text-white">
+          {/* <p className="text-sm text-gray-500 mt-6 mb-3 dark:text-white">
             Linked with Social media
           </p>
 
@@ -121,7 +124,7 @@ const SingleSellerProfile: React.FC<SingleSellerProfileProps> = ({
             className="mt-4 bg-white border border-gray-300 text-gray-700 text-sm px-4 py-1.5 rounded-sm hover:bg-gray-200 transition"
           >
             🔗 Social media
-          </Button>
+          </Button> */}
         </div>
 
         {/* Right Section - Shop Information in a single div */}
@@ -142,13 +145,19 @@ const SingleSellerProfile: React.FC<SingleSellerProfileProps> = ({
               <p className="text-sm text-gray-600 dark:text-white mt-1">
                 <span className="font-medium">Location:</span> {area}, {city}
               </p>
-              <p className="text-sm text-gray-600 dark:text-white mt-1">
+              {/* <p className="text-sm text-gray-600 dark:text-white mt-1">
                 <span className="font-medium">Trade License:</span>{" "}
                 {tradeLicense}
-              </p>
+              </p> */}
             </div>
             </div>
       </div>
+
+      <div>
+            <h2 className="text-xl my-3">About Shop</h2>
+
+            <p>{about}</p>
+          </div>
     </div>
   );
 };

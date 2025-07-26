@@ -117,7 +117,7 @@ const handleDeleteItem = (productId: number, sku: string) => {
     <div className="mt-16 lg:pt-[40px] max-w-[1280px] mx-auto px-4 mb-10 lg:mb-[136px] ">
       <h2 className="text-[18px] font-medium mb-[51px] text-gray-300  dark:text-white">
         Home / Shop details / Gang Light{" "}
-        <span className="text-[#EE5A2C]">/ Cart</span>{" "}
+        <span className="text-[#EE5A2C]">/ Cart {cartItem?.length}</span>{" "}
       </h2>
 
       <div className="flex flex-col lg:flex-row gap-6 lg:gap-8  dark:text-white">

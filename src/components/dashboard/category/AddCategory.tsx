@@ -78,7 +78,7 @@ export default function AddCategory({ setModalOpen }: AddCategoryProps) {
       }
       try {
         const response = await addThumbnail(formData).unwrap();
-        imageUrl = response?.data[0];
+        imageUrl = Array.isArray(response?.data) ? response.data[0] : response?.data;
       } catch (error: unknown) {
         const apiError = error as ApiError;
         toast.error(apiError?.data?.message || "Error uploading image");
@@ -94,7 +94,7 @@ export default function AddCategory({ setModalOpen }: AddCategoryProps) {
       }
       try {
         const response = await addThumbnail(formData).unwrap();
-        bannerUrl = response?.data[0];
+        bannerUrl = Array.isArray(response?.data) ? response.data[0] : response?.data;
       } catch (error: unknown) {
         const apiError = error as ApiError;
         toast(apiError?.data?.message || "Image Upload error");
@@ -110,6 +110,8 @@ export default function AddCategory({ setModalOpen }: AddCategoryProps) {
         image: imageUrl,
         banner: bannerUrl,
       };
+
+      console.log("sodivlskn",updateData)
 
       const cleanData = removeFalsyProperties(updateData, [
         "banner",

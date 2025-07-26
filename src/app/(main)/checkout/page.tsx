@@ -57,6 +57,21 @@ interface FormData {
   orders?: OrderData[];
 }
 
+interface CartItem {
+  productId: number;
+  sku: string;
+  quantity: number;
+  price: number;
+  discountPrice?: number;
+  subTotal: number;
+  sellerShopName: string;
+  sellerId: number;
+  productName: string;
+  productImage: string;
+  size?: string;
+  color?: string;
+}
+
 const CheckoutPage: React.FC = () => {
   const router = useRouter();
   const user = useSelector(selectUser);
@@ -79,6 +94,25 @@ const CheckoutPage: React.FC = () => {
         { skip: !user.id || !isUserLoaded } // Skip if no user ID or user not loaded
     );
 
+      // Calculate subTotal from localStorage
+  const [subTotal, setSubTotal] = useState(0);
+
+  useEffect(() => {
+    const cartData = localStorage.getItem("cart");
+    if (cartData) {
+      try {
+        const parsedCart: CartItem[] = JSON.parse(cartData);
+        const calculatedSubTotal = parsedCart.reduce(
+          (sum, item) => sum + (item.subTotal || (item.discountPrice || item.price) * item.quantity),
+          0
+        );
+        setSubTotal(calculatedSubTotal);
+      } catch (error) {
+        console.error("Error parsing cart data:", error);
+      }
+    }
+  }, []);
+
     console.log("sellerUser", sellerUser)
   const [selectedShippingMethodId, setSelectedShippingMethodId] = useState<string | null>(null);
   const [formData, setFormData] = useState<FormData>({
@@ -94,6 +128,8 @@ const CheckoutPage: React.FC = () => {
      shippingMethod: "", 
   shippingMethodId: "" 
   });
+
+
 
   return (
     <main className="max-w-[1280px] mx-auto px-4 mt-16 pt-[40px] pb-10">
@@ -119,6 +155,7 @@ const CheckoutPage: React.FC = () => {
             onShippingMethodSelect={setSelectedShippingMethodId}
             onFormDataChange={setFormData}
             initialFormData={formData}
+            subTotal={subTotal}
           />
         </div>
       </div>
