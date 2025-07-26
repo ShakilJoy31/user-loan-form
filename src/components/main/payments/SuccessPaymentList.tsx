@@ -80,7 +80,7 @@ const SuccessPaymentList = () => {
     : 0;
 
   return (
-    <div className=" min-h-screen bg-gray-100 p-6 w-full mt-10 lg:mt-16">
+    <div className=" min-h-screen bg-gray-100 p-6 w-full lg:max-w-[1280px] mx-auto mt-10 lg:mt-16">
       <div className="bg-white shadow-lg rounded-lg p-8 w-full text-center">
         {/* Success Message */}
         <FiCheckCircle size={60} className="text-green-500 mx-auto mb-3" />
@@ -93,7 +93,7 @@ const SuccessPaymentList = () => {
         </p>
 
 
-        <div className="flex flex-col lg:flex-row lg:justify-between">
+        <div className="flex flex-col lg:flex-row lg:justify-center gap-20">
 
         
         {/* Transaction Details */}
@@ -282,7 +282,7 @@ const SuccessPaymentList = () => {
         </div>
 
         {/* Buttons */}
-        <div className="mt-6 flex justify-between">
+        <div className="mt-6 flex justify-center gap-20">
           <Button
             onClick={() => router.push("/")}
             className="bg-gray-600 text-white"

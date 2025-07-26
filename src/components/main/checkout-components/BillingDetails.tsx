@@ -391,7 +391,7 @@ const handleApplyCoupon = async () => {
             onClick={handleApplyCoupon}
             disabled={couponLoading}
             variant={"outline"}
-            className="bg-orange-500 text-white text-xs md:text-sm font-medium h-[48px] px-5 w-[126px] rounded-md hover:bg-orange-600 transition-colors"
+            className="bg-orange-500 hover:text-white text-white text-xs md:text-sm font-medium h-[48px] px-5 w-[126px] rounded-md hover:bg-orange-600 transition-colors"
           >
             {couponLoading 
               ? translate("লোড হচ্ছে...", "Loading...") 
