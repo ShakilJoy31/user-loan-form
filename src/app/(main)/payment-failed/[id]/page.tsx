@@ -1,10 +1,11 @@
-import PaymentFaileded from '@/components/main/payments/PaymentFaileded';
+
+import PaymentFailedList from '@/components/main/payments/PaymentFailedList';
 import React from 'react';
 
 const PaymentFailed = () => {
     return (
         <div>
-            <PaymentFaileded />
+            <PaymentFailedList />
         </div>
     );
 };
