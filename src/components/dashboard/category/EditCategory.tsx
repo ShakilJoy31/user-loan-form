@@ -120,7 +120,7 @@ export default function EditCategory({
 
       try {
         const response = await addThumbnail(formData).unwrap();
-        imageUrl = response?.data[0];
+        imageUrl = Array.isArray(response?.data) ? response.data[0] : response?.data;
       } catch (error) {
         const apiError = error as ApiError;
         toast.error(apiError?.data?.message || "Error uploading image");
@@ -134,7 +134,7 @@ export default function EditCategory({
 
       try {
         const response = await addThumbnail(formData).unwrap();
-        bannerUrl = response?.data[0];
+        bannerUrl = Array.isArray(response?.data) ? response.data[0] : response?.data;
       } catch (error) {
         const apiError = error as ApiError;
         toast.error(apiError?.data?.message || "Error uploading image");

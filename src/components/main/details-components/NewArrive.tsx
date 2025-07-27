@@ -5,9 +5,43 @@ import { ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 import Link from "next/link";
+import toast from "react-hot-toast";
+import { useState } from "react";
 
 interface ShopPageResponse {
   newArrival: Product[];
+  shopProfile: ShopProfile[];
+}
+
+interface ShopProfile {
+    id?: number;
+    name?: string;
+    email?: string;
+    contactNo?: string;
+    UserCompanyInfo: {
+        id: number;
+        userId: number;
+        shopName: string;
+        profileImage: string;
+        bannerImage: string;
+        slug: string;
+        ownerName: string;
+        designation: string;
+        city: string;
+        area: string;
+        tradeLicense: string;
+        map: string;
+        about: string | null;
+        createdAt: string;
+        updatedAt: string;
+    };
+    UserShopCategory: {
+        id: number;
+        userId: number;
+        categoryId: number;
+        createdAt: string;
+        updatedAt: string;
+    }[];
 }
 
 interface Product {
@@ -38,7 +72,23 @@ interface Product {
   }[];
 }
 
-const ProductCard = ({ product }: { product: Product }) => {
+interface CartItem {
+    productId: number;
+    sku: string;
+    quantity: number;
+    price: number;
+    subTotal: number;
+    sellerShopName: string;
+    sellerId: number;
+    productName?: string;
+    productImage?: string;
+}
+
+const ProductCard = ({ product, handleAddToCart }: { 
+  product: Product, 
+  shopProfile: ShopProfile,
+  handleAddToCart: (product: Product) => void 
+}) => {
   const productImage = product.ProductImage?.[0]?.imageUrl;
   const productItem = product.ProductItem?.[0];
   const hasDiscount =
@@ -47,7 +97,6 @@ const ProductCard = ({ product }: { product: Product }) => {
     ? productItem.price - productItem.discountPrice
     : 0;
 
-  // Default rating and reviews since they're not in the API response
   const rating = 5;
   const reviews = 44;
 
@@ -90,7 +139,13 @@ const ProductCard = ({ product }: { product: Product }) => {
               </span>
             )}
           </p>
+          {/* add to cart */}
           <Button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleAddToCart(product);
+            }}
             variant={"outline"}
             size={"xs"}
             className="text-gray-700 hover:text-[#EE5A2C] transition-colors"
@@ -103,8 +158,79 @@ const ProductCard = ({ product }: { product: Product }) => {
   );
 };
 
-const NewArrive = ({ newArrival }: ShopPageResponse) => {
+const NewArrive = ({ newArrival, shopProfile }: ShopPageResponse) => {
   const { translate } = useCustomTranslator();
+  const [quantity] = useState(1);
+
+  const handleAddToCart = (product: Product) => {
+    const productItem = product.ProductItem?.[0];
+    if (!productItem) {
+      console.error("No product item found");
+      toast.error("No product item found");
+      return;
+    }
+
+    const currentPrice = (productItem.price - productItem.discountPrice);
+
+    const cartItem: CartItem = {
+      productId: product.id,
+      sku: productItem.sku,
+      quantity: quantity,
+      price: currentPrice || 0,
+      subTotal: currentPrice * quantity,
+      sellerShopName: shopProfile[0]?.UserCompanyInfo?.shopName,
+      sellerId: shopProfile[0]?.UserCompanyInfo?.userId,
+      productName: product.productName,
+      productImage: product.ProductImage?.[0]?.imageUrl,
+    };
+
+    const existingCartString = localStorage.getItem('cart');
+    let existingCart: CartItem[] = [];
+    
+    try {
+      existingCart = existingCartString ? JSON.parse(existingCartString) : [];
+    } catch (error) {
+      console.error("Error parsing cart data from localStorage", error);
+      toast.error("Failed to load your cart. Please try again.");
+      existingCart = [];
+    }
+
+    // Check if the exact same product (same productId and sku) already exists in cart
+    const existingItem = existingCart.find(item => 
+      item.productId === cartItem.productId && 
+      item.sku === cartItem.sku
+    );
+
+    if (existingItem) {
+      toast.error(`${cartItem.productName} is already in your cart`);
+      return; // Exit the function if product already exists
+    }
+
+    // If we get here, the product isn't in the cart yet, so add it
+    existingCart.push(cartItem);
+    toast.success(`${cartItem.productName} added to cart successfully`);
+
+    try {
+      localStorage.setItem('cart', JSON.stringify(existingCart));
+    } catch (error) {
+      console.error("Error saving to cart", error);
+      toast.error("Failed to update your cart. Please try again.");
+      return;
+    }
+
+    const groupedCart = existingCart.reduce<Record<string, CartItem[]>>((acc, item) => {
+      const shopName = item.sellerShopName;
+      if (!acc[shopName]) {
+        acc[shopName] = [];
+      }
+      acc[shopName].push(item);
+      return acc;
+    }, {});
+
+    const cartPayload = Object.values(groupedCart);
+
+    console.log("Add to cart payload:", cartPayload);
+  };
 
   return (
     <div className="px-[20px] mb-10 lg:mb-0">
@@ -119,9 +245,12 @@ const NewArrive = ({ newArrival }: ShopPageResponse) => {
             <div className="block md:hidden lg:block">
               <div className="grid grid-cols-2 gap-3 sm:gap-4">
                 {newArrival.map((product) => (
-                  // eslint-disable-next-line react/jsx-key
-                  <Link href={`/products/${product?.productLink}`}>
-                  <ProductCard key={product.id} product={product} />
+                  <Link key={product.id} href={`/products/${product?.productLink}`}>
+                    <ProductCard 
+                      product={product} 
+                      shopProfile={shopProfile[0]}
+                      handleAddToCart={handleAddToCart}
+                    />
                   </Link>
                 ))}
               </div>
@@ -129,11 +258,14 @@ const NewArrive = ({ newArrival }: ShopPageResponse) => {
             {/* Grid layout only for md devices */}
             <div className="hidden md:grid lg:hidden grid-cols-4 gap-3 sm:gap-4 border-b border-gray-300 py-4">
               {newArrival.map((product) => (
-                  // eslint-disable-next-line react/jsx-key
-                  <Link href={`/products/${product?.productLink}`}>
-                  <ProductCard key={product.id} product={product} />
-                  </Link>
-                ))}
+                <Link key={product.id} href={`/products/${product?.productLink}`}>
+                  <ProductCard 
+                    product={product} 
+                    shopProfile={shopProfile[0]}
+                    handleAddToCart={handleAddToCart}
+                  />
+                </Link>
+              ))}
             </div>
           </div>
         ) : (

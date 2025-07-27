@@ -1,11 +1,11 @@
 
 "use client";
-import Image from "next/image";
 import React, { useState, ChangeEvent} from "react";
-import collectionBanner from "@/assets/Logo/payment-icons.png";
 import { Button } from "@/components/ui/button";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 import { useGetShippingMethodsQuery } from "@/redux/features/order/shippingMethodApi";
+import { useLazyVerifyCouponQuery } from "@/redux/features/order/discountApi";
+import toast from "react-hot-toast";
 
 interface ShippingMethod {
   id: string;
@@ -20,6 +20,7 @@ interface BillingAndPaymentProps {
   onShippingMethodSelect: (methodId: string) => void;
   onFormDataChange: (data: FormData) => void;
   initialFormData: FormData;
+  subTotal: number
 }
 
 interface FormData {
@@ -36,10 +37,13 @@ interface FormData {
   shippingMethodId: string; 
 }
 
+
+
 const BillingAndPayment: React.FC<BillingAndPaymentProps> = ({ 
   onShippingMethodSelect,
   onFormDataChange,
-  initialFormData
+  initialFormData,
+  subTotal
 }) => {
   const { translate } = useCustomTranslator();
   const [formData, setFormData] = useState<FormData>(initialFormData);
@@ -66,6 +70,7 @@ console.log(shippingMethodsData)
     setFormData(updatedFormData);
     onFormDataChange(updatedFormData);
   };
+  
 
 const handleShippingMethodSelect = (methodId: string) => {
   const selectedMethod = shippingMethodsData?.data?.find((m: ShippingMethod) => m.id === methodId);
@@ -79,7 +84,49 @@ const handleShippingMethodSelect = (methodId: string) => {
   onShippingMethodSelect(methodId); // Pass ID separately if needed for display
 };
 
-  
+const [triggerVerifyCoupon, { isLoading: couponLoading }] = useLazyVerifyCouponQuery();
+const [couponData, setCouponData] = useState<{
+  code: string;
+  discount: number;
+} | null>(null);
+
+const handleApplyCoupon = async () => {
+  if (!formData.promoCode) {
+    toast.error(translate("প্রোমো কোড লিখুন", "Please enter promo code"));
+    return;
+  }
+
+  try {
+    const response = await triggerVerifyCoupon({
+      code: formData.promoCode,
+      totalAmount: subTotal 
+    }).unwrap();
+
+    if (response.success && response.data) {
+      
+      setCouponData({
+        code: response.data.code,
+        discount: response.data.discount
+      });
+      
+      toast.success(translate("কুপন প্রয়োগ করা হয়েছে", "Coupon applied successfully"));
+      
+      // Update form data with coupon info
+      const updatedFormData = {
+        ...formData,
+        couponCode: response.data.code,
+        couponDiscount: response.data.discount,
+      };
+      setFormData(updatedFormData);
+      onFormDataChange(updatedFormData);
+    } else {
+      toast.error(translate("অবৈধ কুপন কোড", "Invalid coupon code"));
+    }
+  } catch (error) {
+    console.error("Coupon verification failed:", error);
+    toast.error(translate("কুপন যাচাই করতে ব্যর্থ", "Failed to verify coupon"));
+  }
+};
 
   return (
     <div className="space-y-6">
@@ -166,8 +213,29 @@ const handleShippingMethodSelect = (methodId: string) => {
               <option value="uttara">{translate("উত্তরা", "Uttara")}</option>
               <option value="mirpur">{translate("মিরপুর", "Mirpur")}</option>
             </select>
+
+
+               {/* Note Section */}
+        <div className="">
+          {/* <label className="text-base font-semibold mb-2 block">
+            {translate("নোট", "Note")}
+            <span className="text-red-500">*</span>
+          </label> */}
+          <input
+            name="note"
+            value={formData.note}
+            onChange={handleInputChange}
+            placeholder={translate(
+              "আপনার নোট এখানে লিখুন",
+              "Write your note here"
+            )}
+            className="w-full  border border-gray-200 rounded-md px-4 py-3 text-sm outline-none resize-none  focus:ring-1 focus:ring-orange-400"
+          />
+        </div>
           </div>
         </div>
+
+       
 
         <div className="mt-5">
           <textarea
@@ -274,7 +342,7 @@ const handleShippingMethodSelect = (methodId: string) => {
         </div>
 
         {/* Payment Icons */}
-        <div className="border border-gray-300 rounded-md p-4 mb-6 max-w-[584px] h-[121px] ">
+        {/* <div className="border border-gray-300 rounded-md p-4 mb-6 max-w-[584px] h-[121px] ">
           <p className="text-sm font-semibold mb-3">
             {translate("পেমেন্ট পদ্ধতি", "Payment Method")}
           </p>
@@ -287,65 +355,58 @@ const handleShippingMethodSelect = (methodId: string) => {
               className="w-full h-auto object-cover"
             />
           </div>
-        </div>
+        </div> */}
 
         {/* Discount Coupon */}
-        <div className="mb-6 max-w-[457px] ">
-          <label className="text-base font-semibold mb-2 block">
-            {translate("ডিসকাউন্ট কুপন:", "Discount Coupon :")}
-          </label>
-          <div className="flex items-stretch gap-2">
-            <div className="flex items-center bg-gray-100 border border-gray-200 rounded-md px-3 max-w-[321px] h-[48px]">
-              <svg
-                className="w-4 h-4 text-gray-400 mr-2"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2}
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M9 14l2-2m0 0l2-2m-2 2l2 2m-2-2l-2 2M5 12l-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4l-2-2m-2-2a2 2 0 100-4 2 2 0 000 4z"
-                />
-              </svg>
-              <input
-                type="text"
-                name="promoCode"
-                value={formData.promoCode}
-                onChange={handleInputChange}
-                placeholder={translate("প্রোমো কোড যোগ করুন", "Add promo code")}
-                className="w-full bg-gray-100 text-sm outline-none h-full placeholder:text-gray-400"
-              />
-            </div>
-
-            <Button
-              variant={"outline"}
-              className="bg-orange-500 text-white text-xs md:text-sm font-medium h-[48px] px-5 w-[126px] rounded-md hover:bg-orange-600 transition-colors"
+          <div className="mb-6 max-w-[457px]">
+        <label className="text-base font-semibold mb-2 block">
+          {translate("ডিসকাউন্ট কুপন:", "Discount Coupon :")}
+        </label>
+        <div className="flex items-stretch gap-2">
+          <div className="flex items-center bg-gray-100 border border-gray-200 rounded-md px-3 max-w-[321px] h-[48px]">
+            <svg
+              className="w-4 h-4 text-gray-400 mr-2"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+              viewBox="0 0 24 24"
             >
-              {translate("কোড প্রয়োগ করুন", "Apply Code")}
-            </Button>
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M9 14l2-2m0 0l2-2m-2 2l2 2m-2-2l-2 2M5 12l-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4l-2-2m-2-2a2 2 0 100-4 2 2 0 000 4z"
+              />
+            </svg>
+            <input
+              type="text"
+              name="promoCode"
+              value={formData.promoCode}
+              onChange={handleInputChange}
+              placeholder={translate("প্রোমো কোড যোগ করুন", "Add promo code")}
+              className="w-full bg-gray-100 text-sm outline-none h-full placeholder:text-gray-400"
+            />
           </div>
-        </div>
 
-        {/* Note Section */}
-        <div className="mb-6 max-w-[388px]">
-          <label className="text-base font-semibold mb-2 block">
-            {translate("নোট", "Note")}
-            <span className="text-red-500">*</span>
-          </label>
-          <textarea
-            name="note"
-            value={formData.note}
-            onChange={handleInputChange}
-            placeholder={translate(
-              "আপনার নোট এখানে লিখুন",
-              "Write your note here"
-            )}
-            className="w-full bg-gray-100 border border-gray-200 rounded-md px-4 py-3 h-[90px] text-sm outline-none resize-none placeholder:text-gray-400 focus:ring-1 focus:ring-orange-400"
-            rows={3}
-          />
+          <Button
+            onClick={handleApplyCoupon}
+            disabled={couponLoading}
+            variant={"outline"}
+            className="bg-orange-500 hover:text-white text-white text-xs md:text-sm font-medium h-[48px] px-5 w-[126px] rounded-md hover:bg-orange-600 transition-colors"
+          >
+            {couponLoading 
+              ? translate("লোড হচ্ছে...", "Loading...") 
+              : translate("কোড প্রয়োগ করুন", "Apply Code")}
+          </Button>
         </div>
+        
+        {couponData && (
+          <p className="text-green-600 text-sm mt-2">
+            {translate("কুপন প্রয়োগ করা হয়েছে", "Coupon applied")}: {couponData.code} ({couponData.discount}
+          </p>
+        )}
+      </div>
+
+        
       </div>
     </div>
   );

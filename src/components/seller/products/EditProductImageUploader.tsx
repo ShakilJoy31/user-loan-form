@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useAddThumbnailMutation } from "@/redux/features/file/fileApi";
 import toast from "react-hot-toast";
 import ButtonLoader from "@/components/common/ButtonLoader";
+import { ApiError } from "@/types/apiError";
 
 interface UploadedImage {
   id: number;
@@ -66,6 +67,7 @@ export default function ProductImageUploader({
       new URL(ensureAbsoluteUrl(url));
       return true;
     } catch (e) {
+      console.error("Invalid URL:", url, e);
       return false;
     }
   };
@@ -160,9 +162,9 @@ export default function ProductImageUploader({
       // Return the updated URLs to the parent
       const uploadedUrls = updatedGallery.map(img => img.src);
       onImagesUpdate(uploadedUrls);
-
-    } catch (error) {
-      toast.error("Some images failed to upload");
+    }  catch (error) {
+       const apiError = error as ApiError;
+      toast.error(apiError?.data?.message || '');
     }
   };
 

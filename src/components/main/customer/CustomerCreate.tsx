@@ -169,9 +169,10 @@ const CustomerCreate = () => {
                 >
                   {translate("অ্যাকাউন্ট তৈরি করুন", "Create Account")}
                 </Button>
+
                 <Button
                   onClick={() => setActiveTab("login")}
-                  className={`px-6 py-3 rounded-md transition ${
+                  className={`px-6 py-3 rounded-md w-full transition ${
                     activeTab === "login"
                       ? "bg-[#EE5A2C] text-white shadow-sm"
                       : "bg-transparent text-gray-400 hover:bg-transparent"

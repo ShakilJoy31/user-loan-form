@@ -1,4 +1,5 @@
-"use client"
+"use client";
+import DataLoader from "@/components/common/DataLoader";
 import SingleSellerAllProducts from "@/components/main/product-details-components/SingleSellerAllProducts";
 import SingleSellerProfile from "@/components/main/product-details-components/SingleSellerProfile";
 import { useGetSellerProductByIdQuery } from "@/redux/features/seller-api/productApi";
@@ -17,8 +18,9 @@ interface UserCompanyInfo {
   tradeLicense: string;
   createdAt: string;
   updatedAt: string;
-   profileImage: string | null;
-  bannerImage: string | null; 
+  profileImage: string | null;
+  bannerImage: string | null;
+  about: string;
 }
 
 interface ShopProfile {
@@ -28,7 +30,7 @@ interface ShopProfile {
   UserCompanyInfo: UserCompanyInfo;
   avatar: string;
   profileImage: string | null;
-  bannerImage: string | null; 
+  bannerImage: string | null;
 }
 
 interface Brand {
@@ -57,6 +59,11 @@ interface ProductImage {
 }
 
 interface Product {
+    category: {
+    name: string;
+  };
+  reviews: string;
+  rating: number;
   id: number;
   productName: string;
   productLink: string;
@@ -72,6 +79,83 @@ interface Meta {
   totalPage: number;
 }
 
+interface Product {
+    id: number;
+    productName: string;
+    productLink: string;
+    brand: {
+        brand: string;
+        image: string;
+    };
+    ProductItem: {
+        id: number;
+        productId: number;
+        sku: string;
+        price: number;
+        purchasePoint: number;
+        discountPrice: number;
+        stock: number;
+        barcode: string | null;
+    }[];
+    ProductImage: {
+        id: number;
+        productId: number;
+        imageUrl: string;
+        alt: string | null;
+        createdAt: string;
+        updatedAt: string;
+    }[];
+    shopProfile: {
+        id: number;
+        name: string;
+        email: string;
+        contactNo: string;
+        UserCompanyInfo: {
+            id: number;
+            userId: number;
+            shopName: string;
+            profileImage: string;
+            bannerImage: string;
+            slug: string;
+            ownerName: string;
+            designation: string;
+            city: string;
+            area: string;
+            tradeLicense: string;
+            map: string;
+            about: string | null;
+            createdAt: string;
+            updatedAt: string;
+        };
+        UserShopCategory: {
+            id: number;
+            userId: number;
+            categoryId: number;
+            createdAt: string;
+            updatedAt: string;
+        }[];
+
+    };
+}
+
+interface RelatedShop {
+    id: number;
+    shopName: string;
+    city: string;
+    area: string;
+    slug: string;
+    profileImage: string | null;
+    bannerImage: string | null;
+    avatar: string;
+    user: {
+        UserShopCategory: {
+            category: {
+                name: string;
+            };
+        }[];
+    };
+}
+
 interface ApiResponse {
   success: boolean;
   statusCode: number;
@@ -79,35 +163,60 @@ interface ApiResponse {
   meta: Meta;
   shopProfile: ShopProfile;
   data: Product[];
+  newArrival: Product[];
+  relatedShop: RelatedShop[];
 }
 
 const SingleSellerProducts = () => {
-    const [sellerData, setSellerData] = useState<ApiResponse | null>(null);
+  const [sellerData, setSellerData] = useState<ApiResponse | null>(null);
 
-   const { id } = useParams<{ id: string }>();
-const { data: sellerSingleProducts } = useGetSellerProductByIdQuery(id || "");
-console.log("sellerSingleProducts", sellerSingleProducts)
+  const { id } = useParams<{ id: string }>();
+  const {
+    data: sellerSingleProducts,
+    isLoading,
+    isError,
+  } = useGetSellerProductByIdQuery(id || "");
+  console.log("sellerSingleProducts", sellerSingleProducts);
 
-useEffect(() => {
-  if (sellerSingleProducts) {
-    setSellerData(sellerSingleProducts);
-  }
-}, [sellerSingleProducts]);
-    
+  useEffect(() => {
+    if (sellerSingleProducts) {
+      setSellerData(sellerSingleProducts);
+    }
+  }, [sellerSingleProducts]);
+
+  if (isLoading || !sellerData) {
     return (
-        <div className="max-w-[1280px] mx-auto px-4 pt-[40px] pb-[99px] space-y-8 ">
-            <div className="flex items-center gap-x-2 pt-16">
-                <span className="hover:cursor-pointer">Home</span> /{" "}
-                <span className="hover-cursor-pointer">Shop Details</span> /{" "}
-            </div>
-
-            
-                {sellerData && <SingleSellerProfile shopProfile={sellerData.shopProfile} />}
-            <div>
-                {sellerData && <SingleSellerAllProducts products={sellerData.data} />}
-            </div>
-        </div>
+      <div className="flex justify-center mt-40">
+        <DataLoader />
+      </div>
     );
+  }
+
+  if (isError) {
+    return <p>Filed to load data</p>;
+  }
+
+  return (
+    <div className="max-w-[1280px] mx-auto px-4 pt-[40px] pb-[99px] space-y-8 ">
+      <div className="flex items-center gap-x-2 pt-16">
+        <span className="hover:cursor-pointer">Home</span> /{" "}
+        <span className="hover-cursor-pointer">Shop Details</span> /{" "}
+      </div>
+
+        <SingleSellerProfile 
+
+        shopProfile={sellerData.shopProfile} />
+    
+      <div>
+          <SingleSellerAllProducts
+            shopProfile={sellerData.shopProfile}
+            products={sellerData.data}
+             newArrival={sellerData?.newArrival}
+             relatedShop= {sellerData?.relatedShop}
+          />
+      </div>
+    </div>
+  );
 };
 
 export default SingleSellerProducts;

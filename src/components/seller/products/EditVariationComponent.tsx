@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { X, ChevronDown, ChevronUp, Check } from "lucide-react";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
-import { Variation } from "@/types/seller/productInterface";
 
 interface VariationProps {
   variations: {

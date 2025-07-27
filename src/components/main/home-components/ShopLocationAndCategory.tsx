@@ -42,8 +42,8 @@ const ShopLocationAndCategory: React.FC = () => {
 
   const shop: Shop[] = shopsData?.data || [];
 
-    if (isLoading) {
-    return <div><DataLoader /></div>;
+    if (isLoading || !shopsData) {
+    return <div className="flex justify-center"><DataLoader /></div>;
   }
 
   if (isError) {

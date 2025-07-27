@@ -7,9 +7,10 @@ import { useState, useRef, useEffect } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import Image from "next/image";
 import resetImage from "@/assets/reset/change-password-success.gif";
-import { useForgetPasswordMutation, useOtpGenerateForgetMutation, useVerifyOtpForgetMutation } from "@/redux/features/user/forgetPasswordApi";
+import { useForgetPasswordMutation, useForgetPasswordRequestMutation, useVerifyOtpForgetMutation } from "@/redux/features/user/forgetPasswordApi";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
+import ButtonLoader from "@/components/common/ButtonLoader";
 
 interface ApiError {
   data?: {
@@ -17,9 +18,9 @@ interface ApiError {
   };
 }
 
-export const ForgetPassword = () => {
+export const AdminSellerForgetPassword = () => {
   const router = useRouter();
-  const [contactNo, setContactNo] = useState("");
+  const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [otpSent, setOtpSent] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
@@ -32,7 +33,7 @@ export const ForgetPassword = () => {
   const otpInputRefs = useRef<(HTMLInputElement | null)[]>(Array(6).fill(null));
   const timerRef = useRef<number | null>(null);
 
-  const [otpGenerateForget, { isLoading: isSendingOtp }] = useOtpGenerateForgetMutation();
+  const [forgetPasswordRequest, { isLoading: isSendingOtp }] = useForgetPasswordRequestMutation();
   const [verifyOtpForget, { isLoading: isVerifyingOtp }] = useVerifyOtpForgetMutation();
   const [forgetPassword, { isLoading: isResetting }] = useForgetPasswordMutation();
 
@@ -40,11 +41,11 @@ export const ForgetPassword = () => {
   useEffect(() => {
     const savedState = localStorage.getItem('forgetPasswordState');
     if (savedState) {
-      const { contactNo, otpSent, otpVerified, expiry } = JSON.parse(savedState);
+      const { email, otpSent, otpVerified, expiry } = JSON.parse(savedState);
       const now = new Date().getTime();
 
       if (expiry > now) {
-        setContactNo(contactNo);
+        setEmail(email);
         setOtpSent(otpSent);
         setOtpVerified(otpVerified);
 
@@ -105,7 +106,7 @@ export const ForgetPassword = () => {
   };
 
   const saveStateToStorage = (state: {
-    contactNo: string;
+    email: string;
     otpSent: boolean;
     otpVerified: boolean;
     expiry?: number;
@@ -119,7 +120,7 @@ export const ForgetPassword = () => {
   };
 
   const handleResetForm = () => {
-    setContactNo("");
+    setEmail("");
     setOtp("");
     setOtpSent(false);
     setOtpVerified(false);
@@ -132,19 +133,18 @@ export const ForgetPassword = () => {
   };
 
   const handleSendOtp = async () => {
-    if (!contactNo) {
-      toast.error("Phone number is required");
+    if (!email) {
+      toast.error("Email is required");
       return;
     }
 
-    // Check if phone number is exactly 11 digits
-    if (!/^\d{11}$/.test(contactNo)) {
-      toast("Phone number must be exactly 11 digits");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      toast("Please enter a valid email address");
       return;
     }
 
     try {
-      const response = await otpGenerateForget({ contactNo }).unwrap();
+      const response = await forgetPasswordRequest({ email }).unwrap();
       if (response.success) {
         Cookies.set("otpForgetToken", response.token, { expires: 5 / 60 / 24 }); // 5 minutes
         setOtpSent(true);
@@ -152,7 +152,7 @@ export const ForgetPassword = () => {
         // Set OTP expiry time (2 minutes from now)
         const expiryTime = new Date().getTime() + 2 * 60 * 1000;
         saveStateToStorage({
-          contactNo,
+          email,
           otpSent: true,
           otpVerified: false,
           expiry: expiryTime
@@ -160,7 +160,7 @@ export const ForgetPassword = () => {
 
         startTimer(2 * 60);
 
-        toast.success("OTP has been sent to your phone number");
+        toast.success("OTP has been sent to your email address.");
       }
     } catch (err: unknown) {
       console.error("Send OTP error:", err);
@@ -217,7 +217,7 @@ export const ForgetPassword = () => {
 
         // Update state in storage
         saveStateToStorage({
-          contactNo,
+          email,
           otpSent: true,
           otpVerified: true,
           expiry: new Date().getTime() + 10 * 60 * 1000 // 10 minutes for password reset
@@ -275,7 +275,7 @@ export const ForgetPassword = () => {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !otpSent && contactNo) {
+    if (e.key === 'Enter' && !otpSent && email) {
       handleSendOtp();
     }
   };
@@ -355,24 +355,23 @@ export const ForgetPassword = () => {
           {!otpSent ? (
             <>
               <p className="text-gray-600 mb-6 ml-2 text-[16px] text-center md:text-start">
-                Don&apos;t worry! It happens. Please enter the phone number associated with your account.
+                Don&apos;t worry! It happens. Please enter the email address associated with your account.
               </p>
 
               <form className="space-y-4 w-full ml-2" onSubmit={(e) => { e.preventDefault(); handleSendOtp(); }}>
                 <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
-                    Phone Number*
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                    Email*
                   </label>
                   <input
                     type="text"
-                    id="phone"
-                    value={contactNo}
+                    id="email"
+                    value={email}
                     onChange={(e) => {
-                      const value = e.target.value.replace(/\D/g, '').slice(0, 11);
-                      setContactNo(value);
+                      setEmail(e.target.value);
                     }}
                     onKeyDown={handleKeyDown}
-                    placeholder="Enter your phone number"
+                    placeholder="Enter your email"
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
                     required
                   />
@@ -383,7 +382,7 @@ export const ForgetPassword = () => {
                   disabled={isSendingOtp}
                   className="w-full rounded-full h-auto max-h-[63px] text-[16px] py-[18px] bg-[#EE5A2C] text-white md:rounded-md hover:bg-orange-800 transition mt-6"
                 >
-                  {isSendingOtp ? "Sending OTP..." : "Continue"}
+                  {isSendingOtp ? <ButtonLoader></ButtonLoader> : "Continue"}
                 </Button>
               </form>
             </>
@@ -391,7 +390,7 @@ export const ForgetPassword = () => {
             <form className="space-y-4 w-full ml-2" onSubmit={(e) => { e.preventDefault(); handleVerifyOtp(); }}>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-4">
-                  Please enter the code, just sent to phone number <br /> <span className="text-[#EE5A2C]">{contactNo}</span>
+                  Please enter the code, just sent to phone number <br /> <span className="text-[#EE5A2C]">{email}</span>
                   {timeLeft > 0 ? (
                     <div className="text-sm text-gray-600 mt-2">
                       OTP expires in: <span className="font-medium">{formatTime(timeLeft)}</span>

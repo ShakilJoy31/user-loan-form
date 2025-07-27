@@ -16,6 +16,7 @@ import { loadUserFromToken } from "@/utils/helper/loadUserFromToken";
 import { Brand, Category, ProductFormData, ProductImage, ProductVariationType, SubCategory, UserShopCategory, Variation, VariationValue } from "@/types/seller/productInterface";
 import { usePathname } from "next/navigation";
 import VariationComponent from "./EditVariationComponent";
+import { ApiError } from "@/types/apiError";
 
 interface ProductItem {
     id: number;
@@ -443,7 +444,8 @@ const EditProducts = () => {
                 toast.error(result?.data?.message || "Failed to update product");
             }
         } catch (error) {
-            toast.error("An error occurred while updating the product");
+            const apiError = error as ApiError;
+            toast.error(apiError?.data?.message || '');
         }
     };
 

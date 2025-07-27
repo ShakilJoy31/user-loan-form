@@ -14,7 +14,7 @@ export const publicNavigations: INavigations = {
     path: "/",
   },
   products: {
-    name: "Seller Login",
+    name: "Become a seller",
     path: "/seller-auth",
   },
   about: {

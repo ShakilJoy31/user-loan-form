@@ -30,6 +30,7 @@ import { useGetUserNotificationQuery } from "@/redux/features/user/userApi";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 import useSidebar from "@/hooks/useSidebar";
 import Image from "next/image";
+import { RiLockPasswordFill } from "react-icons/ri";
 
 const AdminSidebarNavigation = () => {
   const [activeSubmenu, setActiveSubmenu] = useState<string | null>(null);
@@ -47,29 +48,29 @@ const AdminSidebarNavigation = () => {
 
   const handleLogout = async () => {
     shareWithCookies("remove", `${appConfiguration.appCode}token`);
-    router.push("/login");
+    router.push("/proyojon-admin-auth/admin-login");
     router.refresh();
   };
 
- const filteredNavigationLinks = adminNavigationLinks?.filter((link) => {
-  // Add null checks
-  if (!user || !user.role) return false;
-  
-  if (user.role === "SUPER_ADMIN") return true;
-  if (user.role === "OPERATION_ADMIN") {
-    return !["Finance", "Delete"].includes(link.key);
-  }
-  if (user.role === "OPERATION_MANAGER") {
-    return (
-      !["Finance", "Settings"].includes(link.key) &&
-      ["Products", "Discounts", "Categories", "Orders"].includes(link.key)
-    );
-  }
-  if (user.role === "SUPPORT_EXECUTIVE") {
-    return ["Orders", "Customers"].includes(link.key);
-  }
-  return false;
-}) || []; 
+  const filteredNavigationLinks = adminNavigationLinks?.filter((link) => {
+    // Add null checks
+    if (!user || !user.role) return false;
+
+    if (user.role === "SUPER_ADMIN") return true;
+    if (user.role === "OPERATION_ADMIN") {
+      return !["Finance", "Delete"].includes(link.key);
+    }
+    if (user.role === "OPERATION_MANAGER") {
+      return (
+        !["Finance", "Settings"].includes(link.key) &&
+        ["Products", "Discounts", "Categories", "Orders"].includes(link.key)
+      );
+    }
+    if (user.role === "SUPPORT_EXECUTIVE") {
+      return ["Orders", "Customers"].includes(link.key);
+    }
+    return false;
+  }) || [];
 
   const getCountForLabel = (key: string) => {
     if (!notificationData?.data) return null;
@@ -119,9 +120,8 @@ const AdminSidebarNavigation = () => {
 
   return (
     <section
-      className={`transition-all duration-700 hidden lg:block ${
-        open ? "w-[260px]" : "w-[70px]"
-      }`}
+      className={`transition-all duration-700 hidden lg:block ${open ? "w-[260px]" : "w-[70px]"
+        }`}
     >
       <motion.aside
         initial={{ width: 70 }}
@@ -159,9 +159,8 @@ const AdminSidebarNavigation = () => {
             aria-label={translate("মেনু টগল", "Toggle menu")}
           >
             <FiChevronsRight
-              className={`transition-transform duration-300 ${
-                open ? "rotate-180" : ""
-              }`}
+              className={`transition-transform duration-300 ${open ? "rotate-180" : ""
+                }`}
               size={25}
             />
           </button>
@@ -219,9 +218,8 @@ const AdminSidebarNavigation = () => {
                       )}
                       {link.subLinks && open && (
                         <FiChevronDown
-                          className={`transition-transform ${
-                            activeSubmenu === link.key ? "rotate-180" : ""
-                          }`}
+                          className={`transition-transform ${activeSubmenu === link.key ? "rotate-180" : ""
+                            }`}
                         />
                       )}
                     </button>
@@ -268,11 +266,10 @@ const AdminSidebarNavigation = () => {
                                   >
                                     <span>{renderLabelWithCount(subLink)}</span>
                                     <FiChevronDown
-                                      className={`transition-transform ${
-                                        activeSubSubmenu === subLink.key
+                                      className={`transition-transform ${activeSubSubmenu === subLink.key
                                           ? "rotate-180"
                                           : ""
-                                      }`}
+                                        }`}
                                     />
                                   </button>
 
@@ -331,6 +328,15 @@ const AdminSidebarNavigation = () => {
           </ul>
         </nav>
 
+
+        <Link
+          href="/admin-change-password"
+          className="flex items-center justify-between px-3 py-2 border rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 transition"
+        >
+          <span>Change Password</span>
+          <RiLockPasswordFill size={20} />
+        </Link>
+
         {/* LOGOUT BUTTON */}
         <div>
           <AlertDialog>
@@ -346,8 +352,8 @@ const AdminSidebarNavigation = () => {
                 )}
               >
                 <LucideLogOut className="dropdown-icon size-4 mr-1" />
-                
-                 {open && <span> {translate("লগআউট", "Logout")}</span>}
+
+                {open && <span> {translate("লগআউট", "Logout")}</span>}
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>

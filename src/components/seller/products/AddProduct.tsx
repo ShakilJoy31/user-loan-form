@@ -46,7 +46,6 @@ const AddProducts = () => {
     const [selectedBrandName, setSelectedBrandName] = useState<string>("");
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
     const [selectedType, setSelectedType] = useState("Published");
-    const [hasInitializedVariations, setHasInitializedVariations] = useState(false);
     const [customValues, setCustomValues] = useState<Record<number, string[]>>({});
     const [selectedValues, setSelectedValues] = useState<Record<number, Array<{ id: number, name: string }>>>({});
     const [variationCombinations, setVariationCombinations] = useState<

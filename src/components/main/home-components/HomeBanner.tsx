@@ -21,21 +21,21 @@ import { useRef } from "react";
 import { useGetBannersQuery } from "@/redux/features/product/bannerApi";
 import ButtonLoader from "@/components/common/ButtonLoader";
 import DataLoader from "@/components/common/DataLoader";
+import Link from "next/link";
 
 
 interface Banner {
     id: string | number;
     image: string;
     title?: string;
-    subtitle?: string;
-    buttonText?: string;
-    offerText?: string;
+    link?: string;
 }
 
 const HomeBanner = () => {
     const swiperRef = useRef<SwiperType | null>(null);
      const { data: response, isLoading, isError } = useGetBannersQuery({});
       const banners: Banner[] = response?.data || [];
+      console.log(banners)
     
       if (isLoading) {
         return <div className="w-full h-[346px] flex items-center justify-center"><ButtonLoader /></div>;
@@ -92,10 +92,15 @@ const HomeBanner = () => {
                                         {/* Gradient overlay */}
                                         <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/30 to-black/90 z-10 rounded-md"></div>
 
-                                        <div className="absolute bottom-8 left-4 sm:left-[38px] w-[150px] sm:w-[175px] h-12 sm:h-[54px] py-2 sm:py-[15px] px-4 sm:px-[30px] text-white bg-[#ee5a2c] rounded-[10px] flex justify-center items-center z-20">
-                                            <button className="btn flex gap-2 sm:gap-3 text-sm sm:text-[16px] font-semibold items-center">
-                                                {banner.buttonText || "Shop Now"} <FaArrowRightLong />
+                                        <div className="absolute hover:bg-orange-800 hover:text-white bottom-8 left-4 sm:left-[38px] w-[150px] sm:w-[175px] h-12 sm:h-[54px] py-2 sm:py-[15px] px-4 sm:px-[30px] text-white bg-[#ee5a2c] rounded-[10px] flex justify-center items-center z-20">
+                                           <Link href={`/products/all-products/${banner?.link}`}>
+                                            <button className="btn cursor-pointer flex gap-2 sm:gap-3 text-sm sm:text-[16px] font-semibold items-center"
+                                            onMouseEnter={() => swiperRef.current?.autoplay.stop()}
+                            onMouseLeave={() => swiperRef.current?.autoplay.start()}
+                                            >
+                                                {"Shop Now"} <FaArrowRightLong />
                                             </button>
+                                           </Link>
                                         </div>
                                     </div>
                                 </SwiperSlide>

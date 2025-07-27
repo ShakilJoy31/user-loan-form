@@ -12,14 +12,16 @@ import { jwtDecode } from "jwt-decode";
 // import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { shareWithCookies } from "@/utils/helper/shareWithCookies";
+import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 
 
 export const AdminLogin = () => {
-   const [showPassword, setShowPassword] = useState(false);
-//   const dispatch = useDispatch();
+  const [showPassword, setShowPassword] = useState(false);
+  //   const dispatch = useDispatch();
   const router = useRouter();
   const [login, { isLoading }] = useLoginMutation();
-  
+  const { translate } = useCustomTranslator();
+
   const {
     register,
     handleSubmit,
@@ -35,16 +37,16 @@ export const AdminLogin = () => {
       const authData = jwtDecode(result?.accessToken || "");
       console.log(authData)
 
-     if(result) {
+      if (result) {
         shareWithCookies(
-        "set",
-        `${appConfiguration.appCode}token`,
-        1440, 
-        result?.accessToken
-      );
-     }
+          "set",
+          `${appConfiguration.appCode}token`,
+          1440,
+          result?.accessToken
+        );
+      }
 
-      router.push("/");
+      router.push("/proyojon-admin-portal");
     } catch (error) {
       console.error("Login Error:", error);
     }
@@ -56,7 +58,7 @@ export const AdminLogin = () => {
         <h2 className="text-3xl lg:text-[36px] font-normal mb-5 lg:mb-[40px] text-center">
           Admin account
         </h2>
-        
+
         {/* Email */}
         <div>
           <label
@@ -107,6 +109,10 @@ export const AdminLogin = () => {
           )}
         </div>
 
+        <p onClick={()=> router.push('/admin-seller-forget-password')} className="text-md text-orange-500 mt-1 underline cursor-pointer hover:text-orange-600 dark:text-white">
+          {translate("বর্তমান পাসওয়ার্ড ভুলে গেছেন? এখানে ক্লিক করুন", "Forgot Current Password? Click here")}
+        </p>
+
         <Button
           type="submit"
           className="w-full bg-[#EE5A2C] text-white h-auto max-h-[63px] py-[18px] rounded-full md:rounded-md hover:bg-orange-800 transition mt-6"
@@ -114,6 +120,8 @@ export const AdminLogin = () => {
         >
           {isLoading ? "Logging in..." : "Login"}
         </Button>
+
+
       </form>
     </div>
   );

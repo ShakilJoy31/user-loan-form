@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { FiEdit, FiTrash2, FiMapPin, FiPlus } from "react-icons/fi";
 import { Button } from "@/components/ui/button";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
-import Cookies from "js-cookie";
 import {
   Dialog,
   DialogContent,
@@ -23,7 +22,6 @@ import {
   useUpdateShippingInfoMutation
 } from "@/redux/features/user/shippingAddressApi";
 import DataLoader from "@/components/common/DataLoader";
-import { ApiError } from "@/types/apiError";
 import ButtonLoader from "@/components/common/ButtonLoader";
 
 interface ShippingAddress {

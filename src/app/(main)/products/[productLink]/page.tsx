@@ -7,7 +7,6 @@ import PriceSection from "@/components/main/product-details-components/PriceSect
 import ProductGallery from "@/components/main/product-details-components/ProductGallery";
 import ProductInfo from "@/components/main/product-details-components/ProductInfo";
 import { RecommendedProducts } from "@/components/main/product-details-components/RecommendedProducts";
-import RelatedShops from "@/components/main/product-details-components/RelatedShops";
 import TabsSection from "@/components/main/product-details-components/TabsSection";
 import { useGetProductByIdQuery } from "@/redux/features/seller-api/productApi";
 import { usePathname } from "next/navigation";
@@ -190,8 +189,8 @@ export default function ProductDetailsPage() {
     }));
   };
 
-  if (isLoading) {
-    return <div><DataLoader /></div>;
+  if (isLoading || !productsDetails) {
+    return <div className="flex justify-center mt-40"><DataLoader /></div>;
   }
 
   if (isError || !productData) {
