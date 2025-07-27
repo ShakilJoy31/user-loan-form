@@ -25,6 +25,8 @@ import ButtonLoader from "@/components/common/ButtonLoader";
 import Link from "next/link";
 import Pagination from "@/components/common/Pagination";
 import ChangeStatus from "./ChangeStatus";
+import PDFInvoice from "./PDFInvoice";
+import OrderInvoicePrintSingle from "./OrderInvoicePrintSingle";
 // import OrderDetails from "./OrderDetails";
 
 const headers = [
@@ -150,9 +152,9 @@ const OrderList = ({
     setSelectedRows([]);
   };
 
-  const handleRowClick = (orderId: number) => {
-    navigate(`/kry-admin-portal/admin-order-track/${orderId}`);
-  };
+//   const handleRowClick = (orderId: number) => {
+//     navigate(`/kry-admin-portal/admin-order-track/${orderId}`);
+//   };
 
   if (isLoading) {
     return <DataLoader />;
@@ -244,7 +246,7 @@ const OrderList = ({
                 <>
                   <td className="px-4 py-2 font-medium">{dynamicIndex}</td>
                   <td
-                    onClick={() => handleRowClick(row.id)}
+                    // onClick={() => handleRowClick(row.id)}
                     className="px-4 py-2 text-blue-500 font-medium cursor-pointer"
                   >
                     # {row.orderId}
@@ -380,7 +382,7 @@ const OrderList = ({
                         </Button>
 
                         <Button
-                          onClick={() => handleRowClick(row.id)}
+                        //   onClick={() => handleRowClick(row.id)}
                           variant="secondary"
                           className="w-full flex justify-start p-1"
                           size="xs"

@@ -27,6 +27,10 @@ import { useGetAllCategoryQuery } from "@/redux/features/product/categoryApi";
 import DataLoader from "@/components/common/DataLoader";
 import { dateFormatter } from "@/utils/helper/dateFormattor";
 import Link from "next/link";
+import OrderList from "./OrderList";
+import PendingOrder from "./PendingOrder";
+import ConfirmOrder from "./ConfirmOrder";
+import TodayConfirmOrder from "./TodayConfirmOrder";
 
 const OrderTab = () => {
   const [selectOption, setSelectOption] = useState<string | undefined>("");

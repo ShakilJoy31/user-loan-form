@@ -1,6 +1,5 @@
+import moment from "moment";
 
-const dateTimeFormattor = () => {
-  return 0
-}
-
-export default dateTimeFormattor
+export const timeDateFormatter = (dateTime: string) => {
+  return moment(dateTime).format("DD MMMM, YYYY, hh:mm A") || "Not Found";
+};

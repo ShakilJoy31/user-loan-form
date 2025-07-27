@@ -5,6 +5,7 @@ interface IConfigurationProps {
   databaseResetAPI: string;
   favicon: string;
   logo: string;
+  invoiceBanner:string;
   progressMessage: string;
   version: string;
 }
@@ -22,6 +23,7 @@ export const appConfiguration: IConfigurationProps = {
   favicon: "/iconic.png",
   logo: "/src/assets/longeng.png",
   version,
+  invoiceBanner:"",
   progressMessage:
     "Thank you for your interest! 🚀 We're currently working on implementing this feature. Stay tuned, as we'll be activating it very soon!",
 };
