@@ -1,3 +1,4 @@
+"use client"
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Barcode from "react-barcode";
 import { appConfiguration } from "@/utils/constant/appConfiguration";

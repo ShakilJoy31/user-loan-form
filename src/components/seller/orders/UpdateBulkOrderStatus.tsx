@@ -1,18 +1,17 @@
 "use client"
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { RiErrorWarningLine } from "react-icons/ri";
-import { useUpdateOrderStatusMutation } from "@/redux/features/order/orderApi";
+import { useEffect } from "react";
+import { useUpdateBulkOrderStatusMutation } from "@/redux/features/order/orderApi";
 import { useGetTCourierQuery } from "@/redux/features/courier/courierApi";
-import { statusSchema } from "@/schemas/statusSchema";
 import { removeFalsyProperties } from "@/utils/helper/removeFalsyProperties";
 import toast from "react-hot-toast";
+import { bulkStatusSchema } from "@/schemas/bulkStatusSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-
 const cancelReasons = [
   "High_Price",
   "Sort_Time_Delivery",
@@ -20,14 +19,26 @@ const cancelReasons = [
   "Out_Of_Zone",
   "Duplicate_Order",
   "Changed_Mind",
-  "Others"
 ];
 
-const ChangeStatus = ({ actionItem, isOpen, onClose }: any) => {
-  const [changeStatus, { isLoading, error }] = useUpdateOrderStatusMutation();
+// Map selectOption values to status types
+const optionToStatusMap = {
+  confirm: "CONFIRMED",
+  onHold: "HOLD",
+  cancelled: "CANCELLED",
+  processing: "PROCESSING",
+  shipped: "SHIPPED",
+  inDelivery: "IN_DELIVERY",
+  delivery: "DELIVERED",
+  completed: "COMPLETED",
+};
+
+const UpdateBulktype = ({ selectOption, isOpen, onClose, orderIds }: any) => {
+  const [changeStatus, { isLoading, error }] =
+    useUpdateBulkOrderStatusMutation();
   const { data: couriersData } = useGetTCourierQuery({
-    page: '1',
-    size: '1000'
+    page: "1",
+    size: "1000",
   });
 
   const {
@@ -38,52 +49,53 @@ const ChangeStatus = ({ actionItem, isOpen, onClose }: any) => {
     register,
     reset,
   } = useForm({
-    resolver: zodResolver(statusSchema),
+    resolver: zodResolver(bulkStatusSchema),
     defaultValues: {
-      orderStatus: actionItem?.orderStatus || "PENDING",
       note: "",
-      courierId: "",
+      courierId: undefined,
+      cancelReason: undefined,
     },
   });
+  useEffect(() => {
+    console.log("Form errors:", errors);
+  }, [errors]);
 
-  // Update available statuses
-  let availableStatuses: string[] = [];
-  
-  if (actionItem?.orderStatus === "PENDING") {
-    availableStatuses = ["CONFIRMED", "CANCELLED"];
-  } else if (actionItem?.orderStatus === "CONFIRMED") {
-    availableStatuses = ["HOLD", "CANCELLED", "PROCESSING"];
-  } else if (actionItem?.orderStatus === "HOLD") {
-    availableStatuses = ["CANCELLED", "PROCESSING"];
-  } else if (actionItem?.orderStatus === "CANCELLED") {
-    availableStatuses = ["CONFIRMED"];
-  } else if (actionItem?.orderStatus === "PROCESSING") {
-    availableStatuses = ["SHIPPED"];
-  } else if (actionItem?.orderStatus === "SHIPPED") {
-    availableStatuses = ["IN_DELIVERY"];
-  } else if (actionItem?.orderStatus === "IN_DELIVERY") {
-    availableStatuses = ["DELIVERED"];
-  } else if (actionItem?.orderStatus === "DELIVERED") {
-    availableStatuses = ["COMPLETED"]
-  }
+  // Automatically set the status based on selectOption
+  useEffect(() => {
+    // @ts-ignore
+    if (selectOption && optionToStatusMap[selectOption]) {
+        // @ts-ignore
+      setValue("type", optionToStatusMap[selectOption]);
+    }
+    if (orderIds) {
+      setValue("orders", orderIds);
+    }
+  }, [orderIds, selectOption, setValue]);
+
+  // Watch the selected order status to dynamically update the cancel reason validation
+  const type = watch("type");
 
   // Dynamically handle change of status
   const handleChangeStatus = async (data: any) => {
     try {
       const updateData = {
-        orderStatus: data.orderStatus,
+        orders: orderIds,
+        type: data.type,
         note: data.note,
-        cancelReason: data.cancelReason || null,
-        courierId: Number(data.courierId) || null,
+        cancelReason: data.cancelReason || undefined,
+        courierId: data.courierId ? Number(data.courierId) : undefined,
       };
-      const removeNulish = removeFalsyProperties(updateData, ["note", "cancelReason", "courierId"]);
-      const result = await changeStatus({
-        id: actionItem?.id,
-        data: removeNulish,
-      }).unwrap();
+
+      const cleanData = removeFalsyProperties(updateData, [
+        "note",
+        "cancelReason",
+        "courierId",
+      ]);
+
+      const result = await changeStatus(cleanData).unwrap();
 
       if (result.success) {
-        toast.success("Status changed successfully");
+        toast.success("Updated successfully");
         onClose();
         reset();
       }
@@ -91,9 +103,6 @@ const ChangeStatus = ({ actionItem, isOpen, onClose }: any) => {
       console.error("Error updating status:", error);
     }
   };
-
-  // Watch the selected order status to dynamically update the cancel reason validation
-  const orderStatus = watch("orderStatus");
 
   return (
     <div>
@@ -106,43 +115,21 @@ const ChangeStatus = ({ actionItem, isOpen, onClose }: any) => {
                 X
               </Button>
             </div>
+            <div className="mb-4 flex items-center gap-2">
+              <p className="font-medium">
+                Updating {orderIds.length} order(s) to:
+              </p>
+              <p className="text-lg font-bold capitalize">
+                {/* @ts-ignore */}
+                {optionToStatusMap[selectOption]
+                  ?.toLowerCase()
+                  .replace("_", " ")}
+              </p>
+            </div>
+
             <form onSubmit={handleSubmit(handleChangeStatus)}>
-              {/* Order Status Selection */}
-              <div className="mt-3">
-                <label htmlFor="order_status">Change Order Status</label>
-
-                <select
-                  id="order_status"
-                  {...register("orderStatus")}
-                  onChange={(e) =>
-                    setValue(
-                      "orderStatus",
-                      e.target.value as
-                        | "CONFIRMED"
-                        | "HOLD"
-                        | "CANCELLED"
-                        | "PROCESSING"
-                        | "SHIPPED"
-                        | "IN_DELIVERY"
-                        | "DELIVERED"
-                        | "COMPLETED"
-                    )
-                  }
-                  className="border-2 border-primary mt-1 p-2 rounded-md w-full"
-                >
-                  <option value="">Select Status...</option>
-                  {availableStatuses.map((status) => (
-                    <option key={status} value={status}>
-                      {status.replace("_", " ")}
-                    </option>
-                  ))}
-                </select>
-
-                
-              </div>
-
               {/* Courier Selection (Visible only when status is SHIPPED) */}
-              {orderStatus === "SHIPPED" && (
+              {type === "SHIPPED" && (
                 <div className="mt-3">
                   <label htmlFor="courier">Select Courier</label>
                   <select
@@ -169,24 +156,14 @@ const ChangeStatus = ({ actionItem, isOpen, onClose }: any) => {
               )}
 
               {/* Cancel Reason Field */}
-              {["CANCELLED"].includes(orderStatus) && (
+              {type === "CANCELLED" && (
                 <div className="mt-3">
                   <label htmlFor="cancelReason">Cancel Reason</label>
                   <select
                     id="cancelReason"
-                    {...register("cancelReason")}
-                    onChange={(e) =>
-                      setValue(
-                        "cancelReason",
-                        e.target.value as
-                          | "High_Price"
-                          | "Sort_Time_Delivery"
-                          | "Fake_Order"
-                          | "Out_Of_Zone"
-                          | "Duplicate_Order"
-                          | "Changed_Mind"
-                      )
-                    }
+                    {...register("cancelReason", {
+                      required: "Cancel reason is required",
+                    })}
                     className="border-2 mt-1 border-primary p-2 rounded-md w-full"
                   >
                     <option value="">Select a reason...</option>
@@ -226,11 +203,7 @@ const ChangeStatus = ({ actionItem, isOpen, onClose }: any) => {
                 <Button variant="outline" onClick={onClose}>
                   Cancel
                 </Button>
-                <Button
-                  type="submit"
-                  className=""
-                  disabled={isLoading || availableStatuses.length === 0}
-                >
+                <Button type="submit" disabled={isLoading}>
                   {isLoading ? "Updating..." : "Update Status"}
                 </Button>
               </div>
@@ -254,4 +227,4 @@ const ChangeStatus = ({ actionItem, isOpen, onClose }: any) => {
   );
 };
 
-export default ChangeStatus;
+export default UpdateBulktype;

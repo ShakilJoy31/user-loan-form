@@ -1,3 +1,4 @@
+"use client"
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {

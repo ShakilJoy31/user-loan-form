@@ -1,3 +1,4 @@
+"use client"
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -31,6 +32,19 @@ import OrderList from "./OrderList";
 import PendingOrder from "./PendingOrder";
 import ConfirmOrder from "./ConfirmOrder";
 import TodayConfirmOrder from "./TodayConfirmOrder";
+import OrderInvoicePrint from "./OrderInvoicePrint";
+import DeliverySlipPrint from "./DeliverySlipPrint";
+import CancellOrder from "./CancelOrder";
+import FullfillOrder from "./FullfilOrder";
+import FullfillCancellOrder from "./FullfilCancelOrder";
+import Shipped from "./Shipped";
+import ShippedOrder from "./ShippedOrder";
+import DeliveredOrder from "./DeliveredOrder";
+import CompletedOrder from "./CompletedOrder";
+import TrustOrder from "./TrustOrder";
+import UpdateBulktype from "./UpdateBulkOrderStatus";
+import MultiOrderPDF from "./MultiOrderPdf";
+import OrderExcel from "./OrderExcel";
 
 const OrderTab = () => {
   const [selectOption, setSelectOption] = useState<string | undefined>("");
@@ -657,7 +671,7 @@ const OrderTab = () => {
           <TrustOrder />
         </TabsContent>
 
-        <TabsContent value="PRE_ORDER">
+        {/* <TabsContent value="PRE_ORDER">
           <PreOrderListTab
             selectedRow={selectedRows}
             setSelectedRow={setSelectedRows}
@@ -666,7 +680,7 @@ const OrderTab = () => {
             from={filtering?.from}
             to={filtering?.to}
           />
-        </TabsContent>
+        </TabsContent> */}
       </Tabs>
 
       <div className="invisible hidden -left-full">
@@ -678,7 +692,7 @@ const OrderTab = () => {
         )}
       </div>
 
-      <UpdateBulkOrderStatus
+      <UpdateBulktype
         isOpen={modalOpen}
         onClose={() => {
           setModalOpen(false);

@@ -1,11 +1,14 @@
 "use client"
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { Button } from "@/components/ui/button";
 import Table from "@/components/ui/table";
 import { MoreHorizontal } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { FiSearch, FiTrash2 } from "react-icons/fi";
 import ChangeStatus from "./ChangeStatus";
+import OrderInvoicePrint from "./OrderInvoicePrint";
+import DeliverySlipPrint from "./DeliverySlipPrint";
 import { useReactToPrint } from "react-to-print";
 import OrderInvoicePrintSingle from "./OrderInvoicePrintSingle";
 import { PDFDownloadLink } from "@react-pdf/renderer";
@@ -20,11 +23,8 @@ import { format } from "date-fns";
 import { selectUser } from "@/redux/store";
 import { useDeleteOrderMutation, useGetOrdersQuery } from "@/redux/features/order/orderApi";
 import DataLoader from "@/components/common/DataLoader";
-import Link from "next/link";
 import PDFInvoice from "./PDFInvoice";
 import ButtonLoader from "@/components/common/ButtonLoader";
-import OrderInvoicePrint from "./OrderInvoicePrint";
-import DeliverySlipPrint from "./DeliverySlipPrint";
 import Pagination from "@/components/common/Pagination";
 
 const headers = [
@@ -33,6 +33,7 @@ const headers = [
   "Date",
   "Name",
   "Phone",
+  "Managed By",
   "Payment Status",
   "Order Status",
   "Total",
@@ -47,7 +48,7 @@ interface OrderListProps {
   from: any;
   to: any;
 }
-const PendingOrder = ({
+const CancellOrder = ({
   setSelectedRow,
   filterBy,
   categoryId,
@@ -59,8 +60,6 @@ const PendingOrder = ({
   const [actionItem, setActionItem] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const user = useSelector(selectUser);
-  const invoiceRef = useRef<HTMLDivElement>(null);
-  const reactToPrintInvoice = useReactToPrint({ contentRef: invoiceRef });
 
   useEffect(() => {
     if (selectedRows?.length > 0) {
@@ -81,7 +80,7 @@ const PendingOrder = ({
   });
   // Fetch orders dynamically
   const toYMD = (d?: Date | null) => (d ? format(d, "yyyy-MM-dd") : undefined);
-  const type = "PENDING";
+  const type = "CANCELLED";
   const { data, isLoading, isError } = useGetOrdersQuery({
     fromDate: toYMD(from),
     toDate: toYMD(to),
@@ -153,13 +152,11 @@ const PendingOrder = ({
 //     navigate(`/kry-admin-portal/admin-order-track/${orderId}`);
 //   };
 
+  const invoiceRef = useRef<HTMLDivElement>(null);
   const deliverySlipRef = useRef<HTMLDivElement>(null);
+  const reactToPrintInvoice = useReactToPrint({ contentRef: invoiceRef });
 
   // Create separate print functions for both print options
-  // const reactToPrintInvoice = useReactToPrint({ contentRef: invoiceRef });
-  // const reactToPrintDeliverySlip = useReactToPrint({
-  //   contentRef: deliverySlipRef,
-  // });
 
   if (isLoading) {
     return <DataLoader />;
@@ -169,17 +166,6 @@ const PendingOrder = ({
     <section>
       <div className="bg-gray-100 min-h-screen">
         {/* Header Section */}
-        {/* <div className="flex justify-between items-center mb-5">
-          <h1 className="text-2xl font-semibold">Orders</h1>
-          <div className="flex items-center gap-2">
-            <button className="px-4 py-1 font-semibold rounded border text-blue-500 mr-2">
-              Export
-            </button>
-            <button className="px-4 flex items-center py-1 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600">
-              <Plus className="font-bold w-4 h-4" /> Add Order
-            </button>
-          </div>
-        </div> */}
 
         {/* Filters and Search Section */}
         <div className="flex justify-between items-center bg-white px-4 rounded-lg">
@@ -248,6 +234,9 @@ const PendingOrder = ({
             renderRow={(row: any, index: number) => {
               const dynamicIndex =
                 index + 1 + (pagination.page - 1) * pagination.size;
+              const findManageBy = row?.OrderTracking?.find(
+                (status:any) => status?.orderStatus === "CANCELLED"
+              );
               return (
                 <>
                   <td className="px-4 py-2 font-medium">{dynamicIndex}</td>
@@ -276,6 +265,9 @@ const PendingOrder = ({
                     {row.OrderShippingInfo[0]?.phone}
                   </td>
                   <td className="px-4 py-2">
+                    {findManageBy?.user?.name || "N/A"}
+                  </td>
+                  <td className="px-4 py-2">
                     <span
                       className={`px-2 py-1 rounded text-xs ${
                         row.paymentStatus
@@ -291,7 +283,7 @@ const PendingOrder = ({
                       className={`px-2 py-1 rounded text-xs ${
                         row.orderStatus === "RECEIVED"
                           ? "bg-purple-100 text-purple-700"
-                          : "bg-gray-300 text-gray-700"
+                          : "bg-[#FF0000] text-white"
                       }`}
                     >
                       {row.orderStatus}
@@ -318,7 +310,6 @@ const PendingOrder = ({
                           className="flex flex-col gap-1"
                         >
                           <DropdownMenuLabel>Order Actions</DropdownMenuLabel>
-
                           <Button
                             onClick={() => setModalOpen(true)}
                             variant="secondary"
@@ -328,19 +319,6 @@ const PendingOrder = ({
                             Change Status
                           </Button>
 
-                          {row.orderStatus === "PENDING" && (
-                            <>
-                              <Link href={`/kry-admin-portal/edit-order/${row?.id}`}>
-                                <Button
-                                  variant="secondary"
-                                  className="w-full flex justify-start p-1"
-                                  size="xs"
-                                >
-                                  Edit Order
-                                </Button>
-                              </Link>
-                            </>
-                          )}
                           <Button
                             // onClick={() => handleRowClick(row.id)}
                             variant="secondary"
@@ -349,14 +327,17 @@ const PendingOrder = ({
                           >
                             Details
                           </Button>
-                          <Button
-                            onClick={() => reactToPrintInvoice()}
-                            variant="secondary"
-                            className="w-full flex justify-start p-1"
-                            size="xs"
-                          >
-                            Print Invoice
-                          </Button>
+
+                          <>
+                            <Button
+                              onClick={() => reactToPrintInvoice()}
+                              variant="secondary"
+                              className="w-full flex justify-start p-1"
+                              size="xs"
+                            >
+                              Print Invoice
+                            </Button>
+                          </>
                           <div className="invisible hidden -left-full">
                             {row && (
                               <OrderInvoicePrintSingle
@@ -365,33 +346,34 @@ const PendingOrder = ({
                               />
                             )}
                           </div>
-
-                          <PDFDownloadLink
-                            document={<PDFInvoice data={row} />}
-                            fileName={`order_${new Date()
-                              .toISOString()
-                              .slice(0, 10)}.pdf`}
-                          >
-                            {({ url, loading, error }) => (
-                              <div>
-                                {loading && (
-                                  <span>
-                                    <ButtonLoader />
-                                  </span>
-                                )}
-                                {error && <span>Error: {error.message}</span>}
-                                {url && (
-                                  <Button
-                                    variant="secondary"
-                                    className="w-full flex justify-start p-1"
-                                    size="xs"
-                                  >
-                                    PDF Download
-                                  </Button>
-                                )}
-                              </div>
-                            )}
-                          </PDFDownloadLink>
+                          <>
+                            <PDFDownloadLink
+                              document={<PDFInvoice data={row} />}
+                              fileName={`order_${new Date()
+                                .toISOString()
+                                .slice(0, 10)}.pdf`}
+                            >
+                              {({ url, loading, error }) => (
+                                <div>
+                                  {loading && (
+                                    <span>
+                                      <ButtonLoader />
+                                    </span>
+                                  )}
+                                  {error && <span>Error: {error.message}</span>}
+                                  {url && (
+                                    <Button
+                                      variant="secondary"
+                                      className="w-full flex justify-start p-1"
+                                      size="xs"
+                                    >
+                                      PDF Download
+                                    </Button>
+                                  )}
+                                </div>
+                              )}
+                            </PDFDownloadLink>
+                          </>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </>
@@ -430,4 +412,4 @@ const PendingOrder = ({
   );
 };
 
-export default PendingOrder;
+export default CancellOrder;

@@ -1,73 +1,34 @@
 "use client"
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Button } from "@/components/ui/button";
 import Table from "@/components/ui/table";
-import { MoreHorizontal } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { FiSearch, FiTrash2 } from "react-icons/fi";
-import ChangeStatus from "./ChangeStatus";
 import OrderInvoicePrint from "./OrderInvoicePrint";
 import DeliverySlipPrint from "./DeliverySlipPrint";
-import { useReactToPrint } from "react-to-print";
-import OrderInvoicePrintSingle from "./OrderInvoicePrintSingle";
-import { PDFDownloadLink } from "@react-pdf/renderer";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { useSelector } from "react-redux";
-import { format } from "date-fns";
 import { selectUser } from "@/redux/store";
-import { useDeleteOrderMutation, useGetOrdersQuery } from "@/redux/features/order/orderApi";
+import { useDeleteOrderMutation, useGetTrustOrdersQuery } from "@/redux/features/order/orderApi";
 import DataLoader from "@/components/common/DataLoader";
-import PDFInvoice from "./PDFInvoice";
-import ButtonLoader from "@/components/common/ButtonLoader";
 import Pagination from "@/components/common/Pagination";
 
 const headers = [
   "SL",
   "Order",
   "Date",
+  "Order by",
   "Name",
   "Phone",
   "Managed By",
   "Payment Status",
   "Order Status",
   "Total",
-  "Action",
 ];
 
-interface OrderListProps {
-  selectedRow: any[];
-  setSelectedRow: React.Dispatch<React.SetStateAction<any[]>>;
-  filterBy: string;
-  categoryId: any;
-  from: any;
-  to: any;
-}
-const TodayConfirmOrder = ({
-  setSelectedRow,
-  filterBy,
-  categoryId,
-  from,
-  to,
-}: OrderListProps) => {
+const TrustOrder = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRows, setSelectedRows] = useState<any[]>([]);
-  const [actionItem, setActionItem] = useState(null);
-  const [modalOpen, setModalOpen] = useState(false);
-  
   const user = useSelector(selectUser);
-
-  useEffect(() => {
-    if (selectedRows?.length > 0) {
-      setSelectedRow(selectedRows);
-    }
-  }, [selectedRows, setSelectedRow]);
-
   const [pagination, setPagination] = useState({
     sort: "asc",
     page: 1,
@@ -79,18 +40,12 @@ const TodayConfirmOrder = ({
       totalPage: null,
     },
   });
-  // Fetch orders dynamically
-  const toYMD = (d?: Date | null) => (d ? format(d, "yyyy-MM-dd") : undefined);
-  const type = "TODAY_CONFIRM";
-  const { data, isLoading, isError } = useGetOrdersQuery({
-    fromDate: toYMD(from),
-    toDate: toYMD(to),
-    filterBy: filterBy,
-    categoryId: categoryId,
+
+  // Fetch trust orders
+  const { data, isLoading, isError } = useGetTrustOrdersQuery({
     page: pagination.page,
     size: pagination.size,
     search: searchTerm,
-    status: type,
   });
 
   useEffect(() => {
@@ -113,6 +68,7 @@ const TodayConfirmOrder = ({
       page,
     }));
   };
+
   const handleItemsPerPageChange = (itemsPerPage: number) => {
     setPagination((prev) => ({
       ...prev,
@@ -124,11 +80,10 @@ const TodayConfirmOrder = ({
   const [deleteOrder] = useDeleteOrderMutation();
 
   const handleRowSelect = (order: any) => {
-    setSelectedRows(
-      (prev) =>
-        prev.some((selectedOrder) => selectedOrder.id === order.id)
-          ? prev.filter((selectedOrder) => selectedOrder.id !== order.id) // Deselect the row
-          : [...prev, order] // Select the row by adding the entire order object
+    setSelectedRows((prev) =>
+      prev.some((selectedOrder) => selectedOrder.id === order.id)
+        ? prev.filter((selectedOrder) => selectedOrder.id !== order.id)
+        : [...prev, order]
     );
   };
 
@@ -155,11 +110,19 @@ const TodayConfirmOrder = ({
 
   const invoiceRef = useRef<HTMLDivElement>(null);
   const deliverySlipRef = useRef<HTMLDivElement>(null);
-  const reactToPrintInvoice = useReactToPrint({ contentRef: invoiceRef });
 
   if (isLoading) {
     return <DataLoader />;
   }
+
+  const getOrderStatusUser = (status: string, orderTracking: any[]) => {
+    const statusTracking = orderTracking.find(
+      (track) => track.orderStatus === status
+    );
+    return statusTracking && statusTracking.user
+      ? statusTracking.user.name
+      : "N/A";
+  };
 
   return (
     <section>
@@ -168,23 +131,6 @@ const TodayConfirmOrder = ({
         <div className="flex justify-between items-center bg-white px-4 rounded-lg">
           <div className="flex gap-4 items-center my-4">
             {/* Filter Dropdown */}
-            {/* <div>
-              <Button
-                onClick={() => reactToPrintInvoice()}
-                disabled={selectedRows.length === 0}
-              >
-                Print
-              </Button>
-            </div>
-            <div>
-              <Button
-                variant={"outline"}
-                onClick={() => reactToPrintDeliverySlip()}
-                disabled={selectedRows.length === 0}
-              >
-                Delivery Slip
-              </Button>
-            </div> */}
 
             {/* Search Input */}
             <div className="relative w-1/3">
@@ -199,7 +145,6 @@ const TodayConfirmOrder = ({
             </div>
           </div>
 
-          {/* Action Buttons */}
           {user?.role !== "SUPPORT_EXECUTIVE" && (
             <div className="space-x-2 py-5">
               {/* Keep your existing delete button here */}
@@ -231,9 +176,6 @@ const TodayConfirmOrder = ({
             renderRow={(row: any, index: number) => {
               const dynamicIndex =
                 index + 1 + (pagination.page - 1) * pagination.size;
-              const findManageBy = row?.OrderTracking?.find(
-                (status:any) => status?.orderStatus === "TODAY_CONFIRM"
-              );
               return (
                 <>
                   <td className="px-4 py-2 font-medium">{dynamicIndex}</td>
@@ -256,13 +198,41 @@ const TodayConfirmOrder = ({
                   </td>
 
                   <td className="px-4 py-2">
+                    {row?.executive?.name || "User"}
+                  </td>
+
+                  <td className="px-4 py-2">
                     {row.OrderShippingInfo[0]?.name}
                   </td>
                   <td className="px-4 py-2">
-                    {row.OrderShippingInfo[0]?.phone}
+                    {row.OrderShippingInfo[0]?.phone?.replace(/^(\+88)/, "") ||
+                      "N/A"}
                   </td>
+
                   <td className="px-4 py-2">
-                    {findManageBy?.user?.name || "N/A"}
+                    {getOrderStatusUser("PENDING", row.OrderTracking) !== "N/A"
+                      ? getOrderStatusUser("PENDING", row.OrderTracking)
+                      : getOrderStatusUser("CONFIRMED", row.OrderTracking) !==
+                        "N/A"
+                      ? getOrderStatusUser("CONFIRMED", row.OrderTracking)
+                      : getOrderStatusUser("CANCELLED", row.OrderTracking) !==
+                        "N/A"
+                      ? getOrderStatusUser("CANCELLED", row.OrderTracking)
+                      : getOrderStatusUser("HOLD", row.OrderTracking) !== "N/A"
+                      ? getOrderStatusUser("HOLD", row.OrderTracking)
+                      : getOrderStatusUser("PROCESSING", row.OrderTracking) !==
+                        "N/A"
+                      ? getOrderStatusUser("PROCESSING", row.OrderTracking)
+                      : getOrderStatusUser("IN_DELIVERY", row.OrderTracking) !==
+                        "N/A"
+                      ? getOrderStatusUser("IN_DELIVERY", row.OrderTracking)
+                      : getOrderStatusUser("DELIVERED", row.OrderTracking) !==
+                        "N/A"
+                      ? getOrderStatusUser("DELIVERED", row.OrderTracking)
+                      : getOrderStatusUser("COMPLETED", row.OrderTracking) !==
+                        "N/A"
+                      ? getOrderStatusUser("COMPLETED", row.OrderTracking)
+                      : "N/A"}
                   </td>
                   <td className="px-4 py-2">
                     <span
@@ -278,7 +248,7 @@ const TodayConfirmOrder = ({
                   <td className="px-4 py-2">
                     <span
                       className={`px-2 py-1 rounded text-xs ${
-                        row.orderStatus === "RECEIVED"
+                        row.orderStatus === "COMPLETED"
                           ? "bg-purple-100 text-purple-700"
                           : "bg-gray-300 text-gray-700"
                       }`}
@@ -289,107 +259,15 @@ const TodayConfirmOrder = ({
                   <td className="px-4 py-2">
                     {row?.totalAmount?.toLocaleString()} ৳
                   </td>
-                  <td className="px-4 py-2">
-                    <>
-                      <div className="relative inline-block">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              onMouseEnter={() => setActionItem(row)}
-                              variant="ghost"
-                              className="h-8 w-8 p-0"
-                            >
-                              <span className="sr-only">Open menu</span>
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent
-                            align="end"
-                            className="flex flex-col gap-1"
-                          >
-                            <DropdownMenuLabel>Order Actions</DropdownMenuLabel>
-
-                            <Button
-                              onClick={() => setModalOpen(true)}
-                              variant="secondary"
-                              className="w-full flex justify-start p-1"
-                              size="xs"
-                            >
-                              Change Status
-                            </Button>
-                            <Button
-                            //   onClick={() => handleRowClick(row.id)}
-                              variant="secondary"
-                              className="w-full flex justify-start p-1"
-                              size="xs"
-                            >
-                              Details
-                            </Button>
-                            <Button
-                              onClick={() => reactToPrintInvoice()}
-                              variant="secondary"
-                              className="w-full flex justify-start p-1"
-                              size="xs"
-                            >
-                              Print Invoice
-                            </Button>
-                            <div className="invisible hidden -left-full">
-                              {row && (
-                                <OrderInvoicePrintSingle
-                                  ref={invoiceRef}
-                                  orderData={row}
-                                />
-                              )}
-                            </div>
-                            <>
-                              <PDFDownloadLink
-                                document={<PDFInvoice data={row} />}
-                                fileName={`order_${new Date()
-                                  .toISOString()
-                                  .slice(0, 10)}.pdf`}
-                              >
-                                {({ url, loading, error }) => (
-                                  <div>
-                                    {loading && (
-                                      <span>
-                                        <ButtonLoader />
-                                      </span>
-                                    )}
-                                    {error && (
-                                      <span>Error: {error.message}</span>
-                                    )}
-                                    {url && (
-                                      <Button
-                                        variant="secondary"
-                                        className="w-full flex justify-start p-1"
-                                        size="xs"
-                                      >
-                                        PDF Download
-                                      </Button>
-                                    )}
-                                  </div>
-                                )}
-                              </PDFDownloadLink>
-                            </>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </div>
-                    </>
-                  </td>
                 </>
               );
             }}
           />
         )}
 
-        <ChangeStatus
-          isOpen={modalOpen}
-          onClose={() => setModalOpen(false)}
-          actionItem={actionItem}
-        />
         {/* Pagination Controls */}
         <div className="my-10">
-          <Pagination
+         <Pagination
             totalPages={pagination.meta.totalPage || 1}
             currentPage={pagination.page}
             pageSize={pagination.size}
@@ -410,4 +288,86 @@ const TodayConfirmOrder = ({
   );
 };
 
-export default TodayConfirmOrder;
+export default TrustOrder;
+
+// <td className="px-4 py-2">
+//                   <>
+//                     <div className="relative inline-block">
+//                       <button
+//                         onClick={() => toggleDropdown(row.id)}
+//                         onMouseEnter={() => setActionItem(row)}
+//                         className="bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded inline-flex items-center"
+//                       >
+//                         <span className="sr-only">Open menu</span>
+//                         <MoreHorizontal className="h-4 w-4" />
+//                       </button>
+
+//                       {/* Dropdown Menu */}
+//                       {openDropdown === row.id && (
+//                         <ul
+//                           className="dropdown-menu absolute right-0 border border-primary p-2 space-y-2 text-gray-700  bg-white shadow-lg rounded-md w-32 mt-1 z-50"
+//                           onMouseLeave={() => setOpenDropdown(null)}
+//                         >
+//                           <li>
+//                             <Button
+//                               onClick={() => setModalOpen(true)}
+//                               variant="secondary"
+//                               className="w-full flex justify-start p-1"
+//                               size="xs"
+//                             >
+//                               Change Status
+//                             </Button>
+//                           </li>
+
+//                           {row.orderStatus === "PENDING" && (
+//                             <li>
+//                               <Link to={`/kry-admin-portal/edit-order/${row?.id}`}>
+//                                 <Button
+//                                   variant="secondary"
+//                                   className="w-full flex justify-start p-1"
+//                                   size="xs"
+//                                 >
+//                                   Edit Order
+//                                 </Button>
+//                               </Link>
+//                             </li>
+//                           )}
+
+//                           <li>
+//                             <Dialog>
+//                               <DialogTrigger asChild>
+//                                 <Button
+//                                   variant="destructive"
+//                                   className="w-full flex justify-start p-1"
+//                                   size="xs"
+//                                 >
+//                                   Return Product
+//                                 </Button>
+//                               </DialogTrigger>
+//                               <DialogContent className="sm:max-w-[700px] max-h-[90%] overflow-y-auto">
+//                                 <CreateReturnOrder actionItem={actionItem} />
+//                               </DialogContent>
+//                             </Dialog>
+//                           </li>
+
+//                           <li>
+//                             <Dialog>
+//                               <DialogTrigger asChild>
+//                                 <Button
+//                                   variant="outline"
+//                                   className="w-full p-1 flex justify-start"
+//                                   size="xs"
+//                                 >
+//                                   Details
+//                                 </Button>
+//                               </DialogTrigger>
+//                               <DialogContent className="sm:max-w-[1000px]">
+//                                 <OrderDetails actionItem={actionItem} />
+//                               </DialogContent>
+//                             </Dialog>
+//                           </li>
+//                         </ul>
+//                       )}
+//                     </div>
+//                   </>
+//                 </td>
