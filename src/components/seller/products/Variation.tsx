@@ -1,22 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { X, ChevronDown, ChevronUp, Check } from "lucide-react";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
-
-interface VariationValue {
-  id: number;
-  variationId: number;
-  name: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-interface Variation {
-  id: number;
-  name: string;
-  createdAt: string;
-  updatedAt: string;
-  VariationValue: VariationValue[];
-}
+import { Variation } from "@/types/seller/productInterface";
 
 interface VariationProps {
   variations: Variation[];
@@ -38,20 +23,23 @@ interface VariationProps {
   }>) => void;
   customValues: Record<number, string[]>;
   onCustomValuesChange: (values: Record<number, string[]>) => void;
+  selectedValues: Record<number, Array<{ id: number, name: string }>>;
+  setSelectedValues: React.Dispatch<React.SetStateAction<Record<number, Array<{ id: number, name: string }>>>>;
 }
 
 
 const VariationComponent: React.FC<VariationProps> = ({
   variations,
   variationCombinations,
-  onCombinationChange, customValues, onCustomValuesChange
+  onCombinationChange, customValues, onCustomValuesChange, selectedValues, setSelectedValues
 }) => {
   const { translate } = useCustomTranslator();
-  const [selectedValues, setSelectedValues] = useState<Record<number, Array<{ id: number, name: string }>>>({});
   const [searchTerm, setSearchTerm] = useState("");
   const [isOpenMap, setIsOpenMap] = useState<Record<number, boolean>>({});
   const dropdownRefs = useRef<Record<number, HTMLDivElement | null>>({});
   const inputRefs = useRef<Record<number, HTMLInputElement | null>>({});
+
+  console.log(selectedValues)
 
   // Initialize state when variations change
   useEffect(() => {
@@ -75,7 +63,11 @@ const VariationComponent: React.FC<VariationProps> = ({
     const handleClickOutside = (event: MouseEvent) => {
       Object.entries(dropdownRefs.current).forEach(([variationId, ref]) => {
         if (ref && !ref.contains(event.target as Node)) {
-          setIsOpenMap(prev => ({ ...prev, [variationId]: false }));
+          // Only close if the click wasn't on the toggle button
+          const toggleButton = ref.querySelector('button[aria-label="Toggle dropdown"]');
+          if (!toggleButton || !toggleButton.contains(event.target as Node)) {
+            setIsOpenMap(prev => ({ ...prev, [variationId]: false }));
+          }
         }
       });
     };
@@ -162,7 +154,7 @@ const VariationComponent: React.FC<VariationProps> = ({
 
 
 
-  const handleInputChange = (index: number, field: 'price' | 'stock' | 'discount' | 'purchasePoint', value: string) => {
+  const handleInputChange = (index: number, field: 'price' | 'stock' | 'discount', value: string) => {
     const numericValue = value === '' ? undefined : Number(value.replace(/^0+/, ''));
     const updated = [...variationCombinations];
 
@@ -174,8 +166,12 @@ const VariationComponent: React.FC<VariationProps> = ({
     onCombinationChange(updated);
   };
 
-  const toggleDropdown = (variationId: number) => {
-    
+  const toggleDropdown = (variationId: number, e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault(); // Prevent immediate closing
+      e.stopPropagation();
+    }
+
     setIsOpenMap(prev => {
       const newState = !prev[variationId];
       if (newState) {
@@ -186,7 +182,6 @@ const VariationComponent: React.FC<VariationProps> = ({
       return { ...prev, [variationId]: newState };
     });
   };
-
 
 
   const handleValueSelect = (variationId: number, valueId: number, valueName: string) => {
@@ -292,7 +287,7 @@ const VariationComponent: React.FC<VariationProps> = ({
                 <div className="relative">
                   <div
                     className="w-full min-h-[42px] px-4 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C] cursor-text flex flex-wrap gap-2 items-center"
-                    onClick={() => toggleDropdown(variation.id)}
+                    onMouseDown={(e) => toggleDropdown(variation.id, e)}
                   >
                     {getAllValuesForVariation(variation.id).length === 0 ? (
                       <span className="text-gray-400">
@@ -351,13 +346,13 @@ const VariationComponent: React.FC<VariationProps> = ({
                         <X size={18} />
                       </button>
                     )}
-                    <button type='button'
-                      onClick={(e) => {
+                    <button
+                      type='button'
+                      onMouseDown={(e) => { // Changed to onMouseDown
                         e.stopPropagation();
-                        toggleDropdown(variation.id)
+                        toggleDropdown(variation.id, e);
                       }}
                       className="text-gray-400 hover:text-gray-600"
-                      aria-label={translate("ড্রপডাউন টগল করুন", "Toggle dropdown")}
                     >
                       {isOpenMap[variation.id] ? (
                         <ChevronUp size={20} />
@@ -477,12 +472,11 @@ const VariationComponent: React.FC<VariationProps> = ({
 
             <div className="border rounded-xl overflow-x-auto">
               {/* Table Header */}
-              <div className="grid grid-cols-8 bg-[#FDEFEA] text-sm font-semibold text-gray-800 px-4 py-3 border-b min-w-[900px]">
+              <div className="grid grid-cols-7 bg-[#FDEFEA] text-sm font-semibold text-gray-800 px-4 py-3 border-b min-w-[900px]">
                 <h1 className="col-span-1 text-center">SL</h1>
                 <h1 className="col-span-2 text-center">SKU</h1>
                 <h1 className="col-span-1 text-center">Price</h1>
                 <h1 className="col-span-1 text-center">Discount</h1>
-                <h1 className="col-span-1 text-center">Purchas Point</h1>
                 <h1 className="col-span-1 text-center">Stock</h1>
                 <h1 className="col-span-1 text-center">Actions</h1>
               </div>
@@ -491,12 +485,12 @@ const VariationComponent: React.FC<VariationProps> = ({
               {variationCombinations.map((combination, index) => (
                 <div
                   key={`${combination.sku}-${index}`}
-                  className="grid grid-cols-8 items-center gap-3 px-4 py-3 border-b min-w-[900px]"
+                  className="grid grid-cols-7 items-center gap-3 px-4 py-3 border-b min-w-[900px]"
                 >
 
                   <div className="col-span-1">
                     <div className="text-sm font-medium text-gray-700 text-center">
-                      {index+1}
+                      {index + 1}
                     </div>
                   </div>
 
@@ -520,14 +514,6 @@ const VariationComponent: React.FC<VariationProps> = ({
                     value={combination.discount || ''}
                     onChange={(e) => handleInputChange(index, 'discount', e.target.value)}
                     placeholder="Discount"
-                    className="w-full px-3 py-2 text-sm border rounded-md placeholder:text-center text-center"
-                  />
-
-                  <input
-                    type="number"
-                    value={combination.purchasePoint || ''}
-                    onChange={(e) => handleInputChange(index, 'purchasePoint', e.target.value)}
-                    placeholder="Purchase Point"
                     className="w-full px-3 py-2 text-sm border rounded-md placeholder:text-center text-center"
                   />
 

@@ -15,7 +15,7 @@ export const authApi = apiSlice.injectEndpoints({
 
 
     // Get seller by id....
-    getSellerUserById: builder.query({
+    getUserById: builder.query({
       query: (id) => ({
         url: `/user/get-user-by-id/${id}`,
       }),
@@ -187,5 +187,5 @@ export const {
   useUpdateSellerStatusMutation,
   //seller all list
   useGetAllSellersQuery,
-  useGetSellerUserByIdQuery
+  useGetUserByIdQuery
 } = authApi;

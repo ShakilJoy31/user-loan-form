@@ -13,6 +13,7 @@ interface DecodedToken {
   role: string;
   avatar:string;
   phone:string;
+  contactNo:string;
 }
 
 export const loadUserFromToken = async (dispatch: AppDispatch) => {
@@ -30,7 +31,8 @@ export const loadUserFromToken = async (dispatch: AppDispatch) => {
           role: decoded.role,
           address: decoded.address || "",
           avatar: decoded.avatar || "",
-          phone: decoded.phone || ""
+          phone: decoded.phone || "",
+          contactNo: decoded.contactNo || ""
         })
       );
       return true;
@@ -48,7 +50,8 @@ export const loadUserFromToken = async (dispatch: AppDispatch) => {
         name: "",
         address: "",
         role: "",
-        phone: ""
+        phone: "",
+        contactNo: ""
       })
     );
     return false;

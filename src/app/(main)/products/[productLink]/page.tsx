@@ -1,5 +1,6 @@
 "use client";
 
+import DataLoader from "@/components/common/DataLoader";
 import AdditionalInfoCard from "@/components/main/product-details-components/AdditionalInfo";
 import DeliveryOptions from "@/components/main/product-details-components/DeliveryOptions";
 import PriceSection from "@/components/main/product-details-components/PriceSection";
@@ -8,6 +9,8 @@ import ProductInfo from "@/components/main/product-details-components/ProductInf
 import { RecommendedProducts } from "@/components/main/product-details-components/RecommendedProducts";
 import RelatedShops from "@/components/main/product-details-components/RelatedShops";
 import TabsSection from "@/components/main/product-details-components/TabsSection";
+import { useGetProductByIdQuery } from "@/redux/features/seller-api/productApi";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 interface ProductImage {
@@ -100,6 +103,7 @@ interface UserCompanyInfo {
   id: number;
   userId: number;
   shopName: string;
+  slug: string;
   ownerName: string;
   designation: string;
   city: string;
@@ -153,37 +157,31 @@ interface ProductData {
 
 export default function ProductDetailsPage() {
   const [productData, setProductData] = useState<ProductData | null>(null);
-  const [selectedOptions, setSelectedOptions] = useState<
-    Record<string, string>
-  >({});
+  const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({})
+
+      const pathname = usePathname();
+    const productId = pathname?.split('/')?.pop();
+    const { data: productsDetails, isLoading, isError } = useGetProductByIdQuery(productId || '', {
+        skip: !productId
+    });
+  console.log("product details",productsDetails);
 
   useEffect(() => {
-    const fetchProductData = async () => {
-      try {
-        const response = await fetch(
-          "https://proyojon-backend.vercel.app/api/v1/product/get-product-by-id/samsung-galaxy-a25"
-        );
-        const data = await response.json();
-        console.log("Product data:", data?.data);
-        setProductData(data?.data as ProductData);
+    if (productsDetails?.data) {
+      console.log("product details",productsDetails?.data)
+      setProductData(productsDetails.data as ProductData);
 
-        // Initialize selected options with first variation of each type
-        if (data?.data?.VariationType) {
-          const initialOptions: Record<string, string> = {};
-          data.data.VariationType.forEach((variation: VariationType) => {
-            if (variation.options.length > 0) {
-              initialOptions[variation.name] = variation.options[0].value;
-            }
-          });
-          setSelectedOptions(initialOptions);
-        }
-      } catch (error) {
-        console.error("Error fetching product data:", error);
+      if (productsDetails.data.VariationType) {
+        const initialOptions: Record<string, string> = {};
+        productsDetails.data.VariationType.forEach((variation: VariationType) => {
+          if (variation.options.length > 0) {
+            initialOptions[variation.name] = variation.options[0].value;
+          }
+        });
+        setSelectedOptions(initialOptions);
       }
-    };
-
-    fetchProductData();
-  }, []);
+    }
+  }, [productsDetails]);
 
   const handleOptionSelect = (variationName: string, optionValue: string) => {
     setSelectedOptions((prev) => ({
@@ -191,6 +189,14 @@ export default function ProductDetailsPage() {
       [variationName]: optionValue,
     }));
   };
+
+  if (isLoading) {
+    return <div><DataLoader /></div>;
+  }
+
+  if (isError || !productData) {
+    return <div>Error loading product data</div>;
+  }
 
   return (
     <div className="max-w-[1280px] mx-auto px-4 pt-[40px] pb-[99px] space-y-8 ">
@@ -246,6 +252,7 @@ export default function ProductDetailsPage() {
             sortDescription={productData?.sortDescription || null}
             selectedOptions={selectedOptions}
             onOptionSelect={handleOptionSelect}
+            productData={productData} 
           />
           {productData && (
             <PriceSection
@@ -263,7 +270,7 @@ export default function ProductDetailsPage() {
           />
         </div>
       </div>
-      <RelatedShops />
+      {/* <RelatedShops /> */}
     </div>
   );
 }

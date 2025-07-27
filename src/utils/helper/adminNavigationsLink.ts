@@ -306,6 +306,15 @@ const adminDashboardProduct: INavigationLink = {
         {
           icon: MdCategory,
           label: {
+            en: "Advertise Banner",
+            bn: "ব্যানার তালিকা",
+          },
+          key: "advertise-banner",
+          href: "/proyojon-admin-portal/advertise-banner",
+        },
+        {
+          icon: MdCategory,
+          label: {
             en: "Small Banner List",
             bn: "ছোট ব্যানার তালিকা",
           },
@@ -413,7 +422,7 @@ const adminDashboardOrders: INavigationLink = {
         bn: "শিপিং পদ্ধতি",
       },
       key: "shipping-method",
-      href: "/kry-admin-portal/shipping-method",
+      href: "/proyojon-admin-portal/shipping-method",
     },
     {
       icon: List,

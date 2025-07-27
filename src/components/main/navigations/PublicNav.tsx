@@ -2,19 +2,22 @@
 
 import { publicNavigations } from "@/utils/helper/publicNavigationsLink";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Menu, X, Heart, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import { FaUser } from "react-icons/fa";
 import { MdLogout } from "react-icons/md";
 import navbarLogo from '@/assets/Home/navbarLogo.png';
-import avatar from '@/assets/Home/Square.png';
 import { motion, AnimatePresence } from "framer-motion";
 import type { Variants } from "framer-motion";
 import ThemeSwitcher from "@/components/common/ThemeSwitcher";
 import LocaleSwitcher from "@/components/common/LocaleSwitcher";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { useDispatch, useSelector } from "react-redux";
+import { selectUser } from "@/redux/store";
+import { loadUserFromToken } from "@/utils/helper/loadUserFromToken";
+import { useGetUserByIdQuery } from "@/redux/features/seller-auth/sellerLogin";
 
 const PublicNav = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -54,6 +57,28 @@ const PublicNav = () => {
     visible: { opacity: 1 },
     exit: { opacity: 0 }
   };
+
+    const user = useSelector(selectUser);
+    const [isUserLoaded, setIsUserLoaded] = useState(false);
+    const dispatch = useDispatch();
+
+    // Load user on initial render if not already loaded
+    useEffect(() => {
+        if (!user.id) {
+            loadUserFromToken(dispatch).then(() => {
+                setIsUserLoaded(true);
+            });
+        } else {
+            setIsUserLoaded(true);
+        }
+    }, [dispatch, user.id]);
+
+    const { data: customerInfo} = useGetUserByIdQuery(
+        user?.id,
+        { skip: !user.id || !isUserLoaded } // Skip if no user ID or user not loaded
+    );
+
+    console.log(customerInfo?.data)
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b bg-[#FD6801] text-white">
@@ -113,7 +138,9 @@ const PublicNav = () => {
                 </Button>
 
                 {/* Avatar Dropdown */}
-                <div className="relative inline-block mt-1">
+                {
+                  customerInfo && (
+                    <div className="relative inline-block mt-1">
                   <button
                     className="rounded-full border-2 border-white cursor-pointer overflow-hidden w-10 h-10 focus:outline-none"
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -121,7 +148,7 @@ const PublicNav = () => {
                     <Image
                       width={100}
                       height={100}
-                      src={avatar}
+                      src={customerInfo?.data?.avatar}
                       alt="User Avatar"
                       className="w-full h-full object-cover"
                     />
@@ -132,16 +159,16 @@ const PublicNav = () => {
                       <div className="absolute -top-2 right-3 w-4 h-4 bg-white dark:bg-gray-800 transform rotate-45"></div>
                       <div className="flex items-center gap-3 mb-3">
                         <Image
-                          src={avatar}
+                          src={customerInfo?.data?.avatar}
                           alt="User Avatar"
                           width={40}
                           height={40}
                           className="rounded-full border w-10 h-10 object-cover"
                         />
                         <div>
-                          <p className="font-semibold">Niko Flamini</p>
+                          <p className="font-semibold">{customerInfo?.data?.name}</p>
                           <p className="text-sm text-gray-500 dark:text-gray-300">
-                            nfilamini@yahoo.com
+                           {customerInfo?.data?.email}
                           </p>
                         </div>
                       </div>
@@ -172,6 +199,8 @@ const PublicNav = () => {
                     </div>
                   )}
                 </div>
+                  )
+                }
               </div>
             </nav>
 

@@ -6,14 +6,19 @@ import { useLoginSellerMutation } from "@/redux/features/seller-auth/sellerLogin
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { FcGoogle } from "react-icons/fc";
+// import { FcGoogle } from "react-icons/fc";
 import { Eye, EyeOff } from "lucide-react";
 import { shareWithCookies } from "@/utils/helper/shareWithCookies";
 import { appConfiguration } from "@/utils/constant/appConfiguration";
 import { loadUserFromToken } from "@/utils/helper/loadUserFromToken";
 import { useDispatch } from "react-redux";
+import Link from "next/link";
 
-export const SellerLogin = () => {
+interface SellerLoginProps {
+  setActiveTab: (tab: "login" | "create") => void;
+}
+
+export const SellerLogin = ({ setActiveTab }: SellerLoginProps) => {
   const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -115,18 +120,28 @@ export const SellerLogin = () => {
 
         <Button
           type="submit"
-          className="w-full bg-[#EE5A2C] text-white py-3 rounded-md hover:bg-orange-800 transition mt-6"
+          className="w-full bg-[#EE5A2C] text-white h-auto max-h-[63px] py-[18px] rounded-full md:rounded-md hover:bg-orange-800 transition mt-6"
         >
           {signUpLoader ? <ButtonLoader /> : 'Sign in'}
         </Button>
       </form>
 
-      <div className="flex justify-center mt-5 lg:mt-10 w-full">
+      <div className="font-medium text-[14px] mt-[16px] text-center">
+        <p className="text-gray-300">Already have an account?   <Link href="" onClick={(e) => {
+      e.preventDefault(); 
+      setActiveTab("create"); 
+    }}>
+      <span className="text-[#EE5A2C] hover:underline">Sign Up</span>
+    </Link>
+    </p>
+      </div>
+
+      {/* <div className="flex justify-center mt-5 lg:mt-10 w-full">
         <Button variant={"outline"} className="w-full py-[18px]">
           <FcGoogle />
           <span className="ml-1 text-[16px] font-normal">Sign Up with Google</span>
         </Button>
-      </div>
+      </div> */}
     </div>
   );
 };

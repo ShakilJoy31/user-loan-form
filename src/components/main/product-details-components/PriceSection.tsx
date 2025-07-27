@@ -56,15 +56,15 @@ interface VariationType {
 }
 
 interface ProductItemOption {
-  option: {
-    id: number;
-    value: string;
-    variationType: {
-      id: number;
-      name: string;
-      productId: number;
+  option?: {
+    id?: number;
+    value?: string;
+    variationType?: {
+      id?: number;
+      name?: string;
+      productId?: number;
     };
-    variationTypeId: number;
+    variationTypeId?: number;
   };
 }
 
@@ -140,7 +140,6 @@ interface CartItem {
   productId: number;
   sku: string;
   quantity: number;
-  discountPrice: number | 0; 
   price: number;
   subTotal: number;
   sellerShopName: string;
@@ -159,15 +158,19 @@ export default function PriceSection({ productItems, selectedOptions, productDat
   const [quantity, setQuantity] = useState(1);
   const { translate } = useCustomTranslator();
 
-  const findMatchingProductItem = (): ProductItem | undefined => {
-    return productItems.find(item => {
-      return item.options.every(itemOption => {
-        const variationTypeName = itemOption?.option?.variationType?.name;
-        const selectedValue = selectedOptions[variationTypeName];
-        return itemOption?.option?.value === selectedValue;
-      });
-    });
-  };
+const findMatchingProductItem = (): ProductItem | undefined => {
+  if (Object.keys(selectedOptions).length === 0) {
+    return productItems[0];
+  }
+
+  return productItems.find(item => {
+    const skuParts = item.sku.split('-');
+    
+    return Object.values(selectedOptions).every(optionValue => 
+      skuParts.includes(optionValue.toLowerCase())
+    );
+  });
+};
 
   const matchingProduct = findMatchingProductItem();
   const unitPrice = matchingProduct?.price || 0;
@@ -197,13 +200,12 @@ export default function PriceSection({ productItems, selectedOptions, productDat
     productId: matchingProduct.productId,
     sku: matchingProduct.sku,
     quantity: quantity,
-    price: unitPrice,
-    discountPrice: unitDiscountPrice, 
+    price: currentPrice,
     subTotal: subTotal,
     sellerShopName: productData.seller?.UserCompanyInfo?.shopName || "Unknown Shop",
     sellerId: productData.seller?.id || productData.sellerId || 0,
     productName: productData.productName,
-    productImage: productData.ProductImage?.[0]?.imageUrl
+    productImage: productData.ProductImage?.[0]?.imageUrl,
   };
 
   const existingCartString = localStorage.getItem('cart');
@@ -265,7 +267,7 @@ const handleAddToWishlist = () => {
   const wishlistItem = {
     id: productData.id,
     title: productData.productName,
-    price: unitPrice,
+    price: currentPrice,
     rating: productData.rating,
     reviewCount: productData.reviews?.length || 0,
     date: new Date().toLocaleString('en-US', {
@@ -284,8 +286,7 @@ const handleAddToWishlist = () => {
     productId: matchingProduct.productId,
     sku: matchingProduct.sku,
     quantity: quantity,
-    price: unitPrice,
-    discountPrice: unitDiscountPrice,
+    price: currentPrice,
     subTotal: subTotal,
     sellerShopName: productData.seller?.UserCompanyInfo?.shopName || "Unknown Shop",
     sellerId: productData.seller?.id || productData.sellerId || 0,

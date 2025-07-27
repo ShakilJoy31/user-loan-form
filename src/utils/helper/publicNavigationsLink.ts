@@ -14,23 +14,23 @@ export const publicNavigations: INavigations = {
     path: "/",
   },
   products: {
-    name: "Products",
-    path: "/products",
+    name: "Seller Login",
+    path: "/seller-auth",
   },
   about: {
-    name: "About Us",
-    path: "/about",
+    name: "LogIn",
+    path: "/auth",
   },
-  details: {
-    name: "Details",
-    path: "/products/details",
-  },
-  blogDetails: {
-    name: "Blog Details",
-    path: "/blog-details",
-  },
-  blogPage: {
-    name: "Blog Page",
-    path: "/blog-page",
-  },
+  // details: {
+  //   name: "Details",
+  //   path: "/products/details",
+  // },
+  // blogDetails: {
+  //   name: "Blog Details",
+  //   path: "/blog-details",
+  // },
+  // blogPage: {
+  //   name: "Blog Page",
+  //   path: "/blog-page",
+  // },
 };

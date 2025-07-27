@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { FaArrowLeftLong, FaArrowRightLong } from "react-icons/fa6";
-import shopLogo from '@/assets/Products_Image/switch.jpg'
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
@@ -24,22 +23,26 @@ export default function ProductGallery({ productImages = [] }: ProductGalleryPro
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const { translate } = useCustomTranslator();
 
-    // Use product images if available, otherwise fall back to default thumbnails
-    const thumbnails = productImages.length > 0 
-        ? productImages.map(img => img.imageUrl) 
-        : [shopLogo.src, shopLogo.src, shopLogo.src, shopLogo.src];
+    // Only use product images if available, otherwise empty array
+    const thumbnails = productImages.map(img => img.imageUrl);
 
     const nextImage = () => {
+        if (thumbnails.length === 0) return;
         setCurrentImageIndex((prevIndex) => 
             prevIndex === thumbnails.length - 1 ? 0 : prevIndex + 1
         );
     };
 
     const prevImage = () => {
+        if (thumbnails.length === 0) return;
         setCurrentImageIndex((prevIndex) => 
             prevIndex === 0 ? thumbnails.length - 1 : prevIndex - 1
         );
     };
+
+    if (thumbnails.length === 0) {
+        return null; // or return some placeholder/empty state
+    }
 
     return (
         <div className="w-full space-y-[16px] flex flex-col  dark:text-white">

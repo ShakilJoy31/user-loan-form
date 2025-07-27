@@ -37,6 +37,13 @@ export const authApi = apiSlice.injectEndpoints({
             providesTags: ["seller-login"],
         }),
 
+         getProductByIdForEdit: builder.query({
+            query: (productLink: string) => ({
+                url: `product/edit-get-product/${productLink}`,
+            }),
+            providesTags: ["seller-login"],
+        }),
+
         editProductById: builder.mutation({
             query: ({
                 id,
@@ -59,6 +66,15 @@ export const authApi = apiSlice.injectEndpoints({
             invalidatesTags: ["seller-login"],
         }),
 
+        //single seller products
+         getSellerProductById: builder.query({
+            query: (slug) => ({
+                url: `user/get-shop-page/${slug}`,
+            }),
+            providesTags: ["seller-login"],
+        }),
+
+
     }),
 });
 
@@ -68,5 +84,7 @@ export const {
     useGetAllProductsQuery,
     useDeleteProductMutation,
     useGetProductByIdQuery,
-    useEditProductByIdMutation
+    useEditProductByIdMutation,
+    useGetSellerProductByIdQuery,
+    useGetProductByIdForEditQuery
 } = authApi;

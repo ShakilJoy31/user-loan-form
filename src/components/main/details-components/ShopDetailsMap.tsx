@@ -1,13 +1,48 @@
 "use client"
-import Image from "next/image";
-import map from "@/assets/Home/map.png"
 import { FaStar } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
-const ShopDetailsMap = () => {
+interface ShopPageResponse {
+    success: boolean;
+    statusCode: number;
+    message: string;
+    meta: {
+        page: number;
+        size: number;
+        total: number;
+        totalPage: number;
+    };
+    shopProfile: {
+        id: number;
+        name: string;
+        email: string;
+        contactNo: string;
+        UserCompanyInfo: {
+            id: number;
+            userId: number;
+            shopName: string;
+            profileImage: string;
+            bannerImage: string;
+            slug: string;
+            ownerName: string;
+            designation: string;
+            city: string;
+            area: string;
+            tradeLicense: string;
+            map: string;
+            about: string | null;
+            createdAt: string;
+            updatedAt: string;
+        };
+    };
+}
+
+const ShopDetailsMap = ({shopProfile}: ShopPageResponse) => {
     const { translate } = useCustomTranslator();
+    console.log(shopProfile)
     return (
         <div>
             <h2 className="text-3xl font-medium mb-[14px]">
@@ -16,19 +51,19 @@ const ShopDetailsMap = () => {
                 }
             </h2>
             <div className=" mx-auto">
-                <Image 
-                width={614}
-                height={256}
-                src={map}
-                alt="map"
-                className="w-full h-auto object-cover"
-                />
+                 <div className="w-full h-[256px] overflow-hidden relative">
+  <div 
+    className="w-full h-full" 
+    dangerouslySetInnerHTML={{ __html: shopProfile?.UserCompanyInfo?.map || '' }}
+  >
+  </div>
+</div>
 
                  {/* Shop information section matching the image */}
                 <div className="my-4 flex justify-between items-center">
                    <div>
-                     <h3 className="text-xl font-bold">ElectroHub</h3>
-                    <p className="text-gray-600">© 10 no sector, Uttara</p>
+                     <h3 className="text-xl font-bold">{shopProfile?.UserCompanyInfo?.shopName}</h3>
+                    <p className="text-gray-600">{shopProfile?.UserCompanyInfo?.area} {","} {shopProfile?.UserCompanyInfo?.city}</p>
                     
                     <div className="flex items-center mt-2">
                         {/* Rating stars */}
@@ -44,9 +79,11 @@ const ShopDetailsMap = () => {
                             <FaRegHeart />
                         </div>
                      <div className="max-w-[140px] max-h-[40px] mt-3 text-white bg-[#EE5A2C] font-medium rounded-lg">
-                         <Button className="py-[8px] px-[15px]">
+                         <Link href={`/products/all-product/${shopProfile?.UserCompanyInfo?.slug}`}>
+                         <Button variant={"outline"} className="py-[8px] px-[15px] text-white bg-[#EE5A2C]">
                         Shop Now →
                     </Button>
+                         </Link>
                      </div>
                 </div>
             </div>

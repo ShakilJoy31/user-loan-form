@@ -15,6 +15,9 @@ i18n
     interpolation: {
       escapeValue: false,
     },
+     react: {
+      useSuspense: false, // recommended for Next.js
+    },
   });
 
 export default i18n;

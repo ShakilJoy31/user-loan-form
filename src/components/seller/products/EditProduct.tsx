@@ -7,34 +7,15 @@ import { Controller, useForm } from "react-hook-form";
 import TipTapEditor from "../../dashboard/tiptap/TipTapEditor";
 import { useDispatch, useSelector } from "react-redux";
 import { selectUser } from "@/redux/store";
-import { useGetSellerUserByIdQuery } from "@/redux/features/seller-auth/sellerLogin";
+import { useGetUserByIdQuery } from "@/redux/features/seller-auth/sellerLogin";
 import DataLoader from "@/components/common/DataLoader";
-import { useGetBrandsQuery, useEditProductByIdMutation } from "@/redux/features/seller-api/productApi";
+import { useGetBrandsQuery, useEditProductByIdMutation, useGetProductByIdForEditQuery } from "@/redux/features/seller-api/productApi";
 import ButtonLoader from "@/components/common/ButtonLoader";
 import toast from "react-hot-toast";
 import { loadUserFromToken } from "@/utils/helper/loadUserFromToken";
-import { Brand, Category, ProductFormData, SubCategory, UserShopCategory, Variation, VariationValue } from "@/types/seller/productInterface";
+import { Brand, Category, ProductFormData, ProductImage, ProductVariationType, SubCategory, UserShopCategory, Variation, VariationValue } from "@/types/seller/productInterface";
 import { usePathname } from "next/navigation";
-import { useGetProductByIdQuery } from "@/redux/features/seller-api/productApi";
 import VariationComponent from "./EditVariationComponent";
-
-interface ProductImage {
-    id: number;
-    imageUrl: string;
-    alt?: string | null;
-}
-
-interface ProductVariationType {
-    id: number;
-    name: string;
-    productId: number;
-    options: {
-        id: number;
-        value: string;
-        variationTypeId: number;
-    }[];
-}
-
 
 interface ProductItem {
     id: number;
@@ -47,6 +28,11 @@ interface ProductItem {
         option: string;
     }[];
 }
+interface ITags {
+    id: number,
+    productId: number,
+    tag: string,
+}
 
 interface ProductData {
     id: number;
@@ -57,6 +43,7 @@ interface ProductData {
     subCategoryId: number;
     brandId: number;
     sellerId: number;
+    Tags: ITags[],
     rating: number;
     seoTitle: string | null;
     seoDescription: string | null;
@@ -72,6 +59,8 @@ interface ProductData {
     };
 }
 
+
+
 const EditProducts = () => {
     const user = useSelector(selectUser);
     const [isUserLoaded, setIsUserLoaded] = useState(false);
@@ -79,7 +68,6 @@ const EditProducts = () => {
     const pathname = usePathname();
     const productId = pathname?.split('/')?.pop();
 
-    // Load user on initial render if not already loaded
     useEffect(() => {
         if (!user.id) {
             loadUserFromToken(dispatch).then(() => {
@@ -90,14 +78,16 @@ const EditProducts = () => {
         }
     }, [dispatch, user.id]);
 
-    const { data: sellerUser, isLoading: sellerUserLoading } = useGetSellerUserByIdQuery(
+    const { data: sellerUser, isLoading: sellerUserLoading } = useGetUserByIdQuery(
         user?.id,
         { skip: !user.id || !isUserLoaded }
     );
 
-    const { data: productData, isLoading: productLoading } = useGetProductByIdQuery(productId || '', {
+    const { data: productData, isLoading: productLoading } = useGetProductByIdForEditQuery(productId || '', {
         skip: !productId
     });
+
+    console.log(productData)
 
     const [editProductById, { isLoading: productUpdateLoading }] = useEditProductByIdMutation();
     const { data: brandData, isLoading: brandLoading } = useGetBrandsQuery(undefined);
@@ -110,13 +100,14 @@ const EditProducts = () => {
     const [selectedType, setSelectedType] = useState("Published");
     const [hasInitializedVariations, setHasInitializedVariations] = useState(false);
     const [customValues, setCustomValues] = useState<Record<number, string[]>>({});
+    const [selectedValues, setSelectedValues] = useState<Record<number, Array<{ id: number, name: string }>>>({});
     const [variationCombinations, setVariationCombinations] = useState<
         Array<{
             sku: string;
             optionValues: string[];
             price: number;
             stock: number;
-            discount?: number;
+            discountPrice?: number;
             purchasePoint?: number;
             id?: number;
         }>
@@ -142,12 +133,13 @@ const EditProducts = () => {
             description: "",
             longDescription: "",
             seoDescription: "",
+            isTop: productData?.data?.isTop || false,
+            isNew: productData?.data?.isNew || false,
             type: "Published",
             seoTitle: ""
         }
     });
 
-    // Get categories and subcategories from seller data
     const categories: Category[] = useMemo(() => {
         return sellerUser?.data?.UserShopCategory?.map((item: UserShopCategory) => item.category) || [];
     }, [sellerUser?.data?.UserShopCategory]);
@@ -156,17 +148,14 @@ const EditProducts = () => {
         ? categories.find((cat: Category) => cat.id === selectedCategory)?.ProductSubCategory || []
         : [];
 
-    // Get brands from API response
     const brands: Brand[] = brandData?.data || [];
 
-    // Get all variations from all categories
     const allVariations = useMemo(() => {
         return categories.flatMap((category: Category) =>
             category.CategoryWishVariations.map((item) => item.variation)
         );
     }, [categories]);
 
-    // Generate all possible combinations of variations
     const generateVariationCombinations = useCallback((variations: Variation[]) => {
         if (variations.length === 0) return [];
 
@@ -197,11 +186,9 @@ const EditProducts = () => {
         }));
     }, []);
 
-
     useEffect(() => {
         if (!hasInitializedVariations && allVariations.length > 0) {
             const combinations = generateVariationCombinations(allVariations);
-
             setVariationCombinations(combinations);
             setValue('variations', allVariations.map(v => ({
                 name: v.name,
@@ -212,38 +199,50 @@ const EditProducts = () => {
         }
     }, [hasInitializedVariations, allVariations, generateVariationCombinations, setValue]);
 
-    // Initialize form with product data when loaded
+    const [imageUrls, setImageUrls] = useState<string[]>([]);
 
     useEffect(() => {
+        if (productData?.data?.ProductImage) {
+            setImageUrls((productData.data as ProductData).ProductImage.map((img: ProductImage) => img.imageUrl));
+        }
+    }, [productData]);
+    const [productDescription, setProductDescription] = useState('');
+    const [longDescription, setLongDescription] = useState('');
+
+    const initializeFormData = useCallback(() => {
         if (productData?.data && !productLoading) {
             const product = productData.data as ProductData;
 
-            // Set basic form values
+            setProductDescription(product?.sortDescription || '')
+            setLongDescription(product?.description || '')
+
+            // Reset form with product data
             reset({
                 name: product.productName,
                 categoryId: product.categoryId,
                 subCategoryId: product.subCategoryId,
                 brandId: product.brandId,
                 images: product.ProductImage.map((img: ProductImage) => img.imageUrl),
-                tags: [], // Adjust based on your data structure
-                description: product.description || "",
-                longDescription: product.sortDescription || "",
+                tags: [],
+                description: product.sortDescription || "",
+                longDescription: product.description || "",
                 seoDescription: product.seoDescription || "",
                 seoTitle: product.seoTitle || "",
+                isTop: productData.data.isTop,
+                isNew: productData.data.isNew,
                 type: product.type
             });
 
-            // Set dropdown values
-            console.log(product)
+            // Set state values
             setSelectedCategory(product.categoryId);
             setSelectedSubCategory(product.subCategoryId);
-            // The tag prefilled.
-            // setSelectedTags()
             setSelectedBrand(product.brandId);
             setSelectedBrandName(product.brand?.brand || "");
             setSelectedType(product.type);
+            setSelectedTags(product.Tags.map((tag: ITags) => tag.tag));
+            setImageUrls(product.ProductImage.map((img: ProductImage) => img.imageUrl));
 
-            // Transform variations data to match the expected format
+            // Transform variations data
             const variations = product.VariationType.map((v: ProductVariationType) => ({
                 id: v.id,
                 name: v.name,
@@ -254,37 +253,53 @@ const EditProducts = () => {
                 }))
             }));
 
-            // Transform product items to match the expected format
+            // Transform product items
             const combinations = product.ProductItem.map((item: ProductItem) => ({
                 id: item.id,
                 sku: item.sku,
                 optionValues: item.options.map((opt) => opt.option),
                 price: item.price,
                 stock: item.stock,
-                discount: item.discountPrice,
+                discountPrice: item.discountPrice,
                 purchasePoint: item.purchasePoint
             }));
 
-            // Initialize custom values (if any)
-            const customVals: Record<number, string[]> = {};
+            // Initialize selected values for variations
+            const selectedVals: Record<number, Array<{ id: number, name: string }>> = {};
             variations.forEach(variation => {
-                const customOptions = combinations
-                    .flatMap(c => c.optionValues)
-                    .filter(val => !variation.VariationValue.some(v => v.name === val));
+                const selectedOptions = new Set<string>();
+                combinations.forEach(comb => {
+                    comb.optionValues.forEach(val => {
+                        if (variation.VariationValue.some(v => v.name === val)) {
+                            selectedOptions.add(val);
+                        }
+                    });
+                });
 
-                if (customOptions.length > 0) {
-                    customVals[variation.id] = customOptions;
-                }
+                selectedVals[variation.id] = variation.VariationValue
+                    .filter(v => selectedOptions.has(v.name))
+                    .map(v => ({ id: v.id, name: v.name }));
             });
 
-            // Get all variations from categories (if needed)
-            const allVars = categories.flatMap((category: Category) =>
-                category.CategoryWishVariations.map((item) => item.variation)
-            );
-
+            // Initialize custom values
+            const customVals: Record<number, string[]> = {};
+            variations.forEach(variation => {
+                const customOptions = new Set<string>();
+                combinations.forEach(comb => {
+                    comb.optionValues.forEach(val => {
+                        if (!variation.VariationValue.some(v => v.name === val)) {
+                            customOptions.add(val);
+                        }
+                    });
+                });
+                if (customOptions.size > 0) {
+                    customVals[variation.id] = Array.from(customOptions);
+                }
+            });
+            // console.log(selectedVals)
             setCustomValues(customVals);
+            setSelectedValues(selectedVals);
             setVariationCombinations(combinations);
-            setHasInitializedVariations(true);
 
             // Set the form values for variations and items
             setValue('variations', variations.map(v => ({
@@ -293,30 +308,85 @@ const EditProducts = () => {
             })));
             setValue('items', combinations);
         }
-    }, [productData, productLoading, reset, categories]);
+    }, [productData, productLoading, reset, setValue]);
 
+    console.log(longDescription, productDescription);
 
-
-
-    const [imageUrls, setImageUrls] = useState<string[]>([]);
-
-    // Initialize image URLs
     useEffect(() => {
-        if (productData?.data?.ProductImage) {
-            setImageUrls((productData.data as ProductData).ProductImage.map((img: ProductImage) => img.imageUrl));
-        }
-    }, [productData]);
+        initializeFormData();
+    }, [initializeFormData]);
 
     const handleImagesUpdate = useCallback((urls: string[]) => {
         setImageUrls(urls);
     }, []);
 
     const handleCombinationChange = useCallback((updatedCombinations: typeof variationCombinations) => {
-        // setVariationCombinations(updatedCombinations);
+        setVariationCombinations(updatedCombinations);
         setValue('items', updatedCombinations);
     }, [setValue]);
 
-    // Handle form submission
+
+
+
+
+
+
+    // New
+
+    const regenerateCombinations = useCallback((selectedValues: Record<number, Array<{ id: number, name: string }>>) => {
+        const variations = (productData.data as ProductData)?.VariationType?.map((v: ProductVariationType) => ({
+            id: v.id,
+            name: v.name,
+            VariationValue: v.options.map((o) => ({
+                id: o.id,
+                name: o.value,
+                variationId: v.id
+            }))
+        })) || [];
+
+        const newCombinations: typeof variationCombinations = [];
+
+        // Generate all possible combinations
+        const generate = (current: string[], index: number) => {
+            if (index === variations.length) {
+                if (current.length > 0) {
+                    // Find existing combination to preserve price/stock
+                    const existing = variationCombinations.find(c =>
+                        c.optionValues.length === current.length &&
+                        c.optionValues.every((val, i) => val === current[i])
+                    );
+
+                    newCombinations.push({
+                        sku: current.join('-').toLowerCase(),
+                        optionValues: [...current],
+                        price: existing?.price || 0,
+                        stock: existing?.stock || 0,
+                        discountPrice: existing?.discountPrice,
+                        purchasePoint: existing?.purchasePoint,
+                        id: existing?.id
+                    });
+                }
+                return;
+            }
+
+            const currentVariation = variations[index];
+            const valuesForVariation = selectedValues[currentVariation.id] || [];
+
+            if (valuesForVariation.length === 0) {
+                generate(current, index + 1);
+            } else {
+                valuesForVariation.forEach(value => {
+                    generate([...current, value.name], index + 1);
+                });
+            }
+        };
+
+        generate([], 0);
+        handleCombinationChange(newCombinations);
+    }, [variationCombinations, handleCombinationChange, productData]);
+
+
+
     const onSubmit = async (data: ProductFormData) => {
         if (!imageUrls || imageUrls.length === 0) {
             toast.error("Please upload product images first");
@@ -328,18 +398,23 @@ const EditProducts = () => {
             return;
         }
 
-        // Format variations for payload
-        const payloadVariations = allVariations.map((v: Variation) => {
-            const predefinedOptions = v.VariationValue.map((opt: VariationValue) => opt.name);
-            const customOptions = customValues[v.id] || [];
+        const currentVariations = (productData?.data as ProductData)?.VariationType || [];
+
+        // Format variations for payload using selectedValues
+        const payloadVariations = currentVariations.map((variation: ProductVariationType) => {
+            // Get the selected values for this variation
+            const selectedForVariation = selectedValues[variation.id] || [];
+
+            // Extract just the option names
+            const selectedOptionNames = selectedForVariation.map(v => v.name);
+
             return {
-                name: v.name,
-                options: [...predefinedOptions, ...customOptions]
+                name: variation.name,
+                options: selectedOptionNames
             };
         });
 
         const payload = {
-            id: productId,
             name: data.name,
             categoryId: selectedCategory,
             subCategoryId: selectedSubCategory,
@@ -347,29 +422,35 @@ const EditProducts = () => {
             images: imageUrls,
             tags: selectedTags,
             variations: payloadVariations,
-            items: variationCombinations.map((item) => ({
-                id: item.id, // Include ID for existing items
+            items: variationCombinations.map(item => ({
                 sku: item.sku,
                 price: item.price,
                 stock: item.stock,
                 optionValues: item.optionValues,
-                ...(item.discount !== undefined && { discount: item.discount }),
-                ...(item.purchasePoint !== undefined && { purchasePoint: item.purchasePoint })
+                ...(item.discountPrice !== undefined && { discountPrice: item.discountPrice }),
             })),
-            description: data.description,
-            longDescription: data.longDescription,
-            seoDescription: data.seoDescription,
-            type: selectedType,
-            seoTitle: data.seoTitle
+            ...(data.isTop !== false && { isTop: data.isTop }),
+            ...(data.isNew !== false && { isNew: data.isNew }),
+            // description: longDescription, // Long Description from form
+            // sortDescription: productDescription, // Product Description from form
         };
 
-        const result = await editProductById({id: productId, data:payload});
-        if (result?.data?.success) {
-            toast.success(result?.data?.message);
-        } else {
-            // toast.error(result?.error?.data?.message || "Failed to update product");
+        try {
+            const result = await editProductById({ id: productId, data: payload });
+            if (result?.data?.success) {
+                toast.success(result?.data?.message);
+            } else {
+                toast.error(result?.data?.message || "Failed to update product");
+            }
+        } catch (error) {
+            toast.error("An error occurred while updating the product");
         }
     };
+
+
+
+
+
 
     if (!isUserLoaded || sellerUserLoading || productLoading) {
         return <div className="flex justify-center"><DataLoader /></div>;
@@ -393,20 +474,16 @@ const EditProducts = () => {
 
     return (
         <div className="relative bg-white p-6 border rounded-md shadow-sm mt-[15px]">
-            {/* Floating Chat Button */}
             <button className="absolute top-4 right-4 bg-[#F4552F] hover:bg-[#e34724] p-2 rounded-md text-white">
                 <MessageSquare size={18} />
             </button>
 
-            {/* Header */}
             <form onSubmit={handleSubmit(onSubmit)}>
-                {/* First Row */}
                 <div className="flex justify-between items-center my-6">
                     <h2 className="text-lg font-semibold text-gray-800">
                         Edit Product
                     </h2>
 
-                    {/* Buttons */}
                     <div className="flex items-center justify-end gap-3 mt-6">
                         <button
                             type="submit"
@@ -423,13 +500,11 @@ const EditProducts = () => {
                     </div>
                 </div>
 
-                {/* Basic Details Section */}
                 <div className="border rounded-md p-6">
                     <h3 className="text-md font-semibold text-gray-800 mb-4">
                         Basic Details
                     </h3>
 
-                    {/* Product Title */}
                     <div className="mb-4">
                         <label className="text-sm font-medium text-gray-700 mb-1 block">
                             Product Title <span className="text-red-500">*</span>
@@ -451,7 +526,6 @@ const EditProducts = () => {
                         )}
                     </div>
 
-                    {/* Selects */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                         <SelectField
                             label="Select Type"
@@ -509,13 +583,12 @@ const EditProducts = () => {
                         <SelectField
                             label="SEO Title"
                             required
-                            options={["Select"]}
+                            options={["Select", "Best Product"]}
                             value={watch("seoTitle") || ""}
                             onChange={(val) => setValue("seoTitle", val)}
                         />
                     </div>
 
-                    {/* SEO Description */}
                     <div>
                         <label className="text-sm font-semibold text-gray-800 mb-1 block">
                             SEO Description
@@ -527,18 +600,60 @@ const EditProducts = () => {
                                 <textarea
                                     {...field}
                                     className="w-full min-h-[100px] border border-gray-300 rounded-md px-4 py-3 text-sm text-gray-700 resize-y"
+
                                 />
                             )}
                         />
                     </div>
+
+                    <div className="flex gap-4 my-4">
+                        <div className="flex items-center">
+                            <Controller
+                                name="isTop"
+                                control={control}
+                                render={({ field }) => (
+                                    <input
+                                        type="checkbox"
+                                        id="isTop"
+                                        checked={field.value || false}
+                                        onChange={(e) => field.onChange(e.target.checked)}
+                                        className="h-4 w-4 text-[#EE5A2C] border-gray-300 rounded hover:cursor-pointer"
+                                    />
+                                )}
+                            />
+                            <label htmlFor="isTop" className="ml-2 block text-sm text-gray-700 hover:cursor-pointer">
+                                Top Product
+                            </label>
+                        </div>
+
+                        <div className="flex items-center">
+                            <Controller
+                                name="isNew"
+                                control={control}
+                                render={({ field }) => (
+                                    <input
+                                        type="checkbox"
+                                        id="isNew"
+                                        checked={field.value || false}
+                                        onChange={(e) => field.onChange(e.target.checked)}
+                                        className="h-4 w-4 text-[#EE5A2C] border-gray-300 rounded hover:cursor-pointer"
+                                    />
+                                )}
+                            />
+                            <label htmlFor="isNew" className="ml-2 block text-sm text-gray-700 hover:cursor-pointer">
+                                New Product
+                            </label>
+                        </div>
+                    </div>
+
+
                 </div>
 
-                {/* Variation Section */}
                 <VariationComponent
-                    variations={productData?.data?.VariationType.map((v: { id: number; name: string; options: { id: number; value: any; }[]; }) => ({
+                    variations={(productData.data as ProductData)?.VariationType?.map((v: ProductVariationType) => ({
                         id: v.id,
                         name: v.name,
-                        VariationValue: v.options.map((o: { id: number; value: any; }) => ({
+                        VariationValue: v.options.map((o) => ({
                             id: o.id,
                             name: o.value,
                             variationId: v.id
@@ -548,10 +663,11 @@ const EditProducts = () => {
                     onCombinationChange={handleCombinationChange}
                     customValues={customValues}
                     onCustomValuesChange={setCustomValues}
+                    regenerateCombinations={regenerateCombinations}
+                    selectedValues={selectedValues}
+                    setSelectedValues={setSelectedValues}
                 />
 
-
-                {/* Image Uploader Section */}
                 <div className="mt-6">
                     <ProductImageUploader
                         onImagesUpdate={handleImagesUpdate}
@@ -559,15 +675,21 @@ const EditProducts = () => {
                     />
                 </div>
 
-                {/* Product Description */}
                 <div className="border rounded-xl p-[24px] mt-6">
                     <div className="mt-10">
                         <label className="mb-3 text-[16px] block">Product Description</label>
                         <Controller
-                            name="description"
+                            name="longDescription"  // This is for Product Description
                             control={control}
                             render={({ field }) => (
-                                <TipTapEditor content={field.value} onUpdate={field.onChange} />
+                                <TipTapEditor
+                                    content={productDescription}
+                                    onUpdate={(content) => {
+                                        field.onChange(content);  // Update react-hook-form's field value
+                                        setProductDescription(content);  // Update local state
+                                    }}
+
+                                />
                             )}
                         />
                     </div>
@@ -575,10 +697,17 @@ const EditProducts = () => {
                     <div className="mt-10">
                         <label className="mb-3 text-[16px] block">Long Description</label>
                         <Controller
-                            name="longDescription"
+                            name="description"  // This is for Long Description
                             control={control}
                             render={({ field }) => (
-                                <TipTapEditor content={field.value} onUpdate={field.onChange} />
+                                <TipTapEditor
+                                    content={longDescription}
+                                    onUpdate={(content) => {
+                                        field.onChange(content);  // Update react-hook-form's field value
+                                        setLongDescription(content);  // Update local state
+                                    }}
+
+                                />
                             )}
                         />
                     </div>
@@ -604,7 +733,6 @@ const EditProducts = () => {
     );
 };
 
-// Reusable Select Field Component
 const SelectField = ({
     label,
     required,
@@ -665,7 +793,6 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
-    // Close dropdown when clicking outside
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -754,7 +881,7 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
                             filteredOptions.map((opt: string) => (
                                 <div
                                     key={opt}
-                                    className={`px-3 py-2 text-sm cursor-pointer hover:bg-gray-50 ${selected.includes(opt) ? "bg-orange-50 text-orange-600" : ""}`}
+                                    className={`px-3 py-2 text-sm cursor-pointer ${selected.includes(opt) ? "bg-orange-50 text-orange-600" : ""}`}
                                     onClick={(e) => toggleOption(opt, e)}
                                 >
                                     {opt}

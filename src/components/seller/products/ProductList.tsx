@@ -23,11 +23,12 @@ import {
 import { useRouter } from "next/navigation";
 import { highlightMatches } from "@/utils/helper/highlightMatches";
 import { ProductResponse } from "@/types/seller/productInterface";
-import { useGetSellerUserByIdQuery } from "@/redux/features/seller-auth/sellerLogin";
+import { useGetUserByIdQuery } from "@/redux/features/seller-auth/sellerLogin";
 import { loadUserFromToken } from "@/utils/helper/loadUserFromToken";
+import Image from "next/image";
 
 const ProductsList = () => {
-       const user = useSelector(selectUser);
+    const user = useSelector(selectUser);
     const [isUserLoaded, setIsUserLoaded] = useState(false);
     const dispatch = useDispatch();
 
@@ -42,7 +43,7 @@ const ProductsList = () => {
         }
     }, [dispatch, user.id]);
 
-    const { data: sellerUser, isLoading: sellerUserLoading } = useGetSellerUserByIdQuery(
+    const { data: sellerUser, isLoading: sellerUserLoading } = useGetUserByIdQuery(
         user?.id,
         { skip: !user.id || !isUserLoaded } // Skip if no user ID or user not loaded
     );
@@ -137,7 +138,7 @@ const ProductsList = () => {
         }
     }
 
-    if (!isUserLoaded || sellerUserLoading) {
+    if (!isUserLoaded || productsLoading) {
         return <div className="flex justify-center"><DataLoader /></div>;
     }
 
@@ -277,7 +278,10 @@ const ProductsList = () => {
                                             <div className="flex items-center">
                                                 {product.ProductImage?.[0]?.imageUrl && (
                                                     <div className="flex-shrink-0 h-10 w-10">
-                                                        <img className="h-10 w-10 rounded-md" src={product.ProductImage[0].imageUrl} alt={product.productName} />
+                                                        <Image className="h-10 w-10 rounded-md" src={product.ProductImage[0].imageUrl} alt={product.productName}
+                                                            width={113}
+                                                            height={168}
+                                                        />
                                                     </div>
                                                 )}
                                                 <div className="ml-4">
@@ -309,7 +313,7 @@ const ProductsList = () => {
                                                     <Eye size={18} />
                                                 </button>
 
-                                                <button onClick={() => router.push(`/products-list/edit-product/${product.productLink}`)} className="text-indigo-600 hover:text-indigo-900 hover:cursor-pointer">
+                                                <button onClick={() => router.push(`/products-list/edit-product/${product.id}`)} className="text-indigo-600 hover:text-indigo-900 hover:cursor-pointer">
                                                     <Edit size={18} />
                                                 </button>
 

@@ -99,6 +99,8 @@ export interface ProductFormData {
     type: string;
     giftProductId?: number;
     seoTitle?: string;
+    isTop: boolean, 
+    isNew: boolean 
 }
 
 
@@ -298,3 +300,107 @@ export interface ProductResponse {
     ProductItem: ProductItem[];
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Interface for Edit. 
+
+export interface IProductItem {
+    id: number;
+    sku: string;
+    price: number;
+    purchasePoint: number;
+    discountPrice: number;
+    stock: number;
+    options: {
+        option: string;
+    }[];
+}
+
+export interface ProductData {
+    id: number;
+    productName: string;
+    productLink: string;
+    type: string;
+    categoryId: number;
+    subCategoryId: number;
+    brandId: number;
+    sellerId: number;
+    rating: number;
+    seoTitle: string | null;
+    seoDescription: string | null;
+    sortDescription: string | null;
+    description: string | null;
+    createdAt: string;
+    updatedAt: string;
+    ProductImage: ProductImage[];
+    VariationType: ProductVariationType[];
+    ProductItem: ProductItem[];
+    brand: {
+        brand: string;
+    };
+}

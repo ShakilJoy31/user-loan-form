@@ -1,11 +1,13 @@
 import React from "react";
-// import { FiAlertCircle } from "react-icons/fi";
 
 interface InputFieldProps {
   label?: string;
   type?: string;
   placeholder?: string;
-  value: string;
+  value: string | number;
+  name?: string;
+  min?: string;
+  step?: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   icon?: React.ReactNode;
   errorMessage?: string;
@@ -16,9 +18,12 @@ const InputField: React.FC<InputFieldProps> = ({
   type = "text",
   placeholder,
   value,
+  name,
   onChange,
   icon,
   errorMessage,
+  min,
+  step,
 }) => {
   return (
     <div className="flex flex-col w-full">
@@ -41,21 +46,24 @@ const InputField: React.FC<InputFieldProps> = ({
         {/* Input */}
         <input
           type={type}
+          name={name}
           placeholder={placeholder}
           value={value}
           onChange={onChange}
+          min={min}
+          step={step}
           className={`w-full px-4 py-1.5 border dark:bg-black dark:text-white ${
             errorMessage ? "border-red-500" : "border-gray-300"
           } rounded-md text-gray-700 focus:outline-none focus:ring-2 ${
             errorMessage ? "focus:ring-red-500" : "focus:ring-blue-500"
-          } ${icon ? "pl-10" : ""}`} // Adjust padding if there's an icon
+          } ${icon ? "pl-10" : ""}`}
         />
       </div>
 
       {/* Error Message */}
       {/* {errorMessage && (
         <div className="flex items-center mt-1 text-sm text-red-500">
-          <FiAlertCircle className="mr-1" /> {errorMessage}
+          {errorMessage}
         </div>
       )} */}
     </div>

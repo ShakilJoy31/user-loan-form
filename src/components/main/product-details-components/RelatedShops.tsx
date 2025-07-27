@@ -25,10 +25,14 @@ export default function RelatedShops() {
                 {shops.map((shop, index) => (
                     <ShopCard
                         key={index}
-                        name={shop.name}
-                        location={shop.location}
-                        categories={shop.categories}
-                        logoUrl={shop.logoUrl}
+              shopName={shop.shopName}
+              area={shop.area}
+              city={shop.city}
+              user={shop.user}
+              profileImage={shop.profileImage}
+              avatar={shop.avatar}
+              slug={shop.slug}
+              id={shop.id} bannerImage={null}    
                     />
                 ))}
             </div>

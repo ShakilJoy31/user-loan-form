@@ -160,7 +160,7 @@ const AddEditCategoryWiseVariation = ({
         <div className="space-y-4 py-4">
           <div className="space-y-2">
             <div className="relative">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-white">
                 {translate("ক্যাটাগরি *", "Category *")}
               </label>
               <select
@@ -188,29 +188,11 @@ const AddEditCategoryWiseVariation = ({
             )}
           </div>
 
-          <div className="space-y-2">
-            <label className="flex items-center space-x-2 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={isRequired}
-                onChange={(e) => setIsRequired(e.target.checked)}
-                className="h-4 w-4 text-[#EE5A2C] focus:ring-[#EE5A2C] border-gray-300 rounded"
-              />
-              <span className="text-sm font-medium text-gray-700">
-                {translate("প্রয়োজনীয়", "Required")}
-              </span>
-            </label>
-            <p className="text-xs text-gray-500">
-              {translate(
-                "এই ক্যাটাগরির পণ্যগুলির জন্য এই বৈচিত্র্যগুলো প্রয়োজনীয় কিনা তা চিহ্নিত করুন",
-                "Mark if these variations are required for products in this category"
-              )}
-            </p>
-          </div>
+          
 
           <div className="space-y-2">
             <div className="relative" ref={variationDropdownRef}>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-white">
                 {translate("বৈচিত্র্য *", "Variations *")}
               </label>
               
@@ -295,7 +277,7 @@ const AddEditCategoryWiseVariation = ({
                       filteredVariations.map(variation => (
                         <div
                           key={variation.id}
-                          className={`px-4 py-2 cursor-pointer hover:bg-black flex items-center ${
+                          className={`px-4 py-2 cursor-pointer dark:hover:bg-black flex items-center ${
                             selectedVariations.includes(variation.id)
                               ? "bg-gray-100"
                               : ""
@@ -327,6 +309,27 @@ const AddEditCategoryWiseVariation = ({
             {error && error.includes(translate("বৈচিত্র্য", "variation")) && (
               <p className="text-sm text-red-500 mt-1">{error}</p>
             )}
+          </div>
+          
+
+          <div className="space-y-2">
+            <label className="flex items-center space-x-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={isRequired}
+                onChange={(e) => setIsRequired(e.target.checked)}
+                className="h-4 w-4 text-[#EE5A2C] focus:ring-[#EE5A2C] border-gray-300 rounded"
+              />
+              <span className="text-sm font-medium text-gray-700 dark:text-white">
+                {translate("প্রয়োজনীয়", "Required")}
+              </span>
+            </label>
+            <p className="text-xs text-gray-500">
+              {translate(
+                "এই ক্যাটাগরির পণ্যগুলির জন্য এই বৈচিত্র্যগুলো প্রয়োজনীয় কিনা তা চিহ্নিত করুন",
+                "Mark if these variations are required for products in this category"
+              )}
+            </p>
           </div>
         </div>
 

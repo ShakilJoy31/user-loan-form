@@ -1,99 +1,100 @@
-"use client"
+"use client";
 import Image from "next/image";
-import pip from "@/assets/Home/image.png";
-import collectionBanner from "@/assets/Home/collectionBanner.png";
-import tool from "@/assets/Home/tool.png";
-import toolBox from "@/assets/Home/toolBox.png";
 import { FaStar } from "react-icons/fa";
 import { ShoppingCart } from "lucide-react";
-import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import { Button } from "@/components/ui/button";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
+import Link from "next/link";
+
+interface ShopPageResponse {
+  newArrival: Product[];
+}
 
 interface Product {
   id: number;
-  image: string | StaticImport;
-  name: string;
-  price: string;
-  discount: string;
-  rating: number;
-  reviews: number;
+  productName: string;
+  productLink: string;
+  brand: {
+    brand: string;
+    image: string;
+  };
+  ProductItem: {
+    id: number;
+    productId: number;
+    sku: string;
+    price: number;
+    purchasePoint: number;
+    discountPrice: number;
+    stock: number;
+    barcode: string | null;
+  }[];
+  ProductImage: {
+    id: number;
+    productId: number;
+    imageUrl: string;
+    alt: string | null;
+    createdAt: string;
+    updatedAt: string;
+  }[];
 }
 
-interface ProductCardProps {
-  product: Product;
-}
+const ProductCard = ({ product }: { product: Product }) => {
+  const productImage = product.ProductImage?.[0]?.imageUrl;
+  const productItem = product.ProductItem?.[0];
+  const hasDiscount =
+    productItem?.discountPrice && productItem.discountPrice > 0;
+  const finalPrice = productItem
+    ? productItem.price - productItem.discountPrice
+    : 0;
 
-const products: Product[] = [
-  {
-    id: 1,
-    image: pip,
-    name: "50 Mm Jindal GI Pipe",
-    price: "500 TK",
-    discount: "-10%",
-    rating: 5,
-    reviews: 44,
-  },
-  {
-    id: 2,
-    image: collectionBanner,
-    name: "50 Mm Jindal GI Pipe",
-    price: "500 TK",
-    discount: "-10%",
-    rating: 5,
-    reviews: 44,
-  },
-  {
-    id: 3,
-    image: tool,
-    name: "50 Mm Jindal GI Pipe",
-    price: "500 TK",
-    discount: "-10%",
-    rating: 5,
-    reviews: 44,
-  },
-  {
-    id: 4,
-    image: toolBox,
-    name: "50 Mm Jindal GI Pipe",
-    price: "500 TK",
-    discount: "-10%",
-    rating: 5,
-    reviews: 44,
-  },
-];
+  // Default rating and reviews since they're not in the API response
+  const rating = 5;
+  const reviews = 44;
 
-const ProductCard = ({ product }: ProductCardProps) => {
   return (
     <div className="w-full lg:max-w-[153px] sm:max-w-[180px]">
       <div className="relative w-full aspect-square">
-        <Image
-          src={product.image}
-          alt={product.name}
-          fill
-          className="object-cover rounded-lg"
-        />
+        {productImage ? (
+          <Image
+            src={productImage}
+            alt={product.productName}
+            fill
+            className="object-cover rounded-lg"
+          />
+        ) : (
+          <div className="w-full h-full bg-gray-200 flex items-center justify-center rounded-lg">
+            <span className="text-gray-500 text-xs">No Image</span>
+          </div>
+        )}
       </div>
       <div className="mt-2">
-        <p className="text-sm font-medium line-clamp-2">{product.name}</p>
+        <p className="text-sm font-medium line-clamp-2">
+          {product.productName}
+        </p>
         <div className="flex items-center mt-1">
-          {[...Array(product.rating)].map((_, i) => (
+          {[...Array(rating)].map((_, i) => (
             <FaStar key={i} className="text-yellow-400 w-3 h-3" />
           ))}
-          <span className="text-xs text-gray-500 ml-1">
-            ({product.reviews})
-          </span>
+          <span className="text-xs text-gray-500 ml-1">({reviews})</span>
         </div>
         <div className="flex justify-between items-center mt-1">
           <p className="text-sm font-bold">
-            {product.price}{" "}
-            {product.discount && (
+            {finalPrice} TK{" "}
+            {hasDiscount && (
               <span className="bg-[#EE5A2C] text-white p-1 text-[8px] rounded-full ml-1">
-                -10%
+                -
+                {Math.round(
+                  (productItem.discountPrice / productItem.price) * 100
+                )}
+                %
               </span>
             )}
           </p>
-          <Button className="text-gray-700 hover:text-[#EE5A2C] transition-colors">
+          <Button
+            variant={"outline"}
+            size={"xs"}
+            className="text-gray-700 hover:text-[#EE5A2C] transition-colors"
+          >
             <ShoppingCart size={20} />
           </Button>
         </div>
@@ -102,40 +103,47 @@ const ProductCard = ({ product }: ProductCardProps) => {
   );
 };
 
-const NewArrive = () => {
-    const { translate } = useCustomTranslator();
+const NewArrive = ({ newArrival }: ShopPageResponse) => {
+  const { translate } = useCustomTranslator();
+
   return (
     <div className="px-[20px] mb-10 lg:mb-0">
-    <div className="lg:max-w-[343px] mt-[21px] h-auto lg:max-h-[724px] w-full shadow-lg rounded-[6px] pb-[19px] bg-[#F6F6F6] md:px-[12px]">
-      <h2 className="text-xl font-semibold pt-8 pl-6">
-        {translate("নতুন আগমন", "New Arrivals")}
-      </h2>
+      <div className="lg:max-w-[343px] mt-[21px] h-auto lg:max-h-[724px] w-full shadow-lg rounded-[6px] pb-[19px] bg-[#F6F6F6] md:px-[12px] overflow-y-auto">
+        <h2 className="text-xl font-semibold pt-8 pl-6">
+          {translate("নতুন আগমন", "New Arrivals")}
+        </h2>
 
-      <div className="mt-6 px-3 sm:px-4">
-        {/* Flex layout for sm and lg (not md) */}
-        <div className="block md:hidden lg:block">
-          {/* First row */}
-          <div className="flex gap-3 sm:gap-4 pb-4 border-b border-gray-300">
-            <ProductCard product={products[0]} />
-            <ProductCard product={products[1]} />
+        {newArrival && newArrival.length > 0 ? (
+          <div className="mt-6 px-3 sm:px-4">
+            {/* Two-column layout for sm and lg devices showing all products */}
+            <div className="block md:hidden lg:block">
+              <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                {newArrival.map((product) => (
+                  // eslint-disable-next-line react/jsx-key
+                  <Link href={`/products/${product?.productLink}`}>
+                  <ProductCard key={product.id} product={product} />
+                  </Link>
+                ))}
+              </div>
+            </div>
+            {/* Grid layout only for md devices */}
+            <div className="hidden md:grid lg:hidden grid-cols-4 gap-3 sm:gap-4 border-b border-gray-300 py-4">
+              {newArrival.map((product) => (
+                  // eslint-disable-next-line react/jsx-key
+                  <Link href={`/products/${product?.productLink}`}>
+                  <ProductCard key={product.id} product={product} />
+                  </Link>
+                ))}
+            </div>
           </div>
-
-          {/* Second row */}
-          <div className="flex gap-3 sm:gap-4 pt-4">
-            <ProductCard product={products[2]} />
-            <ProductCard product={products[3]} />
+        ) : (
+          <div className="flex justify-center items-center h-[200px]">
+            <p className="text-gray-500">
+              {translate("কোন নতুন পণ্য নেই", "No new arrivals available")}
+            </p>
           </div>
-        </div>
-
-        {/* Grid layout only for md devices */}
-        <div className="hidden md:grid lg:hidden grid-cols-4 gap-3 sm:gap-4 border-b border-gray-300 py-4">
-          <ProductCard product={products[0]} />
-          <ProductCard product={products[1]} />
-          <ProductCard product={products[2]} />
-          <ProductCard product={products[3]} />
-        </div>
+        )}
       </div>
-    </div>
     </div>
   );
 };

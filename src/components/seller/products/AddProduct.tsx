@@ -8,7 +8,7 @@ import { Controller, useForm } from "react-hook-form";
 import TipTapEditor from "../../dashboard/tiptap/TipTapEditor";
 import { useDispatch, useSelector } from "react-redux";
 import { selectUser } from "@/redux/store";
-import { useGetSellerUserByIdQuery } from "@/redux/features/seller-auth/sellerLogin";
+import { useGetUserByIdQuery } from "@/redux/features/seller-auth/sellerLogin";
 import DataLoader from "@/components/common/DataLoader";
 import { useCreateProductMutation, useGetBrandsQuery } from "@/redux/features/seller-api/productApi";
 import ButtonLoader from "@/components/common/ButtonLoader";
@@ -32,7 +32,7 @@ const AddProducts = () => {
         }
     }, [dispatch, user.id]);
 
-    const { data: sellerUser, isLoading: sellerUserLoading } = useGetSellerUserByIdQuery(
+    const { data: sellerUser, isLoading: sellerUserLoading } = useGetUserByIdQuery(
         user?.id,
         { skip: !user.id || !isUserLoaded } // Skip if no user ID or user not loaded
     );
@@ -48,6 +48,7 @@ const AddProducts = () => {
     const [selectedType, setSelectedType] = useState("Published");
     const [hasInitializedVariations, setHasInitializedVariations] = useState(false);
     const [customValues, setCustomValues] = useState<Record<number, string[]>>({});
+    const [selectedValues, setSelectedValues] = useState<Record<number, Array<{ id: number, name: string }>>>({});
     const [variationCombinations, setVariationCombinations] = useState<
         Array<{
             sku: string;
@@ -55,7 +56,6 @@ const AddProducts = () => {
             price: number;
             stock: number;
             discount?: number;
-            purchasePoint?: number;
         }>
     >([]);
 
@@ -79,7 +79,9 @@ const AddProducts = () => {
             longDescription: "",
             seoDescription: "",
             type: "Published",
-            seoTitle: ""
+            seoTitle: "",
+            isTop: undefined,
+            isNew: undefined
         }
     });
 
@@ -88,20 +90,21 @@ const AddProducts = () => {
         return sellerUser?.data?.UserShopCategory?.map((item: UserShopCategory) => item.category) || [];
     }, [sellerUser?.data?.UserShopCategory]);
 
+    const subCategories: SubCategory[] = useMemo(() => {
+        if (!selectedCategory) return [];
+        const category = categories.find((cat: Category) => cat.id === selectedCategory);
+        return category?.ProductSubCategory || [];
+    }, [selectedCategory, categories]);
 
-    const subCategories: SubCategory[] = selectedCategory
-        ? categories.find((cat: Category) => cat.id === selectedCategory)?.ProductSubCategory || []
-        : [];
+    // Get variations for the selected category
+    const categoryVariations = useMemo(() => {
+        if (!selectedCategory) return [];
+        const category = categories.find((cat: Category) => cat.id === selectedCategory);
+        return category?.CategoryWishVariations?.map(item => item.variation) || [];
+    }, [selectedCategory, categories]);
 
     // Get brands from API response
     const brands: Brand[] = brandData?.data || [];
-
-    // Get all variations from all categories
-    const allVariations = useMemo(() => {
-        return categories.flatMap(category =>
-            category.CategoryWishVariations.map(item => item.variation)
-        );
-    }, [categories]);
 
     // Generate all possible combinations of variations
     const generateVariationCombinations = useCallback((variations: Variation[]) => {
@@ -109,16 +112,24 @@ const AddProducts = () => {
 
         const variationOptions = variations.map(v => ({
             name: v.name,
-            options: v.VariationValue.map(opt => opt.name)
+            options: [
+                ...(selectedValues[v.id]?.map(opt => opt.name)) || [],
+                ...(customValues[v.id] || [])
+            ]
         }));
+
+        // Filter out variations with no options
+        const validVariations = variationOptions.filter(v => v.options.length > 0);
+
+        if (validVariations.length === 0) return [];
 
         const combinations: { optionValues: string[] }[] = [];
         const generate = (current: string[], index: number) => {
-            if (index === variationOptions.length) {
+            if (index === validVariations.length) {
                 combinations.push({ optionValues: [...current] });
                 return;
             }
-            for (const option of variationOptions[index].options) {
+            for (const option of validVariations[index].options) {
                 current.push(option);
                 generate(current, index + 1);
                 current.pop();
@@ -132,22 +143,16 @@ const AddProducts = () => {
             price: 0,
             stock: 0
         }));
-    }, []);
+    }, [selectedValues, customValues]);
 
+    // Update variation combinations when variations or selected values change
     useEffect(() => {
-        if (!hasInitializedVariations && allVariations.length > 0) {
-            const combinations = generateVariationCombinations(allVariations);
-
+        if (categoryVariations.length > 0) {
+            const combinations = generateVariationCombinations(categoryVariations);
             setVariationCombinations(combinations);
-            setValue('variations', allVariations.map(v => ({
-                name: v.name,
-                options: v.VariationValue.map(opt => opt.name)
-            })));
             setValue('items', combinations);
-            setHasInitializedVariations(true);
         }
-    }, [hasInitializedVariations, allVariations, generateVariationCombinations, setValue]);
-
+    }, [categoryVariations, generateVariationCombinations, setValue]);
 
     const [imageUrls, setImageUrls] = useState<string[]>([]);
 
@@ -162,20 +167,28 @@ const AddProducts = () => {
 
     // Handle form submission
     const onSubmit = async (data: ProductFormData) => {
-        if (!imageUrls) {
+        if (imageUrls?.length < 1) {
             toast.error("Please upload product images first");
             return;
         }
 
-        // Format variations for payload
-        const payloadVariations = allVariations.map(v => {
-            const predefinedOptions = v.VariationValue.map(opt => opt.name);
+        // Format variations for payload - only include selected options
+        const payloadVariations = categoryVariations.map(v => {
+            // Get selected predefined options
+            const selectedPredefined = selectedValues[v.id]?.map(opt => opt.name) || [];
+            // Get custom options
             const customOptions = customValues[v.id] || [];
+            // Combine and return only selected options
             return {
                 name: v.name,
-                options: [...predefinedOptions, ...customOptions]
+                options: [...selectedPredefined, ...customOptions]
             };
         });
+
+        if (!selectedCategory || !selectedSubCategory || !selectedBrand || payloadVariations?.length < 1) {
+            toast.error("Please fill out the input fields!");
+            return;
+        }
 
         const payload = {
             name: data.name,
@@ -184,21 +197,23 @@ const AddProducts = () => {
             brandId: selectedBrand,
             images: imageUrls,
             tags: selectedTags,
-            variations: payloadVariations,  // Use the formatted variations
+            variations: payloadVariations,
             items: variationCombinations.map(item => ({
                 sku: item.sku,
                 price: item.price,
                 stock: item.stock,
                 optionValues: item.optionValues,
-                ...(item.discount !== undefined && { discount: item.discount }),
-                ...(item.purchasePoint !== undefined && { purchasePoint: item.purchasePoint })
+                ...(item.discount !== undefined && { discountPrice: item.discount }),
             })),
             description: data.description,
             longDescription: data.longDescription,
             seoDescription: data.seoDescription,
             type: selectedType,
-            seoTitle: data.seoTitle
+            seoTitle: data.seoTitle,
+            ...(data.isTop !== undefined && { isTop: data.isTop }),
+            ...(data.isNew !== undefined && { isNew: data.isNew })
         };
+
         console.log(payload)
         const result = await createProduct(payload);
         if (result?.data?.success) {
@@ -301,6 +316,10 @@ const AddProducts = () => {
                                 const cat = categories.find((c: Category) => c.name === val);
                                 setSelectedCategory(cat?.id || null);
                                 setSelectedSubCategory(null);
+                                // Reset variations when category changes
+                                setSelectedValues({});
+                                setCustomValues({});
+                                setVariationCombinations([]);
                             }}
                         />
 
@@ -362,16 +381,61 @@ const AddProducts = () => {
                             )}
                         />
                     </div>
+
+                    <div className="flex gap-4 my-4">
+                        <div className="flex items-center">
+                            <Controller
+                                name="isTop"
+                                control={control}
+                                render={({ field }) => (
+                                    <input
+                                        type="checkbox"
+                                        id="isTop"
+                                        checked={field.value || false}
+                                        onChange={(e) => field.onChange(e.target.checked)}
+                                        className="h-4 w-4 text-[#EE5A2C] border-gray-300 rounded hover:cursor-pointer"
+                                    />
+                                )}
+                            />
+                            <label htmlFor="isTop" className="ml-2 block text-sm text-gray-700 hover:cursor-pointer">
+                                Top Product
+                            </label>
+                        </div>
+
+                        <div className="flex items-center">
+                            <Controller
+                                name="isNew"
+                                control={control}
+                                render={({ field }) => (
+                                    <input
+                                        type="checkbox"
+                                        id="isNew"
+                                        checked={field.value || false}
+                                        onChange={(e) => field.onChange(e.target.checked)}
+                                        className="h-4 w-4 text-[#EE5A2C] border-gray-300 rounded hover:cursor-pointer"
+                                    />
+                                )}
+                            />
+                            <label htmlFor="isNew" className="ml-2 block text-sm text-gray-700 hover:cursor-pointer">
+                                New Product
+                            </label>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Variation Section */}
-                <VariationComponent
-                    variations={allVariations}
-                    variationCombinations={variationCombinations}
-                    onCombinationChange={handleCombinationChange}
-                    customValues={customValues}
-                    onCustomValuesChange={setCustomValues}
-                />
+                {selectedCategory && (
+                    <VariationComponent
+                        variations={categoryVariations}
+                        variationCombinations={variationCombinations}
+                        onCombinationChange={handleCombinationChange}
+                        customValues={customValues}
+                        onCustomValuesChange={setCustomValues}
+                        selectedValues={selectedValues}
+                        setSelectedValues={setSelectedValues}
+                    />
+                )}
+
                 {/* Image Uploader Section */}
                 <div className="mt-6">
                     <ProductImageUploader
@@ -501,8 +565,8 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
     }, []);
 
     const toggleOption = (opt: string, e: React.MouseEvent) => {
-        e.preventDefault(); // Prevent default behavior
-        e.stopPropagation(); // Stop event bubbling
+        e.preventDefault();
+        e.stopPropagation();
         const newSelected = selected.includes(opt)
             ? selected.filter((o) => o !== opt)
             : [...selected, opt];
@@ -510,8 +574,8 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
     };
 
     const removeTag = (tag: string, e: React.MouseEvent) => {
-        e.preventDefault(); // Prevent default behavior
-        e.stopPropagation(); // Stop event bubbling
+        e.preventDefault();
+        e.stopPropagation();
         onChange(selected.filter((t) => t !== tag));
     };
 
@@ -567,7 +631,7 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             autoFocus
-                            onClick={(e) => e.stopPropagation()} // Prevent click from closing dropdown
+                            onClick={(e) => e.stopPropagation()}
                         />
                     </div>
                     <div className="max-h-60 overflow-y-auto">
@@ -575,7 +639,7 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
                             filteredOptions.map((opt) => (
                                 <div
                                     key={opt}
-                                    className={`px-3 py-2 text-sm cursor-pointer hover:bg-gray-50 ${selected.includes(opt) ? "bg-orange-50 text-orange-600" : ""}`}
+                                    className={`px-3 py-2 text-sm cursor-pointer ${selected.includes(opt) ? "bg-orange-50 text-orange-600" : ""}`}
                                     onClick={(e) => toggleOption(opt, e)}
                                 >
                                     {opt}
@@ -593,4 +657,5 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
         </div>
     );
 };
+
 export default AddProducts;

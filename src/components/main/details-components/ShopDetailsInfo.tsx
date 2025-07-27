@@ -1,19 +1,61 @@
 "use client"
 import Image from "next/image";
-import ElectroHub from "@/assets/Home/ElectroHub.png";
 import { FaFacebook, FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
 import ShopCard from "../home-components/ShopCard";
-import shopLogo from '@/assets/Logo/shop-logo.png'
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 
-const ShopDetailsInfo = () => {
+interface ShopDetailsInfoProps {
+    shopProfile: {
+        id: number;
+        name: string;
+        email: string;
+        contactNo: string;
+        UserCompanyInfo: {
+            id: number;
+            userId: number;
+            shopName: string;
+            profileImage: string;
+            bannerImage: string;
+            slug: string;
+            ownerName: string;
+            designation: string;
+            city: string;
+            area: string;
+            tradeLicense: string;
+            map: string;
+            about: string | null;
+            createdAt: string;
+            updatedAt: string;
+            storeHours: string;
+            deliveryAvailable: string
+            pickupAvailable: string;
+            products: string;
+            homeAppliances: string;
+            accessories: string
+        };
+    };
+    relatedShop: {
+        id: number;
+        shopName: string;
+        city: string;
+        area: string;
+        slug: string;
+        profileImage: string | null;
+        bannerImage: string | null;
+        avatar: string;
+        user: {
+            UserShopCategory: {
+                category: {
+                    name: string;
+                };
+            }[];
+        };
+    }[];
+}
+
+const ShopDetailsInfo = ({shopProfile, relatedShop}: ShopDetailsInfoProps) => {
     const { translate } = useCustomTranslator();
-    const shops = Array(3).fill({
-  name: "FashionFiesta",
-  location: "Banani",
-  categories: ["Clothing", "Accessories"],
-  logoUrl: shopLogo.src,
-});
+console.log("shopProfile", shopProfile)
 
   return (
     <div>
@@ -27,38 +69,38 @@ const ShopDetailsInfo = () => {
         <div className="flex-1 space-y-3 sm:space-y-4 pr-6 lg:pr-0">
           <div className="bg-white max-w-[298px] w-full max-h-[50px]  rounded-lg py-3 sm:py-[14px] px-3 ">
             <span className="font-semibold text-[#EE5A2C]">Shop Type:</span>{" "}
-            <span className="text-gray-400">Electronics & Gadgets Store</span>
+            <span className="text-gray-400">{shopProfile?.UserCompanyInfo?.slug}</span>
           </div>
 
           <div className="bg-white max-w-[298px] w-full max-h-[50px] rounded-lg py-3 sm:py-[14px] px-3 sm:px-[8px]">
             <span className="font-semibold text-[#EE5A2C]">Email:</span>{" "}
-            <span className="text-gray-400">support@techzonebd.com</span>
+            <span className="text-gray-400">{shopProfile?.email}</span>
           </div>
 
           <div className="bg-white max-w-[298px] w-full max-h-[50px] rounded-lg py-3 sm:py-[14px] px-3 sm:px-[8px]">
             <span className="font-semibold text-[#EE5A2C]">
               Delivery Available:
             </span>{" "}
-            <span className="text-gray-400">All over Bangladesh</span>
+            <span className="text-gray-400">{shopProfile?.UserCompanyInfo?.deliveryAvailable}</span>
           </div>
         </div>
 
         <div className="flex-1 space-y-3 sm:space-y-4 pr-6 lg:pr-0">
           <div className="bg-white max-w-[298px] w-full max-h-[50px] rounded-lg py-3 sm:py-[14px] px-3 sm:px-[8px]">
             <span className="font-semibold text-[#EE5A2C]">Phone Number:</span>{" "}
-            <span className="text-gray-400">+880 1712 345678</span>
+            <span className="text-gray-400">{shopProfile?.contactNo}</span>
           </div>
 
           <div className="bg-white max-w-[298px] w-full max-h-[50px] rounded-lg py-3 sm:py-[14px] px-3 sm:px-[8px]">
             <span className="font-semibold text-[#EE5A2C]">Store Hours:</span>{" "}
-            <span className="text-gray-400">Sat-Thu, 10 AM – 9 PM</span>
+            <span className="text-gray-400">{shopProfile?.UserCompanyInfo?.storeHours}</span>
           </div>
 
           <div className="bg-white max-w-[298px] w-full max-h-[50px] rounded-lg py-3 sm:py-[14px] px-3 sm:px-[8px]">
             <span className="font-semibold text-[#EE5A2C]">
               Pickup Available:
             </span>{" "}
-            <span className="text-gray-400">In-store pickup</span>
+            <span className="text-gray-400">{shopProfile?.UserCompanyInfo?.pickupAvailable}</span>
           </div>
         </div>
       </div>
@@ -72,7 +114,7 @@ const ShopDetailsInfo = () => {
             <Image
               width={56}
               height={56}
-              src={ElectroHub}
+              src={shopProfile?.UserCompanyInfo?.profileImage}
               alt="ElectroHub"
               className="w-full h-auto object-cover"
             />
@@ -105,6 +147,16 @@ const ShopDetailsInfo = () => {
 
       <h3 className="text-lg sm:text-xl font-medium mb-4  sm:px-2 md:px-0">
         {
+            translate("আমরা কি বিক্রি করছি", "About Us")
+        }
+      </h3>
+
+      <p>{shopProfile?.UserCompanyInfo?.about}</p>
+
+      <hr className="border-gray-300 my-4" />
+
+      <h3 className="text-lg sm:text-xl font-medium mb-4  sm:px-2 md:px-0">
+        {
             translate("আমরা কি বিক্রি করছি", "What are we selling")
         }
       </h3>
@@ -117,7 +169,7 @@ const ShopDetailsInfo = () => {
                 {translate("অ্যাকসেসরিজ:", "Accessories:")}
               </td>
               <td className="text-[#833218] py-1 pl-2 sm:pl-4">
-                {translate("ক্যাবল, চার্জার, পাওয়ার ব্যাংক", "Cables, Chargers, Power Banks")}
+                {shopProfile?.UserCompanyInfo?.accessories}
               </td>
             </tr>
             <tr>
@@ -125,7 +177,7 @@ const ShopDetailsInfo = () => {
                 {translate("হোম অ্যাপ্লায়েন্স:", "Home Appliances:")}
               </td>
               <td className="text-[#833218] py-1 pl-2 sm:pl-4">
-                {translate("মাইক্রোওয়েভ, ব্লেন্ডার, ফ্যান","Microwave, Blender, Fan")}
+                {shopProfile?.UserCompanyInfo?.homeAppliances}
               </td>
             </tr>
             <tr>
@@ -133,7 +185,7 @@ const ShopDetailsInfo = () => {
                 {translate("প্রোডাক্টস:", "Products:")}
               </td>
               <td className="text-gray-400 py-1 pl-2 sm:pl-4">
-                {translate(" স্মার্টফোন, ল্যাপটপ ও ট্যাবলেট, স্মার্টওয়াচ", "Smartphones, Laptops & Tablets, Smartwatches")}
+                {shopProfile?.UserCompanyInfo?.products}
               </td>
             </tr>
           </tbody>
@@ -146,13 +198,17 @@ const ShopDetailsInfo = () => {
       </h2>
 
      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 pr-6">
-         {shops.map((shop, index) => (
+         {relatedShop?.map((shop, index) => (
           <ShopCard
-            key={index}
-            name={shop.name}
-            location={shop.location}
-            categories={shop.categories}
-            logoUrl={shop.logoUrl}
+              key={index}
+              shopName={shop.shopName}
+              area={shop.area}
+              city={shop.city}
+              user={shop.user}
+              profileImage={shop.profileImage}
+              avatar={shop.avatar}
+              slug={shop.slug}
+              id={shop.id} bannerImage={null}    
           />
         ))}
      </div>

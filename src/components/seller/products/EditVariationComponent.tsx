@@ -1,32 +1,24 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { X, ChevronDown, ChevronUp, Check } from "lucide-react";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
-
-interface VariationValue {
-  id: number;
-  variationId: number;
-  name: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-interface Variation {
-  id: number;
-  name: string;
-  createdAt: string;
-  updatedAt: string;
-  VariationValue: VariationValue[];
-}
+import { Variation } from "@/types/seller/productInterface";
 
 interface VariationProps {
-  variations: Variation[];
+  variations: {
+    id: number;
+    name: string;
+    VariationValue: Array<{
+      id: number;
+      name: string;
+      variationId: number;
+    }>;
+  }[];
   variationCombinations: Array<{
     sku: string;
     optionValues: string[];
     price: number;
     stock: number;
-    discount?: number;
-    purchasePoint?: number;
+    discountPrice?: number;
     id?: number;
   }>;
   onCombinationChange: (updatedCombinations: Array<{
@@ -35,11 +27,13 @@ interface VariationProps {
     price: number;
     stock: number;
     discount?: number;
-    purchasePoint?: number;
     id?: number;
   }>) => void;
   customValues: Record<number, string[]>;
   onCustomValuesChange: (values: Record<number, string[]>) => void;
+  selectedValues: Record<number, Array<{ id: number, name: string }>>;
+  setSelectedValues: React.Dispatch<React.SetStateAction<Record<number, Array<{ id: number, name: string }>>>>;
+  regenerateCombinations: (selectedValues: Record<number, Array<{ id: number, name: string }>>) => void;
 }
 
 const VariationComponent: React.FC<VariationProps> = ({
@@ -47,143 +41,61 @@ const VariationComponent: React.FC<VariationProps> = ({
   variationCombinations,
   onCombinationChange,
   customValues,
-  onCustomValuesChange
+  onCustomValuesChange,
+  selectedValues,
+  setSelectedValues,
+  regenerateCombinations
 }) => {
+
   const { translate } = useCustomTranslator();
-  const [selectedValues, setSelectedValues] = useState<Record<number, Array<{ id: number, name: string }>>>({});
+
   const [searchTerm, setSearchTerm] = useState("");
   const [isOpenMap, setIsOpenMap] = useState<Record<number, boolean>>({});
   const dropdownRefs = useRef<Record<number, HTMLDivElement | null>>({});
   const inputRefs = useRef<Record<number, HTMLInputElement | null>>({});
 
-  const generateCombinations = useCallback(() => {
-    const combinations: Array<{
-      sku: string;
-      optionValues: string[];
-      price: number;
-      stock: number;
-      discount?: number;
-      purchasePoint?: number;
-    }> = [];
-
-    // Get all selected values (predefined and custom)
-    const allSelectedValues = variations.map(variation => {
-      const predefined = selectedValues[variation.id] || [];
-      const custom = (customValues[variation.id] || []).map(name => ({
-        id: -1, // Use -1 to indicate custom values
-        name
-      }));
-      return [...predefined, ...custom];
-    });
-
-    // Only proceed if at least one variation has values
-    const hasValues = allSelectedValues.some(values => values.length > 0);
-    if (!hasValues) {
-      onCombinationChange([]);
-      return;
-    }
-
-    // Generate cartesian product of all selected values
-    const cartesianProduct = (...arrays: Array<Array<{ id: number, name: string }>>) => {
-      return arrays.reduce((a, b) =>
-        a.flatMap(d => b.map(e => [d, e].flat()))
-        , [[]] as Array<Array<{ id: number, name: string }>>).filter(arr => arr.length > 0);
-    };
-
-    const allCombinations = cartesianProduct(...allSelectedValues);
-
-    // Create combination objects
-    allCombinations.forEach(combination => {
-      const optionValues = combination.map((value) => value.name);
-
-      // Generate SKU by combining all selected values in lowercase with hyphens
-      const skuParts = combination.map((value) =>
-        value.name.toLowerCase().replace(/\s+/g, '-')
-      );
-
-      const sku = skuParts.join('-');
-
-      // Check if this combination already exists
-      const existingCombination = variationCombinations.find(c =>
-        c.optionValues.join(',') === optionValues.join(',')
-      );
-
-      combinations.push({
-        sku,
-        optionValues,
-        price: existingCombination?.price || 0,
-        stock: existingCombination?.stock || 0,
-        discount: existingCombination?.discount,
-        purchasePoint: existingCombination?.purchasePoint
-      });
-    });
-
-    onCombinationChange(combinations);
-  }, [selectedValues, customValues, variations, onCombinationChange]);
-
-
+  // Initialize selected values when variations change
   useEffect(() => {
-    generateCombinations();
-  }, [generateCombinations, selectedValues, customValues]);
+    const initialSelectedValues: Record<number, Array<{ id: number, name: string }>> = {};
 
-  // Initialize state when variations change
-useEffect(() => {
-  const initialSelectedValues: Record<number, Array<{ id: number, name: string }>> = {};
-  const initialCustomValues: Record<number, string[]> = {};
-  const initialIsOpenMap: Record<number, boolean> = {};
-
-  variations.forEach(variation => {
-    initialSelectedValues[variation.id] = [];
-    initialCustomValues[variation.id] = [];
-    initialIsOpenMap[variation.id] = false;
-  });
-
-  // Initialize with existing values from variationCombinations
-  if (variationCombinations.length > 0) {
     variations.forEach(variation => {
-      // Get all unique values used for this variation in the combinations
+      // Initialize empty array for each variation
+      initialSelectedValues[variation.id] = [];
+
+      // Find all values used in combinations for this variation
       const usedValues = new Set<string>();
       variationCombinations.forEach(comb => {
         comb.optionValues.forEach(val => {
-          // Check if this value belongs to current variation
-          const isForThisVariation = variations.some(v => 
-            v.VariationValue.some(opt => opt.name === val) || 
-            (customValues[variation.id] || []).includes(val));
-          
-          if (isForThisVariation) {
+          if (variation.VariationValue.some(v => v.name === val)) {
             usedValues.add(val);
           }
         });
       });
 
-      // Separate predefined and custom values
-      const predefinedValues = variation.VariationValue
+      // Set selected values from both predefined and custom values
+      const selectedPredefined = variation.VariationValue
         .filter(v => usedValues.has(v.name))
         .map(v => ({ id: v.id, name: v.name }));
 
-      const customVals = Array.from(usedValues)
-        .filter(val => !variation.VariationValue.some(v => v.name === val));
+      const selectedCustom = (customValues[variation.id] || [])
+        .filter(name => usedValues.has(name))
+        .map(name => ({ id: -1, name }));
 
-      if (predefinedValues.length > 0) {
-        initialSelectedValues[variation.id] = predefinedValues;
-      }
-      if (customVals.length > 0) {
-        initialCustomValues[variation.id] = customVals;
-      }
+      initialSelectedValues[variation.id] = [...selectedPredefined, ...selectedCustom];
     });
-  }
 
-  setSelectedValues(initialSelectedValues);
-  onCustomValuesChange(initialCustomValues);
-  setIsOpenMap(initialIsOpenMap);
-}, [variations]);
+    setIsOpenMap(variations.reduce((acc, v) => ({ ...acc, [v.id]: false }), {}));
+  }, []);
 
-  // Handle clicks outside dropdowns
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       Object.entries(dropdownRefs.current).forEach(([variationId, ref]) => {
         if (ref && !ref.contains(event.target as Node)) {
-          setIsOpenMap(prev => ({ ...prev, [variationId]: false }));
+          // Only close if the click wasn't on the toggle button
+          const toggleButton = ref.querySelector('button[aria-label="Toggle dropdown"]');
+          if (!toggleButton || !toggleButton.contains(event.target as Node)) {
+            setIsOpenMap(prev => ({ ...prev, [variationId]: false }));
+          }
         }
       });
     };
@@ -194,8 +106,10 @@ useEffect(() => {
     };
   }, []);
 
-  const handleInputChange = (index: number, field: 'price' | 'stock' | 'discount' | 'purchasePoint', value: string) => {
-    const numericValue = value === '' ? undefined : Number(value.replace(/^0+/, ''));
+
+
+  const handleInputChange = (index: number, field: 'price' | 'stock' | 'discountPrice' , value: string) => {
+    const numericValue = value === '' ? 0 : Number(value);
     const updated = [...variationCombinations];
 
     updated[index] = {
@@ -205,8 +119,12 @@ useEffect(() => {
 
     onCombinationChange(updated);
   };
+  const toggleDropdown = (variationId: number, e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault(); // Prevent default behavior
+      e.stopPropagation(); // Stop event bubbling
+    }
 
-  const toggleDropdown = (variationId: number) => {
     setIsOpenMap(prev => {
       const newState = !prev[variationId];
       if (newState) {
@@ -217,53 +135,85 @@ useEffect(() => {
       return { ...prev, [variationId]: newState };
     });
   };
+  // Add this useEffect
+
 
   const handleValueSelect = (variationId: number, valueId: number, valueName: string) => {
     setSelectedValues(prev => {
       const currentValues = prev[variationId] || [];
-      const isSelected = currentValues.some(v => v.id === valueId);
+      const isSelected = currentValues.some(v => v.id === valueId && v.name === valueName);
 
       const newValues = isSelected
-        ? currentValues.filter(v => v.id !== valueId)
+        ? currentValues.filter(v => !(v.id === valueId && v.name === valueName))
         : [...currentValues, { id: valueId, name: valueName }];
 
-      return {
+      console.log(newValues)
+
+      const updatedValues = {
         ...prev,
         [variationId]: newValues
       };
+
+      console.log(updatedValues)
+
+      // Call the parent's regenerateCombinations with updated values
+      regenerateCombinations(updatedValues);
+
+      return updatedValues;
     });
   };
 
+
+
   const handleAddCustomValue = (variationId: number, e: React.KeyboardEvent) => {
+    // e.preventDefault();
     if (e.key === 'Enter' && searchTerm.trim()) {
       const newValue = searchTerm.trim();
+
+      setSelectedValues(prev => {
+        const updatedValues = {
+          ...prev,
+          [variationId]: [...(prev[variationId] || []), { id: -1, name: newValue }]
+        };
+        regenerateCombinations(updatedValues);
+        return updatedValues;
+      });
+
       onCustomValuesChange({
         ...customValues,
         [variationId]: [...(customValues[variationId] || []), newValue]
       });
+
       setSearchTerm("");
       setIsOpenMap(prev => ({ ...prev, [variationId]: false }));
     }
   };
 
   const removeValue = (variationId: number, value: { id: number, name: string }) => {
+    setSelectedValues(prev => {
+      const updatedValues = {
+        ...prev,
+        [variationId]: (prev[variationId] || []).filter(v => !(v.id === value.id && v.name === value.name))
+      };
+      regenerateCombinations(updatedValues);
+      return updatedValues;
+    });
+
     if (value.id === -1) {
-      // Remove custom value
       onCustomValuesChange({
         ...customValues,
         [variationId]: (customValues[variationId] || []).filter(name => name !== value.name)
       });
-    } else {
-      // Remove predefined value
-      setSelectedValues(prev => ({
-        ...prev,
-        [variationId]: (prev[variationId] || []).filter(v => v.id !== value.id)
-      }));
     }
   };
 
   const clearSelection = (variationId: number) => {
-    setSelectedValues(prev => ({ ...prev, [variationId]: [] }));
+    setSelectedValues(prev => {
+      const updatedValues = { ...prev, [variationId]: [] };
+      regenerateCombinations(updatedValues);
+      return updatedValues;
+    });
+
     onCustomValuesChange({
       ...customValues,
       [variationId]: []
@@ -279,10 +229,10 @@ useEffect(() => {
   };
 
   const getAllValuesForVariation = (variationId: number) => {
-    const predefined = selectedValues[variationId] || [];
-    const custom = (customValues[variationId] || []).map(name => ({ id: -1, name }));
-    return [...predefined, ...custom];
+    return selectedValues[variationId] || [];
   };
+
+  console.log(selectedValues)
 
   return (
     <div className="py-4">
@@ -313,7 +263,7 @@ useEffect(() => {
                 <div className="relative">
                   <div
                     className="w-full min-h-[42px] px-4 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C] cursor-text flex flex-wrap gap-2 items-center"
-                    onClick={() => toggleDropdown(variation.id)}
+                    onMouseDown={(e) => toggleDropdown(variation.id, e)}
                   >
                     {getAllValuesForVariation(variation.id).length === 0 ? (
                       <span className="text-gray-400">
@@ -321,31 +271,26 @@ useEffect(() => {
                       </span>
                     ) : (
                       <div className="flex flex-wrap gap-2">
-                        {getAllValuesForVariation(variation.id).map((value) => {
-                          const isSelected = selectedValues[variation.id]?.some(v => v.id === value.id);
-                          if (!isSelected) return
-                          return (
-                            <div
-                              key={`${value.id}-${value.name}`}
-                              className="bg-gray-100 px-2 py-1 rounded-md text-sm flex items-center justify-between"
-                            >
-
-                              <div className="flex items-center">
-                                <span className="truncate">{value.name}</span>
-                                <button type='button'
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    removeValue(variation.id, value);
-                                  }}
-                                  className="ml-1 text-gray-400 hover:text-gray-600"
-                                >
-                                  <X size={14} />
-                                </button>
-                              </div>
-
+                        {getAllValuesForVariation(variation.id).map((value) => (
+                          <div
+                            key={`${value.id}-${value.name}`}
+                            className="bg-gray-100 px-2 py-1 rounded-md text-sm flex items-center justify-between"
+                          >
+                            <div className="flex items-center">
+                              <span className="truncate">{value.name}</span>
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  removeValue(variation.id, value);
+                                }}
+                                className="ml-1 text-gray-400 hover:text-gray-600"
+                              >
+                                <X size={14} />
+                              </button>
                             </div>
-                          );
-                        })}
+                          </div>
+                        ))}
                       </div>
                     )}
                     <input
@@ -365,6 +310,7 @@ useEffect(() => {
                   <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center space-x-1">
                     {getAllValuesForVariation(variation.id).length > 0 && !isOpenMap[variation.id] && (
                       <button
+                        type="button"
                         onClick={(e) => {
                           e.stopPropagation();
                           clearSelection(variation.id);
@@ -375,13 +321,13 @@ useEffect(() => {
                         <X size={18} />
                       </button>
                     )}
-                    <button type='button'
-                      onClick={(e) => {
+                    <button
+                      type='button'
+                      onMouseDown={(e) => {
                         e.stopPropagation();
-                        toggleDropdown(variation.id)
+                        toggleDropdown(variation.id, e);
                       }}
                       className="text-gray-400 hover:text-gray-600"
-                      aria-label={translate("ড্রপডাউন টগল করুন", "Toggle dropdown")}
                     >
                       {isOpenMap[variation.id] ? (
                         <ChevronUp size={20} />
@@ -409,59 +355,37 @@ useEffect(() => {
                       </div>
 
                       {/* Predefined values */}
-                      {variation.VariationValue.filter(value =>
-                        value.name.toLowerCase().includes(searchTerm.toLowerCase())
-                      ).length > 0 && (
-                          <>
-                            <div className="px-4 py-1 text-xs text-gray-500">
-                              {translate("প্রিডিফাইন্ড অপশন", "Predefined options")}
-                            </div>
-                            {variation.VariationValue
-                              .filter(value =>
-                                value.name.toLowerCase().includes(searchTerm.toLowerCase())
-                              )
-                              .map((value) => {
-                                const isSelected = selectedValues[variation.id]?.some(v => v.id === value.id);
-                                return (
-                                  <div
-                                    key={value.id}
-                                    className={`px-4 py-2 cursor-pointer hover:bg-gray-100 flex items-center ${isSelected ? "bg-gray-100" : ""
-                                      }`}
-                                    onClick={() => {
-                                      handleValueSelect(variation.id, value.id, value.name);
-                                      generateCombinations();
-                                    }}
-                                  >
-                                    <div
-                                      className={`mr-2 h-4 w-4 border border-gray-300 rounded flex items-center justify-center ${isSelected ? "bg-[#EE5A2C] border-[#EE5A2C]" : ""
-                                        }`}
-                                    >
-                                      {isSelected && <Check className="h-3 w-3 text-white" />}
-                                    </div>
-                                    <span className={isSelected ? "text-[#EE5A2C]" : ""}>
-                                      {value.name}
-                                    </span>
-                                  </div>
-                                );
-                              })}
-                          </>
-                        )}
-
-                      {/* Custom values */}
-
-
-                      {variation.VariationValue.filter(value =>
-                        value.name.toLowerCase().includes(searchTerm.toLowerCase())
-                      ).length === 0 &&
-                        (customValues[variation.id] || []).filter(name =>
-                          name.toLowerCase().includes(searchTerm.toLowerCase())
-                        ).length === 0 && (
-                          <div className="px-4 py-2 text-gray-500">
-                            {searchTerm
-                              ? translate("কোন অপশন পাওয়া যায়নি", "No options found")
-                              : translate("অনুসন্ধান করতে টাইপ করুন", "Start typing to search")}
+                      {variation.VariationValue.length > 0 && (
+                        <>
+                          <div className="px-4 py-1 text-xs text-gray-500">
+                            {translate("প্রিডিফাইন্ড অপশন", "Predefined options")}
                           </div>
-                        )}
+                          {variation.VariationValue
+                            .filter(value =>
+                              searchTerm === "" ||
+                              value.name.toLowerCase().includes(searchTerm.toLowerCase())
+                            )
+                            .map((value) => {
+                              const isSelected = selectedValues[variation.id]?.some(v => v.id === value.id && v.name === value.name);
+                              return (
+                                <div
+                                  key={value.id}
+                                  className={`px-4 py-2 cursor-pointer hover:bg-gray-100 flex items-center ${isSelected ? "bg-gray-100" : ""}`}
+                                  onClick={() => handleValueSelect(variation.id, value.id, value.name)}
+                                >
+                                  <div
+                                    className={`mr-2 h-4 w-4 border border-gray-300 rounded flex items-center justify-center ${isSelected ? "bg-[#EE5A2C] border-[#EE5A2C]" : ""}`}
+                                  >
+                                    {isSelected && <Check className="h-3 w-3 text-white" />}
+                                  </div>
+                                  <span className={isSelected ? "text-[#EE5A2C]" : ""}>
+                                    {value.name}
+                                  </span>
+                                </div>
+                              );
+                            })}
+                        </>
+                      )}
                     </div>
                   </div>
                 )}
@@ -479,12 +403,11 @@ useEffect(() => {
 
             <div className="border rounded-xl overflow-x-auto">
               {/* Table Header */}
-              <div className="grid grid-cols-8 bg-[#FDEFEA] text-sm font-semibold text-gray-800 px-4 py-3 border-b min-w-[900px]">
+              <div className="grid grid-cols-7 bg-[#FDEFEA] text-sm font-semibold text-gray-800 px-4 py-3 border-b min-w-[900px]">
                 <h1 className="col-span-1 text-center">SL</h1>
                 <h1 className="col-span-2 text-center">SKU</h1>
                 <h1 className="col-span-1 text-center">Price</h1>
                 <h1 className="col-span-1 text-center">Discount</h1>
-                <h1 className="col-span-1 text-center">Purchas Point</h1>
                 <h1 className="col-span-1 text-center">Stock</h1>
                 <h1 className="col-span-1 text-center">Actions</h1>
               </div>
@@ -493,7 +416,7 @@ useEffect(() => {
               {variationCombinations.map((combination, index) => (
                 <div
                   key={`${combination.sku}-${index}`}
-                  className="grid grid-cols-8 items-center gap-3 px-4 py-3 border-b min-w-[900px]"
+                  className="grid grid-cols-7 items-center gap-3 px-4 py-3 border-b min-w-[900px]"
                 >
                   <div className="col-span-1">
                     <div className="text-sm font-medium text-gray-700 text-center">
@@ -510,7 +433,7 @@ useEffect(() => {
                   {/* Price Input */}
                   <input
                     type="number"
-                    value={combination.price === 0 ? '' : combination.price}
+                    value={combination.price || ''}
                     onChange={(e) => handleInputChange(index, 'price', e.target.value)}
                     placeholder="Price"
                     className="w-full px-3 py-2 text-sm border rounded-md placeholder:text-center text-center"
@@ -518,24 +441,16 @@ useEffect(() => {
 
                   <input
                     type="number"
-                    value={combination.discount || ''}
-                    onChange={(e) => handleInputChange(index, 'discount', e.target.value)}
+                    value={combination.discountPrice || ''}
+                    onChange={(e) => handleInputChange(index, 'discountPrice', e.target.value)}
                     placeholder="Discount"
-                    className="w-full px-3 py-2 text-sm border rounded-md placeholder:text-center text-center"
-                  />
-
-                  <input
-                    type="number"
-                    value={combination.purchasePoint || ''}
-                    onChange={(e) => handleInputChange(index, 'purchasePoint', e.target.value)}
-                    placeholder="Purchase Point"
                     className="w-full px-3 py-2 text-sm border rounded-md placeholder:text-center text-center"
                   />
 
                   {/* Stock Input */}
                   <input
                     type="number"
-                    value={combination.stock === 0 ? '' : combination.stock}
+                    value={combination.stock || ''}
                     onChange={(e) => handleInputChange(index, 'stock', e.target.value)}
                     placeholder="Stock"
                     className="w-full px-3 py-2 text-sm border rounded-md placeholder:text-center text-center"
@@ -543,6 +458,7 @@ useEffect(() => {
 
                   {/* Delete Button */}
                   <button
+                    type="button"
                     onClick={() => deleteRow(index)}
                     className="text-red-500 hover:text-red-700 text-sm font-medium"
                   >
