@@ -37,7 +37,7 @@ export const authApi = apiSlice.injectEndpoints({
             providesTags: ["seller-login"],
         }),
 
-         getProductByIdForEdit: builder.query({
+        getProductByIdForEdit: builder.query({
             query: (productLink: string) => ({
                 url: `product/edit-get-product/${productLink}`,
             }),
@@ -67,11 +67,24 @@ export const authApi = apiSlice.injectEndpoints({
         }),
 
         //single seller products
-         getSellerProductById: builder.query({
+        getSellerProductById: builder.query({
             query: (slug) => ({
                 url: `user/get-shop-page/${slug}`,
             }),
             providesTags: ["seller-login"],
+        }),
+
+
+
+
+        // The bulk...
+        updateBulkProduct: builder.mutation({
+            query: (data) => ({
+                url: `/product/update-product-bulk-action`,
+                method: "PUT",
+                body: data,
+            }),
+            invalidatesTags: ["products"],
         }),
 
 
@@ -86,5 +99,6 @@ export const {
     useGetProductByIdQuery,
     useEditProductByIdMutation,
     useGetSellerProductByIdQuery,
-    useGetProductByIdForEditQuery
+    useGetProductByIdForEditQuery,
+    useUpdateBulkProductMutation
 } = authApi;

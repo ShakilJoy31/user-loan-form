@@ -55,10 +55,10 @@ export const SellerLogin = ({ setActiveTab }: SellerLoginProps) => {
         const apiError = error as { data?: { message?: string } };
         console.log(apiError)
         errorMessage = apiError.data?.message || errorMessage;
-        toast(errorMessage);
+        toast.error(errorMessage);
       } else if (error instanceof Error) {
         errorMessage = error.message;
-        toast(errorMessage);
+        toast.error(errorMessage);
       }
     } finally {
       setSignUpLoader(false)

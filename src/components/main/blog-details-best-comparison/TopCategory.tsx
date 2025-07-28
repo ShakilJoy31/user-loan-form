@@ -6,16 +6,18 @@ import Gallery from "@/assets/Home/gallery.png";
 import { CiCalendar } from "react-icons/ci";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 
-const TopCategory = () => {
+interface TopCategoryProps {
+  onSearch: (searchTerm: string) => void;
+  onStatusFilter: (status: string) => void;
+}
+
+const TopCategory = ({ onSearch, onStatusFilter }: TopCategoryProps) => {
   const { translate } = useCustomTranslator();
   const categories = [
-    { name: translate("সব", "All"), count: 134 },
-    { name: translate("সেরা ইলেকট্রনিক্স", "Best Electronics"), count: 134 },
-    { name: translate("গৃহ সরঞ্জাম", "Home Appliances"), count: 134 },
-    { name: translate("ফ্যাশন", "Fashion"), count: 134 },
-    { name: translate("খেলাধুলা", "Sports"), count: 134 },
-    { name: translate("খেলনা", "Toys"), count: 134 },
-    { name: translate("মুদিখানা", "Grocery"), count: 134 },
+    { name: translate("সব", "All"), count: 134, value: "" },
+    { name: translate("প্রকাশিত", "Published"), count: 134, value: "published" },
+    { name: translate("খসড়া", "Draft"), count: 134, value: "draft" },
+    { name: translate("ট্র্যাশ", "Trash"), count: 134, value: "trash" },
   ];
 
   const tags = [
@@ -37,6 +39,14 @@ const TopCategory = () => {
     },
   ];
 
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onSearch(e.target.value);
+  };
+
+  const handleStatusClick = (value: string) => {
+    onStatusFilter(value);
+  };
+
   return (
     <div className="w-full lg:max-w-[326px] mx-auto lg:mx-0 mt-10 lg:mt-0 px-[16px] lg:px-0">
       {/* Search Input */}
@@ -48,6 +58,7 @@ const TopCategory = () => {
           type="text"
           placeholder={translate("খুঁজুন...", "Search...")}
           className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#EE5A2C] text-sm"
+          onChange={handleSearch}
         />
       </div>
 
@@ -56,12 +67,16 @@ const TopCategory = () => {
       {/* Top Categories */}
       <div className="w-full">
         <h2 className="text-xl font-bold mb-5">
-          {translate("শীর্ষ বিভাগসমূহ", "Top Categories")}
+          {translate("স্ট্যাটাস", "Status")}
         </h2>
         <div className="flex justify-between">
           <div>
             {categories.map((category, index) => (
-              <p key={index} className="text-sm font-normal py-1">
+              <p 
+                key={index} 
+                className="text-sm font-normal py-1 cursor-pointer hover:text-[#EE5A2C]"
+                onClick={() => handleStatusClick(category.value)}
+              >
                 {category.name}
               </p>
             ))}

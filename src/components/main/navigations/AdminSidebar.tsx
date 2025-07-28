@@ -23,9 +23,7 @@ import { cn } from "@/lib/utils";
 import { appConfiguration } from "@/utils/constant/appConfiguration";
 import { motion, AnimatePresence } from "framer-motion";
 import { shareWithCookies } from "@/utils/helper/shareWithCookies";
-import { useSelector } from "react-redux";
 import { adminNavigationLinks } from "@/utils/helper/adminNavigationsLink";
-import { selectUser } from "@/redux/store";
 import { useGetUserNotificationQuery } from "@/redux/features/user/userApi";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 import useSidebar from "@/hooks/useSidebar";
@@ -35,7 +33,7 @@ import { RiLockPasswordFill } from "react-icons/ri";
 const AdminSidebarNavigation = () => {
   const [activeSubmenu, setActiveSubmenu] = useState<string | null>(null);
   const [activeSubSubmenu, setActiveSubSubmenu] = useState<string | null>(null);
-  const user = useSelector(selectUser);
+  // const user = useSelector(selectUser);
   const router = useRouter();
   const pathname = usePathname();
   const { translate } = useCustomTranslator();
@@ -52,25 +50,25 @@ const AdminSidebarNavigation = () => {
     router.refresh();
   };
 
-  const filteredNavigationLinks = adminNavigationLinks?.filter((link) => {
-    // Add null checks
-    if (!user || !user.role) return false;
+  // const filteredNavigationLinks = adminNavigationLinks?.filter((link) => {
+  //   // Add null checks
+  //   if (!user || !user.role) return false;
 
-    if (user.role === "SUPER_ADMIN") return true;
-    if (user.role === "OPERATION_ADMIN") {
-      return !["Finance", "Delete"].includes(link.key);
-    }
-    if (user.role === "OPERATION_MANAGER") {
-      return (
-        !["Finance", "Settings"].includes(link.key) &&
-        ["Products", "Discounts", "Categories", "Orders"].includes(link.key)
-      );
-    }
-    if (user.role === "SUPPORT_EXECUTIVE") {
-      return ["Orders", "Customers"].includes(link.key);
-    }
-    return false;
-  }) || [];
+  //   if (user.role === "SUPER_ADMIN") return true;
+  //   if (user.role === "OPERATION_ADMIN") {
+  //     return !["Finance", "Delete"].includes(link.key);
+  //   }
+  //   if (user.role === "OPERATION_MANAGER") {
+  //     return (
+  //       !["Finance", "Settings"].includes(link.key) &&
+  //       ["Products", "Discounts", "Categories", "Orders"].includes(link.key)
+  //     );
+  //   }
+  //   if (user.role === "SUPPORT_EXECUTIVE") {
+  //     return ["Orders", "Customers"].includes(link.key);
+  //   }
+  //   return false;
+  // }) || [];
 
   const getCountForLabel = (key: string) => {
     if (!notificationData?.data) return null;
@@ -115,8 +113,6 @@ const AdminSidebarNavigation = () => {
       `${link.label.en} (${count})`
     );
   };
-
-  console.log(filteredNavigationLinks)
 
   return (
     <section

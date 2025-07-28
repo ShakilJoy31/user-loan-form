@@ -26,7 +26,7 @@ import { useState } from "react";
 import homeLogo from '@/assets/Logo/admin-sideber-logo.png';
 import avatar from "@/assets/Products_Image/man.avif";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -40,11 +40,14 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { shareWithCookies } from "@/utils/helper/shareWithCookies";
+import { appConfiguration } from "@/utils/constant/appConfiguration";
 
 const SellerSideber = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [activeSubmenu, setActiveSubmenu] = useState<string | null>(null);
   const pathname = usePathname();
+  const router = useRouter();
 
   const menuItems = [
     {
@@ -139,9 +142,9 @@ const SellerSideber = () => {
   const isActive = (href: string) => pathname === href;
 
   const handleLogout = () => {
-
-    // Add your logout logic here
-    console.log("Logging out...");
+    shareWithCookies("remove", `${appConfiguration.appCode}token`);
+    router.push("/seller-auth");
+    router.refresh();
   };
 
   return (
@@ -316,6 +319,7 @@ const SellerSideber = () => {
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                   <AlertDialogCancel>Cancel</AlertDialogCancel>
+
                   <AlertDialogAction onClick={handleLogout}>
                     Confirm
                   </AlertDialogAction>
