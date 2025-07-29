@@ -5,13 +5,13 @@ import { useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 import { CustomerLogin } from "./CustomerLogin";
-// import { FcGoogle } from "react-icons/fc";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { customerRegisterSchema } from "@/schema/authSchema/customerRegistrationSchema";
 import { z } from "zod";
 import toast from "react-hot-toast";
-import { useCreateCustomerRegisterMutation } from "@/redux/features/user/userApi";
+import { useCreateCustomerRegisterMutation, useOtpGenerateMutation,  } from "@/redux/features/user/userApi";
+import { useVerifyOtpForgetMutation } from "@/redux/features/user/forgetPasswordApi";
 
 type CustomerRegisterDataProps = z.infer<typeof customerRegisterSchema>;
 
@@ -22,10 +22,15 @@ const CustomerCreate = () => {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
-  const [, setShowOTPField] = useState(false);
+  const [otpError, setOtpError] = useState("");
+  const [, setOtpSent] = useState(false);
+  const [countdown, setCountdown] = useState(0);
+  const [otpToken, setOtpToken] = useState(""); // Added token state
 
-  // API hook
-  const [createCustomer, { isLoading }] = useCreateCustomerRegisterMutation();
+  // API hooks
+  const [createCustomer, { isLoading: isRegistering }] = useCreateCustomerRegisterMutation();
+  const [sendOtp, { isLoading: isSendingOtp }] = useOtpGenerateMutation();
+  const [verifyOtp, { isLoading: isVerifyingOtp }] = useVerifyOtpForgetMutation();
 
   const {
     register,
@@ -50,23 +55,43 @@ const CustomerCreate = () => {
   const handleBack = () => {
     if (currentStep === "verify") {
       setCurrentStep("personal");
-      setShowOTPField(false);
+      setOtpSent(false);
+      setVerificationCode("");
+      setOtpError("");
     } else if (currentStep === "password") {
       setCurrentStep("verify");
     }
   };
 
-  const handleResendCode = () => {
-    alert(
-      translate(
-        "আপনার ফোন নম্বরে ভেরিফিকেশন কোড পুনরায় পাঠানো হয়েছে",
-        "Verification code resent to your phone number"
-      )
-    );
+  const handleResendCode = async () => {
+    const contactNo = getValues("contactNo");
+    if (!contactNo) return;
+
+    try {
+      const response = await sendOtp({ contactNo }).unwrap();
+      setOtpToken(response.token); // Store the token from response
+      toast.success(translate("OTP পুনরায় পাঠানো হয়েছে", "OTP resent successfully"));
+      startCountdown();
+    } catch (error) {
+      console.log(error)
+      toast.error(translate("OTP পাঠানো ব্যর্থ হয়েছে", "Failed to resend OTP"));
+    }
+  };
+
+  const startCountdown = () => {
+    setCountdown(120); // 2 minutes
+    const timer = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
   };
 
   const onSubmit = async (data: CustomerRegisterDataProps) => {
-    // Create a new object without confirmPassword
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { confirmPassword, ...submitData } = data;
     
@@ -75,7 +100,7 @@ const CustomerCreate = () => {
       toast.success(translate("নিবন্ধন সফল হয়েছে!", "Registration successful!"));
       reset();
       setCurrentStep("personal");
-      setShowOTPField(false);
+      setVerificationCode("");
       setActiveTab("login");
     } catch (error) {
       console.error("Registration failed:", error);
@@ -88,7 +113,7 @@ const CustomerCreate = () => {
       case "personal":
         return await trigger(["name", "email", "contactNo"]);
       case "verify":
-        return verificationCode.length === 5;
+        return verificationCode.length === 6; // Changed to 6 digits
       case "password":
         return await trigger(["password", "confirmPassword"]);
       default:
@@ -102,14 +127,33 @@ const CustomerCreate = () => {
 
     switch (currentStep) {
       case "personal":
-        setShowOTPField(true);
-        setCurrentStep("verify");
+        try {
+          const contactNo = getValues("contactNo");
+          const response = await sendOtp({ contactNo }).unwrap();
+          setOtpToken(response.token); // Store the token from response
+          setOtpSent(true);
+          startCountdown();
+          setCurrentStep("verify");
+          toast.success(translate("OTP পাঠানো হয়েছে", "OTP sent successfully"));
+        } catch (error) {
+          console.log(error)
+          toast.error(translate("OTP পাঠানো ব্যর্থ হয়েছে", "Failed to send OTP"));
+        }
         break;
       case "verify":
-        setCurrentStep("password");
+        try {
+           getValues("contactNo");
+          await verifyOtp({ token: otpToken, otp: verificationCode }).unwrap();
+          setCurrentStep("password");
+          setOtpError("");
+        } catch (error) {
+          console.log(error)
+          setOtpError(translate("ভুল OTP, আবার চেষ্টা করুন", "Invalid OTP, please try again"));
+        }
         break;
     }
   };
+  
 
   const isStepValid = async (step: typeof currentStep) => {
     const values = getValues();
@@ -119,13 +163,18 @@ const CustomerCreate = () => {
     }
     
     if (step === "verify") {
-      return verificationCode.length === 5;
+      return verificationCode.length === 6; // Changed to 6 digits
     }
     
     return false;
   };
-
   console.log(isStepValid)
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+  };
 
   return (
     <div className="max-w-[460px] w-full px-[20px] lg:px-0 dark:text-white">
@@ -250,7 +299,15 @@ const CustomerCreate = () => {
                       </label>
                       <input
                         id="contactNo"
-                        {...register("contactNo")}
+                        {...register("contactNo", {
+      maxLength: {
+        value: 11,
+        message: translate(
+          "ফোন নম্বর সর্বোচ্চ ১১ ডিজিট হতে পারে",
+          "Phone number must be at most 11 digits"
+        )
+      }
+    })}
                         placeholder={translate(
                           "আপনার ফোন নম্বর লিখুন",
                           "Enter your phone number"
@@ -268,28 +325,13 @@ const CustomerCreate = () => {
                       type="button"
                       className="w-full bg-[#EE5A2C] text-white h-auto max-h-[63px] py-[18px] rounded-full md:rounded-md hover:bg-orange-800 transition mt-6"
                       onClick={handleContinue}
-                      disabled={isLoading}
+                      disabled={isSendingOtp}
                     >
-                      {translate("চালিয়ে যান", "Continue")}
+                      {isSendingOtp 
+                        ? translate("পাঠানো হচ্ছে...", "Sending...") 
+                        : translate("চালিয়ে যান", "Continue")}
                     </Button>
                   </form>
-
-                  {/* <div className="hidden md:block">
-                    <div className="text-gray-300 flex justify-between items-center mt-[35px] ">
-                      <hr className="w-[30%] border border-gray-300" />
-                      <p className="text-[14px]">Or Sign in with</p>
-                      <hr className="w-[30%] border border-gray-300" />
-                    </div>
-                  </div>
-                
-                  <div className="hidden md:block">
-                    <div className="flex justify-center mt-5 lg:mt-10 w-full ">
-                      <Button variant={"outline"} className="w-full py-[18px]">
-                          <FcGoogle /> 
-                          <span className="ml-1 text-[16px] font-normal">Sign Up with Google</span>
-                      </Button>
-                    </div>
-                  </div> */}
                 </>
               ) : (
                 <CustomerLogin setActiveTab={setActiveTab} />
@@ -314,7 +356,7 @@ const CustomerCreate = () => {
                 </p>
 
                 <div className="flex justify-center gap-2">
-                  {[0, 1, 2, 3, 4].map((index) => (
+                  {[0, 1, 2, 3, 4, 5].map((index) => ( // Changed to 6 inputs
                     <input
                       key={index}
                       type="text"
@@ -325,7 +367,7 @@ const CustomerCreate = () => {
                         newCode[index] = e.target.value.replace(/\D/g, "");
                         setVerificationCode(newCode.join(""));
 
-                        if (e.target.value && index < 4) {
+                        if (e.target.value && index < 5) { // Changed to 5
                           const nextInput = document.getElementById(
                             `code-input-${index + 1}`
                           );
@@ -351,13 +393,8 @@ const CustomerCreate = () => {
                   ))}
                 </div>
 
-                {verificationCode.length === 5 && (
-                  <p className="text-red-500 text-center">
-                    {translate(
-                      "ভুল কোড, আবার চেষ্টা করুন",
-                      "Wrong code, please try again"
-                    )}
-                  </p>
+                {otpError && (
+                  <p className="text-red-500 text-center">{otpError}</p>
                 )}
 
                 <div className="text-center">
@@ -365,9 +402,12 @@ const CustomerCreate = () => {
                     type="button"
                     className="text-[#EE5A2C] hover:underline flex items-center justify-center gap-1 mx-auto"
                     onClick={handleResendCode}
+                    disabled={countdown > 0 || isSendingOtp}
                   >
                     {translate("আবার কোড পাঠান", "Send code again")}{" "}
-                    <span className="text-gray-500">00:20</span>
+                    {countdown > 0 && (
+                      <span className="text-gray-500">({formatTime(countdown)})</span>
+                    )}
                   </button>
                 </div>
 
@@ -375,9 +415,11 @@ const CustomerCreate = () => {
                   type="button"
                   className="w-full bg-[#EE5A2C] text-white h-auto max-h-[63px] py-[18px] rounded-full md:rounded-md hover:bg-orange-800 transition mt-6"
                   onClick={handleContinue}
-                  disabled={verificationCode.length !== 5 || isLoading}
+                  disabled={verificationCode.length !== 6 || isVerifyingOtp} // Changed to 6
                 >
-                  {translate("চালিয়ে যান", "Continue")}
+                  {isVerifyingOtp 
+                    ? translate("যাচাই করা হচ্ছে...", "Verifying...") 
+                    : translate("চালিয়ে যান", "Continue")}
                 </Button>
               </form>
             </div>
@@ -414,9 +456,9 @@ const CustomerCreate = () => {
                     onClick={() => setShowNewPassword(!showNewPassword)}
                   >
                     {showNewPassword ? (
-                      <FiEyeOff size={18} />
-                    ) : (
                       <FiEye size={18} />
+                    ) : (
+                      <FiEyeOff size={18} />
                     )}
                   </button>
                   <p className="text-xs text-gray-500 mt-1">
@@ -456,9 +498,9 @@ const CustomerCreate = () => {
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   >
                     {showConfirmPassword ? (
-                      <FiEyeOff size={18} />
-                    ) : (
                       <FiEye size={18} />
+                    ) : (
+                      <FiEyeOff size={18} />
                     )}
                   </button>
                   {errors.confirmPassword && (
@@ -471,9 +513,11 @@ const CustomerCreate = () => {
                 <Button
                   type="submit"
                   className="w-full bg-[#EE5A2C] text-white h-auto max-h-[63px] py-[18px] rounded-full md:rounded-md hover:bg-orange-800 transition mt-6"
-                  disabled={isLoading}
+                  disabled={isRegistering}
                 >
-                  {translate("নিবন্ধন সম্পূর্ণ করুন", "Complete Registration")}
+                  {isRegistering
+                    ? translate("প্রক্রিয়াকরণ...", "Processing...")
+                    : translate("নিবন্ধন সম্পূর্ণ করুন", "Complete Registration")}
                 </Button>
               </form>
             </div>

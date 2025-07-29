@@ -155,7 +155,7 @@ export default function ChangePasswordTab() {
                                     onClick={() => setShowCurrent(!showCurrent)}
                                     className="absolute right-3 top-2.5 hover:cursor-pointer text-gray-500"
                                 >
-                                    {showCurrent ? <FaEyeSlash /> : <FaEye />}
+                                    {showCurrent ? <FaEye /> : <FaEyeSlash />}
                                 </button>
                             </div>
                             <p className="text-xs text-orange-500 mt-1 underline cursor-pointer hover:text-orange-600 dark:text-white">
@@ -181,7 +181,7 @@ export default function ChangePasswordTab() {
                                     onClick={() => setShowNew(!showNew)}
                                     className="absolute right-3 top-2.5 hover:cursor-pointer text-gray-500"
                                 >
-                                    {showNew ? <FaEyeSlash /> : <FaEye />}
+                                    {showNew ? <FaEye /> : <FaEyeSlash />}
                                 </button>
                             </div>
                         </div>
@@ -204,7 +204,7 @@ export default function ChangePasswordTab() {
                                     onClick={() => setShowReEnter(!showReEnter)}
                                     className="absolute right-3 top-2.5 hover:cursor-pointer text-gray-500"
                                 >
-                                    {showReEnter ? <FaEyeSlash /> : <FaEye />}
+                                    {showReEnter ? <FaEye /> : <FaEyeSlash />}
                                 </button>
                             </div>
                         </div>

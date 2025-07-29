@@ -5,79 +5,14 @@ import { StarIcon as StarOutline } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { Product } from "@/types/products/productInterface";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 
 interface ProductCardProps {
-    product: Product;
-      shopProfile: ShopProfileProps;
-  newArrival: Product[];
-  relatedShop: RelatedShop[];
-}
-
-interface Brand {
-  brand: string;
-  image: string;
-}
-
-interface ProductItem {
-  id: number;
-  productId: number;
-  sku: string;
-  price: number;
-  purchasePoint: number;
-  discountPrice: number;
-  stock: number;
-  barcode: string | null;
-}
-
-interface ProductImage {
-  id: number;
-  productId: number;
-  imageUrl: string;
-  alt: string | null;
-  createdAt: string;
-  updatedAt: string;
-}
-
-interface Product {
-  category: {
-    name: string;
-  };
-  reviews: string;
-  rating: number;
-  id: number;
-  productName: string;
-  productLink: string;
-  brand: Brand;
-  ProductItem: ProductItem[];
-  ProductImage: ProductImage[];
-}
-
-interface UserCompanyInfo {
-  id: number;
-  userId: number;
-  shopName: string;
-  ownerName: string;
-  designation: string;
-  profileImage: string | null;
-  bannerImage: string | null;
-  city: string;
-  area: string;
-  tradeLicense: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-interface ShopProfileProps {
-  id: number;
-  name: string;
-  contactNo: string;
-  profileImage: string | null;
-  avatar: string;
-  bannerImage: string | null;
-  UserCompanyInfo: UserCompanyInfo;
+  product: Product;
 }
 
 interface CartItem {
@@ -92,41 +27,37 @@ interface CartItem {
   productImage: string;
 }
 
-interface RelatedShop {
+interface ProductImage {
   id: number;
-  shopName: string;
-  city: string;
-  area: string;
-  slug: string;
-  profileImage: string | null;
-  bannerImage: string | null;
-  avatar: string;
-  user: {
-    UserShopCategory: {
-      category: {
-        name: string;
-      };
-    }[];
-  };
+  productId: number;
+  imageUrl: string;
+  alt: string | null;
+  createdAt: string;
+  updatedAt: string;
 }
 
-export default function ProductCard({ product, shopProfile }: ProductCardProps) {
-    // Get the first product item for pricing and stock
-    const firstProductItem = product.ProductItem?.[0];
- const discount = firstProductItem?.discountPrice || 0;
-const originalPrice = firstProductItem?.price || 0;
+export default function ProductCard({ product }: ProductCardProps) {
+    console.log("product", product)
+  // Get the first product item for pricing and stock
+  const firstProductItem = product.ProductItem?.[0];
+  const discount = firstProductItem?.discountPrice || 0;
+  const originalPrice = firstProductItem?.price || 0;
 
-const discountAmount = originalPrice - discount;
-const discountPercentage = ((discount / originalPrice) * 100).toFixed(0);
+  const discountAmount = originalPrice - discount;
+  const discountPercentage = ((discount / originalPrice) * 100).toFixed(2);
 
-    const isOutOfStock = (firstProductItem?.stock || 0) <= 0;
-    const mainImage = product.ProductImage?.[0]?.imageUrl || "/placeholder-product.jpg";
-    const router = useRouter();
+  const isOutOfStock = (firstProductItem?.stock || 0) <= 0;
+  const mainImage =
+    product.ProductImage?.[0]?.imageUrl || "/placeholder-product.jpg";
 
-     const getFirstImageUrl = (images: ProductImage[]): string => {
-    return images[0]?.imageUrl || "/placeholder-product.png";
-  };
-
+      const getFirstImageUrl = (images: ProductImage[]): string => {
+        return images[0]?.imageUrl || "/placeholder-product.png";
+      };
+    
+      const router = useRouter();
+      const { translate } = useCustomTranslator();
+    
+    
       const handleAddToCart = (product: Product) => {
         const productItem = product.ProductItem[0];
     
@@ -136,8 +67,8 @@ const discountPercentage = ((discount / originalPrice) * 100).toFixed(0);
           quantity: 1,
           price: productItem.price,
           subTotal: productItem.discountPrice || productItem.price, // Since quantity is 1
-          sellerShopName: shopProfile?.UserCompanyInfo?.shopName,
-          sellerId: shopProfile?.UserCompanyInfo?.userId,
+          sellerShopName: product?.seller?.UserCompanyInfo?.shopName,
+          sellerId: product?.seller?.UserCompanyInfo?.userId,
           productName: product.productName,
           productImage: getFirstImageUrl(product.ProductImage),
         };
@@ -219,8 +150,8 @@ const discountPercentage = ((discount / originalPrice) * 100).toFixed(0);
           quantity: 1,
           price: productItem.price,
           subTotal: productItem.discountPrice || productItem.price,
-          sellerShopName: shopProfile?.UserCompanyInfo?.shopName || "Unknown Shop",
-          sellerId: shopProfile?.UserCompanyInfo?.userId || 0,
+          sellerShopName: product?.seller?.UserCompanyInfo?.shopName || "Unknown Shop",
+          sellerId: product?.seller?.UserCompanyInfo?.userId || 0,
           productName: product.productName,
           productImage: getFirstImageUrl(product.ProductImage),
         };
@@ -250,16 +181,26 @@ const discountPercentage = ((discount / originalPrice) * 100).toFixed(0);
           );
     
           if (isAlreadyAdded) {
-            toast.error("This product is already in your wishlist");
+            toast.error(
+              translate(
+                "এই পণ্যটি ইতিমধ্যে উইশলিস্টে রয়েছে",
+                "This product is already in your wishlist"
+              )
+            );
             return;
           }
     
           const updatedWishlist = [...existingWishlist, dataToSave];
           localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
-          toast.success("Added to wishlist");
+          toast.success(translate("উইশলিস্টে যোগ করা হয়েছে", "Added to wishlist"));
         } catch (error) {
           console.error("Failed to save to wishlist:", error);
-          toast.error("Failed to save to wishlist");
+          toast.error(
+            translate(
+              "উইশলিস্টে সংরক্ষণ করতে ব্যর্থ হয়েছে",
+              "Failed to save to wishlist"
+            )
+          );
         }
       };
     
@@ -292,7 +233,7 @@ const discountPercentage = ((discount / originalPrice) * 100).toFixed(0);
         router.push("/checkout");
       };
 
-        const isProductInWishlist = (productId: number, sku: string): boolean => {
+       const isProductInWishlist = (productId: number, sku: string): boolean => {
     try {
       const existingWishlist = JSON.parse(
         localStorage.getItem("wishlist") || "[]"
@@ -306,99 +247,103 @@ const discountPercentage = ((discount / originalPrice) * 100).toFixed(0);
       return false;
     }
   };
-    
-    return (
-        <div className={`border border-gray-200 rounded-xl overflow-hidden shadow-sm p-3 w-full bg-white hover:shadow-md transition-shadow ${isOutOfStock ? 'opacity-70' : ''}`}>
-            {isOutOfStock && (
-                <div className="absolute top-3 right-3 bg-red-500 text-white text-xs px-2 py-1 rounded z-10">
-                    Out of Stock
-                </div>
-            )}
-            
-            <div className="relative bg-gray-100 rounded-lg p-4 aspect-square">
-                <Image
-                    src={mainImage}
-                    alt={product.productName}
-                    width={300}
-                    height={300}
-                    className="mx-auto h-full w-full object-contain"
-                />
-                <Button
-                                 onClick={() => handleAddToWishlist(product)}
-                                 variant={"outline"}
-                                 className="absolute top-1 right-1 w-8 h-8 text-gray-400 p-0.5 bg-white rounded-full hover:text-red-500"
-                               >
-                                 {isProductInWishlist(
-                                   product.id,
-                                   product.ProductItem[0].sku
-                                 ) ? (
-                                   <FaHeart className="w-5 h-5 text-red-500" />
-                                 ) : (
-                                   <FaRegHeart className="w-5 h-5" />
-                                 )}
-                               </Button>
-            </div>
 
-            <div className="mt-4 space-y-1">
-                <Link href={`/products/${product.id}`}>
-                    <h2 className="text-sm text-gray-500 truncate hover:text-orange-500">
-                        {product.productName}
-                    </h2>
-                </Link>
-
-                <div className="flex items-center space-x-2">
-                    <span className="text-lg font-bold text-black">TK{discountAmount}</span>
-                    {originalPrice > discount && (
-                        <>
-                            <span className="line-through text-sm text-gray-400">TK{originalPrice}</span>
-                            <span className="text-xs text-red-500 bg-red-100 px-2 py-0.5 rounded">
-                        -{discountPercentage}%
-                      </span>
-                        </>
-                    )}
-                </div>
-
-                <div className="flex items-center space-x-1 text-sm">
-                    <div className="flex text-yellow-400">
-                        {[...Array(5)].map((_, i) =>
-                            i < Math.floor(product.rating || 0) ? (
-                                <StarIcon key={i} className="w-4 h-4" />
-                            ) : (
-                                <StarOutline key={i} className="w-4 h-4" />
-                            )
-                        )}
-                    </div>
-                    <span className="text-gray-500 text-sm">(0)</span>
-                </div>
-
-                <div className="flex items-center mt-2 space-x-2">
-                    <Button 
-                     onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              handleAddToCart(product);
-                            }}
-                        variant={'outline'} 
-                        className="flex items-center justify-center px-3 py-2 border border-orange-500 text-orange-500 rounded hover:bg-orange-50"
-                        disabled={isOutOfStock}
-                    >
-                        <ShoppingCartIcon className="w-4 h-4" />
-                    </Button>
-
-                    <Button 
-                     onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              handleBuyNow(product);
-                            }}
-                        variant={'outline'} 
-                        className="flex-1 bg-orange-500 text-white text-sm font-semibold py-2 rounded hover:bg-orange-600 transition-colors"
-                        disabled={isOutOfStock}
-                    >
-                        Buy Now
-                    </Button>
-                </div>
-            </div>
+  return (
+    <div
+      className={`border border-gray-200 rounded-xl overflow-hidden shadow-sm p-3 w-full bg-white hover:shadow-md transition-shadow relative ${
+        isOutOfStock ? "opacity-70" : ""
+      }`}
+    >
+      {isOutOfStock && (
+        <div className="absolute top-3 right-3 bg-red-500 text-white text-xs px-2 py-1 rounded z-10">
+          Out of Stock
         </div>
-    );
+      )}
+
+      <div className="relative bg-gray-100 rounded-lg p-4 aspect-square">
+        <Image
+          src={mainImage}
+          alt={product.productName}
+          width={300}
+          height={300}
+          className="mx-auto h-full w-full object-contain"
+        />
+        <Button
+        onClick={() => handleAddToWishlist(product)}
+          variant={"outline"}
+          className="absolute top-1 right-1 w-8 h-8 text-gray-400 p-0.5 bg-white rounded-full hover:text-red-500"
+        >
+          {isProductInWishlist(
+                    product.id,
+                    product.ProductItem[0].sku
+                  ) ? (
+                    <FaHeart className="w-5 h-5 text-red-500" />
+                  ) : (
+                    <FaRegHeart className="w-5 h-5" />
+                  )}
+        </Button>
+      </div>
+
+      <div className="mt-4 space-y-1">
+        <Link href={`/products/${product.id}`}>
+          <h2 className="text-sm text-gray-500 truncate hover:text-orange-500">
+            {product.productName}
+          </h2>
+        </Link>
+
+        <div className="flex items-center space-x-2">
+          {discount && originalPrice > discount ? (
+            <>
+              <span className="text-lg font-bold text-black">
+                TK{discountAmount}
+              </span>
+              <span className="line-through text-sm text-gray-400">
+                TK{originalPrice}
+              </span>
+              <span className="text-xs text-red-500 bg-red-100 px-2 py-0.5 rounded">
+                -{discountPercentage}%
+              </span>
+            </>
+          ) : (
+            <span className="text-lg font-bold text-black">
+              TK{originalPrice}
+            </span>
+          )}
+        </div>
+
+        <div className="flex items-center space-x-1 text-sm">
+          <div className="flex text-yellow-400">
+            {[...Array(5)].map((_, i) =>
+              i < Math.floor(product.rating || 0) ? (
+                <StarIcon key={i} className="w-4 h-4" />
+              ) : (
+                <StarOutline key={i} className="w-4 h-4" />
+              )
+            )}
+          </div>
+          <span className="text-gray-500 text-sm">({product.rating || 0})</span>
+        </div>
+
+        <div className="flex items-center mt-2 space-x-2">
+          <Button
+           onClick={() => handleAddToCart(product)}
+            variant={"outline"}
+            className="flex items-center justify-center px-3 py-2 border border-orange-500 text-orange-500 rounded hover:bg-orange-50"
+            disabled={isOutOfStock}
+          >
+            <ShoppingCartIcon className="w-4 h-4" />
+          </Button>
+
+          <Button
+          onClick={() => handleBuyNow(product)}
+            variant={"outline"}
+            className="flex-1 hover:text-white bg-orange-500 text-white text-sm font-semibold py-2 rounded hover:bg-orange-600 transition-colors"
+            disabled={isOutOfStock}
+          >
+            Buy Now
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
 }

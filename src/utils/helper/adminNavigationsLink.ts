@@ -629,7 +629,7 @@ const adminDashboardSeller: INavigationLink = {
 };
 
 const adminDashboardAdvertiseBanner: INavigationLink = {
-  icon: MdCategory,
+  icon: MdCategory, 
   label: {
     en: "Advertise Banner",
     bn: "ব্যানার তালিকা",
@@ -638,6 +638,7 @@ const adminDashboardAdvertiseBanner: INavigationLink = {
   href: "/proyojon-admin-portal/advertise-banner",
 };
 
+<<<<<<< HEAD
 const adminDashboardFAQ: INavigationLink = {
   icon: MdCategory,
   label: {
@@ -646,6 +647,45 @@ const adminDashboardFAQ: INavigationLink = {
   },
   key: "faq",
   href: "/proyojon-admin-portal/faq",
+=======
+const adminDashboardBlog: INavigationLink = {
+  icon: MdPeople, // Changed from MdCategory to MdPeople for sellers
+  label: {
+    en: "Blog",
+    bn: "বিক্রেতা",
+  },
+  key: "blog",
+  href: "/proyojon-admin-portal/seller",
+  subLinks: [
+    {
+      icon: MdAssignmentTurnedIn, // Icon for requests
+      label: {
+        en: "Posts",
+        bn: "বিক্রেতার অনুরোধ",
+      },
+      key: "seller-request",
+      href: "/proyojon-admin-portal/blog/posts",
+    },
+    {
+      icon: MdListAlt, // Icon for lists
+      label: {
+        en: "Category",
+        bn: "বিক্রেতার তালিকা",
+      },
+      key: "category",
+      href: "/proyojon-admin-portal/blog/blog-category",
+    },
+    {
+      icon: MdListAlt, // Icon for lists
+      label: {
+        en: "Tags",
+        bn: "বিক্রেতার তালিকা",
+      },
+      key: "tags",
+      href: "/proyojon-admin-portal/blog/blog-tags",
+    },
+  ],
+>>>>>>> 05fedd1f961d98b9c2bd25411c9ef0288df9a068
 };
 
 export const adminNavigationLinks: INavigationLink[] = [
@@ -656,5 +696,10 @@ export const adminNavigationLinks: INavigationLink[] = [
   { ...adminDashboardLocation },
   { ...adminDashboardSeller },
   { ...adminDashboardAdvertiseBanner },
+<<<<<<< HEAD
   { ...adminDashboardFAQ },
+=======
+  { ...adminDashboardBlog },
+  
+>>>>>>> 05fedd1f961d98b9c2bd25411c9ef0288df9a068
 ];

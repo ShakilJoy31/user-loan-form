@@ -1,146 +1,14 @@
-// products/ProductsShowPage.tsx
 "use client";
 
 import FilterSidebar from "@/components/main/products/FilterSidebar";
 import ProductCard from "@/components/main/products/ProductCard";
 import TopbarFilter from "@/components/main/products/TopbarFilter";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 import Pagination from "@/components/common/Pagination";
-import { useGetProductsByFilterMutation, useGetProductsQuery } from "@/redux/features/product/productApi";
-import { ProductFilterParams } from "@/types/products/productInterface";
-import { useGetSellerProductByIdQuery } from "@/redux/features/seller-api/productApi";
-import { useParams } from "next/navigation";
-
-interface ShopPageResponse {
-    success: boolean;
-    statusCode: number;
-    message: string;
-    meta: {
-        page: number;
-        size: number;
-        total: number;
-        totalPage: number;
-    };
-     shopProfile?: ShopProfile; 
-    data: Product[];
-    newArrival: Product[];
-    relatedShop: RelatedShop[];
-}
-
-interface ShopProfile {
-    id: number;
-    name: string;
-    email: string;
-    contactNo: string;
-    UserCompanyInfo: {
-        id: number;
-        userId: number;
-        shopName: string;
-        profileImage: string;
-        bannerImage: string;
-        slug: string;
-        ownerName: string;
-        designation: string;
-        city: string;
-        area: string;
-        tradeLicense: string;
-        map: string;
-        about: string | null;
-        createdAt: string;
-        updatedAt: string;
-    };
-    UserShopCategory: {
-        id: number;
-        userId: number;
-        categoryId: number;
-        createdAt: string;
-        updatedAt: string;
-    }[];
-}
-
-interface Product {
-  id: number;
-  productName: string;
-  productLink: string;
-  category: {
-    name: string;
-  };
-  reviews: string;
-  rating: number;
-  brand: {
-    brand: string;
-    image: string;
-  };
-  ProductItem: {
-    id: number;
-    productId: number;
-    sku: string;
-    price: number;
-    purchasePoint: number;
-    discountPrice: number;
-    stock: number;
-    barcode: string | null;
-  }[];
-  ProductImage: {
-    id: number;
-    productId: number;
-    imageUrl: string;
-    alt: string | null;
-    createdAt: string;
-    updatedAt: string;
-  }[];
-  shopProfile: {
-    id: number;
-    name: string;
-    email: string;
-    contactNo: string;
-    UserCompanyInfo: {
-      id: number;
-      userId: number;
-      shopName: string;
-      profileImage: string;
-      bannerImage: string;
-      slug: string;
-      ownerName: string;
-      designation: string;
-      city: string;
-      area: string;
-      tradeLicense: string;
-      map: string;
-      about: string | null;
-      createdAt: string;
-      updatedAt: string;
-    };
-    UserShopCategory: {
-      id: number;
-      userId: number;
-      categoryId: number;
-      createdAt: string;
-      updatedAt: string;
-    }[];
-  };
-}
-
-interface RelatedShop {
-    id: number;
-    shopName: string;
-    city: string;
-    area: string;
-    slug: string;
-    profileImage: string | null;
-    bannerImage: string | null;
-    avatar: string;
-    user: {
-        UserShopCategory: {
-            category: {
-                name: string;
-            };
-        }[];
-    };
-}
-
+import { useGetProductsByFilterMutation } from "@/redux/features/product/productApi";
+import { Product, ProductFilterParams } from "@/types/products/productInterface";
 
 const ProductsShowPage: React.FC = () => {
     const { translate } = useCustomTranslator();
@@ -149,30 +17,41 @@ const ProductsShowPage: React.FC = () => {
         page: 1,
         perPage: 16
     });
+    const [localSort, setLocalSort] = useState<"asc" | "desc" | null>(null);
 
-    // Fetch all products initially
-    const { data: initialProductsData } = useGetProductsQuery({});
-    
     // Mutation for filtered products
     const [getFilteredProducts, { data: filteredData, isLoading }] = useGetProductsByFilterMutation();
 
-    // Trigger the mutation whenever filterParams change
+    // Trigger the mutation whenever filterParams change (excluding sort)
     useEffect(() => {
-        const hasFilters = filterParams.categories || filterParams.brands || filterParams.minPrice || filterParams.maxPrice;
-        if (hasFilters) {
-            getFilteredProducts(filterParams);
-        }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { sortOrder, ...paramsWithoutSort } = filterParams;
+        getFilteredProducts(paramsWithoutSort);
     }, [filterParams, getFilteredProducts]);
 
-    // Determine which products to display
-    const products = filterParams.categories || filterParams.brands || filterParams.minPrice || filterParams.maxPrice
-        ? filteredData?.data || []
-        : initialProductsData?.data || [];
+    // Apply local sorting to the products
+    const sortedProducts = useMemo(() => {
+        if (!filteredData?.data) return [];
+        
+        const productsToSort = [...filteredData.data];
+        
+        if (localSort === "asc") {
+            return productsToSort.sort((a, b) => {
+                const priceA = a.ProductItem?.[0]?.price || 0;
+                const priceB = b.ProductItem?.[0]?.price || 0;
+                return priceA - priceB;
+            });
+        } else if (localSort === "desc") {
+            return productsToSort.sort((a, b) => {
+                const priceA = a.ProductItem?.[0]?.price || 0;
+                const priceB = b.ProductItem?.[0]?.price || 0;
+                return priceB - priceA;
+            });
+        }
+        return productsToSort;
+    }, [filteredData?.data, localSort]);
 
-    const totalProducts = filterParams.categories || filterParams.brands || filterParams.minPrice || filterParams.maxPrice
-        ? filteredData?.meta?.total || 0
-        : initialProductsData?.meta?.total || 0;
-
+    const totalProducts = filteredData?.meta?.total || 0;
     const totalPages = Math.ceil(totalProducts / filterParams.perPage);
 
     const handlePageChange = (pageNumber: number) => {
@@ -198,26 +77,17 @@ const ProductsShowPage: React.FC = () => {
     };
 
     const handleFilterChange = (newFilters: Partial<ProductFilterParams>) => {
-        setFilterParams(prev => ({
-            ...prev,
-            ...newFilters,
-            page: 1
-        }));
+        // Handle sort locally, other filters via API
+        if (newFilters.sortOrder !== undefined) {
+            setLocalSort(newFilters.sortOrder);
+        } else {
+            setFilterParams(prev => ({
+                ...prev,
+                ...newFilters,
+                page: 1
+            }));
+        }
     };
-
-      const [productDetailsData, setProductDetailsData] = useState<ShopPageResponse | null>(null);
-        
-           const { id } = useParams<{ id: string }>();
-        const { data: singleProductsDetails } = useGetSellerProductByIdQuery(id || "");
-        console.log("singleProductsDetails", singleProductsDetails)
-        
-        useEffect(() => {
-          if (singleProductsDetails) {
-            setProductDetailsData(singleProductsDetails);
-          }
-        }, [singleProductsDetails]);
-
-        console.log("productDetailsData", productDetailsData)
 
     return (
         <main className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
@@ -245,7 +115,7 @@ const ProductsShowPage: React.FC = () => {
                                 className="w-full md:w-[287px]"
                             >
                                 <FilterSidebar 
-                                    productCategory={initialProductsData?.data || []} 
+                                    productCategory={sortedProducts} 
                                     onFilterChange={handleFilterChange}
                                     currentFilters={filterParams}
                                 />
@@ -289,12 +159,10 @@ const ProductsShowPage: React.FC = () => {
                         ) : (
                             <>
                                 <div className={`grid grid-cols-1 sm:grid-cols-2 ${showSidebar ? 'lg:grid-cols-3' : 'lg:grid-cols-4'} gap-6`}>
-                                    {products.map((product: Product) => (
+                                    {sortedProducts.map((product: Product) => (
                                         <ProductCard 
                                             key={product.id}
                                             product={product}
-                                            //@ts-ignore
-                                            shopProfile={productDetailsData?.shopProfile} 
                                         />
                                     ))}
                                 </div>

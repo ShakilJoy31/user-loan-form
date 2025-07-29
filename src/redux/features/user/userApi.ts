@@ -185,6 +185,35 @@ export const userApi = apiSlice.injectEndpoints({
     }),
 
 
+      otpGenerate: builder.mutation({
+      query: ({ contactNo }) => ({
+        url: "/auth/otp-generate",
+        method: "POST",
+        body: { contactNo },
+      }),
+    }),
+
+    //otp
+     verifyOtp: builder.mutation({
+      query: ({ token, otp }) => ({
+        url: `/auth/verify-otp?token=${token}`,
+        method: "POST",
+        body: { otp },
+      }),
+    }),
+
+
+     // Checking if the phone number is already registered
+    verifyPhoneNumber: builder.mutation({
+      query: ({ phone }) => ({
+        url: `/user/get-customer-by-phone/${phone}`,
+        method: "GET",
+      }),
+    }),
+
+
+
+
   }),
 });
 
@@ -205,5 +234,8 @@ export const {
   useGetFilteredShopsQuery,
   useCreateCustomerRegisterMutation,
   useLoginCustomerMutation,
-  useCustomerChangePasswordMutation
+  useCustomerChangePasswordMutation,
+  useOtpGenerateMutation,
+  useVerifyOtpMutation,
+  useVerifyPhoneNumberMutation,
 } = userApi;

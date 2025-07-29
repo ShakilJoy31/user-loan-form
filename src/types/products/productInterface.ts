@@ -1,5 +1,6 @@
 // types/products/productInterface.ts
 export interface Product {
+    reviews: string;
     id: number;
     productName: string;
     productLink: string;
@@ -17,6 +18,31 @@ export interface Product {
     description: string | null;
     createdAt: string;
     updatedAt: string;
+    seller: {
+        UserCompanyInfo: {
+  id: number;
+  userId: number;
+  shopName: string;
+  profileImage: string;
+  bannerImage: string;
+  slug: string;
+  ownerName: string;
+  designation: string;
+  city: string;
+  area: string;
+  tradeLicense: string;
+  map: string; // or you could use more specific type for iframe HTML
+  about: string;
+  storeHours: string;
+  deliveryAvailable: string;
+  pickupAvailable: string;
+  accessories: string;
+  homeAppliances: string;
+  products: string;
+  createdAt: string; // or Date if you'll parse it
+  updatedAt: string; // or Date if you'll parse it
+}
+    }
     brand: {
         id: number;
         brand: string;

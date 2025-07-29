@@ -52,7 +52,7 @@ const InputField: React.FC<InputFieldProps> = ({
           onChange={onChange}
           min={min}
           step={step}
-          className={`w-full px-4 py-1.5 border dark:bg-black dark:text-white ${
+          className={`w-full bg-white px-4 py-1.5 border dark:bg-black dark:text-white ${
             errorMessage ? "border-red-500" : "border-gray-300"
           } rounded-md text-gray-700 focus:outline-none focus:ring-2 ${
             errorMessage ? "focus:ring-red-500" : "focus:ring-blue-500"

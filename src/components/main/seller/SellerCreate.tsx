@@ -24,6 +24,10 @@ import {
 } from "@/schema/authSchema/sellerRegistrationSchema";
 import toast from "react-hot-toast";
 import { useGetAllCategoryQuery } from "@/redux/features/product/categoryApi";
+import {
+  useOtpGenerateMutation,
+} from "@/redux/features/user/userApi";
+import { useVerifyOtpForgetMutation } from "@/redux/features/user/forgetPasswordApi";
 
 interface Category {
   id: number;
@@ -53,11 +57,16 @@ const SellerCreate = () => {
   const [verificationCode, setVerificationCode] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [, setOtpSent] = useState(false);
+  const [countdown, setCountdown] = useState(0);
+  const [otpToken, setOtpToken] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   // API hooks
   const [createSeller, { isLoading }] = useCreateSellerMutation();
+  const [sendOtp, { isLoading: isSendingOtp }] = useOtpGenerateMutation();
+  const [verifyOtp, { isLoading: isVerifyingOtp }] = useVerifyOtpForgetMutation();
   const { data: citiesData } = useGetAllCitiesQuery({});
   const { data: areasData } = useGetAllAreasQuery({});
   const { data: categoriesData } = useGetAllCategoryQuery({});
@@ -98,9 +107,21 @@ const SellerCreate = () => {
 
   const selectedCity = watch("companyInfo.city");
   const selectedCategories = watch("categories");
+  const contactNo = watch("contactNo");
   const filteredCategories = categories.filter((category: Category) =>
     category.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  // Countdown timer for OTP resend
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (countdown > 0) {
+      interval = setInterval(() => {
+        setCountdown((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [countdown]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -158,31 +179,46 @@ const SellerCreate = () => {
     if (currentStep === "password") setCurrentStep("verify");
   };
 
-  const handleResendCode = () => {
-    alert(
-      translate(
-        "আপনার ফোন নম্বরে ভেরিফিকেশন কোড পুনরায় পাঠানো হয়েছে",
-        "Verification code resent to your phone number"
-      )
-    );
+  const handleResendCode = async () => {
+    try {
+      const response = await sendOtp({ contactNo }).unwrap();
+      setOtpToken(response.token); // Store the token from response
+      setCountdown(120);
+      toast.success(
+        translate(
+          "ভেরিফিকেশন কোড পুনরায় পাঠানো হয়েছে",
+          "Verification code resent successfully"
+        )
+      );
+    } catch (error) {
+      console.log(error);
+      toast.error(
+        translate(
+          "কোড পুনরায় পাঠানো ব্যর্থ হয়েছে",
+          "Failed to resend verification code"
+        )
+      );
+    }
   };
 
-const onSubmit = async (data: RegisterDataProps) => {
-  // Create a new object without confirmPassword
-  const { confirmPassword, ...submitData } = data;
-   console.log(confirmPassword)
-  
-  try {
-    await createSeller(submitData).unwrap();
-    toast.success(translate("নিবন্ধন সফল হয়েছে!", "Registration successful!"));
-    reset();
-    setCurrentStep("shop");
-    setActiveTab("login");
-  } catch (error) {
-    console.error("Registration failed:", error);
-    toast.error(translate("নিবন্ধন ব্যর্থ হয়েছে!", "Registration failed!"));
-  }
-};
+  const onSubmit = async (data: RegisterDataProps) => {
+    // Create a new object without confirmPassword
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { confirmPassword, ...submitData } = data;
+
+    try {
+      await createSeller(submitData).unwrap();
+      toast.success(
+        translate("নিবন্ধন সফল হয়েছে!", "Registration successful!")
+      );
+      reset();
+      setCurrentStep("shop");
+      setActiveTab("login");
+    } catch (error) {
+      console.error("Registration failed:", error);
+      toast.error(translate("নিবন্ধন ব্যর্থ হয়েছে!", "Registration failed!"));
+    }
+  };
 
   const validateCurrentStep = async () => {
     switch (currentStep) {
@@ -198,7 +234,7 @@ const onSubmit = async (data: RegisterDataProps) => {
       case "personal":
         return await trigger(["name", "email", "contactNo"]);
       case "verify":
-        return verificationCode.length === 5;
+        return verificationCode.length === 6;
       case "password":
         return await trigger(["password", "confirmPassword"]);
       default:
@@ -215,17 +251,34 @@ const onSubmit = async (data: RegisterDataProps) => {
         setCurrentStep("personal");
         break;
       case "personal":
-        setCurrentStep("verify");
+        try {
+          const response = await sendOtp({ contactNo }).unwrap();
+          setOtpToken(response.token); // Store the token from response
+          setOtpSent(true);
+          setCountdown(120);
+          setCurrentStep("verify");
+        } catch (error) {
+          console.log(error);
+          toast.error(
+            translate("OTP পাঠানো ব্যর্থ হয়েছে", "Failed to send OTP")
+          );
+        }
         break;
       case "verify":
-        setCurrentStep("password");
+        try {
+          await verifyOtp({ token: otpToken, otp: verificationCode }).unwrap();
+          setCurrentStep("password");
+        } catch (error) {
+          console.log(error);
+          toast.error(translate("ভুল OTP কোড", "Invalid OTP code"));
+        }
         break;
     }
   };
 
   const isStepValid = async (step: typeof currentStep) => {
     const values = getValues();
-    
+
     if (step === "shop") {
       return (
         values.companyInfo.shopName &&
@@ -236,20 +289,18 @@ const onSubmit = async (data: RegisterDataProps) => {
         values.categories.length > 0
       );
     }
-    
+
     if (step === "personal") {
       return values.name && values.email && values.contactNo;
     }
-    
+
     if (step === "verify") {
-      return verificationCode.length === 5;
+      return verificationCode.length === 6;
     }
-    
+
     return false;
   };
-
-  console.log(isStepValid)
-
+console.log(isStepValid)
   return (
     <div className="max-w-[460px] w-full px-[20px] lg:px-0 dark:text-white">
       <div className="mb-4 lg:mb-[30px] text-[#EE5A2C] text-[16px]">
@@ -293,7 +344,7 @@ const onSubmit = async (data: RegisterDataProps) => {
                   {translate("অ্যাকাউন্ট তৈরি করুন", "Create Account")}
                 </Button>
 
-                 <Button
+                <Button
                   onClick={() => setActiveTab("login")}
                   className={`px-6 py-3 rounded-md w-full mr-1 transition ${
                     activeTab === "login"
@@ -303,8 +354,6 @@ const onSubmit = async (data: RegisterDataProps) => {
                 >
                   {translate("লগ ইন", "Log in")}
                 </Button>
-
-               
               </div>
 
               {activeTab === "create" ? (
@@ -561,7 +610,7 @@ const onSubmit = async (data: RegisterDataProps) => {
                             }
                           />
                         </div>
-                        
+
                         <div className="absolute dark:bg-black dark:text-white right-3 top-1/2 transform -translate-y-1/2 flex items-center space-x-1">
                           {selectedCategories.length > 0 && !isOpen && (
                             <button
@@ -737,12 +786,21 @@ const onSubmit = async (data: RegisterDataProps) => {
                   </label>
                   <input
                     id="contactNo"
-                    {...register("contactNo")}
+                    {...register("contactNo", {
+                      maxLength: {
+                        value: 11,
+                        message: translate(
+                          "ফোন নম্বর সর্বোচ্চ ১১ ডিজিট হতে পারে",
+                          "Phone number must be at most 11 digits"
+                        ),
+                      },
+                    })}
                     placeholder={translate(
                       "আপনার ফোন নম্বর লিখুন",
                       "Enter your phone number"
                     )}
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
+                    maxLength={11}
                   />
                   {errors.contactNo && (
                     <p className="text-red-500 text-sm mt-1">
@@ -755,9 +813,11 @@ const onSubmit = async (data: RegisterDataProps) => {
                   type="button"
                   className="w-full bg-[#EE5A2C] text-white h-auto max-h-[63px] py-[18px] rounded-full md:rounded-md hover:bg-orange-800 transition mt-6"
                   onClick={handleContinue}
-                  disabled={isLoading}
+                  disabled={isLoading || isSendingOtp}
                 >
-                  {translate("চালিয়ে যান", "Continue")}
+                  {isSendingOtp
+                    ? translate("OTP পাঠানো হচ্ছে...", "Sending OTP...")
+                    : translate("চালিয়ে যান", "Continue")}
                 </Button>
               </form>
             </div>
@@ -776,11 +836,11 @@ const onSubmit = async (data: RegisterDataProps) => {
                     "Please enter the verification code sent to"
                   )}
                   <br />
-                  <span className="font-medium">{watch("contactNo")}</span>
+                  <span className="font-medium">{contactNo}</span>
                 </p>
 
                 <div className="flex justify-center gap-2">
-                  {[0, 1, 2, 3, 4].map((index) => (
+                  {[0, 1, 2, 3, 4, 5].map((index) => (
                     <input
                       key={index}
                       type="text"
@@ -791,7 +851,7 @@ const onSubmit = async (data: RegisterDataProps) => {
                         newCode[index] = e.target.value.replace(/\D/g, "");
                         setVerificationCode(newCode.join(""));
 
-                        if (e.target.value && index < 4) {
+                        if (e.target.value && index < 5) {
                           const nextInput = document.getElementById(
                             `code-input-${index + 1}`
                           );
@@ -817,23 +877,22 @@ const onSubmit = async (data: RegisterDataProps) => {
                   ))}
                 </div>
 
-                {verificationCode.length === 5 && (
-                  <p className="text-red-500 text-center">
-                    {translate(
-                      "ভুল কোড, আবার চেষ্টা করুন",
-                      "Wrong code, please try again"
-                    )}
-                  </p>
-                )}
-
                 <div className="text-center">
                   <button
                     type="button"
-                    className="text-[#EE5A2C] hover:underline flex items-center justify-center gap-1 mx-auto"
+                    className={`text-[#EE5A2C] hover:underline flex items-center justify-center gap-1 mx-auto ${
+                      countdown > 0 ? "opacity-50 cursor-not-allowed" : ""
+                    }`}
                     onClick={handleResendCode}
+                    disabled={countdown > 0}
                   >
                     {translate("আবার কোড পাঠান", "Send code again")}{" "}
-                    <span className="text-gray-500">00:20</span>
+                    {countdown > 0 && (
+                      <span className="text-gray-500">
+                        ({Math.floor(countdown / 60)}:
+                        {String(countdown % 60).padStart(2, "0")})
+                      </span>
+                    )}
                   </button>
                 </div>
 
@@ -841,9 +900,11 @@ const onSubmit = async (data: RegisterDataProps) => {
                   type="button"
                   className="w-full bg-[#EE5A2C] text-white h-auto max-h-[63px] py-[18px] rounded-full md:rounded-md hover:bg-orange-800 transition mt-6"
                   onClick={handleContinue}
-                  disabled={verificationCode.length !== 5 || isLoading}
+                  disabled={verificationCode.length !== 6 || isVerifyingOtp}
                 >
-                  {translate("চালিয়ে যান", "Continue")}
+                  {isVerifyingOtp
+                    ? translate("যাচাই করা হচ্ছে...", "Verifying...")
+                    : translate("চালিয়ে যান", "Continue")}
                 </Button>
               </form>
             </div>
@@ -880,9 +941,9 @@ const onSubmit = async (data: RegisterDataProps) => {
                     onClick={() => setShowNewPassword(!showNewPassword)}
                   >
                     {showNewPassword ? (
-                      <FiEyeOff size={18} />
-                    ) : (
                       <FiEye size={18} />
+                    ) : (
+                      <FiEyeOff size={18} />
                     )}
                   </button>
                   <p className="text-xs text-gray-500 mt-1">
@@ -922,9 +983,9 @@ const onSubmit = async (data: RegisterDataProps) => {
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   >
                     {showConfirmPassword ? (
-                      <FiEyeOff size={18} />
-                    ) : (
                       <FiEye size={18} />
+                    ) : (
+                      <FiEyeOff size={18} />
                     )}
                   </button>
                   {errors.confirmPassword && (

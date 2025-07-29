@@ -13,6 +13,9 @@ import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
 import { shareWithCookies } from "@/utils/helper/shareWithCookies";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
+import { ApiError } from "@/types/apiError";
+import toast from "react-hot-toast";
+import ButtonLoader from "@/components/common/ButtonLoader";
 
 
 export const AdminLogin = () => {
@@ -47,8 +50,9 @@ export const AdminLogin = () => {
       }
 
       router.push("/proyojon-admin-portal");
-    } catch (error) {
-      console.error("Login Error:", error);
+    }  catch (error) {
+       const apiError = error as ApiError;
+      toast.error(apiError?.data?.message || '');
     }
   };
 
@@ -118,7 +122,7 @@ export const AdminLogin = () => {
           className="w-full bg-[#EE5A2C] text-white h-auto max-h-[63px] py-[18px] rounded-full md:rounded-md hover:bg-orange-800 transition mt-6"
           disabled={isLoading}
         >
-          {isLoading ? "Logging in..." : "Login"}
+          {isLoading ? <ButtonLoader></ButtonLoader> : "Login"}
         </Button>
 
 

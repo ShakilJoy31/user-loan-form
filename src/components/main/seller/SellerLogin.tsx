@@ -55,10 +55,10 @@ export const SellerLogin = ({ setActiveTab }: SellerLoginProps) => {
         const apiError = error as { data?: { message?: string } };
         console.log(apiError)
         errorMessage = apiError.data?.message || errorMessage;
-        toast(errorMessage);
+        toast.error(errorMessage);
       } else if (error instanceof Error) {
         errorMessage = error.message;
-        toast(errorMessage);
+        toast.error(errorMessage);
       }
     } finally {
       setSignUpLoader(false)
@@ -115,7 +115,7 @@ export const SellerLogin = ({ setActiveTab }: SellerLoginProps) => {
               className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700"
               aria-label={showPassword ? "Hide password" : "Show password"}
             >
-              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
             </button>
           </div>
         </div>

@@ -71,21 +71,29 @@ export const CustomerLogin = ({ setActiveTab }: CustomerLoginProps) => {
         </p>
 
         {/* Phone number */}
-        <div>
-          <label
-            htmlFor="contactNo"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            contactNo*
-          </label>
-          <input
-            onChange={(e) => setContactNo(e.target.value)}
-            type="number"
-            id="contactNo"
-            placeholder="Enter your phoneNo"
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
-          />
-        </div>
+       <div>
+  <label
+    htmlFor="contactNo"
+    className="block text-sm font-medium text-gray-700 mb-1"
+  >
+    contactNo*
+  </label>
+  <input
+    type="text"
+    id="contactNo"
+    placeholder="Enter your phoneNo"
+    maxLength={11}
+    value={contactNo}
+    onChange={(e) => {
+      const value = e.target.value;
+      if (/^\d{0,11}$/.test(value)) {
+        setContactNo(value);
+      }
+    }}
+    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
+  />
+</div>
+
 
         {/* Password */}
         <div>
@@ -108,7 +116,7 @@ export const CustomerLogin = ({ setActiveTab }: CustomerLoginProps) => {
               className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700"
               onClick={() => setShowPassword(!showPassword)}
             >
-              {showPassword ? <FaEyeSlash /> : <FaEye />}
+              {showPassword ? <FaEye /> : <FaEyeSlash />}
             </button>
           </div>
         </div>
