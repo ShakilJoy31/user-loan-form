@@ -96,7 +96,7 @@ const CustomerCreate = () => {
     const { confirmPassword, ...submitData } = data;
     
     try {
-      await createCustomer(submitData).unwrap();
+      await createCustomer({submitData, otpToken}).unwrap();
       toast.success(translate("নিবন্ধন সফল হয়েছে!", "Registration successful!"));
       reset();
       setCurrentStep("personal");

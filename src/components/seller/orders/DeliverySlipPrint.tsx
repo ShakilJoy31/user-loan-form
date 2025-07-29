@@ -16,7 +16,6 @@ const DeliverySlipPrint = React.forwardRef<
   return (
     <section ref={ref} className="printable-invoice">
       {orderData.map((order) => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         // const orderDate = order?.createdAt
         //   ? timeDateFormatter(order.createdAt)
         //   : "N/A";

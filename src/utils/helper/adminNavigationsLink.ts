@@ -638,7 +638,6 @@ const adminDashboardAdvertiseBanner: INavigationLink = {
   href: "/proyojon-admin-portal/advertise-banner",
 };
 
-<<<<<<< HEAD
 const adminDashboardFAQ: INavigationLink = {
   icon: MdCategory,
   label: {
@@ -647,7 +646,7 @@ const adminDashboardFAQ: INavigationLink = {
   },
   key: "faq",
   href: "/proyojon-admin-portal/faq",
-=======
+}
 const adminDashboardBlog: INavigationLink = {
   icon: MdPeople, // Changed from MdCategory to MdPeople for sellers
   label: {
@@ -685,7 +684,6 @@ const adminDashboardBlog: INavigationLink = {
       href: "/proyojon-admin-portal/blog/blog-tags",
     },
   ],
->>>>>>> 05fedd1f961d98b9c2bd25411c9ef0288df9a068
 };
 
 export const adminNavigationLinks: INavigationLink[] = [
@@ -696,10 +694,7 @@ export const adminNavigationLinks: INavigationLink[] = [
   { ...adminDashboardLocation },
   { ...adminDashboardSeller },
   { ...adminDashboardAdvertiseBanner },
-<<<<<<< HEAD
   { ...adminDashboardFAQ },
-=======
   { ...adminDashboardBlog },
   
->>>>>>> 05fedd1f961d98b9c2bd25411c9ef0288df9a068
 ];

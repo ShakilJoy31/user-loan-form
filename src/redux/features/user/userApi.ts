@@ -39,7 +39,7 @@ export const userApi = apiSlice.injectEndpoints({
     // CREATE A NEW USER
     createUser: builder.mutation({
       query: (userData) => ({
-        url: "/user/create-user",
+        url: `/user/create-user`,
         method: "POST",
         body: userData, // Send user data in the body
       }),
@@ -154,13 +154,14 @@ export const userApi = apiSlice.injectEndpoints({
     //customer register
     // CREATE A NEW customer
     createCustomerRegister: builder.mutation({
-      query: (userData) => ({
-        url: "/auth/create-customer",
+      query: ({userData, otpToken }) => ({
+         url: `/auth/create-customer?token=${otpToken}`,
         method: "POST",
         body: userData,
       }),
       invalidatesTags: ["customer"],
     }),
+    
 
     //login customer
     loginCustomer: builder.mutation({

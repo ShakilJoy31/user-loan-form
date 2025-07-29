@@ -24,6 +24,7 @@ import SearchableSelect from "./SearchableSelect";
 import TextArea from "@/components/ui/text-area";
 import TipTapEditor from "../tiptap/TipTapEditor";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 // Zod Schema
 export const blogSchema = z.object({
@@ -327,7 +328,9 @@ const BlogFormModal = ({ onSuccess }: BlogFormProps) => {
           {/* Preview of Uploaded Image */}
           {preview && (
             <div className="relative w-20 h-20 border rounded-md overflow-hidden mt-2">
-              <img
+              <Image
+              width={100}
+              height={100}
                 src={preview}
                 alt="Preview"
                 className="w-full h-full object-cover"
