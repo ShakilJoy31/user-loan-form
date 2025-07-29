@@ -90,7 +90,7 @@ const DropdownSearch = () => {
       <div className="flex flex-col sm:flex-row gap-2 w-full">
         {/* City Dropdown */}
         <div className="relative flex-1 min-w-[120px]">
-          <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">City</label>
           <div className="relative">
             <div
               className="w-full  min-h-[25px] px-1 py-[5px] pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C] cursor-text flex items-center"
@@ -126,7 +126,7 @@ const DropdownSearch = () => {
             </div>
             
             {cityDropdownOpen && (
-              <div className="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 focus:outline-none max-h-60 overflow-auto">
+              <div className="absolute z-10 mt-1 w-full bg-white dark:bg-black dark:border border-gray-300 shadow-lg rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 focus:outline-none max-h-60 overflow-auto">
                 <div className="py-1">
                   {citiesLoading ? (
                     <div className="px-4 py-2 text-gray-500">Loading cities...</div>
@@ -134,7 +134,7 @@ const DropdownSearch = () => {
                     cities.map((city) => (
                       <div
                         key={city.id}
-                        className={`px-4 py-2 cursor-pointer hover:bg-gray-100 flex items-center ${
+                        className={`px-4 py-2 cursor-pointer hover:bg-gray-700 flex items-center ${
                           selectedCity === city.name ? "bg-gray-100" : ""
                         }`}
                         onClick={() => handleCitySelect(city.name, city.id)}
@@ -155,7 +155,7 @@ const DropdownSearch = () => {
 
         {/* Area Dropdown */}
         <div className="relative flex-1 min-w-[120px]">
-          <label className="block text-sm font-medium text-gray-700 mb-1">Area</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Area</label>
           <div className="relative">
             <div
               className={`w-full min-h-[25px] px-1 py-[5px] pr-10 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C] cursor-text flex items-center ${
@@ -199,7 +199,7 @@ const DropdownSearch = () => {
             </div>
             
             {areaDropdownOpen && selectedCity && (
-              <div className="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 focus:outline-none max-h-60 overflow-auto">
+              <div className="absolute z-10 mt-1 w-full bg-white dark:bg-black dark:border border-gray-300 shadow-lg rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 focus:outline-none max-h-60 overflow-auto">
                 <div className="py-1">
                   {areasLoading ? (
                     <div className="px-4 py-2 text-gray-500">Loading areas...</div>
@@ -209,7 +209,7 @@ const DropdownSearch = () => {
                     filteredAreas.map((area) => (
                       <div
                         key={area.id}
-                        className={`px-4 py-2 cursor-pointer hover:bg-gray-100 flex items-center ${
+                        className={`px-4 py-2 cursor-pointer hover:bg-gray-700 flex items-center ${
                           selectedArea === area.name ? "bg-gray-100" : ""
                         }`}
                         onClick={() => handleAreaSelect(area.name)}
@@ -230,7 +230,7 @@ const DropdownSearch = () => {
 
         {/* Shop Category Dropdown */}
         <div className="relative flex-1 min-w-[150px]">
-          <label className="block text-sm font-medium text-gray-700 mb-1">Shop Category</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Shop Category</label>
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
@@ -252,7 +252,7 @@ const DropdownSearch = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
-              className="absolute z-10 w-full mt-1 bg-white border border-gray-300 text-black rounded shadow max-h-60 overflow-auto text-sm"
+              className="absolute z-10 w-full mt-1 bg-white dark:bg-black dark:border border border-gray-300 text-black dark:text-white rounded shadow max-h-60 overflow-auto text-sm"
             >
               {categoriesLoading ? (
                 <li className="px-3 py-2 text-gray-500">Loading categories...</li>
@@ -261,7 +261,7 @@ const DropdownSearch = () => {
                   <li
                     key={category.id || category._id || category.name}
                     onClick={() => handleCategorySelect(category.name)}
-                    className={`px-3 py-2 hover:bg-gray-100 cursor-pointer truncate ${
+                    className={`px-3 py-2 hover:bg-gray-700 cursor-pointer truncate ${
                       selectedCategory === category.name ? "bg-gray-100 font-medium" : ""
                     }`}
                   >
@@ -278,7 +278,7 @@ const DropdownSearch = () => {
 
       {/* Search Input */}
       <div className="relative w-full md:w-[220px]">
-        <label className="block text-sm font-medium text-gray-700 mb-1">Search</label>
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Search</label>
         <div className="relative">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <FiSearch className="text-gray-400" size={16} />

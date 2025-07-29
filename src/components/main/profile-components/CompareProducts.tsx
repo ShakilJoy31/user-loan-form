@@ -243,7 +243,7 @@ const getStorageValue = (product: Product): string => {
   };
 
   return (
-    <div className="bg-white p-6 dark:bg-black dark:text-white shadow-sm">
+    <div className="bg-white p-6 shadow-sm dark:bg-black dark:border border-gray-300 rounded-md dark:text-white">
       <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-6 gap-4 border-b border-gray-300 pb-[14px]">
         <div>
           <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
@@ -290,8 +290,8 @@ const getStorageValue = (product: Product): string => {
         </div>
       </div>
 
-      <div className="overflow-x-auto rounded-lg">
-        <table className="min-w-[700px] w-full text-sm text-left dark:bg-black dark:text-white dark:border dark:border-white">
+      <div className="overflow-x-auto rounded-lg p-1">
+        <table className="min-w-[700px] w-full text-sm text-left dark:bg-black dark:text-white ">
           <thead>
             <tr className="text-gray-700">
               <th className="py-3 px-4 text-sm font-medium w-[160px]">

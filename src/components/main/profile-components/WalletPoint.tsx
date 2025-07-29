@@ -39,7 +39,7 @@ const WalletPoint = () => {
   };
 
   return (
-    <div className="lg:mt-[45px] space-y-6 md:space-y-10 px-4 sm:px-0 dark:bg-black dark:text-white">
+    <div className="space-y-6 md:space-y-10 px-4 sm:px-0 dark:text-white">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-[30px] justify-center">
         {[1, 2, 3].map((_, i) => (
           <div
@@ -75,7 +75,7 @@ const WalletPoint = () => {
         ))}
       </div>
 
-      <div className="bg-white rounded-lg border shadow-sm pb-4 dark:bg-black dark:text-white">
+      <div className="bg-white rounded-lg border dark:border-gray-300 shadow-sm pb-4 dark:bg-black dark:text-white">
         <div className="flex flex-col sm:flex-row justify-between items-center pb-3 p-4 gap-4 sm:gap-0">
           <h2 className="text-lg sm:text-xl font-semibold">
             {translate("সাম্প্রতিক কার্যক্রম", "Recent activities")}
@@ -127,7 +127,7 @@ const WalletPoint = () => {
         </div>
       </div>
 
-      <div className="bg-white border rounded-lg shadow-sm p-4 sm:p-5 space-y-4 dark:bg-black dark:text-white">
+      <div className="bg-white border dark:border-gray-300 rounded-lg shadow-sm p-4 sm:p-5 space-y-4 dark:bg-black dark:text-white">
         <h2 className="text-lg font-semibold">
           {translate("পয়েন্ট রিডেম্পশন তথ্য", "Points Redemption Information")}
         </h2>

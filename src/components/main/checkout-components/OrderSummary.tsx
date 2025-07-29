@@ -298,7 +298,7 @@ export default function OrderSummary({
   };
 
   return (
-    <div className="w-full p-4 bg-white rounded-lg border border-gray-300 shadow-sm overflow-y-auto">
+    <div className="w-full p-4 bg-white dark:bg-black dark:border-gray-300 rounded-lg border border-gray-300 shadow-sm overflow-y-auto">
       <h2 className="text-lg font-semibold mb-4">
         {translate("অর্ডার সারাংশ", "Order summary")}
       </h2>
@@ -343,7 +343,7 @@ export default function OrderSummary({
                 )}
               </p>
               <div className="flex items-center justify-between mt-1">
-                <p className="text-gray-600">
+                <p className="text-gray-600 dark:text-gray-300">
                   {translate("পরিমাণ:", "Quantity:")}
                 </p>
                 <div className="flex items-center border border-gray-300 rounded-md w-fit">
@@ -366,13 +366,13 @@ export default function OrderSummary({
                   </Button>
                 </div>
               </div>
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-gray-300">
                 {translate("ভ্যারিয়েন্ট:", "Variant:")} {item.sku.length > 20 ? `${item.sku.slice(0, 20)}...` : item.sku}
               </p>
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-gray-300">
                 {translate("বিক্রেতা:", "Seller:")} {item.sellerShopName}
               </p>
-              <p className="text-gray-600 font-semibold mt-1">
+              <p className="text-gray-600 dark:text-gray-300 font-semibold mt-1">
                 {translate("সাবটোটাল:", "Subtotal:")} {item.subTotal}{" "}
                 {translate("টাকা", "Tk")}
               </p>
@@ -381,7 +381,7 @@ export default function OrderSummary({
         ))}
       </div>
 
-      <div className="space-y-2 text-sm text-gray-700 mt-4">
+      <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300 mt-4">
         <div className="flex justify-between">
           <span>{translate("সাব-টোটাল", "Sub-Total")}</span>
           <span>

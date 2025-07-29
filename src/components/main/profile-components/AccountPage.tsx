@@ -126,8 +126,8 @@ const AccountPage = ({ children }: { children: React.ReactNode }) => {
                   key={tab.id}
                   onClick={() => handleTabChange(tab.id)}
                   className={`flex items-center h-[42px] gap-3 py-2 px-4 rounded-md cursor-pointer text-sm font-medium transition-colors duration-200 ${isActive
-                      ? "bg-[#EE5A2C] text-white"
-                      : "text-gray-700 hover:bg-gray-100"
+                      ? "bg-[#EE5A2C] dark:bg-black dark:border border-gray-300 text-white"
+                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-black dark:hover:border border-gray-300"
                     }`}
                 >
                   {typeof tab.icon === 'function' ? tab.icon(isActive) : tab.icon}
@@ -146,7 +146,7 @@ const AccountPage = ({ children }: { children: React.ReactNode }) => {
         )}
 
         <div className="lg:col-span-9 w-full">
-          <div className="bg-white">
+          <div className="">
             {children}
           </div>
         </div>
