@@ -7,7 +7,7 @@ import { Menu, X, Heart, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import { FaUser } from "react-icons/fa";
 import { MdLogout } from "react-icons/md";
-import navbarLogo from '@/assets/Home/navbarLogo.png';
+import navbarLogo from "@/assets/Home/navbarLogo.png";
 import { motion, AnimatePresence } from "framer-motion";
 import type { Variants } from "framer-motion";
 import ThemeSwitcher from "@/components/common/ThemeSwitcher";
@@ -17,7 +17,7 @@ import { Button } from "@/components/ui/button";
 import { useDispatch, useSelector } from "react-redux";
 import { selectUser } from "@/redux/store";
 import { loadUserFromToken } from "@/utils/helper/loadUserFromToken";
-import { useGetSellerUserByIdQuery } from "@/redux/features/seller-auth/sellerLogin";
+import { useGetUserByIdQuery } from "@/redux/features/seller-auth/sellerLogin";
 
 interface CartItem {
   productId: number;
@@ -57,110 +57,106 @@ interface WishlistEntry {
   timestamp: string;
 }
 
-
 const PublicNav = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const router = useRouter();
 
-  
   // Properly typed animation variants for sidebar
   const sidebarVariants: Variants = {
     hidden: {
-      x: '-100%',
-      opacity: 0
+      x: "-100%",
+      opacity: 0,
     },
     visible: {
       x: 0,
       opacity: 1,
       transition: {
-        type: 'spring',
+        type: "spring",
         stiffness: 300,
         damping: 30,
-        duration: 0.5
-      }
+        duration: 0.5,
+      },
     },
     exit: {
-      x: '-100%',
+      x: "-100%",
       opacity: 0,
       transition: {
-        ease: 'easeInOut',
-        duration: 0.2
-      }
-    }
+        ease: "easeInOut",
+        duration: 0.2,
+      },
+    },
   };
 
   // Properly typed animation variants for overlay
   const overlayVariants: Variants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1 },
-    exit: { opacity: 0 }
+    exit: { opacity: 0 },
   };
 
-    const user = useSelector(selectUser);
-    const [isUserLoaded, setIsUserLoaded] = useState(false);
-    const dispatch = useDispatch();
+  const user = useSelector(selectUser);
+  const [isUserLoaded, setIsUserLoaded] = useState(false);
+  const dispatch = useDispatch();
 
-    // Load user on initial render if not already loaded
-    useEffect(() => {
-        if (!user.id) {
-            loadUserFromToken(dispatch).then(() => {
-                setIsUserLoaded(true);
-            });
-        } else {
-            setIsUserLoaded(true);
+  // Load user on initial render if not already loaded
+  useEffect(() => {
+    if (!user.id) {
+      loadUserFromToken(dispatch).then(() => {
+        setIsUserLoaded(true);
+      });
+    } else {
+      setIsUserLoaded(true);
+    }
+  }, [dispatch, user.id]);
+
+  const { data: customerInfo } = useGetUserByIdQuery(
+    user?.id,
+    { skip: !user.id || !isUserLoaded } // Skip if no user ID or user not loaded
+  );
+
+  // cart
+  const [cartItem, setCartItem] = useState<CartItem[]>([]);
+
+  useEffect(() => {
+    const cartData = localStorage.getItem("cart");
+    if (cartData) {
+      try {
+        const parsedCart: CartItem[] = JSON.parse(cartData);
+        console.log("Cart data from localStorage:", parsedCart);
+        setCartItem(parsedCart);
+      } catch (error) {
+        console.error("Error parsing cart data:", error);
+      }
+    } else {
+      console.log("No cart data found in localStorage");
+    }
+  }, []);
+
+  //wish list
+  const [wishlistItems, setWishlistItems] = useState<WishlistEntry[]>([]);
+  useEffect(() => {
+    const fetchWishlistData = () => {
+      try {
+        const wishlistData = localStorage.getItem("wishlist");
+        if (wishlistData) {
+          const parsedWishlist = JSON.parse(wishlistData);
+          console.log("wishlist", parsedWishlist);
+          // If the data is an object, convert it to an array
+          const itemsArray: WishlistEntry[] = Array.isArray(parsedWishlist)
+            ? parsedWishlist
+            : [parsedWishlist];
+          setWishlistItems(itemsArray);
         }
-    }, [dispatch, user.id]);
+      } catch (error) {
+        console.error("Error parsing wishlist data:", error);
+      }
+    };
 
-    const { data: customerInfo} = useGetSellerUserByIdQuery(
-        user?.id,
-        { skip: !user.id || !isUserLoaded } // Skip if no user ID or user not loaded
-    );
+    fetchWishlistData();
+  }, []);
 
-
-    // cart
-     const [cartItem, setCartItem] = useState<CartItem[]>([]);
-      
-      useEffect(() => {
-        const cartData = localStorage.getItem('cart');
-        if (cartData) {
-          try {
-            const parsedCart: CartItem[] = JSON.parse(cartData);
-            console.log("Cart data from localStorage:", parsedCart);
-            setCartItem(parsedCart);
-          } catch (error) {
-            console.error("Error parsing cart data:", error);
-          }
-        } else {
-          console.log("No cart data found in localStorage");
-        }
-      }, []); 
-
-
-      //wish list
-      const [wishlistItems, setWishlistItems] = useState<WishlistEntry[]>([]);
-      useEffect(() => {
-          const fetchWishlistData = () => {
-            try {
-              const wishlistData = localStorage.getItem('wishlist');
-              if (wishlistData) {
-                const parsedWishlist = JSON.parse(wishlistData);
-                console.log("wishlist", parsedWishlist)
-                // If the data is an object, convert it to an array
-                const itemsArray: WishlistEntry[] = Array.isArray(parsedWishlist) 
-                  ? parsedWishlist 
-                  : [parsedWishlist];
-                setWishlistItems(itemsArray);
-              }
-            } catch (error) {
-              console.error("Error parsing wishlist data:", error);
-            }
-          };
-      
-          fetchWishlistData();
-        }, []);
-
-    console.log(customerInfo?.data)
+  console.log("login user", customerInfo?.data);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b bg-[#FD6801] text-white">
@@ -177,9 +173,10 @@ const PublicNav = () => {
             </Button>
 
             {/* Logo */}
-            <div 
-            onClick={() => router.push("/")}
-            className="text-lg font-semibold md:ml-0 mx-auto md:mx-0">
+            <div
+              onClick={() => router.push("/")}
+              className="text-lg font-semibold md:ml-0 mx-auto md:mx-0"
+            >
               <Image
                 width={100}
                 height={100}
@@ -191,15 +188,27 @@ const PublicNav = () => {
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center gap-6">
-              {Object.entries(publicNavigations).map(([key, nav]) => (
-                <Link
-                  key={key}
-                  href={nav.path}
-                  className="text-sm font-medium hover:underline dark:hover:text-orange-300"
-                >
-                  {nav.name}
-                </Link>
-              ))}
+              {Object.entries(publicNavigations).map(([key, nav]) => {
+                if (
+                  (nav.name === "Become a seller" || nav.name === "LogIn") &&
+                  customerInfo?.data?.role &&
+                  ["SELLER", "USER", "SUPER_ADMIN"].includes(
+                    customerInfo.data.role
+                  )
+                ) {
+                  return null;
+                }
+
+                return (
+                  <Link
+                    key={key}
+                    href={nav.path}
+                    className="text-sm font-medium hover:underline dark:hover:text-orange-300"
+                  >
+                    {nav.name}
+                  </Link>
+                );
+              })}
 
               {/* Desktop Icons */}
               <div className="flex items-center gap-4">
@@ -207,93 +216,110 @@ const PublicNav = () => {
                 <LocaleSwitcher></LocaleSwitcher>
 
                 <Button
-                  onClick={() => router.push('/wish-list')}
-                  className="p-2 rounded-full bg-white text-black hover:bg-orange-600 relative ">
+                  onClick={() => router.push("/wish-list")}
+                  className="p-2 rounded-full bg-white text-black hover:bg-orange-600 relative "
+                >
                   <Heart size={20} />
-                 {
-                  wishlistItems?.length > 0 && (
-                     <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-1 leading-none transform translate-x-1/2 -translate-y-1/2">
-                    {wishlistItems?.length}
-                  </span>
-                  )
-                 }
+                  {wishlistItems?.length > 0 && (
+                    <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-1 leading-none transform translate-x-1/2 -translate-y-1/2">
+                      {wishlistItems?.length}
+                    </span>
+                  )}
                 </Button>
 
                 <Button
-                  onClick={() => router.push('/shopping-cart')}
-                  className="p-2 rounded-full bg-white text-black hover:bg-orange-600 relative ">
+                  onClick={() => router.push("/shopping-cart")}
+                  className="p-2 rounded-full bg-white text-black hover:bg-orange-600 relative "
+                >
                   <ShoppingCart size={20} />
                   {cartItem?.length > 0 && (
-  <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-1 leading-none transform translate-x-1/2 -translate-y-1/2">
-    {cartItem.length}
-  </span>
-)}
+                    <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-1 leading-none transform translate-x-1/2 -translate-y-1/2">
+                      {cartItem.length}
+                    </span>
+                  )}
                 </Button>
 
                 {/* Avatar Dropdown */}
-                {
-                  customerInfo && (
-                    <div className="relative inline-block mt-1">
-                  <button
-                    className="rounded-full border-2 border-white cursor-pointer overflow-hidden w-10 h-10 focus:outline-none"
-                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  >
-                    <Image
-                      width={100}
-                      height={100}
-                      src={customerInfo?.data?.avatar}
-                      alt="User Avatar"
-                      className="w-full h-full object-cover"
-                    />
-                  </button>
+                {customerInfo && (
+                  <div className="relative inline-block mt-1">
+                    <button
+                      className="rounded-full border-2 border-white cursor-pointer overflow-hidden w-10 h-10 focus:outline-none"
+                      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    >
+                      <Image
+                        width={100}
+                        height={100}
+                        src={customerInfo?.data?.avatar}
+                        alt="User Avatar"
+                        className="w-full h-full object-cover"
+                      />
+                    </button>
 
-                  {isDropdownOpen && (
-                    <div className="absolute right-0 mt-3 w-64 bg-white text-black shadow-md p-4 rounded-lg z-50 dark:bg-gray-800 dark:text-white">
-                      <div className="absolute -top-2 right-3 w-4 h-4 bg-white dark:bg-gray-800 transform rotate-45"></div>
-                      <div className="flex items-center gap-3 mb-3">
-                        <Image
-                          src={customerInfo?.data?.avatar}
-                          alt="User Avatar"
-                          width={40}
-                          height={40}
-                          className="rounded-full border w-10 h-10 object-cover"
-                        />
-                        <div>
-                          <p className="font-semibold">{customerInfo?.data?.name}</p>
-                          <p className="text-sm text-gray-500 dark:text-gray-300">
-                           {customerInfo?.data?.email}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="mt-2 space-y-2">
-                        <div className="flex justify-between items-center">
-                          <Link
-                            href="/my-profile/update-profile"
-                            className="flex items-center gap-2 py-1 transition-colors hover:text-orange-500 dark:hover:text-orange-300"
-                          >
-                            My Account
-                          </Link>
-                          <div className="border text-xs p-1 rounded-full dark:border-gray-600">
-                            <FaUser />
+                    {isDropdownOpen && (
+                      <div className="absolute right-0 mt-3 w-64 bg-white text-black shadow-md p-4 rounded-lg z-50 dark:bg-gray-800 dark:text-white">
+                        <div className="absolute -top-2 right-3 w-4 h-4 bg-white dark:bg-gray-800 transform rotate-45"></div>
+                        <div className="flex items-center gap-3 mb-3">
+                          <Image
+                            src={customerInfo?.data?.avatar}
+                            alt="User Avatar"
+                            width={40}
+                            height={40}
+                            className="rounded-full border w-10 h-10 object-cover"
+                          />
+                          <div>
+                            <p className="font-semibold">
+                              {customerInfo?.data?.name}
+                            </p>
+                            <p className="text-sm text-gray-500 dark:text-gray-300">
+                              {customerInfo?.data?.email}
+                            </p>
                           </div>
                         </div>
-                        <hr className="my-2 border-gray-200 dark:border-gray-600" />
-                        <div className="flex justify-between items-center">
-                         
-                          <Link
-                            href=""
-                            className="flex items-center gap-2 py-1 transition-colors hover:text-orange-500 dark:hover:text-orange-300"
-                          >
-                            Logout
-                          </Link>
-                          <MdLogout className="text-lg" />
+                        <div className="mt-2 space-y-2">
+                          <div className="flex justify-between items-center">
+                            {customerInfo?.data?.role  === "USER" && (
+                              <Link
+                                href="/my-profile/update-profile"
+                                className="flex items-center gap-2 py-1 transition-colors hover:text-orange-500 dark:hover:text-orange-300"
+                              >
+                                My Account
+                              </Link>
+                            )}
+                            {customerInfo?.data?.role  === "SELLER" && (
+                              <Link
+                                href="/add-product"
+                                className="flex items-center gap-2 py-1 transition-colors hover:text-orange-500 dark:hover:text-orange-300"
+                              >
+                                Dashboard
+                              </Link>
+                            )}
+                            {customerInfo?.data?.role  === "SUPER_ADMIN" && (
+                              <Link
+                                href="/proyojon-admin-portal"
+                                className="flex items-center gap-2 py-1 transition-colors hover:text-orange-500 dark:hover:text-orange-300"
+                              >
+                                Dashboard
+                              </Link>
+                            )}
+                            <div className="border text-xs p-1 rounded-full dark:border-gray-600">
+                              <FaUser />
+                            </div>
+                          </div>
+                          <hr className="my-2 border-gray-200 dark:border-gray-600" />
+                          <div className="flex justify-between items-center">
+                            <Link
+                              href=""
+                              className="flex items-center gap-2 py-1 transition-colors hover:text-orange-500 dark:hover:text-orange-300"
+                            >
+                              Logout
+                            </Link>
+                            <MdLogout className="text-lg" />
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  )}
-                </div>
-                  )
-                }
+                    )}
+                  </div>
+                )}
               </div>
             </nav>
 
@@ -338,7 +364,9 @@ const PublicNav = () => {
                 >
                   <div className="flex h-full flex-col">
                     <div className="p-4 border-b dark:border-gray-700">
-                      <div className="text-lg font-semibold dark:text-white">Proyojon</div>
+                      <div className="text-lg font-semibold dark:text-white">
+                        Proyojon
+                      </div>
                     </div>
                     <nav className="flex-1 overflow-y-auto p-4">
                       <div className="space-y-2">

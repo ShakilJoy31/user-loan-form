@@ -281,10 +281,10 @@ const onSubmit = async (data: RegisterDataProps) => {
             </h2>
 
             <div className="max-w-[400px]">
-              <div className="flex max-w-[330px] mx-auto mb-6 p-1 rounded-md bg-[#fdefea]">
+              <div className="flex w-full mx-auto mb-6 p-1 rounded-md bg-[#fdefea]">
                 <Button
                   onClick={() => setActiveTab("create")}
-                  className={`px-6 py-3 rounded-md mr-1 transition ${
+                  className={`px-6 py-3 rounded-md w-full mr-1 transition ${
                     activeTab === "create"
                       ? "bg-[#EE5A2C] text-white shadow-sm"
                       : "bg-transparent text-gray-400 hover:bg-transparent"
@@ -292,9 +292,10 @@ const onSubmit = async (data: RegisterDataProps) => {
                 >
                   {translate("অ্যাকাউন্ট তৈরি করুন", "Create Account")}
                 </Button>
-                <Button
+
+                 <Button
                   onClick={() => setActiveTab("login")}
-                  className={`px-6 py-3 rounded-md transition ${
+                  className={`px-6 py-3 rounded-md w-full mr-1 transition ${
                     activeTab === "login"
                       ? "bg-[#EE5A2C] text-white shadow-sm"
                       : "bg-transparent text-gray-400 hover:bg-transparent"
@@ -302,6 +303,8 @@ const onSubmit = async (data: RegisterDataProps) => {
                 >
                   {translate("লগ ইন", "Log in")}
                 </Button>
+
+               
               </div>
 
               {activeTab === "create" ? (
@@ -558,6 +561,7 @@ const onSubmit = async (data: RegisterDataProps) => {
                             }
                           />
                         </div>
+                        
                         <div className="absolute dark:bg-black dark:text-white right-3 top-1/2 transform -translate-y-1/2 flex items-center space-x-1">
                           {selectedCategories.length > 0 && !isOpen && (
                             <button

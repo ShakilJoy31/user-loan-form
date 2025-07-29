@@ -88,5 +88,6 @@ export const apiSlice = createApi({
     "subcategoryOffer",
     "variation",
     "seller-login",
+    "faq",
   ],
 });

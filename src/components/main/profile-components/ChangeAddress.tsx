@@ -1,18 +1,79 @@
 "use client";
 import Image from "next/image";
-import { useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { FiEdit2, FiShare2, FiHelpCircle } from "react-icons/fi";
 import { BsGoogle, BsFacebook, BsTwitter } from "react-icons/bs";
 import avatar from "@/assets/Products_Image/man.avif";
 import { Button } from "@/components/ui/button";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
+import { useDispatch, useSelector } from "react-redux";
+import { selectUser } from "@/redux/store";
+import { loadUserFromToken } from "@/utils/helper/loadUserFromToken";
+import { useGetUserByIdQuery } from "@/redux/features/seller-auth/sellerLogin";
+import { useCustomerChangePasswordMutation } from "@/redux/features/user/userApi";
+import toast from "react-hot-toast";
+import DataLoader from "@/components/common/DataLoader";
+import ButtonLoader from "@/components/common/ButtonLoader";
 
 export default function ChangePasswordTab() {
+      const user = useSelector(selectUser);
+      const [isUserLoaded, setIsUserLoaded] = useState(false);
+      const dispatch = useDispatch();
+      const [oldPassword, setOldPassword] = useState("");
+        const [newPassword, setNewPassword] = useState("");
+        const [confirmPassword, setConfirmPassword] = useState("");
+
+        useEffect(() => {
+          if (!user.id) {
+            loadUserFromToken(dispatch).then(() => {
+              setIsUserLoaded(true);
+            });
+          } else {
+            setIsUserLoaded(true);
+          }
+        }, [dispatch, user.id]);
+      
+        const { data: customerData, isLoading: customerUserLoading } = useGetUserByIdQuery(
+          user?.id,
+          { skip: !user.id || !isUserLoaded }
+        );
+
+        const [customerChangePassword, { isLoading: updateUserLoading }] = useCustomerChangePasswordMutation();
+      
+
+
     const [showCurrent, setShowCurrent] = useState(false);
     const [showNew, setShowNew] = useState(false);
     const [showReEnter, setShowReEnter] = useState(false);
     const { translate } = useCustomTranslator();
+
+      const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    try {
+      // Prepare the data to send (exclude password if it's the placeholder)
+
+      const response = await customerChangePassword({oldPassword, newPassword, confirmPassword}).unwrap();
+
+      if (response.success) {
+        toast.success('Profile updated successfully');
+      } else {
+        throw new Error(response.message || "Failed to update profile");
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      toast.error(translate("প্রোফাইল আপডেট করতে ব্যর্থ হয়েছে", "Failed to update profile"));
+    }
+  };
+
+   if (!isUserLoaded || customerUserLoading) {
+      return <div className="flex justify-center"><DataLoader /></div>;
+    }
+  
+    if (!user.id) {
+      return <div className="flex justify-center">Please login to access this page</div>;
+    }
+  
 
     return (
         <div className="bg-white p-4 sm:p-6 dark:bg-black dark:text-white shadow-sm min-h-screen">
@@ -29,15 +90,15 @@ export default function ChangePasswordTab() {
                     <div className="flex flex-col items-center text-center">
                         <div className="w-[70px] h-[70px] rounded-full overflow-hidden border-2 border-gray-200">
                             <Image
-                                src={avatar}
+                                src={customerData?.data?.avatar || avatar}
                                 alt={translate("ব্যবহারকারীর অ্যাভাটার", "user avatar")}
                                 width={70}
                                 height={70}
                                 className="w-full h-full object-cover"
                             />
                         </div>
-                        <h4 className="text-sm font-medium text-gray-800 mt-2 dark:text-white">Wade Warren</h4>
-                        <p className="text-sm text-gray-500 dark:text-white">wade.warren@example.com</p>
+                        <h4 className="text-sm font-medium text-gray-800 mt-2 dark:text-white">{customerData?.data?.name}</h4>
+                        <p className="text-sm text-gray-500 dark:text-white">{customerData?.data?.email}</p>
 
                         <p className="text-sm text-gray-500 mt-[24px] mb-[12px] dark:text-white">
                             {translate("সোশ্যাল মিডিয়ার সাথে লিঙ্ক করা", "Linked with Social media")}
@@ -75,7 +136,7 @@ export default function ChangePasswordTab() {
                         </Button>
                     </div>
 
-                    <form className="space-y-4">
+                    <form className="space-y-4" onSubmit={handleSubmit}>
                         {/* Current Password */}
                         <div>
                             <label className="text-sm font-medium text-gray-700 block mb-1 dark:text-white">
@@ -84,6 +145,8 @@ export default function ChangePasswordTab() {
                             <div className="relative">
                                 <input
                                     type={showCurrent ? "text" : "password"}
+                                    onChange={(e) => setOldPassword(e.target.value)}
+                                    value={oldPassword}
                                     placeholder={translate("পাসওয়ার্ড লিখুন", "Enter password")}
                                     className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-1 focus:ring-orange-500 outline-none"
                                 />
@@ -108,6 +171,8 @@ export default function ChangePasswordTab() {
                             <div className="relative">
                                 <input
                                     type={showNew ? "text" : "password"}
+                                    onChange={(e) => setNewPassword(e.target.value)}
+                                    value={newPassword}
                                     placeholder={translate("পাসওয়ার্ড লিখুন", "Enter password")}
                                     className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-1 focus:ring-orange-500 outline-none"
                                 />
@@ -129,6 +194,8 @@ export default function ChangePasswordTab() {
                             <div className="relative">
                                 <input
                                     type={showReEnter ? "text" : "password"}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    value={confirmPassword}
                                     placeholder={translate("পাসওয়ার্ড লিখুন", "Enter password")}
                                     className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-1 focus:ring-orange-500 outline-none"
                                 />
@@ -148,7 +215,10 @@ export default function ChangePasswordTab() {
                                 type="submit"
                                 className="w-full h-[50px] bg-[#EE5A2C] hover:bg-orange-600 text-white text-sm font-semibold rounded-md transition"
                             >
-                                {translate("পরিবর্তনগুলি সংরক্ষণ করুন", "Save Changes")}
+                                {
+                                    updateUserLoading ? <ButtonLoader></ButtonLoader> : translate("পরিবর্তনগুলি সংরক্ষণ করুন", "Save Changes")
+                                }
+                                
                             </Button>
                         </div>
                     </form>

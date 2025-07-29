@@ -265,7 +265,8 @@ export default function OrderSummary({
       console.log("Order creation response:", response);
 
       const orderId = response.data[0].dbId
-      console.log("orderId", orderId)
+      const orderId1 = response.data[0].orderId
+      console.log("orderId", orderId1)
 
       // Redirect based on shipping method
       if (formData.paymentMethod === "ONLINE") {
@@ -366,7 +367,7 @@ export default function OrderSummary({
                 </div>
               </div>
               <p className="text-gray-600">
-                {translate("ভ্যারিয়েন্ট:", "Variant:")} {item.sku.slice(19, 50)}
+                {translate("ভ্যারিয়েন্ট:", "Variant:")} {item.sku.length > 20 ? `${item.sku.slice(0, 20)}...` : item.sku}
               </p>
               <p className="text-gray-600">
                 {translate("বিক্রেতা:", "Seller:")} {item.sellerShopName}

@@ -19,6 +19,7 @@ import {
   Menu,
   ChevronsRight,
 } from "lucide-react";
+import { RiLockPasswordFill } from "react-icons/ri";
 import { MdLogout } from "react-icons/md";
 import Image from "next/image";
 import { useState } from "react";
@@ -105,7 +106,7 @@ const SellerSideber = () => {
           label: "Product Media",
           href: "/seller/products/media",
         },
-        
+
         {
           key: "product-reviews",
           icon: <MessageSquare size={16} />,
@@ -138,6 +139,7 @@ const SellerSideber = () => {
   const isActive = (href: string) => pathname === href;
 
   const handleLogout = () => {
+
     // Add your logout logic here
     console.log("Logging out...");
   };
@@ -156,9 +158,8 @@ const SellerSideber = () => {
         initial={{ width: 70 }}
         animate={{ width: isOpen ? 260 : 70 }}
         transition={{ duration: 0.3, ease: "easeInOut" }}
-        className={`fixed top-0 left-0 z-40 h-screen bg-white border-r flex flex-col ${
-          isOpen ? "w-[260px]" : "w-[70px]"
-        }`}
+        className={`fixed top-0 left-0 z-40 h-screen bg-white border-r flex flex-col ${isOpen ? "w-[260px]" : "w-[70px]"
+          }`}
       >
         {/* Logo and Toggle */}
         <div className="p-4 flex items-center justify-between">
@@ -183,9 +184,8 @@ const SellerSideber = () => {
             aria-label="Toggle menu"
           >
             <ChevronsRight
-              className={`transition-transform duration-300 ${
-                isOpen ? "rotate-180" : ""
-              }`}
+              className={`transition-transform duration-300 ${isOpen ? "rotate-180" : ""
+                }`}
               size={25}
             />
           </button>
@@ -232,9 +232,8 @@ const SellerSideber = () => {
                           </span>
                           <ChevronDown
                             size={16}
-                            className={`transition-transform ${
-                              activeSubmenu === item.key ? "rotate-180" : ""
-                            }`}
+                            className={`transition-transform ${activeSubmenu === item.key ? "rotate-180" : ""
+                              }`}
                           />
                         </>
                       )}
@@ -304,27 +303,27 @@ const SellerSideber = () => {
               </motion.div>
             )}
             <AlertDialog>
-                <AlertDialogTrigger asChild>
-                 <span className="hover:cursor-pointer"><MdLogout size={20}></MdLogout></span>
-                </AlertDialogTrigger>
+              <AlertDialogTrigger asChild>
+                <span className="hover:cursor-pointer"><MdLogout size={20}></MdLogout></span>
+              </AlertDialogTrigger>
 
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Are you sure you want to logout?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      Logging out will end your current session.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleLogout}>
-                      Confirm
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you sure you want to logout?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Logging out will end your current session.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleLogout}>
+                    Confirm
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
 
-            
+
           </div>
 
           {isOpen && (
@@ -342,7 +341,15 @@ const SellerSideber = () => {
                 <ExternalLink size={20} />
               </Link>
 
-              
+              <Link
+                href="/seller-change-password"
+                className="flex items-center justify-between px-3 py-2 border rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 transition"
+              >
+                <span>Change Password</span>
+                <RiLockPasswordFill size={20} />
+              </Link>
+
+
             </motion.div>
           )}
         </div>

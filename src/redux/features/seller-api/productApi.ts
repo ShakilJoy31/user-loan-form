@@ -37,6 +37,25 @@ export const authApi = apiSlice.injectEndpoints({
             providesTags: ["seller-login"],
         }),
 
+         getProductByIdForEdit: builder.query({
+            query: (productLink: string) => ({
+                url: `product/edit-get-product/${productLink}`,
+            }),
+            providesTags: ["seller-login"],
+        }),
+
+        editProductById: builder.mutation({
+            query: ({
+                id,
+                data,
+            }) => ({
+                url: `/product/update-product/${id}`,
+                method: "PUT",
+                body: data,
+            }),
+            invalidatesTags: ["seller-login"],
+        }),
+
 
         // Delete product by id
         deleteProduct: builder.mutation({
@@ -65,5 +84,7 @@ export const {
     useGetAllProductsQuery,
     useDeleteProductMutation,
     useGetProductByIdQuery,
+    useEditProductByIdMutation,
     useGetSellerProductByIdQuery,
+    useGetProductByIdForEditQuery
 } = authApi;

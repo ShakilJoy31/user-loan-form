@@ -7,7 +7,6 @@ import PriceSection from "@/components/main/product-details-components/PriceSect
 import ProductGallery from "@/components/main/product-details-components/ProductGallery";
 import ProductInfo from "@/components/main/product-details-components/ProductInfo";
 import { RecommendedProducts } from "@/components/main/product-details-components/RecommendedProducts";
-import RelatedShops from "@/components/main/product-details-components/RelatedShops";
 import TabsSection from "@/components/main/product-details-components/TabsSection";
 import { useGetProductByIdQuery } from "@/redux/features/seller-api/productApi";
 import { usePathname } from "next/navigation";
@@ -164,7 +163,7 @@ export default function ProductDetailsPage() {
     const { data: productsDetails, isLoading, isError } = useGetProductByIdQuery(productId || '', {
         skip: !productId
     });
-  console.log("product details",productsDetails?.data)
+  console.log("product details",productsDetails);
 
   useEffect(() => {
     if (productsDetails?.data) {
@@ -270,7 +269,7 @@ export default function ProductDetailsPage() {
           />
         </div>
       </div>
-      <RelatedShops />
+      {/* <RelatedShops /> */}
     </div>
   );
 }

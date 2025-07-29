@@ -285,7 +285,7 @@ export default function ProductImageUploader({
         ))}
 
         <div
-          className="w-[200px] h-[99px] border border-dashed rounded-md flex flex-col items-center justify-center text-orange-500 cursor-pointer hover:bg-orange-50 text-xs font-medium"
+          className="w-[200px] h-[99px] border border-dashed hover:cursor-pointer rounded-md flex flex-col items-center justify-center text-orange-500 cursor-pointer hover:bg-orange-50 text-xs font-medium"
           onClick={() => fileInputRef.current?.click()}
         >
           <Plus className="w-4 h-4 mb-1" /> Add Image
@@ -305,7 +305,7 @@ export default function ProductImageUploader({
           type="button"
           onClick={handleUploadImages}
           disabled={isUploading}
-          className="px-4 py-2 bg-[#F05323] text-white rounded-md hover:bg-[#e34724] disabled:opacity-50"
+          className="px-4 py-2 bg-[#F05323] text-white rounded-md hover:bg-[#e34724] disabled:opacity-50 hover:cursor-pointer"
         >
           {isUploading ? <ButtonLoader></ButtonLoader> : "Upload Images"}
         </button>

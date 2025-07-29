@@ -411,7 +411,7 @@ const handleAddToWishlist = () => {
         {/* Action Buttons */}
         <Button 
         onClick={handleBuyNow}
-        variant={'outline'} className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded-md font-semibold text-sm shadow-md">
+        variant={'outline'} className="hover:text-white bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded-md font-semibold text-sm shadow-md">
           {translate("এখনই কিনুন", "Buy Now")}
         </Button>
         <Button 

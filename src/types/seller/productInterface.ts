@@ -85,11 +85,13 @@ export interface ProductFormData {
         name: string;
         options: string[];
     }[];
-    items: {
+    items: {  // Remove the outer Array<> wrapper
         sku: string;
+        optionValues: string[];
         price: number;
         stock: number;
-        optionValues: string[];
+        discount?: number;
+        purchasePoint?: number;
     }[];
     description: string;
     longDescription: string;
@@ -97,8 +99,9 @@ export interface ProductFormData {
     type: string;
     giftProductId?: number;
     seoTitle?: string;
+    isTop: boolean, 
+    isNew: boolean 
 }
-
 
 
 
@@ -241,6 +244,7 @@ export interface ProductItemOption {
 }
 
 export interface ProductItem {
+    discount: number;
     id: number;
     productId: number;
     sku: string;
@@ -271,6 +275,7 @@ export interface Seller {
 }
 
 export interface ProductResponse {
+    tags: never[];
     id: number;
     productName: string;
     productLink: string;
@@ -293,4 +298,109 @@ export interface ProductResponse {
     ProductImage: ProductImage[];
     VariationType: ProductVariationType[];
     ProductItem: ProductItem[];
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Interface for Edit. 
+
+export interface IProductItem {
+    id: number;
+    sku: string;
+    price: number;
+    purchasePoint: number;
+    discountPrice: number;
+    stock: number;
+    options: {
+        option: string;
+    }[];
+}
+
+export interface ProductData {
+    id: number;
+    productName: string;
+    productLink: string;
+    type: string;
+    categoryId: number;
+    subCategoryId: number;
+    brandId: number;
+    sellerId: number;
+    rating: number;
+    seoTitle: string | null;
+    seoDescription: string | null;
+    sortDescription: string | null;
+    description: string | null;
+    createdAt: string;
+    updatedAt: string;
+    ProductImage: ProductImage[];
+    VariationType: ProductVariationType[];
+    ProductItem: ProductItem[];
+    brand: {
+        brand: string;
+    };
 }

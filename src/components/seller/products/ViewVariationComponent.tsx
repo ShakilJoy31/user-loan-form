@@ -1,4 +1,3 @@
-// src/components/seller/products/ViewVariation.tsx
 import React from "react";
 
 interface Variation {
@@ -17,6 +16,8 @@ interface ViewVariationProps {
     optionValues: string[];
     price: number;
     stock: number;
+    discount?: number;
+    purchasePoint?: number;
   }>;
 }
 
@@ -75,39 +76,71 @@ const ViewVariationComponent: React.FC<ViewVariationProps> = ({
 
             <div className="border rounded-xl overflow-x-auto">
               {/* Table Header */}
-              <div className="grid grid-cols-4 bg-[#FDEFEA] text-sm font-semibold text-gray-800 px-4 py-3 border-b min-w-[700px]">
-                <div className="col-span-2">SKU</div>
-                <div className="col-span-1">Price</div>
-                <div className="col-span-1">Stock</div>
+              <div className="grid grid-cols-8 bg-[#FDEFEA] text-sm font-semibold text-gray-800 px-4 py-3 border-b min-w-[900px]">
+                <h1 className="col-span-1 text-center">SL</h1>
+                <h1 className="col-span-2 text-center">SKU</h1>
+                <h1 className="col-span-1 text-center">Price</h1>
+                <h1 className="col-span-1 text-center">Discount</h1>
+                <h1 className="col-span-1 text-center">Purchas Point</h1>
+                <h1 className="col-span-1 text-center">Stock</h1>
+                <h1 className="col-span-1 text-center">Actions</h1>
               </div>
 
               {/* Generate rows for each variation combination */}
               {variationCombinations.map((combination, index) => (
                 <div 
                   key={`${combination.sku}-${index}`}
-                  className="grid grid-cols-4 items-center gap-3 px-4 py-3 border-b min-w-[700px]"
+                  className="grid grid-cols-8 items-center gap-3 px-4 py-3 border-b min-w-[900px]"
                 >
+                  <div className="col-span-1">
+                    <div className="text-sm font-medium text-gray-700 text-center">
+                      {index + 1}
+                    </div>
+                  </div>
+
                   <div className="col-span-2">
-                    <div className="text-sm font-medium text-gray-700">
+                    <div className="text-sm font-medium text-gray-700 text-center">
                       {combination.sku}
                     </div>
                   </div>
 
                   {/* Price Input */}
                   <input
-                    type="text"
-                    value={combination.price}
-                    disabled
-                    className="w-full px-3 py-2 text-sm border rounded-md col-span-1 bg-gray-100"
+                    type="number"
+                    value={combination.price === 0 ? '' : combination.price}
+                    readOnly
+                    className="w-full px-3 py-2 text-sm border rounded-md placeholder:text-center text-center bg-gray-50"
+                  />
+
+                  <input
+                    type="number"
+                    value={combination.discount || ''}
+                    readOnly
+                    className="w-full px-3 py-2 text-sm border rounded-md placeholder:text-center text-center bg-gray-50"
+                  />
+
+                  <input
+                    type="number"
+                    value={combination.purchasePoint || ''}
+                    readOnly
+                    className="w-full px-3 py-2 text-sm border rounded-md placeholder:text-center text-center bg-gray-50"
                   />
 
                   {/* Stock Input */}
                   <input
-                    type="text"
-                    value={combination.stock}
-                    disabled
-                    className="w-full px-3 py-2 text-sm border rounded-md col-span-1 bg-gray-100"
+                    type="number"
+                    value={combination.stock === 0 ? '' : combination.stock}
+                    readOnly
+                    className="w-full px-3 py-2 text-sm border rounded-md placeholder:text-center text-center bg-gray-50"
                   />
+
+                  {/* Delete Button - Disabled in view mode */}
+                  <button
+                    disabled
+                    className="text-gray-400 text-sm font-medium cursor-not-allowed"
+                  >
+                    Delete
+                  </button>
                 </div>
               ))}
             </div>

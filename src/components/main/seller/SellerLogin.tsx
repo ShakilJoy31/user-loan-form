@@ -13,6 +13,7 @@ import { appConfiguration } from "@/utils/constant/appConfiguration";
 import { loadUserFromToken } from "@/utils/helper/loadUserFromToken";
 import { useDispatch } from "react-redux";
 import Link from "next/link";
+import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 
 interface SellerLoginProps {
   setActiveTab: (tab: "login" | "create") => void;
@@ -25,6 +26,7 @@ export const SellerLogin = ({ setActiveTab }: SellerLoginProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const [loginSeller] = useLoginSellerMutation();
   const [signUpLoader, setSignUpLoader] = useState(false);
+  const { translate } = useCustomTranslator();
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -118,6 +120,10 @@ export const SellerLogin = ({ setActiveTab }: SellerLoginProps) => {
           </div>
         </div>
 
+        <p onClick={() => router.push('/admin-seller-forget-password')} className="text-md text-orange-500 mt-1 underline cursor-pointer hover:text-orange-600 dark:text-white">
+          {translate("বর্তমান পাসওয়ার্ড ভুলে গেছেন? এখানে ক্লিক করুন", "Forgot Current Password? Click here")}
+        </p>
+
         <Button
           type="submit"
           className="w-full bg-[#EE5A2C] text-white h-auto max-h-[63px] py-[18px] rounded-full md:rounded-md hover:bg-orange-800 transition mt-6"
@@ -128,20 +134,14 @@ export const SellerLogin = ({ setActiveTab }: SellerLoginProps) => {
 
       <div className="font-medium text-[14px] mt-[16px] text-center">
         <p className="text-gray-300">Already have an account?   <Link href="" onClick={(e) => {
-      e.preventDefault(); 
-      setActiveTab("create"); 
-    }}>
-      <span className="text-[#EE5A2C] hover:underline">Sign Up</span>
-    </Link>
-    </p>
+          e.preventDefault();
+          setActiveTab("create");
+        }}>
+          <span className="text-[#EE5A2C] hover:underline">Sign Up</span>
+        </Link>
+        </p>
       </div>
 
-      {/* <div className="flex justify-center mt-5 lg:mt-10 w-full">
-        <Button variant={"outline"} className="w-full py-[18px]">
-          <FcGoogle />
-          <span className="ml-1 text-[16px] font-normal">Sign Up with Google</span>
-        </Button>
-      </div> */}
     </div>
   );
 };

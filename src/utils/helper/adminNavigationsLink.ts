@@ -638,6 +638,16 @@ const adminDashboardAdvertiseBanner: INavigationLink = {
   href: "/proyojon-admin-portal/advertise-banner",
 };
 
+const adminDashboardFAQ: INavigationLink = {
+  icon: MdCategory,
+  label: {
+    en: "FAQ",
+    bn: "ব্যানার তালিকা",
+  },
+  key: "faq",
+  href: "/proyojon-admin-portal/faq",
+};
+
 export const adminNavigationLinks: INavigationLink[] = [
   { ...admindashboardRootLinks },
   { ...adminDashboardProduct },
@@ -646,4 +656,5 @@ export const adminNavigationLinks: INavigationLink[] = [
   { ...adminDashboardLocation },
   { ...adminDashboardSeller },
   { ...adminDashboardAdvertiseBanner },
+  { ...adminDashboardFAQ },
 ];

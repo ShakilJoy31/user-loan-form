@@ -9,12 +9,36 @@ import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 interface TopbarFilterProps {
     toggleSidebar: () => void;
     showSidebar: boolean;
+    onSortChange: (sortOrder: "desc" | "asc" | undefined) => void;
 }
 
-export default function TopbarFilter({ toggleSidebar, showSidebar }: TopbarFilterProps) {
+export default function TopbarFilter({ toggleSidebar, showSidebar, onSortChange }: TopbarFilterProps) {
     const { translate } = useCustomTranslator();
     const [view, ] = useState("gid");
     const [sort, setSort] = useState(translate("ফিচার্ড", "Featured"));
+
+    const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const selectedSort = e.target.value;
+        setSort(selectedSort);
+        
+        // Map the display text to the expected sortOrder values
+        let sortOrder: "desc" | "asc" | undefined;
+        switch (selectedSort) {
+            case translate("নতুন", "Newest"):
+                sortOrder = undefined; // or whatever makes sense for newest
+                break;
+            case translate("দাম: কম থেকে বেশি", "Price: Low to High"):
+                sortOrder = "asc";
+                break;
+            case translate("দাম: বেশি থেকে কম", "Price: High to Low"):
+                sortOrder = "desc";
+                break;
+            default:
+                sortOrder = undefined; // for "Featured"
+        }
+        
+        onSortChange(sortOrder);
+    };
 
     return (
         <div className="w-full flex flex-col sm:flex-row items-center justify-between border border-gray-300 rounded px-4 py-2 bg-gray-50 text-sm gap-3 sm:gap-0">
@@ -50,7 +74,7 @@ export default function TopbarFilter({ toggleSidebar, showSidebar }: TopbarFilte
                 <div className="relative">
                     <select
                         value={sort}
-                        onChange={(e) => setSort(e.target.value)}
+                        onChange={handleSortChange}
                         className="appearance-none border border-gray-300 rounded px-4 py-1.5 pr-8 bg-white text-gray-700 text-sm focus:outline-none w-full sm:w-auto"
                     >
                         <option>{translate("ফিচার্ড", "Featured")}</option>

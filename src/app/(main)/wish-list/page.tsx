@@ -71,11 +71,15 @@ const WishList = () => {
         const wishlistData = localStorage.getItem('wishlist');
         if (wishlistData) {
           const parsedWishlist = JSON.parse(wishlistData);
-          console.log("wishlist", parsedWishlist)
+          console.log("wishlist", parsedWishlist);
           // If the data is an object, convert it to an array
-          const itemsArray: WishlistEntry[] = Array.isArray(parsedWishlist) 
+          const itemsArray: WishlistEntry[] = (Array.isArray(parsedWishlist) 
             ? parsedWishlist 
-            : [parsedWishlist];
+            : [parsedWishlist]
+          ).map(item => ({
+            ...item,
+            selectedOptions: item.selectedOptions || {}
+          }));
           setWishlistItems(itemsArray);
         }
       } catch (error) {
@@ -91,14 +95,14 @@ const WishList = () => {
   const handleRemoveItem = (sku: string) => {
     try {
       // Find the item being deleted for the toast message
-       const deletedItem = wishlistItems.find(item => 
-      item.cartItem.sku === sku
-    );
+      const deletedItem = wishlistItems.find(item => 
+        item.cartItem.sku === sku
+      );
       
       // Filter out only the item with the matching ID
-         const updatedWishlist = wishlistItems.filter(item => 
-      item.cartItem.sku !== sku
-    );
+      const updatedWishlist = wishlistItems.filter(item => 
+        item.cartItem.sku !== sku
+      );
       
       // Update state and localStorage
       setWishlistItems(updatedWishlist);
@@ -148,7 +152,7 @@ const WishList = () => {
   if (loading) {
     return (
       <div className="mt-16 lg:pt-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-10 lg:mb-[291px]">
-        <p><DataLoader /></p>
+        <DataLoader />
       </div>
     );
   }
@@ -187,7 +191,7 @@ const WishList = () => {
 
       {/* Wishlist Title */}
       <h2 className="text-2xl sm:text-3xl font-bold mb-6 lg:mb-7">
-        Wishlist ({wishlistItems.length})
+        Wishlist ({wishlistItems?.length})
       </h2>
 
       {/* Card Grid */}
@@ -229,8 +233,8 @@ const WishList = () => {
             {/* Product Image */}
             <div className="flex justify-center mb-3">
               <Image
-                src={item.wishlistItem.image}
-                alt={item.wishlistItem.title}
+                src={item.wishlistItem?.image}
+                alt={item.wishlistItem?.title}
                 width={113}
                 height={168}
                 className="object-contain h-40 w-full border rounded-md"
@@ -239,11 +243,11 @@ const WishList = () => {
             <div className="p-3">
               {/* Product Title */}
               <h3 className="text-sm font-medium mb-1 line-clamp-1">
-                {item.wishlistItem.title}
+                {item.wishlistItem?.title}
               </h3>
 
               {/* Variant Options */}
-              {Object.keys(item.selectedOptions).length > 0 && (
+              {item.selectedOptions && Object.keys(item.selectedOptions).length > 0 && (
                 <div className="text-xs text-gray-500 mb-2">
                   {Object.entries(item.selectedOptions).map(([key, value]) => (
                     <div key={key}>{`${key}: ${value}`}</div>
@@ -253,7 +257,7 @@ const WishList = () => {
 
               {/* Rating */}
               <div className="flex items-center text-yellow-400 text-xs mb-2">
-                {[...Array(5)].map((_, i) => {
+                {[...Array(5)]?.map((_, i) => {
                   if (i < Math.floor(item.wishlistItem.rating)) {
                     return <FaStar key={i} className="text-xs" />;
                   }
@@ -281,13 +285,13 @@ const WishList = () => {
                     d="M8 7V3m8 4V3m-9 8h10m-6 4h2m-7 8h10a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" 
                   />
                 </svg>
-                {item.wishlistItem.date}
+                {item.wishlistItem?.date}
               </div>
 
               {/* Price + Cart Button */}
               <div className="flex justify-between items-center">
                 <span className="text-lg font-bold">
-                  {item.wishlistItem.price} TK
+                  {item.wishlistItem?.price} TK
                 </span>
                 <Button 
                   className="bg-[#fdefea] p-2 rounded-md text-primary hover:bg-orange-100 transition-colors"

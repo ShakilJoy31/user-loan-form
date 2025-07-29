@@ -6,22 +6,18 @@ export const userApi = apiSlice.injectEndpoints({
     // GET ALL CUSTOMERS
     getCustomers: builder.query({
       query: (data) => ({
-        url: `/user/get-customer-all?page=${data?.page || 1}&size=${
-          data?.size || fallback.querySize
-        }&search=${data.search || ""}&sortOrder=${
-          data?.sort || "desc"
-        }&orderCountFilterType=${data?.orderCount}&orderAmountFilterType=${
-          data?.orderAmount
-        }&sortBy=${data?.sortBy}`,
+        url: `/user/get-customer-all?page=${data?.page || 1}&size=${data?.size || fallback.querySize
+          }&search=${data.search || ""}&sortOrder=${data?.sort || "desc"
+          }&orderCountFilterType=${data?.orderCount}&orderAmountFilterType=${data?.orderAmount
+          }&sortBy=${data?.sortBy}`,
       }),
       providesTags: ["customer"],
     }),
 
     getAdmin: builder.query({
       query: (data) => ({
-        url: `/user/get-admin-all?page=${data?.page || 1}&size=${
-          data?.size || fallback.querySize
-        }&search=${data.search || ""}&sortOrder=${data?.sort || "asc"}`,
+        url: `/user/get-admin-all?page=${data?.page || 1}&size=${data?.size || fallback.querySize
+          }&search=${data.search || ""}&sortOrder=${data?.sort || "asc"}`,
       }),
       providesTags: ["customer"],
     }),
@@ -52,9 +48,8 @@ export const userApi = apiSlice.injectEndpoints({
 
     getUsers: builder.query({
       query: (data) => ({
-        url: `/user/get-user-all?page=${data?.page || 1}&size=${
-          data?.size || fallback.querySize
-        }&search=${data.search || ""}&sortOrder=${data?.sort || "asc"}`,
+        url: `/user/get-user-all?page=${data?.page || 1}&size=${data?.size || fallback.querySize
+          }&search=${data.search || ""}&sortOrder=${data?.sort || "asc"}`,
       }),
       providesTags: ["customer"],
     }),
@@ -136,33 +131,33 @@ export const userApi = apiSlice.injectEndpoints({
 
     //home page filter api:
     getFilteredShops: builder.query({
-  query: (params) => {
-    const {
-      city = "",
-      area = "",
-      categoryId = "",
-      search = "",
-    } = params || {};
-    return {
-      url: `/user/get-filter-shop`,
-      params: {
-        city,
-        area,
-        categoryId,
-        search,
+      query: (params) => {
+        const {
+          city = "",
+          area = "",
+          categoryId = "",
+          search = "",
+        } = params || {};
+        return {
+          url: `/user/get-filter-shop`,
+          params: {
+            city,
+            area,
+            categoryId,
+            search,
+          },
+        };
       },
-    };
-  },
-  providesTags: ["customer"],
-}),
+      providesTags: ["customer"],
+    }),
 
-  //customer register
-   // CREATE A NEW customer
+    //customer register
+    // CREATE A NEW customer
     createCustomerRegister: builder.mutation({
       query: (userData) => ({
         url: "/auth/create-customer",
         method: "POST",
-        body: userData, 
+        body: userData,
       }),
       invalidatesTags: ["customer"],
     }),
@@ -172,10 +167,23 @@ export const userApi = apiSlice.injectEndpoints({
       query: (userData) => ({
         url: "/auth/login-customer",
         method: "POST",
-        body: userData, 
+        body: userData,
       }),
       invalidatesTags: ["customer"],
     }),
+
+
+
+    // Customer change password. 
+    customerChangePassword: builder.mutation({
+      query: (userData) => ({
+        url: "/auth/change-password",
+        method: "POST",
+        body: userData,
+      }),
+      invalidatesTags: ["customer"],
+    }),
+
 
   }),
 });
@@ -197,4 +205,5 @@ export const {
   useGetFilteredShopsQuery,
   useCreateCustomerRegisterMutation,
   useLoginCustomerMutation,
+  useCustomerChangePasswordMutation
 } = userApi;

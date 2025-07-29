@@ -205,6 +205,7 @@ export const {
   useUpdateOrderStatusMutation,
   useGetUserOrderListQuery,
   useGetOrderByOrderIdQuery,
+  useLazyGetOrderByOrderIdQuery,
   useGetSalesReportByOrderQuery,
   useGetSalesReportByProductQuery,
   useGetTrustOrdersQuery,
@@ -215,5 +216,5 @@ export const {
   useCreatePathaoOrderMutation,
   useEditPreOrderMutation,
   useGetPreOrdersQuery,
-  useGetPreOrdersTabQuery
+  useGetPreOrdersTabQuery,
 } = orderApi;

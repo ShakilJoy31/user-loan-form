@@ -9,7 +9,7 @@ import BillingAndPayment from "@/components/main/checkout-components/BillingDeta
 import { useDispatch, useSelector } from "react-redux";
 import { selectUser } from "@/redux/store";
 import { loadUserFromToken } from "@/utils/helper/loadUserFromToken";
-import { useGetSellerUserByIdQuery } from "@/redux/features/seller-auth/sellerLogin";
+import { useGetUserByIdQuery } from "@/redux/features/seller-auth/sellerLogin";
 
 interface ShippingAddress {
   city: string;
@@ -89,7 +89,7 @@ const CheckoutPage: React.FC = () => {
         }
     }, [dispatch, user.id]);
 
-    const { data: sellerUser} = useGetSellerUserByIdQuery(
+    const { data: sellerUser} = useGetUserByIdQuery(
         user?.id,
         { skip: !user.id || !isUserLoaded } // Skip if no user ID or user not loaded
     );

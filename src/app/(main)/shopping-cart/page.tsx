@@ -152,7 +152,7 @@ const handleDeleteItem = (productId: number, sku: string) => {
                           </div>
                           <div>
                             <P className="text-xs md:text-sm font-medium dark:bg-black dark:text-white">{item.productName}</P>
-                            <P className="text-xs text-gray-500 dark:bg-black dark:text-white">{item.sku.slice(19, 50)}</P>
+                            <P className="text-xs text-gray-500 dark:bg-black dark:text-white">{item.sku.length > 20 ? `${item.sku.slice(0, 20)}...` : item.sku}</P>
                             <P className="text-xs text-gray-500 dark:bg-black dark:text-white">Seller: {item.sellerShopName}</P>
                           </div>
                         </div>
