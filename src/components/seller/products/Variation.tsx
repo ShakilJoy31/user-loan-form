@@ -56,7 +56,7 @@ const VariationComponent: React.FC<VariationProps> = ({
     setSelectedValues(initialSelectedValues);
     onCustomValuesChange(initialCustomValues);
     setIsOpenMap(initialIsOpenMap);
-  }, []);
+  }, [onCustomValuesChange, setSelectedValues, variations]);
 
   // Handle clicks outside dropdowns
   useEffect(() => {
@@ -142,7 +142,7 @@ const VariationComponent: React.FC<VariationProps> = ({
     });
 
     onCombinationChange(combinations);
-  }, [selectedValues, customValues, variations, onCombinationChange]);
+  }, [variations, onCombinationChange, selectedValues, customValues, variationCombinations]);
 
 
 

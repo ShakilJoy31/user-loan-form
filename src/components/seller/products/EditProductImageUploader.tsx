@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, ChangeEvent, useEffect } from "react";
+import { useState, useRef, ChangeEvent, useEffect, useCallback } from "react";
 import { Plus, X, RefreshCw, Image as ImageIcon } from "lucide-react";
 import Image from "next/image";
 import { useAddThumbnailMutation } from "@/redux/features/file/fileApi";
@@ -25,43 +25,28 @@ interface ProductImageUploaderProps {
 
 export default function ProductImageUploader({
   onImagesUpdate,
-  initialImages = []
+  initialImages = [],
 }: ProductImageUploaderProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [addThumbnail, { isLoading: isUploading }] = useAddThumbnailMutation();
   const [gallery, setGallery] = useState<UploadedImage[]>([]);
   const hasInitialized = useRef(false);
 
-  // Initialize with initial images
-  useEffect(() => {
-    if (!hasInitialized.current && initialImages && initialImages.length > 0) {
-      const initialGallery = initialImages
-        .filter(url => url && isValidUrl(url))
-        .map((url, index) => ({
-          id: Date.now() + index,
-          src: ensureAbsoluteUrl(url),
-          altText: "",
-          isMain: index === 0
-        }));
-      setGallery(initialGallery);
-      hasInitialized.current = true;
-      onImagesUpdate(initialImages.map(url => ensureAbsoluteUrl(url)));
-    }
-  }, [initialImages]);
-
   // Helper function to ensure URL is absolute
   const ensureAbsoluteUrl = (url: string): string => {
-    if (!url) return '';
+    if (!url) return "";
     try {
       new URL(url);
       return url; // Already absolute
     } catch {
-      return `${process.env.NEXT_PUBLIC_API_BASE_URL || ''}${url.startsWith('/') ? url : `/${url}`}`;
+      return `${process.env.NEXT_PUBLIC_API_BASE_URL || ""}${
+        url.startsWith("/") ? url : `/${url}`
+      }`;
     }
   };
 
   // Helper function to validate URLs
-  const isValidUrl = (url: string) => {
+  const isValidUrl = useCallback((url: string) => {
     if (!url) return false;
     try {
       new URL(ensureAbsoluteUrl(url));
@@ -70,8 +55,23 @@ export default function ProductImageUploader({
       console.error("Invalid URL:", url, e);
       return false;
     }
-  };
-
+  }, []);
+  // Initialize with initial images
+  useEffect(() => {
+    if (!hasInitialized.current && initialImages && initialImages.length > 0) {
+      const initialGallery = initialImages
+        .filter((url) => url && isValidUrl(url))
+        .map((url, index) => ({
+          id: Date.now() + index,
+          src: ensureAbsoluteUrl(url),
+          altText: "",
+          isMain: index === 0,
+        }));
+      setGallery(initialGallery);
+      hasInitialized.current = true;
+      onImagesUpdate(initialImages.map((url) => ensureAbsoluteUrl(url)));
+    }
+  }, [initialImages, isValidUrl, onImagesUpdate]);
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
@@ -148,7 +148,7 @@ export default function ProductImageUploader({
       const updatedGallery = gallery.map((img) => {
         const result = results.find((r) => r?.id === img.id);
         if (result && !result.error && result.url) {
-          if (img.src.startsWith('blob:')) {
+          if (img.src.startsWith("blob:")) {
             URL.revokeObjectURL(img.src);
           }
           return { ...img, src: result.url, file: undefined };
@@ -160,19 +160,19 @@ export default function ProductImageUploader({
       toast.success("Images updated successfully!");
 
       // Return the updated URLs to the parent
-      const uploadedUrls = updatedGallery.map(img => img.src);
+      const uploadedUrls = updatedGallery.map((img) => img.src);
       onImagesUpdate(uploadedUrls);
-    }  catch (error) {
-       const apiError = error as ApiError;
-      toast.error(apiError?.data?.message || '');
+    } catch (error) {
+      const apiError = error as ApiError;
+      toast.error(apiError?.data?.message || "");
     }
   };
 
   // Clean up object URLs when component unmounts
   useEffect(() => {
     return () => {
-      gallery.forEach(img => {
-        if (img.src.startsWith('blob:')) {
+      gallery.forEach((img) => {
+        if (img.src.startsWith("blob:")) {
           URL.revokeObjectURL(img.src);
         }
       });
@@ -180,12 +180,16 @@ export default function ProductImageUploader({
   }, [gallery]);
 
   // Safe image rendering function
-  const renderImage = (src: string, alt: string, props: {
-    width?: number,
-    height?: number,
-    fill?: boolean,
-    className: string
-  }) => {
+  const renderImage = (
+    src: string,
+    alt: string,
+    props: {
+      width?: number;
+      height?: number;
+      fill?: boolean;
+      className: string;
+    }
+  ) => {
     const absoluteSrc = ensureAbsoluteUrl(src);
     if (!isValidUrl(absoluteSrc)) {
       return (
@@ -199,7 +203,7 @@ export default function ProductImageUploader({
       <Image
         src={absoluteSrc}
         alt={alt}
-        unoptimized={absoluteSrc.startsWith('blob:')}
+        unoptimized={absoluteSrc.startsWith("blob:")}
         {...props}
       />
     );
@@ -222,7 +226,7 @@ export default function ProductImageUploader({
               {
                 width: 180,
                 height: 180,
-                className: "object-contain max-h-[230px]"
+                className: "object-contain max-h-[230px]",
               }
             )}
             <button
@@ -252,14 +256,10 @@ export default function ProductImageUploader({
             className="relative w-[99px] h-[99px] rounded-md overflow-hidden border"
             onClick={() => handleSetMainImage(img.id)}
           >
-            {renderImage(
-              img.src,
-              img.altText || `Thumb-${img.id}`,
-              {
-                fill: true,
-                className: "object-cover"
-              }
-            )}
+            {renderImage(img.src, img.altText || `Thumb-${img.id}`, {
+              fill: true,
+              className: "object-cover",
+            })}
             <button
               className="absolute -top-1 -right-1 w-5 h-5 bg-white rounded-full shadow text-gray-500 hover:text-black"
               onClick={(e) => {
