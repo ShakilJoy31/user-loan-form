@@ -154,7 +154,7 @@ export const userApi = apiSlice.injectEndpoints({
     //customer register
     // CREATE A NEW customer
     createCustomerRegister: builder.mutation({
-      query: ({userData, otpToken }) => ({
+      query: ({otpToken, userData }) => ({
          url: `/auth/create-customer?token=${otpToken}`,
         method: "POST",
         body: userData,

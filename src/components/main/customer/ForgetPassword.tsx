@@ -27,6 +27,7 @@ export const ForgetPassword = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+   const [resetSuccess, setResetSuccess] = useState(false);
   const [timeLeft, setTimeLeft] = useState(0);
 
   const otpInputRefs = useRef<(HTMLInputElement | null)[]>(Array(6).fill(null));
@@ -231,7 +232,9 @@ export const ForgetPassword = () => {
     }
   };
 
+  
   const handleResetPassword = async (e: React.FormEvent) => {
+    console.log('I am called')
     e.preventDefault();
 
     if (newPassword !== confirmPassword) {
@@ -249,6 +252,7 @@ export const ForgetPassword = () => {
       }).unwrap();
 
       if (response.success) {
+        setResetSuccess(true);
         toast("Password reset successfully. You can now log in.");
         clearStateFromStorage();
         router.push("/login");
@@ -290,7 +294,7 @@ export const ForgetPassword = () => {
     }
   };
 
-  if (otpVerified && newPassword && confirmPassword && newPassword === confirmPassword) {
+  if (otpVerified && resetSuccess) {
     return (
       <div className="max-w-[463px] w-full px-[20px] lg:px-0 mx-auto text-center dark:text-white">
         <div className="mb-4 lg:mb-[100px] text-[#EE5A2C] text-[16px]">

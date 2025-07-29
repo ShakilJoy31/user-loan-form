@@ -96,7 +96,7 @@ const CustomerCreate = () => {
     const { confirmPassword, ...submitData } = data;
     
     try {
-      await createCustomer({submitData, otpToken}).unwrap();
+      await createCustomer({userData: submitData, otpToken}).unwrap();
       toast.success(translate("নিবন্ধন সফল হয়েছে!", "Registration successful!"));
       reset();
       setCurrentStep("personal");
@@ -155,20 +155,20 @@ const CustomerCreate = () => {
   };
   
 
-  const isStepValid = async (step: typeof currentStep) => {
-    const values = getValues();
+  // const isStepValid = async (step: typeof currentStep) => {
+  //   const values = getValues();
     
-    if (step === "personal") {
-      return values.name && values.email && values.contactNo;
-    }
+  //   if (step === "personal") {
+  //     return values.name && values.email && values.contactNo;
+  //   }
     
-    if (step === "verify") {
-      return verificationCode.length === 6; // Changed to 6 digits
-    }
+  //   if (step === "verify") {
+  //     return verificationCode.length === 6; // Changed to 6 digits
+  //   }
     
-    return false;
-  };
-  console.log(isStepValid)
+  //   return false;
+  // };
+  // console.log(isStepValid)
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
