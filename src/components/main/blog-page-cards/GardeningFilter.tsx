@@ -32,12 +32,12 @@ const GardeningFilter = ({ onSortChange, totalResults }: GardeningFilterProps) =
         {/* Sort dropdown */}
         <div className="flex justify-between">
           <div className=" items-center space-x-2 w-full sm:w-auto flex">
-            <label className="text-gray-700 whitespace-nowrap">
+            <label className="text-gray-700 dark:text-gray-300 whitespace-nowrap">
               {translate("সাজান:", "Sort By:")}
             </label>
             <div className="relative">
               <select 
-                className="appearance-none border border-gray-300 rounded px-4 py-1.5 pr-8 bg-white text-gray-700 text-sm focus:outline-none w-full sm:w-auto"
+                className="appearance-none border rounded px-4 py-1.5 pr-8 bg-white dark:bg-black dark:border border-gray-300 text-gray-700 dark:text-gray-300 text-sm focus:outline-none w-full sm:w-auto"
                 onChange={handleSortChange}
               >
                 <option value="asc">{translate("নতুন", "Newest")}</option>

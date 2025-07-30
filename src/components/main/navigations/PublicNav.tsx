@@ -18,6 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectUser } from "@/redux/store";
 import { loadUserFromToken } from "@/utils/helper/loadUserFromToken";
 import { useGetUserByIdQuery } from "@/redux/features/seller-auth/sellerLogin";
+import { useCart } from "@/app/lib/CartContext";
 
 interface CartItem {
   productId: number;
@@ -117,22 +118,8 @@ const PublicNav = () => {
 
   //publiceNav
   // cart
-  const [cartItem, setCartItem] = useState<CartItem[]>([]);
-
-  useEffect(() => {
-    const cartData = localStorage.getItem("cart");
-    if (cartData) {
-      try {
-        const parsedCart: CartItem[] = JSON.parse(cartData);
-        console.log("Cart data from localStorage:", parsedCart);
-        setCartItem(parsedCart);
-      } catch (error) {
-        console.error("Error parsing cart data:", error);
-      }
-    } else {
-      console.log("No cart data found in localStorage");
-    }
-  }, []);
+ const { cartItemCount } = useCart();
+ console.log(cartItemCount)
 
   //wish list
   const [wishlistItems, setWishlistItems] = useState<WishlistEntry[]>([]);
@@ -233,9 +220,9 @@ const PublicNav = () => {
                   className="p-2 rounded-full bg-white text-black hover:bg-orange-600 relative "
                 >
                   <ShoppingCart size={20} />
-                  {cartItem?.length > 0 && (
+                  {cartItemCount  > 0 && (
                     <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-1 leading-none transform translate-x-1/2 -translate-y-1/2">
-                      {cartItem.length}
+                      {cartItemCount}
                     </span>
                   )}
                 </Button>

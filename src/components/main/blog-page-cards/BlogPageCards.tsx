@@ -39,7 +39,7 @@ const BlogPageCards = ({ post }: BlogPageCardsProps) => {
   const formattedDate = formatDate(post.createdAt);
 
   return (
-    <div onClick={()=> router.push(`/blog-details/${post?.slug}`)} className="w-full max-w-sm bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 font-sans flex flex-col h-full hover:cursor-pointer">
+    <div onClick={()=> router.push(`/blog-details/${post?.slug}`)} className="w-full max-w-sm bg-white dark:bg-black dark:border border-gray-300 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 font-sans flex flex-col h-full hover:cursor-pointer">
       {/* Image and Tags */}
       <div className="relative w-full h-48 flex-shrink-0">
         {post.image && (
@@ -51,11 +51,6 @@ const BlogPageCards = ({ post }: BlogPageCardsProps) => {
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
         )}
-        {/* <div className="absolute top-3 left-3 flex gap-2">
-          <span className="bg-white/90 text-xs text-gray-800 px-3 py-1 rounded-full font-medium shadow-sm">
-            {post.categoryId || translate("বাগান করা", "Gardening")}
-          </span>
-        </div> */}
       </div>
 
       {/* Content - This will grow to fill available space */}
@@ -77,19 +72,19 @@ const BlogPageCards = ({ post }: BlogPageCardsProps) => {
           
           <span className="text-gray-400">•</span>
           
-          <div className="flex items-center text-gray-500 text-xs">
+          <div className="flex items-center text-gray-700 dark:text-gray-300 text-xs">
             <FaRegClock className="mr-1" />
             {formattedDate}
           </div>
         </div>
 
         {/* Title */}
-        <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2">
+        <h3 className="text-lg font-bold text-gray-700 dark:text-gray-300 mb-2 line-clamp-2">
           {post.title}
         </h3>
 
         {/* Description - This will grow to fill available space */}
-        <p className="text-gray-600 text-sm mb-4 line-clamp-3 flex-grow">
+        <p className="text-gray-700 dark:text-gray-300 text-sm mb-4 line-clamp-3 flex-grow">
           {getPlainText(post.content || "")}
         </p>
 
@@ -99,7 +94,7 @@ const BlogPageCards = ({ post }: BlogPageCardsProps) => {
             {translate("আরও পড়ুন", "Read More")}
           </span>
           <button 
-            className="text-gray-500 hover:text-gray-700 transition-colors"
+            className="text-gray-700 dark:text-gray-300 hover:text-gray-700 transition-colors"
             aria-label="Share"
           >
             <FaShareAlt />

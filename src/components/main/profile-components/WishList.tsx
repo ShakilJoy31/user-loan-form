@@ -40,20 +40,20 @@ const WishlistTab = () => {
     };
 
     return (
-        <div className="bg-white p-4 md:p-6 dark:bg-black dark:text-white shadow-sm mx-auto max-w-7xl">
+        <div className="bg-white p-6 shadow-sm dark:bg-black dark:border border-gray-300 rounded-md dark:text-white">
             <h2 className="text-lg md:text-xl font-semibold text-gray-800 dark:text-white">{translate("ইচ্ছেতালিকা", "Wish–List")}</h2>
             <p className="text-xs md:text-sm text-gray-500 mb-4 md:mb-6 dark:text-white">
                 {translate("আপনার অর্ডার স্ট্যাটাস ট্র্যাক করুন", "Track your order Status")}
             </p>
 
-            <div className="bg-white border rounded-xl overflow-hidden dark:bg-black dark:text-white">
+            <div className="bg-white border rounded-xl overflow-hidden dark:bg-black dark:text-white p-1">
                 {currentItems.map((item) => (
                     <div
                         key={item.id}
-                        className="flex flex-col sm:flex-row sm:items-center justify-between p-3 md:p-4 border-b last:border-b-0 gap-3 md:gap-0  dark:border dark:border-white"
+                        className="flex flex-col sm:flex-row sm:items-center justify-between p-3 md:p-4 border-b last:border-b-0 gap-3 md:gap-0 dark:border border-gray-300"
                     >
                         <div className="flex flex-col sm:flex-row sm:items-center gap-3 md:gap-8 w-full sm:w-auto">
-                            <button className="text-gray-500 hover:cursor-pointer hover:text-red-500 flex items-center justify-start sm:justify-center sm:w-12">
+                            <button className="text-gray-700 dark:text-gray-300 hover:cursor-pointer hover:text-red-500 flex items-center justify-start sm:justify-center sm:w-12">
                                 <FiTrash2 size={16} className="md:size-[18px]" />
                             </button>
 

@@ -102,7 +102,7 @@ const ReturnOrdersTab = () => {
   };
 
   return (
-    <div className="bg-white p-6  shadow-sm dark:bg-black dark:text-white">
+    <div className="bg-white p-6 shadow-sm dark:bg-black dark:border border-gray-300 rounded-md dark:text-white">
       <h2 className="text-[36px] font-semibold text-[#023337] mb-[48px] dark:text-white">
         {translate("রিটার্ন অর্ডার তালিকা", "Return Orders list")}
       </h2>
@@ -112,12 +112,12 @@ const ReturnOrdersTab = () => {
           {translate("সাম্প্রতিক কার্যক্রম", "Recent activities")}
         </h3>
         <div className="relative">
+          <FiSearch className="absolute left-3 top-2.5 text-gray-500" />
           <input
             type="text"
             placeholder={translate("অর্ডার আইডি দ্বারা অনুসন্ধান করুন", "Search by order id")}
-            className="bg-[#F9FAFB] dark:bg-black dark:text-white dark:border dark:border-white text-black rounded-md px-4 py-2 text-sm pr-10 focus:outline-none focus:ring-1 focus:ring-orange-500"
+            className="bg-[#F9FAFB] dark:bg-black dark:text-white dark:border dark:border-white text-black rounded-md px-4 py-2 text-sm pl-10 focus:outline-none focus:ring-1 focus:ring-orange-500"
           />
-          <FiSearch className="absolute right-3 top-2.5 text-gray-500" />
         </div>
       </div>
 

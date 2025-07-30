@@ -207,13 +207,13 @@ const CustomerCreate = () => {
             </h2>
 
             <div className="max-w-[400px]">
-              <div className="flex max-w-[330px] mx-auto mb-6 p-1 rounded-md bg-[#fdefea]">
+              <div className="flex max-w-[330px] mx-auto mb-6 p-1 rounded-md bg-[#fdefea] dark:bg-black dark:border border-gray-300">
                 <Button
                   onClick={() => setActiveTab("create")}
                   className={`px-6 py-3 rounded-md mr-1 transition ${
                     activeTab === "create"
-                      ? "bg-[#EE5A2C] text-white shadow-sm"
-                      : "bg-transparent text-gray-400 hover:bg-transparent"
+                      ? "bg-[#EE5A2C] dark:bg-[#EE5A2C] text-white shadow-sm"
+                      : "bg-transparent text-gray-400 hover:bg-transparent dark:border border-gray-300"
                   }`}
                 >
                   {translate("অ্যাকাউন্ট তৈরি করুন", "Create Account")}
@@ -223,8 +223,8 @@ const CustomerCreate = () => {
                   onClick={() => setActiveTab("login")}
                   className={`px-6 py-3 rounded-md w-full transition ${
                     activeTab === "login"
-                      ? "bg-[#EE5A2C] text-white shadow-sm"
-                      : "bg-transparent text-gray-400 hover:bg-transparent"
+                      ? "bg-[#EE5A2C] dark:bg-[#EE5A2C] text-white shadow-sm"
+                      : "bg-transparent text-gray-400 hover:bg-transparent dark:border border-gray-300"
                   }`}
                 >
                   {translate("লগ ইন", "Log in")}

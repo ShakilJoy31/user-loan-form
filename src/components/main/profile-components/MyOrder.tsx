@@ -93,7 +93,7 @@ const OrderTab = () => {
   };
 
   return (
-    <div className="bg-white p-6 dark:bg-black dark:text-white shadow-sm">
+    <div className="bg-white p-6 shadow-sm dark:bg-black dark:border border-gray-300 rounded-md dark:text-white">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
           {translate("পণ্য", "Products")}
@@ -108,7 +108,7 @@ const OrderTab = () => {
       </div>
 
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200 dark:border dark:border-white dark:rounded-md">
+        <table className="min-w-full divide-y divide-gray-200 dark:rounded-md">
           <thead>
             <tr className="bg-gray-50 text-sm text-gray-600 text-left dark:bg-black dark:text-white">
               <th className="px-4 py-2">
@@ -130,7 +130,7 @@ const OrderTab = () => {
             {currentOrders.map((order) => (
               <tr
                 key={order.id}
-                className={`border-b hover:bg-[#F1F1F1] rounded-lg dark:bg-black ${
+                className={`border-b border-gray-300 hover:bg-[#F1F1F1] rounded-lg dark:bg-black ${
                   selectedOrders.includes(order.id) ? "bg-gray-50" : ""
                 }`}
               >
@@ -156,13 +156,13 @@ const OrderTab = () => {
                   </div>
                 </td>
                 <td className="px-4 py-4">
-                  <span className="bg-[#FDEFEA] text-[#5A5A5A] rounded-md px-2 py-1 text-sm dark:text-white">
+                  <span className="bg-[#FDEFEA] dark:bg-black dark:border border-gray-300 text-[#5A5A5A] rounded-md px-2 py-1 text-sm dark:text-white">
                     {order.price}
                   </span>
                 </td>
                 <td className="px-4 py-4 text-gray-600 dark:text-white">{order.date}</td>
                 <td className="px-4 py-4">
-                  <Button variant={'outline'} className="bg-[#EE5A2C] text-white font-bold text-xs px-4 py-2 rounded-full">
+                  <Button variant={'outline'} className="bg-[#EE5A2C] dark:border border-gray-300 text-white font-bold text-xs px-4 py-2 rounded-full">
                     {translate("অর্ডার ট্র্যাক করুন", "Track order")}
                   </Button>
                 </td>
@@ -183,7 +183,7 @@ const OrderTab = () => {
       </div>
 
       <div className="flex justify-between items-center mt-6 flex-wrap gap-4">
-        <div className="text-sm text-gray-600">
+        <div className="text-sm text-gray-700 dark:text-gray-300">
           ✓ {selectedOrders.length} {translate("পণ্য নির্বাচিত হয়েছে", "products selected")}
         </div>
         <div className="flex items-center gap-3">

@@ -66,7 +66,7 @@ export const CustomerLogin = ({ setActiveTab }: CustomerLoginProps) => {
   return (
     <div>
       <form onSubmit={handleSubmit} className="space-y-4">
-        <p className="text-gray-600 mb-6 text-center">
+        <p className="text-gray-700 dark:text-gray-300 mb-6 text-center">
           Login to your customer account
         </p>
 
@@ -74,24 +74,24 @@ export const CustomerLogin = ({ setActiveTab }: CustomerLoginProps) => {
        <div>
   <label
     htmlFor="contactNo"
-    className="block text-sm font-medium text-gray-700 mb-1"
+    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
   >
-    contactNo*
+    Contact No *
   </label>
   <input
-    type="text"
-    id="contactNo"
-    placeholder="Enter your phoneNo"
-    maxLength={11}
-    value={contactNo}
-    onChange={(e) => {
-      const value = e.target.value;
-      if (/^\d{0,11}$/.test(value)) {
-        setContactNo(value);
-      }
-    }}
-    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C]"
-  />
+  type="text"
+  id="contactNo"
+  placeholder="Enter your phone No"
+  maxLength={11}
+  value={contactNo}
+  onChange={(e) => {
+    const value = e.target.value;
+    if (/^\d{0,11}$/.test(value)) {
+      setContactNo(value);
+    }
+  }}
+  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C] dark:bg-black dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
+/>
 </div>
 
 
@@ -101,7 +101,7 @@ export const CustomerLogin = ({ setActiveTab }: CustomerLoginProps) => {
             htmlFor="password"
             className="block text-sm font-medium text-gray-700 mb-1"
           >
-            Password*
+            Password *
           </label>
           <div className="relative">
             <input

@@ -22,16 +22,17 @@ const LocaleSwitcher = () => {
       <DropdownMenuContent align="end" className={cn(useFontShifter())}>
         <DropdownMenuItem
           className={cn(
-            locale === "bn" && "bg-white text-accent-foreground font-lato",
+            locale === "bn" && "bg-white text-black dark:bg-black dark:text-white font-lato",
             "cursor-pointer font-anek"
           )}
           onClick={() => i18n.changeLanguage("bn")}
         >
           বাংলা
         </DropdownMenuItem>
+
         <DropdownMenuItem
           className={cn(
-            locale === "en" && "bg-white text-accent-foreground font-open_sans",
+            locale === "en" && "bg-white text-black dark:bg-black dark:text-white font-lato",
             "cursor-pointer"
           )}
           onClick={() => i18n.changeLanguage("en")}

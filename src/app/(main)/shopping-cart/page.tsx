@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import toast from "react-hot-toast";
 import Link from "next/link";
+import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 
 interface CartItem {
   productId: number;
@@ -33,6 +34,7 @@ interface CartItem {
 }
 
 const ShoppingCart = () => {
+  const { translate } = useCustomTranslator();
   const [cartItem, setCartItem] = useState<CartItem[]>([]);
   
   useEffect(() => {
@@ -96,28 +98,26 @@ const handleDeleteItem = (productId: number, sku: string) => {
     localStorage.setItem('cart', JSON.stringify(updatedCart));
     
     if (deletedItem) {
-      toast.success(`${deletedItem.productName} removed from cart`);
+      toast.success(translate(`${deletedItem.productName} কার্ট থেকে সরানো হয়েছে`, `${deletedItem.productName} removed from cart`));
     } else {
-      toast.success("Item removed from cart");
+      toast.success(translate("আইটেম কার্ট থেকে সরানো হয়েছে", "Item removed from cart"));
     }
   } catch (error) {
     console.error("Error removing item from cart:", error);
-    toast.error("Failed to remove item from cart. Please try again.");
+    toast.error(translate("কার্ট থেকে আইটেম সরাতে ব্যর্থ হয়েছে। আবার চেষ্টা করুন।", "Failed to remove item from cart. Please try again."));
   }
 };
 
   // Calculate order summary values
   const subtotal = cartItem.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  // const totalDiscount = cartItem.reduce((sum, item) => sum + (item.discountPrice * item.quantity), 0);
-
   const deliveryFee = 0; // Fixed delivery fee
-  const total = subtotal ;
+  const total = subtotal;
 
   return (
     <div className="mt-16 lg:pt-[40px] max-w-[1280px] mx-auto px-4 mb-10 lg:mb-[136px] ">
       <h2 className="text-[18px] font-medium mb-[51px] text-gray-300  dark:text-white">
-        Home / Shop details / Gang Light{" "}
-        <span className="text-[#EE5A2C]">/ Cart {cartItem?.length}</span>{" "}
+        {translate("হোম / শপ বিবরণ / গ্যাং লাইট", "Home / Shop details / Gang Light")}{" "}
+        <span className="text-[#EE5A2C]">/ {translate("কার্ট", "Cart")} {cartItem?.length}</span>{" "}
       </h2>
 
       <div className="flex flex-col lg:flex-row gap-6 lg:gap-8  dark:text-white">
@@ -127,12 +127,24 @@ const handleDeleteItem = (productId: number, sku: string) => {
             <table className="min-w-full divide-y divide-gray-200 dark:bg-black dark:text-white">
               <thead className="bg-[#FDEFEA] dark:bg-black dark:text-white">
                 <tr>
-                  <th scope="col" className="px-4 py-3 text-left text-xs md:text-sm font-medium text-gray-700 dark:bg-black dark:text-white">Product</th>
-                  <th scope="col dark:bg-black dark:text-white" className="px-4 py-3 text-left text-xs md:text-sm font-medium text-gray-700 dark:bg-black dark:text-white">Price</th>
-                  <th scope="col dark:bg-black dark:text-white" className="px-4 py-3 text-left text-xs md:text-sm font-medium text-gray-700 dark:bg-black dark:text-white">Quantity</th>
-                  <th scope="col dark:bg-black dark:text-white" className="px-4 py-3 text-left text-xs md:text-sm font-medium text-gray-700 dark:bg-black dark:text-white">Warranty</th>
-                  <th scope="col dark:bg-black dark:text-white" className="px-4 py-3 text-left text-xs md:text-sm font-medium text-gray-700 dark:bg-black dark:text-white">Subtotal</th>
-                  <th scope="col dark:bg-black dark:text-white" className="px-4 py-3 text-left text-xs md:text-sm font-medium text-gray-700 dark:bg-black dark:text-white">Action</th>
+                  <th scope="col" className="px-4 py-3 text-left text-xs md:text-sm font-medium text-gray-700 dark:bg-black dark:text-white">
+                    {translate("পণ্য", "Product")}
+                  </th>
+                  <th scope="col dark:bg-black dark:text-white" className="px-4 py-3 text-left text-xs md:text-sm font-medium text-gray-700 dark:bg-black dark:text-white">
+                    {translate("দাম", "Price")}
+                  </th>
+                  <th scope="col dark:bg-black dark:text-white" className="px-4 py-3 text-left text-xs md:text-sm font-medium text-gray-700 dark:bg-black dark:text-white">
+                    {translate("পরিমাণ", "Quantity")}
+                  </th>
+                  <th scope="col dark:bg-black dark:text-white" className="px-4 py-3 text-left text-xs md:text-sm font-medium text-gray-700 dark:bg-black dark:text-white">
+                    {translate("ওয়ারেন্টি", "Warranty")}
+                  </th>
+                  <th scope="col dark:bg-black dark:text-white" className="px-4 py-3 text-left text-xs md:text-sm font-medium text-gray-700 dark:bg-black dark:text-white">
+                    {translate("সাবটোটাল", "Subtotal")}
+                  </th>
+                  <th scope="col dark:bg-black dark:text-white" className="px-4 py-3 text-left text-xs md:text-sm font-medium text-gray-700 dark:bg-black dark:text-white">
+                    {translate("অ্যাকশন", "Action")}
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200 dark:bg-black dark:text-white">
@@ -153,12 +165,14 @@ const handleDeleteItem = (productId: number, sku: string) => {
                           <div>
                             <P className="text-xs md:text-sm font-medium dark:bg-black dark:text-white">{item.productName}</P>
                             <P className="text-xs text-gray-500 dark:bg-black dark:text-white">{item.sku.length > 20 ? `${item.sku.slice(0, 20)}...` : item.sku}</P>
-                            <P className="text-xs text-gray-500 dark:bg-black dark:text-white">Seller: {item.sellerShopName}</P>
+                            <P className="text-xs text-gray-500 dark:bg-black dark:text-white">
+                              {translate("বিক্রেতা", "Seller")}: {item.sellerShopName}
+                            </P>
                           </div>
                         </div>
                       </td>
                       <td className="px-4 py-4 whitespace-nowrap text-sm text-primary dark:bg-black dark:text-white">
-                        {item.price}Tk
+                        {item.price}{translate("টাকা", "Tk")}
                       </td>
                       <td className="px-4 py-4 whitespace-nowrap dark:bg-black dark:text-white">
                         <div className="flex items-center border border-gray-300 rounded-md w-fit">
@@ -181,9 +195,11 @@ const handleDeleteItem = (productId: number, sku: string) => {
                           </Button>
                         </div>
                       </td>
-                      <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:bg-black dark:text-white">1 Year</td>
                       <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:bg-black dark:text-white">
-                        {(item.price * item.quantity).toFixed(2)}Tk
+                        {translate("১ বছর", "1 Year")}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:bg-black dark:text-white">
+                        {(item.price * item.quantity).toFixed(2)}{translate("টাকা", "Tk")}
                       </td>
                       <td className="px-4 py-4 whitespace-nowrap">
                         <AlertDialog>
@@ -198,18 +214,25 @@ const handleDeleteItem = (productId: number, sku: string) => {
                           </AlertDialogTrigger>
                           <AlertDialogContent>
                             <AlertDialogHeader>
-                              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                              <AlertDialogTitle>
+                                {translate("আপনি কি নিশ্চিত?", "Are you sure?")}
+                              </AlertDialogTitle>
                               <AlertDialogDescription>
-                                This will remove {item.productName} from your cart.
+                                {translate(
+                                  `এটি আপনার কার্ট থেকে ${item.productName} সরিয়ে দেবে।`,
+                                  `This will remove ${item.productName} from your cart.`
+                                )}
                               </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
-                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogCancel>
+                                {translate("বাতিল", "Cancel")}
+                              </AlertDialogCancel>
                               <AlertDialogAction
                                 onClick={() => handleDeleteItem(item.productId, item.sku)}
                                 className="bg-destructive hover:bg-destructive/90"
                               >
-                                Remove
+                                {translate("সরান", "Remove")}
                               </AlertDialogAction>
                             </AlertDialogFooter>
                           </AlertDialogContent>
@@ -220,7 +243,7 @@ const handleDeleteItem = (productId: number, sku: string) => {
                 ) : (
                   <tr>
                     <td colSpan={6} className="px-4 py-4 text-center text-gray-500">
-                      Your cart is empty
+                      {translate("আপনার কার্ট খালি", "Your cart is empty")}
                     </td>
                   </tr>
                 )}
@@ -232,27 +255,35 @@ const handleDeleteItem = (productId: number, sku: string) => {
         {/* Order Summary */}
         <div className="w-full lg:max-w-[400px] xl:max-w-[505px]">
           <div className="border border-gray-200 rounded-xl lg:-mt-2 p-4 md:p-6 space-y-6">
-            <h2 className="text-lg md:text-xl font-bold">Order Summary</h2>
+            <h2 className="text-lg md:text-xl font-bold">
+              {translate("অর্ডার সারাংশ", "Order Summary")}
+            </h2>
 
             <div className="space-y-3">
               <div className="flex justify-between">
-                <span className="text-gray-500  dark:text-white">Subtotal</span>
-                <span className="font-medium">{subtotal.toFixed(2)}Tk</span>
+                <span className="text-gray-500  dark:text-white">
+                  {translate("সাবটোটাল", "Subtotal")}
+                </span>
+                <span className="font-medium">{subtotal.toFixed(2)}{translate("টাকা", "Tk")}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500  dark:text-white">Discount</span>
-                <span className="text-primary">-{0}Tk</span>
+                <span className="text-gray-500  dark:text-white">
+                  {translate("ডিসকাউন্ট", "Discount")}
+                </span>
+                <span className="text-primary">-{0}{translate("টাকা", "Tk")}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500  dark:text-white">Delivery Fee</span>
-                <span className="font-medium">{deliveryFee.toFixed(2)}Tk</span>
+                <span className="text-gray-500  dark:text-white">
+                  {translate("ডেলিভারি ফি", "Delivery Fee")}
+                </span>
+                <span className="font-medium">{deliveryFee.toFixed(2)}{translate("টাকা", "Tk")}</span>
               </div>
             </div>
 
-            <div className="border-t pt-4">
+            <div className="border-t pt-4 dark:border-white">
               <div className="flex justify-between font-bold text-base md:text-lg">
-                <span>Total</span>
-                <span>{total.toFixed(2)}Tk</span>
+                <span>{translate("মোট", "Total")}</span>
+                <span>{total.toFixed(2)}{translate("টাকা", "Tk")}</span>
               </div>
             </div>
 
@@ -261,19 +292,19 @@ const handleDeleteItem = (productId: number, sku: string) => {
                 <FiTag className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 " />
                 <input
                   type="text"
-                  placeholder="Add promo code"
+                  placeholder={translate("প্রোমো কোড যোগ করুন", "Add promo code")}
                   className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md bg-gray-50 focus:outline-none focus:ring-1 focus:ring-primary dark:bg-black dark:text-white"
                 />
               </div>
-              <Button className="bg-[#EE5A2C] mt-[2px] text-white px-4 py-2 max-w-[126px] max-h-[48px] whitespace-nowrap">
-                Apply Code
+              <Button className="bg-[#EE5A2C] mt-[2px] text-white px-4 py-2 max-w-[126px] max-h-[48px] whitespace-nowrap dark:border border-gray-300">
+                {translate("জমা দিন", "Apply Code")}
               </Button>
             </div>
 
             <Link href={"/checkout"}>
-            <Button className="w-full bg-[#EE5A2C] hover:bg-orange-800 hover:text-white text-white py-2 rounded-md">
-              Proceed To Pay
-            </Button>
+              <Button className="w-full bg-[#EE5A2C] hover:bg-orange-800 hover:text-white text-white py-2 rounded-md">
+                {translate("পেমেন্ট করুন", "Proceed To Pay")}
+              </Button>
             </Link>
           </div>
         </div>

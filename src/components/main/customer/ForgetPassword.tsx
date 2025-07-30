@@ -358,13 +358,13 @@ export const ForgetPassword = () => {
         <div className="max-w-[384px]">
           {!otpSent ? (
             <>
-              <p className="text-gray-600 mb-6 ml-2 text-[16px] text-center md:text-start">
+              <p className="text-gray-700 dark:text-gray-300 mb-6 ml-2 text-[16px] text-center md:text-start">
                 Don&apos;t worry! It happens. Please enter the phone number associated with your account.
               </p>
 
               <form className="space-y-4 w-full ml-2" onSubmit={(e) => { e.preventDefault(); handleSendOtp(); }}>
                 <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Phone Number*
                   </label>
                   <input
@@ -385,7 +385,7 @@ export const ForgetPassword = () => {
                 <Button
                   type="submit"
                   disabled={isSendingOtp}
-                  className="w-full rounded-full h-auto max-h-[63px] text-[16px] py-[18px] bg-[#EE5A2C] text-white md:rounded-md hover:bg-orange-800 transition mt-6"
+                  className="w-full rounded-full h-auto max-h-[63px] text-[16px] py-[18px] bg-[#EE5A2C] text-white dark:border border-gray-300 md:rounded-md hover:bg-orange-800 transition mt-6"
                 >
                   {isSendingOtp ? "Sending OTP..." : "Continue"}
                 </Button>
@@ -394,10 +394,10 @@ export const ForgetPassword = () => {
           ) : otpSent && !otpVerified ? (
             <form className="space-y-4 w-full ml-2" onSubmit={(e) => { e.preventDefault(); handleVerifyOtp(); }}>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-4">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">
                   Please enter the code, just sent to phone number <br /> <span className="text-[#EE5A2C]">{contactNo}</span>
                   {timeLeft > 0 ? (
-                    <div className="text-sm text-gray-600 mt-2">
+                    <div className="text-sm text-gray-700 dark:text-gray-300 mt-2">
                       OTP expires in: <span className="font-medium">{formatTime(timeLeft)}</span>
                     </div>
                   ) : (
@@ -405,7 +405,7 @@ export const ForgetPassword = () => {
                       type="button"
                       onClick={handleSendOtp}
                       disabled={isSendingOtp}
-                      className="text-sm text-blue-600 hover:text-blue-800 font-medium mt-2"
+                      className="text-sm text-blue-600 hover:text-blue-800 ml-2 hover:cursor-pointer font-medium mt-2"
                     >
                       Resend OTP
                     </button>
@@ -435,7 +435,7 @@ export const ForgetPassword = () => {
               <Button
                 type="submit"
                 disabled={isVerifyingOtp || otp.length !== 6}
-                className="w-full h-auto max-h-[63px] bg-[#EE5A2C] text-white text-[16px] py-[18px] md:rounded-md rounded-full hover:bg-orange-800 transition mt-6"
+                className="w-full h-auto max-h-[63px] bg-[#EE5A2C] text-white text-[16px] py-[18px] md:rounded-md dark:border border-gray-300 rounded-full hover:bg-orange-800 transition mt-6"
               >
                 {isVerifyingOtp ? "Verifying..." : "Verify"}
               </Button>
@@ -444,7 +444,7 @@ export const ForgetPassword = () => {
                 <button
                   type="button"
                   onClick={handleResetForm}
-                  className="text-sm text-gray-600 hover:text-gray-800 font-medium underline"
+                  className="text-sm text-gray-700 dark:text-gray-300 hover:text-gray-800 font-medium underline"
                 >
                   Wrong number? Reset form
                 </button>

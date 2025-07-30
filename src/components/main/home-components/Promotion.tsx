@@ -59,7 +59,7 @@ const Promotion = () => {
                   />
                   <Link href={banner.advertiseType === "Shop" ? `/products/all-products/${banner?.slug}` : `/products/${banner.slug}`}>
                   <Button variant={"outline"} className="absolute bottom-4 right-4 text-white bg-[#ee5a2c]  px-4 py-2 rounded-md font-medium hover:bg-orange-800 hover:text-white cursor-pointer transition-colors duration-200">
-                    Shop Now
+                    {translate("এখনই কিনুন", "Shop Now")}
                   </Button>
                   </Link>
               </div>

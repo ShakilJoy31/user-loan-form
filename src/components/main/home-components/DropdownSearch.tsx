@@ -5,6 +5,8 @@ import { FiSearch, FiChevronDown, FiChevronUp, FiX } from "react-icons/fi";
 import { useGetAllAreasQuery, useGetAllCitiesQuery } from "@/redux/features/seller-auth/sellerLogin";
 import { useGetAllCategoryQuery } from "@/redux/features/product/categoryApi";
 import { useGetFilteredShopsQuery } from "@/redux/features/user/userApi";
+import { useCustomTranslator } from "@/hooks/useCustomTranslator";
+import ButtonLoader from "@/components/common/ButtonLoader";
 
 interface City {
   id: number;
@@ -112,13 +114,17 @@ const DropdownSearch = () => {
     setSearchQuery("");
   };
 
+  const { translate } = useCustomTranslator();
+
   return (
     <div className="flex flex-col md:flex-row gap-4 w-full">
       {/* Dropdowns Row */}
       <div className="flex flex-col sm:flex-row gap-2 w-full">
         {/* City Dropdown */}
         <div className="relative flex-1 min-w-[120px] ">
-          <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-white">City</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-white">
+            {translate("শহৰ", "City")}
+          </label>
           <div className="relative">
             <div
               className="w-full dark:text-white min-h-[25px] px-1 py-[5px] pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C] cursor-text flex items-center"
@@ -127,7 +133,7 @@ const DropdownSearch = () => {
               {selectedCity ? (
                 <span className="truncate">{selectedCity}</span>
               ) : (
-                <span className="text-gray-400 dark:text-white">Select City</span>
+                <span className="text-gray-400 dark:text-white">{translate("শহৰ বাছক", "Select City")}</span>
               )}
               <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center space-x-1">
                 {selectedCity && (
@@ -157,7 +163,7 @@ const DropdownSearch = () => {
               <div className="absolute z-10 dark:bg-black dark:text-white dark:border dark:border-gray-300  mt-1 w-full bg-white shadow-lg rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 focus:outline-none max-h-60 overflow-auto">
                 <div className="py-1">
                   {citiesLoading ? (
-                    <div className="px-4 py-2 text-gray-500">Loading cities...</div>
+                    <div className="px-4 py-2 text-gray-500">{translate("শহৰসমূহ ল'ড হৈ আছে...", "Loading cities...")}</div>
                   ) : cities.length > 0 ? (
                     cities.map((city) => (
                       <div
@@ -173,7 +179,7 @@ const DropdownSearch = () => {
                       </div>
                     ))
                   ) : (
-                    <div className="px-4 py-2 text-gray-500">No cities available</div>
+                    <div className="px-4 py-2 text-gray-500">{translate("কোনো শহৰ উপলব্ধ নাই", "No cities available")}</div>
                   )}
                 </div>
               </div>
@@ -183,7 +189,7 @@ const DropdownSearch = () => {
 
         {/* Area Dropdown */}
         <div className="relative flex-1 min-w-[120px]">
-          <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-white">Area</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-white">{translate("এৰিয়া", "Area")}</label>
           <div className="relative">
             <div
               className={`w-full min-h-[25px] px-1 py-[5px] pr-10 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C] cursor-text flex items-center dark:text-white ${
@@ -197,7 +203,7 @@ const DropdownSearch = () => {
                 <span className="truncate">{selectedArea}</span>
               ) : (
                 <span className="text-gray-400 dark:text-white">
-                  {!selectedCity ? "Select city first" : areasLoading ? "Loading..." : "Select Area"}
+                  {!selectedCity ? translate("প্রথমে শহৰ বাছক", "Select city first") : areasLoading ? translate(`${<ButtonLoader />}`, `${<ButtonLoader />}`) : translate("এৰিয়া বাছক", "Select Area")}
                 </span>
               )}
               {selectedCity && !areasLoading && (
@@ -230,9 +236,9 @@ const DropdownSearch = () => {
               <div className="absolute z-10 mt-1 w-full dark:bg-black dark:text-white dark:border dark:border-gray-300  bg-white shadow-lg rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 focus:outline-none max-h-60 overflow-auto">
                 <div className="py-1">
                   {areasLoading ? (
-                    <div className="px-4 py-2 text-gray-500">Loading areas...</div>
+                    <div className="px-4 py-2 text-gray-500">{translate("এৰিয়া ল'ড হৈ আছে...", "Loading areas...")}</div>
                   ) : areasError ? (
-                    <div className="px-4 py-2 text-red-500">Error loading areas</div>
+                    <div className="px-4 py-2 text-red-500">{translate("এৰিয়া ল'ড কৰোতে ত্ৰুটি", "Error loading areas")}</div>
                   ) : filteredAreas.length > 0 ? (
                     filteredAreas.map((area) => (
                       <div
@@ -248,7 +254,7 @@ const DropdownSearch = () => {
                       </div>
                     ))
                   ) : (
-                    <div className="px-4 py-2 text-gray-500">No areas available for this city</div>
+                    <div className="px-4 py-2 text-gray-500">{translate("এই শহৰৰ বাবে কোনো এৰিয়া উপলব্ধ নাই", "No areas available for this city")}</div>
                   )}
                 </div>
               </div>
@@ -258,7 +264,7 @@ const DropdownSearch = () => {
 
         {/* Shop Category Dropdown */}
         <div className="relative flex-1 min-w-[150px]">
-          <label className="block text-sm font-medium text-white mb-1">Shop Category</label>
+          <label className="block text-sm font-medium text-white mb-1">{translate("দোকানৰ শ্ৰেণী", "Shop Category")}</label>
           <div className="relative">
             <div
               className="w-full min-h-[25px] px-1 py-[5px] pr-10 border dark:bg-black dark:text-white bg-[#EE5A2C]  border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#EE5A2C] cursor-text flex items-center"
@@ -268,7 +274,7 @@ const DropdownSearch = () => {
                 <span className="truncate">{selectedCategory}</span>
               ) : (
                 <span className=" text-white">
-                  {categoriesLoading ? "Loading..." : "Select Category"}
+                  {categoriesLoading ? translate(`${<ButtonLoader />}`, `${<ButtonLoader />}`) : translate("শ্ৰেণী বাছক", "Select Category")}
                 </span>
               )}
               <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center space-x-1">
@@ -299,7 +305,7 @@ const DropdownSearch = () => {
               <div className="absolute z-10 mt-1 w-full dark:bg-black dark:text-white dark:border dark:border-gray-300  bg-white shadow-lg rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 focus:outline-none max-h-60 overflow-auto">
                 <div className="py-1">
                   {categoriesLoading ? (
-                    <div className="px-4 py-2 text-gray-500">Loading categories...</div>
+                    <div className="px-4 py-2 text-gray-500">{translate("শ্ৰেণীবোৰ ল'ড হৈ আছে...", "Loading categories...")}</div>
                   ) : categories.length > 0 ? (
                     categories.map((category) => (
                       <div
@@ -315,7 +321,7 @@ const DropdownSearch = () => {
                       </div>
                     ))
                   ) : (
-                    <div className="px-4 py-2 text-gray-500">No categories available</div>
+                    <div className="px-4 py-2 text-gray-500">{translate("কোনো শ্ৰেণী উপলব্ধ নাই", "No categories available")}</div>
                   )}
                 </div>
               </div>
@@ -326,7 +332,7 @@ const DropdownSearch = () => {
 
       {/* Search Input */}
       <div className="relative w-full md:w-[220px]">
-        <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-white">Search</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-white">{translate("সন্ধান কৰক", "Search")}</label>
         <div className="relative">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <FiSearch className="text-gray-400" size={16} />
@@ -335,7 +341,7 @@ const DropdownSearch = () => {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search..."
+            placeholder={translate("সন্ধান কৰক...", "Search...")}
             className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#EE5A2C] text-sm"
           />
           {searchQuery && (
@@ -351,10 +357,10 @@ const DropdownSearch = () => {
 
       {/* Display loading or error state for shops */}
       {shopsLoading && (
-        <div className="mt-4 text-gray-500">Loading shops...</div>
+        <div className="mt-4 text-gray-500">{translate("দোকানসমূহ ল'ড হৈ আছে...", "Loading shops...")}</div>
       )}
       {shopsError && (
-        <div className="mt-4 text-red-500">Error loading shops</div>
+        <div className="mt-4 text-red-500">{translate("দোকানসমূহ ল'ড কৰোতে ত্ৰুটি", "Error loading shops")}</div>
       )}
     </div>
   );

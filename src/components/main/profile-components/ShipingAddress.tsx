@@ -276,7 +276,7 @@ const ShippingAddressTab = () => {
   console.log(shippingInfo);
 
   return (
-    <div className="bg-white p-6 dark:bg-black dark:text-white shadow-sm">
+    <div className="bg-white p-6 shadow-sm dark:bg-black dark:border border-gray-300 rounded-md dark:text-white">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6">
         <div>
           <h2 className="text-xl font-semibold text-gray-800 dark:text-white">

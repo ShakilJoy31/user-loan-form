@@ -3,6 +3,8 @@ import { FiMapPin, FiBookmark } from "react-icons/fi";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import avatar1 from "../../../assets/Logo/avatar.png"
+import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 
 
   
@@ -24,7 +26,8 @@ interface Shop {
     avatar: string;
 }
 
-const ShopCard: React.FC<Shop> = ({ shopName, area, city, user, profileImage, avatar, slug }) => {
+const ShopCard: React.FC<Shop> = ({ shopName, area, city, user, profileImage, slug }) => {
+  const { translate } = useCustomTranslator();
   return (
     <div className="dark:bg-black dark:text-white dark:border dark:border-white w-full h-[160px] sm:h-[180px] md:h-[200px] lg:h-[220px] bg-white rounded-lg sm:rounded-xl shadow p-2 sm:p-3 relative flex flex-col justify-between">
       <div className="dark:bg-black dark:text-white absolute top-2 sm:top-3 right-2 sm:right-3 text-gray-400 cursor-pointer">
@@ -32,16 +35,14 @@ const ShopCard: React.FC<Shop> = ({ shopName, area, city, user, profileImage, av
       </div>
 
       <div>
-        {profileImage && (
           <div className="relative w-5 h-5 sm:w-6 sm:h-6 mb-1 sm:mb-2 dark:bg-black dark:text-white">
             <Image
-              src={profileImage || avatar}
+              src={profileImage || avatar1}
               alt={"profileImage"}
               fill
               className="object-contain dark:bg-black dark:text-white"
             />
           </div>
-        )}
         <h3 className="dark:bg-black dark:text-white text-sm sm:text-base md:text-lg lg:text-xl font-semibold text-black line-clamp-1">
           {shopName}
         </h3>
@@ -75,13 +76,13 @@ const ShopCard: React.FC<Shop> = ({ shopName, area, city, user, profileImage, av
         
         <Link href={`/products/all-products/${slug}`}>
         <Button variant={"outline"} className="bg-[#EE5A2C] dark:bg-black dark:text-white dark:border dark:border-white dark:rounded-md text-white text-[10px] sm:text-[12px] px-2 sm:px-3 py-1 rounded font-medium">
-          Shop Now
+          {translate("এখনই কিনুন", "Shop Now")}
         </Button>
         </Link>
 
         <Link href={`/details/${slug}`}>
         <Button variant={"outline"} className="bg-gray-100 dark:bg-black dark:text-white dark:border dark:border-white dark:rounded-md text-gray-700 text-[10px] sm:text-[12px] px-2 sm:px-3 py-1 rounded font-medium">
-          Details
+          {translate("বিস্তারিত", "Details")}
         </Button>
         </Link>
       </div>

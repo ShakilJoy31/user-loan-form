@@ -61,11 +61,11 @@ const Pagination = ({
     <div className="flex flex-col sm:flex-row items-center justify-between gap-4 w-full">
       {onPageSizeChange && (
         <div className="flex items-center gap-2">
-          <span className="text-sm text-gray-600">Show:</span>
+          <span className="text-sm text-gray-700 dark:text-gray-300">Show:</span>
           <select
             value={pageSize}
             onChange={(e) => onPageSizeChange(Number(e.target.value))}
-            className="border rounded px-2 py-1 text-sm"
+            className="border rounded px-2 py-1 text-sm bg-white dark:bg-black dark:text-white dark:border-gray-300"
           >
             {[5, 10, 20, 30, 50].map((size) => (
               <option key={size} value={size}>
@@ -80,7 +80,7 @@ const Pagination = ({
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className={`rounded-tl-sm p-[11px] rounded-bl-sm border-[#777777] border disabled:opacity-50 text-sm sm:text-base hover:cursor-pointer ${currentPage === 1 ? 'text-black' : 'bg-[#EE5A2C] text-white'}`}
+          className={`rounded-tl-sm p-[11px] rounded-bl-sm border-[#777777] border disabled:opacity-50 text-sm sm:text-base hover:cursor-pointer ${currentPage === 1 ? 'text-black dark:text-white' : 'bg-[#EE5A2C] text-white'}`}
         >
           Previous
         </button>
@@ -106,7 +106,7 @@ const Pagination = ({
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className={`p-[11px] rounded-tr-sm rounded-br-sm border-[#777777] border disabled:opacity-50 text-sm sm:text-base hover:cursor-pointer ${currentPage === totalPages ? 'text-black' : 'bg-[#EE5A2C] text-white'}`}
+          className={`p-[11px] rounded-tr-sm rounded-br-sm border-[#777777] border disabled:opacity-50 text-sm sm:text-base hover:cursor-pointer ${currentPage === totalPages ? 'text-black dark:text-white' : 'bg-[#EE5A2C] text-white'}`}
         >
           Next
         </button>

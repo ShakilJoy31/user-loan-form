@@ -33,7 +33,7 @@ const CameraComperison = ({ post }: { post: Post }) => {
 
   return (
     <div className="max-w-[894px] px-4 sm:px-6">
-      <div className="bg-[#fef7f4] rounded-xl overflow-hidden">
+      <div className="bg-[#fef7f4] dark:bg-black dark:border border-gray-300 rounded-xl overflow-hidden">
         {/* Top Tags */}
         <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-sm text-[#ff784b] px-4 sm:px-6 pt-4 sm:pt-6">
           <span className="flex items-center gap-1">
@@ -42,13 +42,13 @@ const CameraComperison = ({ post }: { post: Post }) => {
                     "Beauty"
                   )}
           </span>
-          <span className="flex items-center gap-1 text-gray-700">
+          <span className="flex items-center gap-1 text-gray-700 dark:text-gray-300">
             <BiUser className="text-base" /> {translate(
                     `${post.author}-র দ্বারা`,
                     `By ${post.author}`
                   )}
           </span>
-          <span className="flex items-center gap-1 text-gray-700">
+          <span className="flex items-center gap-1 text-gray-700 dark:text-gray-300">
             <FaRegComment className="text-base" /> {translate(
                     "৫৫টি মন্তব্য",
                     "55 Comments"

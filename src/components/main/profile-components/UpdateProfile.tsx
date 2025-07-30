@@ -216,7 +216,7 @@ export default function UpdateProfile() {
 
 
   return (
-    <div className="bg-white p-6 shadow-sm dark:bg-black dark:text-white">
+    <div className="bg-white p-6 shadow-sm dark:bg-black dark:border border-gray-300 rounded-md dark:text-white">
       <div className="flex items-start justify-between mb-6">
         <div>
           <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
