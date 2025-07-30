@@ -217,7 +217,15 @@ export default function ProductImageUploader({
   };
 
   return (
-    <div className="border rounded-xl p-6 w-full bg-white">
+   <div 
+      className="border rounded-xl p-6 w-full bg-white"
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      }}
+    >
       <h3 className="text-lg font-semibold text-gray-900 mb-4">
         Upload Product Image
       </h3>
@@ -238,10 +246,12 @@ export default function ProductImageUploader({
             )}
             <button
               className="absolute bottom-2 right-2 border rounded px-3 py-1 text-sm text-gray-700 hover:text-black hover:bg-gray-50 flex items-center gap-1"
-              onClick={() => {
+              onClick={(e) => {
+                e.preventDefault();
                 const main = gallery.find((img) => img.isMain);
                 if (main) handleRemoveImage(main.id);
               }}
+              type="button"
             >
               <RefreshCw className="w-4 h-4" /> Replace
             </button>
@@ -249,7 +259,10 @@ export default function ProductImageUploader({
         ) : (
           <button
             className="flex items-center gap-1 px-3 py-1 border border-[#EE5A2C] rounded-md text-sm text-gray-600 hover:text-black hover:bg-gray-50"
-            onClick={() => fileInputRef.current?.click()}
+            onClick={() => {
+              fileInputRef.current?.click();
+            }}
+            type="button"
           >
             <ImageIcon className="w-4 h-4" /> Browse
           </button>
@@ -261,7 +274,13 @@ export default function ProductImageUploader({
           <div
             key={img.id}
             className="relative w-[99px] h-[99px] rounded-md overflow-hidden border"
-            onClick={() => handleSetMainImage(img.id)}
+            onClick={() => {
+              
+              handleSetMainImage(img.id);
+            }}
+           
+            role="button"
+            tabIndex={0}
           >
             {renderImage(img.src, img.altText || `Thumb-${img.id}`, {
               fill: true,
@@ -270,9 +289,11 @@ export default function ProductImageUploader({
             <button
               className="absolute -top-1 -right-1 w-5 h-5 bg-white rounded-full shadow text-gray-500 hover:text-black"
               onClick={(e) => {
+                e.preventDefault();
                 e.stopPropagation();
                 handleRemoveImage(img.id);
               }}
+              type="button"
             >
               <X className="w-4 h-4" />
             </button>
@@ -286,7 +307,13 @@ export default function ProductImageUploader({
 
         <div
           className="w-[200px] h-[99px] border border-dashed hover:cursor-pointer rounded-md flex flex-col items-center justify-center text-orange-500 cursor-pointer hover:bg-orange-50 text-xs font-medium"
-          onClick={() => fileInputRef.current?.click()}
+          onClick={() => {
+            
+            fileInputRef.current?.click();
+          }}
+          
+          role="button"
+          tabIndex={0}
         >
           <Plus className="w-4 h-4 mb-1" /> Add Image
           <input

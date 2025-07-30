@@ -14,6 +14,7 @@ export interface Variation {
     createdAt: string;
     updatedAt: string;
     VariationValue: VariationValue[];
+    isRequired?: boolean; 
 }
 
 export interface CategoryWishVariation {

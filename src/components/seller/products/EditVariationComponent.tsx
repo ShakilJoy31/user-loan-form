@@ -1,7 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { X, ChevronDown, ChevronUp, Check } from "lucide-react";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
+import { selectUser } from "@/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { useGetUserByIdQuery } from "@/redux/features/seller-auth/sellerLogin";
+import { loadUserFromToken } from "@/utils/helper/loadUserFromToken";
+import { Category, UserShopCategory } from "@/types/seller/productInterface";
 
 interface VariationProps {
   variations: {
@@ -34,6 +39,7 @@ interface VariationProps {
   selectedValues: Record<number, Array<{ id: number, name: string }>>;
   setSelectedValues: React.Dispatch<React.SetStateAction<Record<number, Array<{ id: number, name: string }>>>>;
   regenerateCombinations: (selectedValues: Record<number, Array<{ id: number, name: string }>>) => void;
+  selectedCategory : number | null;
 }
 
 const VariationComponent: React.FC<VariationProps> = ({
@@ -44,11 +50,48 @@ const VariationComponent: React.FC<VariationProps> = ({
   onCustomValuesChange,
   selectedValues,
   setSelectedValues,
-  regenerateCombinations
+  regenerateCombinations,
+  selectedCategory
 }) => {
 
   const { translate } = useCustomTranslator();
+  const user = useSelector(selectUser);
+  const dispatch = useDispatch();
+  const [isUserLoaded, setIsUserLoaded] = useState(false);
+  useEffect(() => {
+    if (!user.id) {
+      loadUserFromToken(dispatch).then(() => {
+        setIsUserLoaded(true);
+      });
+    } else {
+      setIsUserLoaded(true);
+    }
+  }, [dispatch, user.id]);
 
+  const { data: sellerUser } = useGetUserByIdQuery(
+    user?.id,
+    { skip: !user.id || !isUserLoaded }
+  );
+
+      const categories: Category[] = useMemo(() => {
+          return sellerUser?.data?.UserShopCategory?.map((item: UserShopCategory) => item.category) || [];
+      }, [sellerUser?.data?.UserShopCategory]);
+
+
+          const categoryVariations = useMemo(() => {
+        if (!selectedCategory) return [];
+        const category = categories.find((cat: Category) => cat.id === selectedCategory);
+        return category?.CategoryWishVariations?.map(item => ({
+            ...item.variation,
+            isRequired: item.isRequired
+        })) || [];
+    }, [selectedCategory, categories]);
+
+    console.log(categoryVariations)
+
+
+
+  // console.log("Seller User:", sellerUser?.data?.UserShopCategory.find((cat: any) => cat.categoryId === selectedCategory)?.category?.CategoryWishVariations);
   const [searchTerm, setSearchTerm] = useState("");
   const [isOpenMap, setIsOpenMap] = useState<Record<number, boolean>>({});
   const dropdownRefs = useRef<Record<number, HTMLDivElement | null>>({});
@@ -108,7 +151,7 @@ const VariationComponent: React.FC<VariationProps> = ({
 
 
 
-  const handleInputChange = (index: number, field: 'price' | 'stock' | 'discountPrice' , value: string) => {
+  const handleInputChange = (index: number, field: 'price' | 'stock' | 'discountPrice', value: string) => {
     const numericValue = value === '' ? 0 : Number(value);
     const updated = [...variationCombinations];
 
@@ -139,6 +182,7 @@ const VariationComponent: React.FC<VariationProps> = ({
 
 
   const handleValueSelect = (variationId: number, valueId: number, valueName: string) => {
+    console.log("handleValueSelect called", variationId, valueId, valueName);
     setSelectedValues(prev => {
       const currentValues = prev[variationId] || [];
       const isSelected = currentValues.some(v => v.id === valueId && v.name === valueName);
@@ -147,14 +191,11 @@ const VariationComponent: React.FC<VariationProps> = ({
         ? currentValues.filter(v => !(v.id === valueId && v.name === valueName))
         : [...currentValues, { id: valueId, name: valueName }];
 
-      console.log(newValues)
-
       const updatedValues = {
         ...prev,
         [variationId]: newValues
       };
 
-      console.log(updatedValues)
 
       // Call the parent's regenerateCombinations with updated values
       regenerateCombinations(updatedValues);
@@ -232,7 +273,10 @@ const VariationComponent: React.FC<VariationProps> = ({
     return selectedValues[variationId] || [];
   };
 
-  console.log(selectedValues)
+   console.log(categoryVariations)
+
+   console.log(variations)
+
 
   return (
     <div className="py-4">
@@ -256,7 +300,7 @@ const VariationComponent: React.FC<VariationProps> = ({
               className="grid grid-cols-2 items-start gap-4 px-4 py-4 border-b"
             >
               <div className="text-sm font-medium text-gray-700 pt-1">
-                {variation.name}
+                {variation.name} {variation?.id}
               </div>
 
               <div className="relative" ref={el => { dropdownRefs.current[variation.id] = el; }}>
@@ -293,18 +337,26 @@ const VariationComponent: React.FC<VariationProps> = ({
                         ))}
                       </div>
                     )}
-                    <input
-                      type="text"
-                      ref={el => { inputRefs.current[variation.id] = el; }}
-                      value={isOpenMap[variation.id] ? searchTerm : ""}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      onKeyDown={(e) => handleAddCustomValue(variation.id, e)}
-                      onFocus={() => {
-                        if (!isOpenMap[variation.id]) setIsOpenMap(prev => ({ ...prev, [variation.id]: true }));
-                      }}
-                      className="flex-1 min-w-[100px] outline-none bg-transparent"
-                      placeholder={getAllValuesForVariation(variation.id).length === 0 ? "" : ""}
-                    />
+
+                    {
+                      variation.VariationValue?.length < 1 && <input
+                        type="text"
+                        ref={el => { inputRefs.current[variation.id] = el; }}
+                        value={isOpenMap[variation.id] ? searchTerm : ""}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            handleAddCustomValue(variation.id, e);
+                          }
+                        }}
+                        // onFocus={() => {
+                        //   if (!isOpenMap[variation.id]) setIsOpenMap(prev => ({ ...prev, [variation.id]: true }));
+                        // }}
+                        className="flex-1 min-w-[100px] outline-none bg-transparent"
+                        placeholder={getAllValuesForVariation(variation.id).length === 0 ? "" : ""}
+                      />
+                    }
+
                   </div>
 
                   <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center space-x-1">
@@ -341,32 +393,17 @@ const VariationComponent: React.FC<VariationProps> = ({
                 {isOpenMap[variation.id] && (
                   <div className="z-[999] mt-1 w-full bg-white shadow-lg rounded-md py-1 text-base ring-1 border-bl-md border-br-md border-gray-300 focus:outline-none overflow-auto">
                     <div className="py-1">
-                      {/* Search input for custom values */}
-                      <div className="px-4 py-2">
-                        <input
-                          type="text"
-                          value={searchTerm}
-                          onChange={(e) => setSearchTerm(e.target.value)}
-                          onKeyDown={(e) => handleAddCustomValue(variation.id, e)}
-                          placeholder={translate("টাইপ করুন এবং এন্টার চাপুন", "Type and press Enter")}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
-                          autoFocus
-                        />
-                      </div>
-
-                      {/* Predefined values */}
                       {variation.VariationValue.length > 0 && (
                         <>
-                          <div className="px-4 py-1 text-xs text-gray-500">
-                            {translate("প্রিডিফাইন্ড অপশন", "Predefined options")}
-                          </div>
-                          {variation.VariationValue
+                          {variation.VariationValue // the place
                             .filter(value =>
                               searchTerm === "" ||
                               value.name.toLowerCase().includes(searchTerm.toLowerCase())
                             )
                             .map((value) => {
+                              // Here
                               const isSelected = selectedValues[variation.id]?.some(v => v.id === value.id && v.name === value.name);
+                              // console.log(selectedValues)
                               return (
                                 <div
                                   key={value.id}

@@ -88,8 +88,6 @@ const EditProducts = () => {
         skip: !productId
     });
 
-    console.log(productData)
-
     const [editProductById, { isLoading: productUpdateLoading }] = useEditProductByIdMutation();
     const { data: brandData, isLoading: brandLoading } = useGetBrandsQuery(undefined);
 
@@ -214,6 +212,10 @@ const EditProducts = () => {
         if (productData?.data && !productLoading) {
             const product = productData.data as ProductData;
 
+            console.log(product);
+            console.log(sellerUser)
+
+
             setProductDescription(product?.sortDescription || '')
             setLongDescription(product?.description || '')
 
@@ -297,7 +299,7 @@ const EditProducts = () => {
                     customVals[variation.id] = Array.from(customOptions);
                 }
             });
-            // console.log(selectedVals)
+            console.log(selectedVals)
             setCustomValues(customVals);
             setSelectedValues(selectedVals);
             setVariationCombinations(combinations);
@@ -310,8 +312,6 @@ const EditProducts = () => {
             setValue('items', combinations);
         }
     }, [productData, productLoading, reset, setValue]);
-
-    console.log(longDescription, productDescription);
 
     useEffect(() => {
         initializeFormData();
@@ -668,6 +668,7 @@ const EditProducts = () => {
                     regenerateCombinations={regenerateCombinations}
                     selectedValues={selectedValues}
                     setSelectedValues={setSelectedValues}
+                    selectedCategory={selectedCategory}
                 />
 
                 <div className="mt-6">

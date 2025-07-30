@@ -96,22 +96,39 @@ const AddProducts = () => {
     const categoryVariations = useMemo(() => {
         if (!selectedCategory) return [];
         const category = categories.find((cat: Category) => cat.id === selectedCategory);
-        return category?.CategoryWishVariations?.map(item => item.variation) || [];
+        return category?.CategoryWishVariations?.map(item => ({
+            ...item.variation,
+            isRequired: item.isRequired
+        })) || [];
     }, [selectedCategory, categories]);
 
     const brands: Brand[] = brandData?.data || [];
 
     const generateVariationCombinations = useCallback((variations: Variation[]) => {
+        console.log(variations)
         if (variations.length === 0) return [];
+
+        // First check if all required variations have at least one selected option
+        const requiredVariations = variations.filter(v => v.isRequired);
+        const hasMissingRequired = requiredVariations.some(v => {
+            const hasSelected = (selectedValues[v.id]?.length || 0) > 0 || (customValues[v.id]?.length || 0) > 0;
+            return !hasSelected;
+        });
+
+        if (hasMissingRequired) {
+            return [];
+        }
 
         const variationOptions = variations.map(v => ({
             name: v.name,
             options: [
                 ...(selectedValues[v.id]?.map(opt => opt.name)) || [],
                 ...(customValues[v.id] || [])
-            ]
+            ],
+            isRequired: v.isRequired
         }));
 
+        // Only include variations that have options selected
         const validVariations = variationOptions.filter(v => v.options.length > 0);
         if (validVariations.length === 0) return [];
 
@@ -214,8 +231,20 @@ const AddProducts = () => {
     }, []);
 
     const onSubmit = async (data: ProductFormData) => {
+
         if (imageUrls?.length < 1) {
             toast.error("Please upload product images first");
+            return;
+        }
+
+        const requiredVariations = categoryVariations.filter(v => v.isRequired);
+        const hasMissingRequired = requiredVariations.some(v => {
+            const hasSelected = (selectedValues[v.id]?.length || 0) > 0 || (customValues[v.id]?.length || 0) > 0;
+            return !hasSelected;
+        });
+
+        if (hasMissingRequired) {
+            toast.error("Please select options for all required variations");
             return;
         }
 
