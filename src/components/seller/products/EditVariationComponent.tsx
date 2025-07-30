@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useRef } from "react";
 import { X, ChevronDown, ChevronUp, Check } from "lucide-react";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";

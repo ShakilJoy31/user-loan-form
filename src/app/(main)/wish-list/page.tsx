@@ -240,67 +240,58 @@ const WishList = () => {
                 className="object-contain h-40 w-full border rounded-md"
               />
             </div>
-            <div className="p-3">
-              {/* Product Title */}
-              <h3 className="text-sm font-medium mb-1 line-clamp-1">
-                {item.wishlistItem?.title}
-              </h3>
+           <div className="p-3 flex flex-col justify-between min-h-[200px]">
+  <div> {/* Top content */}
+    {/* Product Title */}
+    <h3 className="text-sm font-medium mb-1 line-clamp-1">
+      {item.wishlistItem?.title}
+    </h3>
 
-              {/* Variant Options */}
-              {item.selectedOptions && Object.keys(item.selectedOptions).length > 0 && (
-                <div className="text-xs text-gray-500 mb-2">
-                  {Object.entries(item.selectedOptions).map(([key, value]) => (
-                    <div key={key}>{`${key}: ${value}`}</div>
-                  ))}
-                </div>
-              )}
+    {/* Variant Options */}
+    {item.selectedOptions && Object.keys(item.selectedOptions).length > 0 && (
+      <div className="text-xs text-gray-500 mb-2">
+        {Object.entries(item.selectedOptions).map(([key, value]) => (
+          <div key={key}>{`${key}: ${value}`}</div>
+        ))}
+      </div>
+    )}
 
-              {/* Rating */}
-              <div className="flex items-center text-yellow-400 text-xs mb-2">
-                {[...Array(5)]?.map((_, i) => {
-                  if (i < Math.floor(item.wishlistItem.rating)) {
-                    return <FaStar key={i} className="text-xs" />;
-                  }
-                  if (i === Math.floor(item.wishlistItem.rating) && item.wishlistItem.rating % 1 > 0) {
-                    return <FaStarHalfAlt key={i} className="text-xs" />;
-                  }
-                  return <FaStar key={i} className="text-xs text-gray-300" />;
-                })}
-                <span className="text-gray-500 ml-1">({item.wishlistItem.reviewCount})</span>
-              </div>
+    {/* Rating */}
+    <div className="flex items-center text-yellow-400 text-xs mb-2">
+      {[...Array(5)]?.map((_, i) => {
+        if (i < Math.floor(item.wishlistItem.rating)) {
+          return <FaStar key={i} className="text-xs" />;
+        }
+        if (i === Math.floor(item.wishlistItem.rating) && item.wishlistItem.rating % 1 > 0) {
+          return <FaStarHalfAlt key={i} className="text-xs" />;
+        }
+        return <FaStar key={i} className="text-xs text-gray-300" />;
+      })}
+      <span className="text-gray-500 ml-1">({item.wishlistItem.reviewCount})</span>
+    </div>
 
-              {/* Date */}
-              <div className="flex items-center text-xs text-gray-500 mb-3">
-                <svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  className="h-3 w-3 mr-1" 
-                  fill="none" 
-                  viewBox="0 0 24 24" 
-                  stroke="currentColor"
-                >
-                  <path 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round" 
-                    strokeWidth={2} 
-                    d="M8 7V3m8 4V3m-9 8h10m-6 4h2m-7 8h10a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" 
-                  />
-                </svg>
-                {item.wishlistItem?.date}
-              </div>
+    {/* Date */}
+    <div className="flex items-center text-xs text-gray-500 mb-3">
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10m-6 4h2m-7 8h10a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+      </svg>
+      {item.wishlistItem?.date}
+    </div>
+  </div>
 
-              {/* Price + Cart Button */}
-              <div className="flex justify-between items-center">
-                <span className="text-lg font-bold">
-                  {item.wishlistItem?.price} TK
-                </span>
-                <Button 
-                  className="bg-[#fdefea] p-2 rounded-md text-primary hover:bg-orange-100 transition-colors"
-                  onClick={() => handleAddToCart(item)}
-                >
-                  <FiShoppingCart size={14} />
-                </Button>
-              </div>
-            </div>
+  <div className="flex justify-between items-center mt-auto pt-2">
+    <span className="text-lg font-bold">
+      {item.wishlistItem?.price} TK
+    </span>
+    <Button 
+      className="bg-[#fdefea] p-2 rounded-md text-primary hover:bg-orange-100 transition-colors"
+      onClick={() => handleAddToCart(item)}
+    >
+      <FiShoppingCart size={14} />
+    </Button>
+  </div>
+</div>
+
           </div>
         ))}
       </div>

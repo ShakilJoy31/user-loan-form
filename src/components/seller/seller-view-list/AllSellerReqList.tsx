@@ -1,5 +1,5 @@
 "use client"
-import {  ChevronDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import {
@@ -37,6 +37,7 @@ interface SellerRequest {
   avatar: string;
   point: number;
   withdrawPoint: number;
+  status?: 'PENDING' | 'APPROVED' | 'REJECTED';
 }
 
 interface PaginationMeta {
@@ -52,8 +53,6 @@ interface PaginationState {
   size: number;
   meta: PaginationMeta;
 }
-
-
 
 const AllSellerReqList = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -101,7 +100,7 @@ const AllSellerReqList = () => {
     }));
   };
 
-  const handleUpdateStatus = async (status: string) => {
+  const handleUpdateStatus = async (status: 'APPROVED' | 'REJECTED') => {
     if (!selectedRequest) return;
     
     try {
@@ -137,6 +136,7 @@ const AllSellerReqList = () => {
 
   const renderRow = (row: SellerRequest, index: number) => {
     const dynamicIndex = index + 1 + (pagination.page - 1) * pagination.size;
+    const requestStatus = row.status || 'PENDING';
     
     return (
       <>
@@ -146,8 +146,8 @@ const AllSellerReqList = () => {
         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
           <div className="flex items-center">
             <Image
-            width={100}
-            height={100}
+              width={100}
+              height={100}
               src={row?.avatar} 
               alt={row?.name} 
               className="h-10 w-10 rounded-full mr-3"
@@ -160,11 +160,17 @@ const AllSellerReqList = () => {
         </td>
         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
           <span className={`px-2 py-1 rounded-full text-xs ${
-            row.active 
+            requestStatus === 'APPROVED' 
               ? "bg-green-100 text-green-800" 
-              : "bg-red-100 text-red-800"
+              : requestStatus === 'REJECTED'
+              ? "bg-red-100 text-red-800"
+              : "bg-yellow-100 text-yellow-800"
           }`}>
-            {row.active ? translate("সক্রিয়", "Active") : translate("নিষ্ক্রিয়", "Inactive")}
+            {requestStatus === 'APPROVED' 
+              ? translate("অনুমোদিত", "Approved") 
+              : requestStatus === 'REJECTED'
+              ? translate("প্রত্যাখ্যাত", "Rejected")
+              : translate("বিচারাধীন", "Pending")}
           </span>
         </td>
         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -181,7 +187,7 @@ const AllSellerReqList = () => {
               <DropdownMenuItem onClick={() => handleActionClick(row, "VIEW")}>
                 {translate("দেখুন", "View")}
               </DropdownMenuItem>
-              {!row.active && (
+              {requestStatus === 'PENDING' && (
                 <>
                   <DropdownMenuItem onClick={() => handleActionClick(row, "APPROVE")}>
                     {translate("অনুমোদন", "Approve")}

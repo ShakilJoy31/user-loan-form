@@ -62,9 +62,12 @@ const ShopLocationAndCategory: React.FC = () => {
       </h2>
       <DropdownSearch />
 
-      <h2 className="text-lg sm:text-xl md:text-2xl my-3 sm:my-4 font-semibold">
-        {translate("দোকান", "Shop")} <span className="text-xs sm:text-sm">{translate("১০৪k ফলাফল", "104k result")}</span>
-      </h2>
+     <h2 className="text-lg sm:text-xl md:text-2xl my-3 sm:my-4 font-semibold">
+  {translate("দোকান", "Shop")}
+  <span className="text-xs sm:text-sm ml-3">
+    {translate(`${shop?.length || 0}টি ফলাফল`, `${shop?.length || 0} results`)}
+  </span>
+</h2>
 
       <div className="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {shop.map((shop, index) => (
