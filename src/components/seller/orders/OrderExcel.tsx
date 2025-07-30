@@ -84,7 +84,7 @@ const OrderExcel = forwardRef(({ data }: any, ref) => {
       data={combinedData}
       headers={headers}
       filename={`orders_${new Date().toISOString().slice(0, 10)}.csv`}
-      //@ts-ignore
+      // @ts-expect-error CSVLink ref type doesn't match forwardRef type
       ref={ref}
       className="hidden"
     >

@@ -21,8 +21,12 @@ const cancelReasons = [
   "Changed_Mind",
 ];
 
+interface StatusMap {
+  [key: string]: string; // or whatever type your values should be
+}
+
 // Map selectOption values to status types
-const optionToStatusMap = {
+const optionToStatusMap:StatusMap = {
   confirm: "CONFIRMED",
   onHold: "HOLD",
   cancelled: "CANCELLED",
@@ -62,9 +66,8 @@ const UpdateBulktype = ({ selectOption, isOpen, onClose, orderIds }: any) => {
 
   // Automatically set the status based on selectOption
   useEffect(() => {
-    // @ts-ignore
     if (selectOption && optionToStatusMap[selectOption]) {
-        // @ts-ignore
+     // @ts-expect-error setValue expects specific type but we're passing dynamic value
       setValue("type", optionToStatusMap[selectOption]);
     }
     if (orderIds) {
@@ -120,7 +123,6 @@ const UpdateBulktype = ({ selectOption, isOpen, onClose, orderIds }: any) => {
                 Updating {orderIds.length} order(s) to:
               </p>
               <p className="text-lg font-bold capitalize">
-                {/* @ts-ignore */}
                 {optionToStatusMap[selectOption]
                   ?.toLowerCase()
                   .replace("_", " ")}

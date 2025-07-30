@@ -84,7 +84,7 @@ const VariationComponent: React.FC<VariationProps> = ({
     });
 
     setIsOpenMap(variations.reduce((acc, v) => ({ ...acc, [v.id]: false }), {}));
-  }, []);
+  }, [customValues, variationCombinations, variations]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

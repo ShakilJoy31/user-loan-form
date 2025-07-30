@@ -21,7 +21,6 @@ const AddProducts = () => {
     const [isUserLoaded, setIsUserLoaded] = useState(false);
     const dispatch = useDispatch();
 
-    // Load user on initial render if not already loaded
     useEffect(() => {
         if (!user.id) {
             loadUserFromToken(dispatch).then(() => {
@@ -34,7 +33,7 @@ const AddProducts = () => {
 
     const { data: sellerUser, isLoading: sellerUserLoading } = useGetUserByIdQuery(
         user?.id,
-        { skip: !user.id || !isUserLoaded } // Skip if no user ID or user not loaded
+        { skip: !user.id || !isUserLoaded }
     );
 
     const [createProduct, { isLoading: productUploadLoading }] = useCreateProductMutation();
@@ -84,7 +83,6 @@ const AddProducts = () => {
         }
     });
 
-    // Get categories and subcategories from seller data
     const categories: Category[] = useMemo(() => {
         return sellerUser?.data?.UserShopCategory?.map((item: UserShopCategory) => item.category) || [];
     }, [sellerUser?.data?.UserShopCategory]);
@@ -95,17 +93,14 @@ const AddProducts = () => {
         return category?.ProductSubCategory || [];
     }, [selectedCategory, categories]);
 
-    // Get variations for the selected category
     const categoryVariations = useMemo(() => {
         if (!selectedCategory) return [];
         const category = categories.find((cat: Category) => cat.id === selectedCategory);
         return category?.CategoryWishVariations?.map(item => item.variation) || [];
     }, [selectedCategory, categories]);
 
-    // Get brands from API response
     const brands: Brand[] = brandData?.data || [];
 
-    // Generate all possible combinations of variations
     const generateVariationCombinations = useCallback((variations: Variation[]) => {
         if (variations.length === 0) return [];
 
@@ -117,9 +112,7 @@ const AddProducts = () => {
             ]
         }));
 
-        // Filter out variations with no options
         const validVariations = variationOptions.filter(v => v.options.length > 0);
-
         if (validVariations.length === 0) return [];
 
         const combinations: { optionValues: string[] }[] = [];
@@ -144,7 +137,6 @@ const AddProducts = () => {
         }));
     }, [selectedValues, customValues]);
 
-    // Update variation combinations when variations or selected values change
     useEffect(() => {
         if (categoryVariations.length > 0) {
             const combinations = generateVariationCombinations(categoryVariations);
@@ -159,25 +151,77 @@ const AddProducts = () => {
         setImageUrls(urls);
     }, []);
 
-    const handleCombinationChange = useCallback((updatedCombinations: typeof variationCombinations) => {
-        setVariationCombinations(updatedCombinations);
-        setValue('items', updatedCombinations);
+    const handleCombinationChange = useCallback((index: number, field: 'price' | 'stock' | 'discount', value: string) => {
+        const numericValue = value === '' ? undefined : Number(value.replace(/^0+/, ''));
+        setVariationCombinations(prev => {
+            const updated = [...prev];
+            updated[index] = {
+                ...updated[index],
+                [field]: numericValue
+            };
+            setValue('items', updated);
+            return updated;
+        });
     }, [setValue]);
 
-    // Handle form submission
+    const handleDeleteRow = useCallback((index: number) => {
+        setVariationCombinations(prev => {
+            const updated = [...prev];
+            updated.splice(index, 1);
+            setValue('items', updated);
+            return updated;
+        });
+    }, [setValue]);
+
+    const handleValueSelect = useCallback((variationId: number, valueId: number, valueName: string) => {
+        setSelectedValues(prev => {
+            const currentValues = prev[variationId] || [];
+            const isSelected = currentValues.some(v => v.id === valueId);
+            const newValues = {
+                ...prev,
+                [variationId]: isSelected
+                    ? currentValues.filter(v => v.id !== valueId)
+                    : [...currentValues, { id: valueId, name: valueName }]
+            };
+            return newValues;
+        });
+    }, []);
+
+    const handleAddCustomValue = useCallback((variationId: number, value: string) => {
+        setCustomValues(prev => ({
+            ...prev,
+            [variationId]: [...(prev[variationId] || []), value]
+        }));
+    }, []);
+
+    const removeValue = useCallback((variationId: number, value: { id: number, name: string }) => {
+        if (value.id === -1) {
+            setCustomValues(prev => ({
+                ...prev,
+                [variationId]: (prev[variationId] || []).filter(name => name !== value.name)
+            }));
+        } else {
+            setSelectedValues(prev => ({
+                ...prev,
+                [variationId]: (prev[variationId] || []).filter(v => v.id !== value.id)
+            }));
+        }
+    }, []);
+
+    const clearSelection = useCallback((variationId: number) => {
+        setSelectedValues(prev => ({ ...prev, [variationId]: [] }));
+        setCustomValues(prev => ({ ...prev, [variationId]: [] }));
+    }, []);
+
     const onSubmit = async (data: ProductFormData) => {
         if (imageUrls?.length < 1) {
             toast.error("Please upload product images first");
             return;
         }
 
-        // Format variations for payload - only include selected options
         const payloadVariations = categoryVariations.map(v => {
-            // Get selected predefined options
             const selectedPredefined = selectedValues[v.id]?.map(opt => opt.name) || [];
-            // Get custom options
             const customOptions = customValues[v.id] || [];
-            // Combine and return only selected options
             return {
                 name: v.name,
                 options: [...selectedPredefined, ...customOptions]
@@ -213,7 +257,6 @@ const AddProducts = () => {
             ...(data.isNew !== undefined && { isNew: data.isNew })
         };
 
-        console.log(payload)
         const result = await createProduct(payload);
         if (result?.data?.success) {
             toast.success(result?.data?.message);
@@ -238,20 +281,16 @@ const AddProducts = () => {
 
     return (
         <div className="relative bg-white p-6 border rounded-md shadow-sm mt-[15px]">
-            {/* Floating Chat Button */}
             <button className="absolute top-4 right-4 bg-[#F4552F] hover:bg-[#e34724] p-2 rounded-md text-white">
                 <MessageSquare size={18} />
             </button>
 
-            {/* Header */}
             <form onSubmit={handleSubmit(onSubmit)}>
-                {/* First Row */}
                 <div className="flex justify-between items-center my-6">
                     <h2 className="text-lg font-semibold text-gray-800">
                         Add products via Category
                     </h2>
 
-                    {/* Buttons */}
                     <div className="flex items-center justify-end gap-3 mt-6">
                         <button
                             type="submit"
@@ -268,13 +307,11 @@ const AddProducts = () => {
                     </div>
                 </div>
 
-                {/* Basic Details Section */}
                 <div className="border rounded-md p-6">
                     <h3 className="text-md font-semibold text-gray-800 mb-4">
                         Basic Details
                     </h3>
 
-                    {/* Product Title */}
                     <div className="mb-4">
                         <label className="text-sm font-medium text-gray-700 mb-1 block">
                             Product Title <span className="text-red-500">*</span>
@@ -296,7 +333,6 @@ const AddProducts = () => {
                         )}
                     </div>
 
-                    {/* Selects */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                         <SelectField
                             label="Select Type"
@@ -315,7 +351,6 @@ const AddProducts = () => {
                                 const cat = categories.find((c: Category) => c.name === val);
                                 setSelectedCategory(cat?.id || null);
                                 setSelectedSubCategory(null);
-                                // Reset variations when category changes
                                 setSelectedValues({});
                                 setCustomValues({});
                                 setVariationCombinations([]);
@@ -364,7 +399,6 @@ const AddProducts = () => {
                         />
                     </div>
 
-                    {/* SEO Description */}
                     <div>
                         <label className="text-sm font-semibold text-gray-800 mb-1 block">
                             SEO Description
@@ -422,20 +456,21 @@ const AddProducts = () => {
                     </div>
                 </div>
 
-                {/* Variation Section */}
                 {selectedCategory && (
                     <VariationComponent
                         variations={categoryVariations}
                         variationCombinations={variationCombinations}
                         onCombinationChange={handleCombinationChange}
+                        onDeleteRow={handleDeleteRow}
                         customValues={customValues}
-                        onCustomValuesChange={setCustomValues}
+                        onCustomValuesChange={handleAddCustomValue}
                         selectedValues={selectedValues}
-                        setSelectedValues={setSelectedValues}
+                        onValueSelect={handleValueSelect}
+                        onRemoveValue={removeValue}
+                        onClearSelection={clearSelection}
                     />
                 )}
 
-                {/* Image Uploader Section */}
                 <div className="mt-6">
                     <ProductImageUploader
                         onImagesUpdate={handleImagesUpdate}
@@ -443,7 +478,6 @@ const AddProducts = () => {
                     />
                 </div>
 
-                {/* Product Description */}
                 <div className="border rounded-xl p-[24px] mt-6">
                     <div className="mt-10">
                         <label className="mb-3 text-[16px] block">Product Description</label>
@@ -656,5 +690,6 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
         </div>
     );
 };
+
 
 export default AddProducts;
