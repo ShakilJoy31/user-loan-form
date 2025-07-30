@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import ShopCard from "../home-components/ShopCard";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
+import { useCart } from "@/app/lib/CartContext";
 
 interface Brand {
   brand: string;
@@ -115,6 +116,10 @@ const SingleSellerAllProducts = ({
   newArrival,
   relatedShop,
 }: SingleSellerProductsProps) => {
+  const { 
+    setNumberOfCartProduct, 
+    setNumberOfWishlistProduct 
+  } = useCart();
   // Helper function to get the  price from product items
   const getLowestPrice = (items: ProductItem[]): number => {
     return Math.min(...items.map((item) => item.price));
@@ -177,6 +182,7 @@ const SingleSellerAllProducts = ({
 
     try {
       localStorage.setItem("cart", JSON.stringify(existingCart));
+      setNumberOfCartProduct(existingCart.length);
     } catch (error) {
       console.error("Error saving to cart", error);
       toast.error("Failed to update your cart. Please try again.");
@@ -268,6 +274,7 @@ const SingleSellerAllProducts = ({
 
       const updatedWishlist = [...existingWishlist, dataToSave];
       localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
+      setNumberOfWishlistProduct(updatedWishlist.length);
       toast.success(translate("উইশলিস্টে যোগ করা হয়েছে", "Added to wishlist"));
     } catch (error) {
       console.error("Failed to save to wishlist:", error);
@@ -429,6 +436,7 @@ const SingleSellerAllProducts = ({
                     </Button>
                   ) : (
                     <>
+
                       <Button
                         onClick={() => handleAddToCart(product)}
                         variant={"outline"}
@@ -436,6 +444,7 @@ const SingleSellerAllProducts = ({
                       >
                         <FiShoppingCart className="w-4 h-4" />
                       </Button>
+
                       <Button
                         onClick={() => handleBuyNow(product)}
                         variant={"outline"}
@@ -561,6 +570,7 @@ const SingleSellerAllProducts = ({
                       >
                         <FiShoppingCart className="w-4 h-4" />
                       </Button>
+
                       <Button
                         onClick={() => handleBuyNow(product)}
                         variant={"outline"}

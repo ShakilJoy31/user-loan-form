@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { useCart } from "@/app/lib/CartContext";
 
 interface ProductImage {
   id: number;
@@ -159,6 +160,10 @@ export default function PriceSection({ productItems, selectedOptions, productDat
   const [quantity, setQuantity] = useState(1);
   const { translate } = useCustomTranslator();
   const router = useRouter();
+  const { 
+      setNumberOfCartProduct, 
+      setNumberOfWishlistProduct 
+    } = useCart();
 
 const findMatchingProductItem = (): ProductItem | undefined => {
   if (Object.keys(selectedOptions).length === 0) {
@@ -238,6 +243,7 @@ const findMatchingProductItem = (): ProductItem | undefined => {
 
   try {
     localStorage.setItem('cart', JSON.stringify(existingCart));
+    setNumberOfCartProduct(existingCart.length);
   } catch (error) {
     console.error("Error saving to cart", error);
     toast.error("Failed to update your cart. Please try again.");
@@ -326,6 +332,7 @@ const handleAddToWishlist = () => {
 
     const updatedWishlist = [...existingWishlist, dataToSave];
     localStorage.setItem('wishlist', JSON.stringify(updatedWishlist));
+    setNumberOfWishlistProduct(updatedWishlist.length);
   } catch (error) {
     console.error("Failed to save to wishlist:", error);
     toast.error(translate("উইশলিস্টে সংরক্ষণ করতে ব্যর্থ হয়েছে", "Failed to save to wishlist"));

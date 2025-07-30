@@ -1,5 +1,6 @@
 "use client";
 
+
 import DataLoader from "@/components/common/DataLoader";
 import AdditionalInfoCard from "@/components/main/product-details-components/AdditionalInfo";
 import DeliveryOptions from "@/components/main/product-details-components/DeliveryOptions";

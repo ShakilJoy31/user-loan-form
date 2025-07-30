@@ -19,6 +19,7 @@ import {
 import toast from "react-hot-toast";
 import Link from "next/link";
 import { useCustomTranslator } from "@/hooks/useCustomTranslator";
+import { useCart } from "@/app/lib/CartContext";
 
 interface CartItem {
   productId: number;
@@ -34,6 +35,9 @@ interface CartItem {
 }
 
 const ShoppingCart = () => {
+  const { 
+    setNumberOfCartProduct 
+  } = useCart();
   const { translate } = useCustomTranslator();
   const [cartItem, setCartItem] = useState<CartItem[]>([]);
   
@@ -96,6 +100,7 @@ const handleDeleteItem = (productId: number, sku: string) => {
     
     setCartItem(updatedCart);
     localStorage.setItem('cart', JSON.stringify(updatedCart));
+    setNumberOfCartProduct(updatedCart.length);
     
     if (deletedItem) {
       toast.success(translate(`${deletedItem.productName} কার্ট থেকে সরানো হয়েছে`, `${deletedItem.productName} removed from cart`));
