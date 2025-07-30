@@ -115,6 +115,7 @@ const PublicNav = () => {
     { skip: !user.id || !isUserLoaded } // Skip if no user ID or user not loaded
   );
 
+  //publiceNav
   // cart
   const [cartItem, setCartItem] = useState<CartItem[]>([]);
 

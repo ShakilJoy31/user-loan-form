@@ -89,8 +89,7 @@ export default function OrderSummary({
     { skip: !selectedShippingMethodId }
   );
 
-  const [paymentInstance] =
-    usePaymentInstanceMutation();
+  const [paymentInstance] = usePaymentInstanceMutation();
 
   useEffect(() => {
     loadCartData();
@@ -170,20 +169,6 @@ export default function OrderSummary({
   const [createOrder] = useCreateOrderMutation();
 
   const handleProceedToPay = async () => {
-    if (!formData.shippingMethodId) {
-      toast.error(
-        translate("শিপিং মেথড নির্বাচন করুন", "Please select shipping method")
-      );
-      return;
-    }
-
-    if (!formData.paymentMethod) {
-      toast.error(
-        translate("পেমেন্ট মেথড নির্বাচন করুন", "Please select payment method")
-      );
-      return;
-    }
-
     if (
       !formData.city ||
       !formData.zone ||
@@ -195,6 +180,25 @@ export default function OrderSummary({
           "অনুগ্রহ করে আপনার সম্পূর্ণ ঠিকানা লিখুন",
           "Please enter your complete address"
         )
+      );
+      return;
+    }
+
+    if (!formData.shippingMethodId) {
+      toast.error(
+        translate("শিপিং মেথড নির্বাচন করুন", "Please select shipping method")
+      );
+      return;
+    }
+
+    const isValidPaymentMethod =
+      formData.paymentMethod &&
+      typeof formData.paymentMethod === "string" &&
+      ["COD", "ONLINE"].includes(formData.paymentMethod);
+
+    if (!isValidPaymentMethod) {
+      toast.error(
+        translate("পেমেন্ট মেথড নির্বাচন করুন", "Please select payment method")
       );
       return;
     }
@@ -227,7 +231,6 @@ export default function OrderSummary({
 
     const orderData: OrderData = {
       userId: user.id,
-      customerNote: formData.note,
       shippingMethod: formData.shippingMethod,
       shippingCharge: deliveryCharge,
       paymentMethod: formData.paymentMethod,
@@ -240,7 +243,8 @@ export default function OrderSummary({
         phone: user.phone || "01837308476",
         address: formData.addressLine1,
       },
-      orderItems: orderItems,
+      orderItems,
+      ...(formData.note?.trim() && { customerNote: formData.note.trim() }),
     };
 
     try {
@@ -264,9 +268,9 @@ export default function OrderSummary({
       );
       console.log("Order creation response:", response);
 
-      const orderId = response.data[0].dbId
-      const orderId1 = response.data[0].orderId
-      console.log("orderId", orderId1)
+      const orderId = response.data[0].dbId;
+      const orderId1 = response.data[0].orderId;
+      console.log("orderId", orderId1);
 
       // Redirect based on shipping method
       if (formData.paymentMethod === "ONLINE") {
@@ -282,9 +286,8 @@ export default function OrderSummary({
         } catch (error) {
           console.log(error);
         }
-      }
-      else{
-        router.push("/my-profile/order")
+      } else {
+        router.push("/my-profile/order");
       }
     } catch (error) {
       console.error("Order creation failed:", error);
@@ -298,7 +301,7 @@ export default function OrderSummary({
   };
 
   return (
-    <div className="w-full p-4 bg-white rounded-lg border border-gray-300 shadow-sm overflow-y-auto">
+    <div className="w-full p-4 bg-white rounded-lg border border-gray-300 shadow-sm overflow-y-auto dark:bg-black dark:text-white">
       <h2 className="text-lg font-semibold mb-4">
         {translate("অর্ডার সারাংশ", "Order summary")}
       </h2>
@@ -320,7 +323,7 @@ export default function OrderSummary({
               <h4 className="font-semibold">{item.productName}</h4>
               {item?.size && (
                 <p>
-                  <span className="text-gray-600">
+                  <span className="text-gray-600 dark:text-white">
                     {translate("সাইজ:", "Size:")}
                   </span>{" "}
                   {item.size}
@@ -328,22 +331,22 @@ export default function OrderSummary({
               )}
               {item?.color && (
                 <p>
-                  <span className="text-gray-600">
+                  <span className="text-gray-600 dark:text-white">
                     {translate("রং:", "Color:")}
                   </span>{" "}
                   {item.color}
                 </p>
               )}
-              <p className="text-red-600 font-bold">
+              <p className="text-red-600 font-bold dark:text-white">
                 {item.discountPrice || item.price} {translate("টাকা", "Tk")}
                 {item.discountPrice && (
-                  <span className="line-through text-gray-400 font-normal ml-2">
+                  <span className="line-through text-gray-400 dark:text-white font-normal ml-2">
                     {item.price} {translate("টাকা", "Tk")}
                   </span>
                 )}
               </p>
               <div className="flex items-center justify-between mt-1">
-                <p className="text-gray-600">
+                <p className="text-gray-600 dark:text-white">
                   {translate("পরিমাণ:", "Quantity:")}
                 </p>
                 <div className="flex items-center border border-gray-300 rounded-md w-fit">
@@ -366,13 +369,16 @@ export default function OrderSummary({
                   </Button>
                 </div>
               </div>
-              <p className="text-gray-600">
-                {translate("ভ্যারিয়েন্ট:", "Variant:")} {item.sku.length > 20 ? `${item.sku.slice(0, 20)}...` : item.sku}
+              <p className="text-gray-600 dark:text-white">
+                {translate("ভ্যারিয়েন্ট:", "Variant:")}{" "}
+                {item.sku.length > 20
+                  ? `${item.sku.slice(0, 20)}...`
+                  : item.sku}
               </p>
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-white">
                 {translate("বিক্রেতা:", "Seller:")} {item.sellerShopName}
               </p>
-              <p className="text-gray-600 font-semibold mt-1">
+              <p className="text-gray-600 font-semibold mt-1 dark:text-white">
                 {translate("সাবটোটাল:", "Subtotal:")} {item.subTotal}{" "}
                 {translate("টাকা", "Tk")}
               </p>
@@ -381,7 +387,7 @@ export default function OrderSummary({
         ))}
       </div>
 
-      <div className="space-y-2 text-sm text-gray-700 mt-4">
+      <div className="space-y-2 text-sm text-gray-700 mt-4 dark:text-white">
         <div className="flex justify-between">
           <span>{translate("সাব-টোটাল", "Sub-Total")}</span>
           <span>
@@ -396,7 +402,7 @@ export default function OrderSummary({
         </div>
         <div className="flex justify-between">
           <span>{translate("ডিসকাউন্ট", "Discount")}</span>
-          <span className="text-red-500 font-semibold">
+          <span className="text-red-500 font-semibold dark:text-white">
             -{couponDiscountAmount.toFixed(2)} {translate("টাকা", "Tk")}
             {formData.couponType === "percentage" && (
               <span className="text-gray-500 ml-1">
@@ -407,7 +413,7 @@ export default function OrderSummary({
         </div>
         <div className="flex justify-between text-base font-semibold">
           <span>{translate("মোট", "Total")}</span>
-          <span className="text-red-600">
+          <span className="text-red-600 dark:text-white">
             {total} {translate("টাকা", "Tk")}
           </span>
         </div>

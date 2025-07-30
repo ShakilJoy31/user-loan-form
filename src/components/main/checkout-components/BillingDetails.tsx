@@ -129,8 +129,8 @@ const handleApplyCoupon = async () => {
 };
 
   return (
-    <div className="space-y-6">
-      <div className="bg-white p-6 rounded-lg border border-gray-300 shadow-md">
+    <div className="space-y-6 dark:bg-black dark:text-white">
+      <div className="bg-white p-6 rounded-lg border border-gray-300 shadow-md dark:bg-black dark:text-white">
         <h2 className="text-lg font-semibold mb-4">
           {translate("বিলিং বিবরণ", "Billing Details")}
         </h2>
@@ -141,7 +141,7 @@ const handleApplyCoupon = async () => {
             {translate("চেকআউট অপশন", "Checkout Options")}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
-            <label className="flex items-center gap-2 text-sm text-gray-700">
+            <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-white">
               <input
                 type="radio"
                 name="addressOption"
@@ -155,7 +155,7 @@ const handleApplyCoupon = async () => {
                 "I want to use an existing address"
               )}
             </label>
-            <label className="flex items-center gap-2 text-sm text-gray-700">
+            <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-white">
               <input
                 type="radio"
                 name="addressOption"
@@ -174,12 +174,12 @@ const handleApplyCoupon = async () => {
 
         {/* Address Inputs */}
         <div className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ">
             <select
               name="city"
               value={formData.city}
               onChange={handleInputChange}
-              className="w-full border border-gray-200 rounded px-4 py-2 text-sm text-gray-500 focus:outline-none focus:ring-1 focus:ring-red-400"
+              className="w-full border dark:bg-black dark:text-white border-gray-200 rounded px-4 py-2 text-sm text-gray-500 focus:outline-none focus:ring-1 focus:ring-red-400"
             >
               <option value="" disabled>
                 {translate("শহর*", "City*")}
@@ -195,8 +195,8 @@ const handleApplyCoupon = async () => {
               name="zone"
               value={formData.zone}
               onChange={handleInputChange}
-              placeholder={translate("জোন", "Zone")}
-              className="w-full border border-gray-200 rounded px-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-red-400"
+              placeholder={translate("জোন", "Zone*")}
+              className="w-full border dark:text-white border-gray-200 rounded px-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-red-400"
             />
           </div>
 
@@ -205,10 +205,10 @@ const handleApplyCoupon = async () => {
               name="area"
               value={formData.area}
               onChange={handleInputChange}
-              className="w-full border border-gray-200 rounded px-4 py-2 text-sm text-gray-500 focus:outline-none focus:ring-1 focus:ring-red-400"
+              className="w-full dark:bg-black dark:text-white border border-gray-200 rounded px-4 py-2 text-sm text-gray-500 focus:outline-none focus:ring-1 focus:ring-red-400"
             >
               <option value="" disabled>
-                {translate("এলাকা", "Area")}
+                {translate("এলাকা", "Area*")}
               </option>
               <option value="uttara">{translate("উত্তরা", "Uttara")}</option>
               <option value="mirpur">{translate("মিরপুর", "Mirpur")}</option>
@@ -229,7 +229,7 @@ const handleApplyCoupon = async () => {
               "আপনার নোট এখানে লিখুন",
               "Write your note here"
             )}
-            className="w-full  border border-gray-200 rounded-md px-4 py-3 text-sm outline-none resize-none  focus:ring-1 focus:ring-orange-400"
+            className="w-full dark:text-white border border-gray-200 rounded-md px-4 py-3 text-sm outline-none resize-none  focus:ring-1 focus:ring-orange-400"
           />
         </div>
           </div>
@@ -242,7 +242,7 @@ const handleApplyCoupon = async () => {
             name="addressLine1"
             value={formData.addressLine1}
             onChange={handleInputChange}
-            placeholder={translate("ঠিকানা লাইন ১", "Address Line 1")}
+            placeholder={translate("ঠিকানা লাইন ১", "Address Line 1*")}
             className="w-full border border-gray-200 rounded px-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-red-400"
             rows={3}
           />
@@ -251,15 +251,15 @@ const handleApplyCoupon = async () => {
         {/* Shipping Method */}
         <div className="mt-6">
           <p className="text-sm font-medium mb-2">
-            {translate("শিপিং পদ্ধতি", "Shipping Method")}
+            {translate("শিপিং পদ্ধতি", "Shipping Method*")}
           </p>
           
           {isLoading ? (
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-gray-500 dark:text-white">
               {translate("লোড হচ্ছে...", "Loading...")}
             </div>
           ) : isError ? (
-            <div className="text-sm text-red-500">
+            <div className="text-sm text-red-500 dark:text-white">
               {translate("শিপিং পদ্ধতি লোড করতে ব্যর্থ", "Failed to load shipping methods")}
             </div>
           ) : (
@@ -287,10 +287,10 @@ const handleApplyCoupon = async () => {
                     htmlFor={`shipping-${method.id}`}
                     className="flex-1 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 cursor-pointer"
                   >
-                    <span className="text-sm font-medium text-[#EE5A2C]">
+                    <span className="text-sm font-medium text-[#EE5A2C] dark:text-white">
                       {method.name}
                     </span>
-                    <span className="text-xs text-gray-600">
+                    <span className="text-xs text-gray-600 dark:text-white">
                       {method.shipped || `${translate("ডেলিভারি", "Delivery")}: ${method.estimatedDelivery}`}
                     </span>
                     <span className="text-sm font-medium">
@@ -304,18 +304,18 @@ const handleApplyCoupon = async () => {
         </div>
 
         <h2 className="text-lg font-semibold mb-4 mt-[60px]">
-          {translate("পেমেন্ট পদ্ধতি", "Payment Method")}
+          {translate("পেমেন্ট পদ্ধতি", "Payment Method*")}
         </h2>
 
         {/* Payment Options */}
-        <div className="border border-gray-300 rounded-md p-4 mb-6 max-w-[740px] ">
-          <p className="text-sm text-gray-600 mb-4">
+        <div className="border border-gray-300 rounded-md p-4 mb-6 max-w-[740px] dark:bg-black dark:text-white">
+          <p className="text-sm text-gray-600 mb-4 dark:text-white">
             {translate(
               "এই অর্ডারে ব্যবহারের জন্য পছন্দসই পেমেন্ট পদ্ধতি নির্বাচন করুন।",
               "Please select the preferred payment method to use on this order."
             )}
           </p>
-          <div className="space-y-3 text-sm text-gray-700">
+          <div className="space-y-3 text-sm text-gray-700 dark:text-white">
             <label className="flex items-center gap-2">
               <input
                 type="radio"
@@ -363,7 +363,7 @@ const handleApplyCoupon = async () => {
           {translate("ডিসকাউন্ট কুপন:", "Discount Coupon :")}
         </label>
         <div className="flex items-stretch gap-2">
-          <div className="flex items-center bg-gray-100 border border-gray-200 rounded-md px-3 max-w-[321px] h-[48px]">
+          <div className="flex items-center dark:bg-black dark:text-white bg-gray-100 border border-gray-200 rounded-md px-3 max-w-[321px] h-[48px]">
             <svg
               className="w-4 h-4 text-gray-400 mr-2"
               fill="none"
@@ -383,7 +383,7 @@ const handleApplyCoupon = async () => {
               value={formData.promoCode}
               onChange={handleInputChange}
               placeholder={translate("প্রোমো কোড যোগ করুন", "Add promo code")}
-              className="w-full bg-gray-100 text-sm outline-none h-full placeholder:text-gray-400"
+              className="w-full bg-gray-100 text-sm outline-none h-full dark:bg-black dark:text-white placeholder:text-gray-400"
             />
           </div>
 
@@ -391,7 +391,7 @@ const handleApplyCoupon = async () => {
             onClick={handleApplyCoupon}
             disabled={couponLoading}
             variant={"outline"}
-            className="bg-orange-500 hover:text-white text-white text-xs md:text-sm font-medium h-[48px] px-5 w-[126px] rounded-md hover:bg-orange-600 transition-colors"
+            className="bg-orange-500 dark:text-white hover:text-white text-white text-xs md:text-sm font-medium h-[48px] px-5 w-[126px] rounded-md hover:bg-orange-600 transition-colors"
           >
             {couponLoading 
               ? translate("লোড হচ্ছে...", "Loading...") 
@@ -400,8 +400,8 @@ const handleApplyCoupon = async () => {
         </div>
         
         {couponData && (
-          <p className="text-green-600 text-sm mt-2">
-            {translate("কুপন প্রয়োগ করা হয়েছে", "Coupon applied")}: {couponData.code} ({couponData.discount}
+          <p className="text-green-600 text-sm mt-2  dark:text-white">
+            {translate("কুপন প্রয়োগ করা হয়েছে", "Coupon applied")}: {couponData.code} {couponData.discount}
           </p>
         )}
       </div>
