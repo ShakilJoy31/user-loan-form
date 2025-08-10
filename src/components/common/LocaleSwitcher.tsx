@@ -9,14 +9,17 @@ import { useFontShifter } from "@/hooks/useFontShifter";
 import { useLocaleContext } from "@/hooks/useLocaleContext";
 import i18n from "@/i18n";
 import { cn } from "@/lib/utils";
+import { CiGlobe } from "react-icons/ci";
+import { FaAngleDown } from "react-icons/fa";
 
 const LocaleSwitcher = () => {
   const { locale } = useLocaleContext();
+  console.log(locale);
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="uppercase">
-          {locale}
+        <Button className='text-gray-700 dark:text-gray-300 uppercase' variant="ghost" size="sm">
+          <span><CiGlobe size={20}></CiGlobe></span> <span className="px-1">{locale === "bn" ? "বাংলা" : "Eng"}</span> <span className="ml-1"><FaAngleDown /></span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className={cn(useFontShifter())}>

@@ -1,12 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
-import userReducer from "./features/user/userSlice";
+// import userReducer from "./features/user/userSlice";
 import { apiSlice } from "./api/apiSlice";
 import sidebarReducer from "./features/ui/sidebarSlice";
 
 export const store = configureStore({
   reducer: {
     [apiSlice.reducerPath]: apiSlice.reducer,
-    user: userReducer,
+    user: null,
     sidebar: sidebarReducer,
   },
   middleware: (getDefaultMiddleware) =>

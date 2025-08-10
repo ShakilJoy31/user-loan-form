@@ -1,7 +1,4 @@
-import PublicFooter from "@/components/main/navigations/PublicFooter";
-import PublicNav from "@/components/main/navigations/PublicNav";
-import SmallDevicePublicNav from "@/components/main/navigations/SmallDevicePublicNav";
-import { CartProvider } from "../lib/CartContext";
+import PublicNav from "@/components/navigations/PublicNav";
 
 export default function MainLayout({
   children,
@@ -10,14 +7,8 @@ export default function MainLayout({
 }) {
   return (
     <>
-    <CartProvider>
-      <PublicNav/>
+      <PublicNav />
       <div className="min-h-screen">{children}</div>
-      <SmallDevicePublicNav />
-      <PublicFooter />
-      </CartProvider>
     </>
   );
 }
-
-// pt-24 md:pt-[132px]
