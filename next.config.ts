@@ -9,6 +9,7 @@ const nextConfig = {
        'assets.gadgetandgear.com',
       'adminapi.applegadgetsbd.com',
       'www.static-src.com',
+      'i.ibb.co.com',
     ],
   },
   // ... other config options

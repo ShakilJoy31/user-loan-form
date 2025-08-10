@@ -8,7 +8,7 @@ export default function MainLayout({
   return (
     <>
       <PublicNav />
-      <div className="min-h-screen">{children}</div>
+      <div>{children}</div>
     </>
   );
 }
