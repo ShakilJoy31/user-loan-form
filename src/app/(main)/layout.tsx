@@ -1,5 +1,3 @@
-import PublicNav from "@/components/navigations/PublicNav";
-
 export default function MainLayout({
   children,
 }: {
@@ -7,7 +5,6 @@ export default function MainLayout({
 }) {
   return (
     <>
-      <PublicNav />
       <div>{children}</div>
     </>
   );

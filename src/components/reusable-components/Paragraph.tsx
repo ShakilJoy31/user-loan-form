@@ -5,7 +5,7 @@ const Paragraph = ({
   children,
   size = 'medium',
   weight = 'normal',
-  color = 'default',
+  // color = 'default',
   className = '',
   ...props
 }) => {
