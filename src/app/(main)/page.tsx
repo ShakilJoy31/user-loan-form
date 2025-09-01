@@ -4,7 +4,7 @@ const Home = () => {
  
   return (
     <div className="pt-2">
-     <LoanApplicationForm></LoanApplicationForm>
+     <LoanApplicationForm />
     </div>
   )
 }
