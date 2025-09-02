@@ -1,7 +1,8 @@
 "use client";
 import { useState } from "react";
-import zikaLogo from '@/assets/zika-images/jika-logo.jpg'
-
+import hsbcLogo from "@/assets/hsbc/logo-nobg.png";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function LoanApplicationForm() {
   const [image, setImage] = useState<string | null>(null);
@@ -16,243 +17,268 @@ export default function LoanApplicationForm() {
   };
 
   return (
-    <div className="loan-form">
+    <div className="loan-form bg-gray-100 dark:bg-gray-900">
       {/* Header */}
       <div className="bg-gray-700 text-white">
-        <div className="flex justify-between ">
-          <div className="flex gap-x-[10px] bg-yellow-500 h-16 px-4 rounded-r-full ">
-            <img src={zikaLogo.src} alt="JICA Bank" className="logo" />
+        <div className="flex justify-between">
+          <div className="flex gap-x-[10px] bg-yellow-600 h-16 px-4 rounded-r-full items-center ">
+            <Image
+              src={hsbcLogo.src}
+              width={80}
+              height={40}
+              alt="HSBC Bank"
+              className="logo"
+            />
             <div>
-              <h1>JICA BANK</h1>
-              <p>BANGLADESH DEVELOPMENT</p>
+              <h1>HSBC Bank Bangladesh</h1>
             </div>
           </div>
 
           <div className="form-title pr-4 py-4">
-            <h2 className="text-3xl text-yellow-700">Loan Application <span className="text-white">Form I</span></h2>
-            <p>
-              JICA, in accordance with the Development Cooperation Charter, will
-              work on human security and quality growth
-            </p>
+            <h2 className="text-3xl text-yellow-500">
+              Loan Application <span className="text-white">Form</span>
+            </h2>
           </div>
         </div>
 
         {/* Address */}
-        <div className="flex justify-between pl-4 py-4">
-          <div className="flex flex-col gap-y-[7px]">
-            <h1 className="text-yellow-700 text-xl ">Office Address: </h1>
-            <p>
-              <b>A:</b> 3rd Floor, Bay’s Galleria 57, Gulshan Avenue (CWS-A19),
-              Dhaka
-            </p>
-            <p>
-              <b>P:</b> (880-2) 22229-1897 &nbsp;&nbsp; <b>E:</b> info@jicaib.com
-            </p>
+        <div className="flex justify-end pl-4 py-4">
+          <Link href="/id-link" className="cursor-pointer">
+            <div className="h-15 bg-yellow-600 rounded-l-full w-36 items-center flex justify-center hover:bg-yellow-500">
+              ID Link
+            </div>
+          </Link>
+        </div>
+      </div>
+      <div className="flex justify-left mb-2 -mt-20 p-4">
+        <div className="w-32 h-32 flex-shrink-0">
+          <label htmlFor="upload-image" className="cursor-pointer">
+            <div className="w-full h-full bg-white rounded-lg border-4 border-dashed border-gray-300 flex items-center justify-center text-gray-400 hover:bg-gray-50">
+              {image ? (
+                <Image
+                  src={image}
+                  alt="user"
+                  width={128}
+                  height={128}
+                  className="w-full h-full object-cover rounded-lg"
+                />
+              ) : (
+                <span className="text-xs">ছবি যুক্ত করুন</span>
+              )}
+            </div>
+          </label>
+          <input
+            type="file"
+            id="upload-image"
+            accept="image/*"
+            style={{ display: "none" }}
+            onChange={handleImageUpload}
+          />
+        </div>
+      </div>
+
+      <div className="max-w-4xl mx-auto p-6">
+        <div className="bg-white rounded-lg shadow-md">
+          <div className="flex justify-between items-center mb-6 pb-4 border-b-2 border-gray-200">
+            <h2 className="text-2xl font-bold text-gray-800">ব্যক্তিগত তথ্য</h2>
           </div>
 
-          <div className="h-15 bg-yellow-500 rounded-l-full w-36 "></div>
-        </div>
-      </div>
-
-      {/* Profile */}
-      <div className="profile-section px-6 py-6 mt-6 rounded-2xl shadow-sm bg-white">
-        <div className="flex justify-between items-start gap-6 w-full">
-          {/* Info Section */}
-          <div className="flex-1">
-            <div className="flex justify-between ">
-              <div className="">
-                <h3 className="text-xl font-semibold text-gray-800 mb-2">ব্যক্তিগত তথ্য: </h3>
-                <div className="h-1 bg-yellow-500 w-12 mb-4 rounded"></div>
-              </div>
-              <div className="w-40 flex-shrink-0 mt-[-90px] ">
-                <label htmlFor="upload-image" className="cursor-pointer">
-                  <img
-                    src={
-                      image ||
-                      "https://img.freepik.com/free-vector/user-blue-gradient_78370-4692.jpg?semt=ais_hybrid&w=740"
-                    }
-                    alt="user"
-                    className="w-40 h-40 object-cover rounded-lg border shadow-sm"
-                  />
-                </label>
-                <input
-                  type="file"
-                  id="upload-image"
-                  accept="image/*"
-                  style={{ display: "none" }}
-                  onChange={handleImageUpload}
-                />
-              </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                গ্রাহক নাম
+              </label>
+              <input
+                type="text"
+                defaultValue="মোঃ রফিকুল ইসলাম"
+                className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 text-sm mt-[-320px] ">
-              <div className="grid grid-cols-2">
-                <p className="font-medium text-gray-700">গ্রাহক নাম:</p>
-                <input
-                  type="text"
-                  defaultValue="মোঃ রফিকুল ইসলাম"
-                  className="w-full border-b border-gray-300 focus:border-yellow-500 focus:outline-none bg-transparent"
-                />
-              </div>
-              <div className="grid grid-cols-2">
-                <p className="font-medium text-gray-700">লোন পরিমাণ:</p>
-                <input
-                  type="text"
-                  defaultValue="১০,০০,০০০/- টাকা"
-                  className="w-full border-b border-gray-300 focus:border-yellow-500 focus:outline-none bg-transparent"
-                />
-              </div>
-
-              <div className="grid grid-cols-2">
-                <p className="font-medium text-gray-700">ঠিকানা:</p>
-                <input
-                  type="text"
-                  defaultValue="দরব কুড়শপুর"
-                  className="w-full border-b border-gray-300 focus:border-yellow-500 focus:outline-none bg-transparent"
-                />
-              </div>
-              <div className="grid grid-cols-2">
-                <p className="font-medium text-gray-700">সুদের হার:</p>
-                <input
-                  type="text"
-                  defaultValue="0.00%"
-                  className="w-full border-b border-gray-300 focus:border-yellow-500 focus:outline-none bg-transparent"
-                />
-              </div>
-
-              <div className="grid grid-cols-2">
-                <p className="font-medium text-gray-700">জন্ম তারিখ:</p>
-                <input
-                  type="text"
-                  defaultValue="০১/০৫/১৯৮২"
-                  className="w-full border-b border-gray-300 focus:border-yellow-500 focus:outline-none bg-transparent"
-                />
-              </div>
-              <div className="grid grid-cols-2">
-                <p className="font-medium text-gray-700">লোন নম্বর:</p>
-                <input
-                  type="text"
-                  defaultValue="HY7GL49EGNKA"
-                  className="w-full border-b border-gray-300 focus:border-yellow-500 focus:outline-none bg-transparent"
-                />
-              </div>
-
-              <div className="grid grid-cols-2">
-                <p className="font-medium text-gray-700">জাতীয় পরিচয়পত্র নং:</p>
-                <input
-                  type="text"
-                  defaultValue="৪৯৩৮৪৫০০০৪৮"
-                  className="w-full border-b border-gray-300 focus:border-yellow-500 focus:outline-none bg-transparent"
-                />
-              </div>
-              <div className="grid grid-cols-2">
-                <p className="font-medium text-gray-700">লোন গ্রহণ তারিখ:</p>
-                <input
-                  type="text"
-                  defaultValue="০১/০৫/২০২৫"
-                  className="w-full border-b border-gray-300 focus:border-yellow-500 focus:outline-none bg-transparent"
-                />
-              </div>
-
-              <div className="grid grid-cols-2">
-                <p className="font-medium text-gray-700">লিঙ্গ:</p>
-                <input
-                  type="text"
-                  defaultValue="পুরুষ"
-                  className="w-full border-b border-gray-300 focus:border-yellow-500 focus:outline-none bg-transparent"
-                />
-              </div>
-              <div className="grid grid-cols-2">
-                <p className="font-medium text-gray-700">লোন শেষ তারিখ:</p>
-                <input
-                  type="text"
-                  defaultValue="০১/০৫/২০৩০"
-                  className="w-full border-b border-gray-300 focus:border-yellow-500 focus:outline-none bg-transparent"
-                />
-              </div>
-
-              <div className="grid grid-cols-2">
-                <p className="font-medium text-gray-700">পিতার নাম:</p>
-                <input
-                  type="text"
-                  defaultValue="মোঃ ফায়েজ আলী"
-                  className="w-full border-b border-gray-300 focus:border-yellow-500 focus:outline-none bg-transparent"
-                />
-              </div>
-              <div className="grid grid-cols-2">
-                <p className="font-medium text-gray-700">প্রতি কিস্তি:</p>
-                <input
-                  type="text"
-                  defaultValue="২১,০০০/- টাকা"
-                  className="w-full border-b border-gray-300 focus:border-yellow-500 focus:outline-none bg-transparent"
-                />
-              </div>
-
-              <div className="grid grid-cols-2">
-                <p className="font-medium text-gray-700">মাতার নাম:</p>
-                <input
-                  type="text"
-                  defaultValue="মোছাঃ লতিকা খাতুন"
-                  className="w-full border-b border-gray-300 focus:border-yellow-500 focus:outline-none bg-transparent"
-                />
-              </div>
-              <div className="grid grid-cols-2">
-                <p className="font-medium text-gray-700">মোবাইল নাম্বার:</p>
-                <input
-                  type="text"
-                  defaultValue="০১৮১৯৪২৮৩২১"
-                  className="w-full border-b border-gray-300 focus:border-yellow-500 focus:outline-none bg-transparent"
-                />
-              </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                পিতার নাম
+              </label>
+              <input
+                type="text"
+                defaultValue="মোঃ ফায়েজ আলী"
+                className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                মাতার নাম
+              </label>
+              <input
+                type="text"
+                defaultValue="মোছাঃ লতিকা খাতুন"
+                className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                জন্ম তারিখ
+              </label>
+              <input
+                type="text"
+                defaultValue="০১/০৫/১৯৮২"
+                className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                লিঙ্গ
+              </label>
+              <input
+                type="text"
+                defaultValue="পুরুষ"
+                className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                জাতীয় পরিচয়পত্র নং
+              </label>
+              <input
+                type="text"
+                defaultValue="৪৯৩৮৪৫০০০৪৮"
+                className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                ঠিকানা
+              </label>
+              <input
+                type="text"
+                defaultValue="দরব কুড়শপুর"
+                className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                মোবাইল নাম্বার
+              </label>
+              <input
+                type="text"
+                defaultValue="০১৮১৯৪২৮৩২১"
+                className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
             </div>
           </div>
+        </div>
 
+        <div className="bg-white rounded-lg shadow-md mt-10">
+          <h2 className="text-2xl font-bold text-gray-800 mb-6 pb-4 border-b-2 border-gray-200">
+            ঋণের বিবরণ
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                লোন পরিমাণ
+              </label>
+              <input
+                type="text"
+                defaultValue="১০,০০,০০০/- টাকা"
+                className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                সুদের হার
+              </label>
+              <input
+                type="text"
+                defaultValue="0.00%"
+                className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                লোন নম্বর
+              </label>
+              <input
+                type="text"
+                defaultValue="HY7GL49EGNKA"
+                className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                লোন গ্রহণ তারিখ
+              </label>
+              <input
+                type="text"
+                defaultValue="০১/০৫/২০২৫"
+                className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                লোন শেষ তারিখ
+              </label>
+              <input
+                type="text"
+                defaultValue="০১/০৫/২০৩০"
+                className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                প্রতি কিস্তি
+              </label>
+              <input
+                type="text"
+                defaultValue="২১,০০০/- টাকা"
+                className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg shadow-md p-8 mt-8">
+          <h3 className="text-lg font-semibold text-gray-800">
+            প্রিয় স্যার / ম্যাডাম :
+          </h3>
+          <p className="mt-2 text-gray-600">
+            অভিনন্দন! আপনার লোন আবেদনটি সফলভাবে অনুমোদিত হয়েছে। অনুমোদিত অর্থ
+            শীঘ্রই আপনার প্রদত্ত অ্যাকাউন্টে ক্রেডিট করা হবে। আমাদের সেবা গ্রহণ
+            করার জন্য ধন্যবাদ।
+          </p>
+        </div>
+
+        <div className="bg-white rounded-lg shadow-md p-8 mt-8">
+          <h4 className="text-lg font-semibold text-gray-800">
+            বিশেষ নির্দেশনা:
+          </h4>
+          <ul className="list-disc list-inside mt-2 text-gray-600 space-y-1">
+            <li>অন্যথা প্রতি মাসের কিস্তি প্রতি মাসে পরিশোধ করিতে হইবে</li>
+            <li>আপনি বিকাশ, নগদ এর মাধ্যমে কিস্তি পরিশোধ করতে পারবেন</li>
+            <li>আপনি ব্যাংক এর মাধ্যমে লোন এর টাকা উত্তোলন করতে পারবেন</li>
+          </ul>
+        </div>
+
+        <div className="bg-white rounded-lg shadow-md p-8 mt-8">
+          <div className="flex justify-around">
+            <div className="text-center">
+              <p className="border-t-2 border-gray-400 w-48 pt-2">
+                গ্রাহক স্বাক্ষর
+              </p>
+            </div>
+            <div className="text-center">
+              <p className="border-t-2 border-gray-400 w-48 pt-2">
+                ঋণ ব্যবস্থাপক স্বাক্ষর
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-12 text-center text-sm text-gray-500">
+          <p>
+            লোন আবেদন করার জন্য, ধন্যবাদ <br />
+            লোন সম্পর্কিত কোনো প্রকার তথ্য জানার জন্য আমাদের সাথে যোগাযোগ করুন।
+          </p>
         </div>
       </div>
-
-
-      {/* Message */}
-      <div className="message px-4">
-        <h3>প্রিয় স্যার / ম্যাডাম :</h3>
-        <p>
-          অভিনন্দন! আপনার লোন আবেদনটি সফলভাবে অনুমোদিত হয়েছে। অনুমোদিত অর্থ
-          শীঘ্রই আপনার প্রদত্ত অ্যাকাউন্টে ক্রেডিট করা হবে। আমাদের সেবা গ্রহণ
-          করার জন্য ধন্যবাদ।
-        </p>
-      </div>
-
-      {/* Notes */}
-      <div className="notes px-4">
-        <h4>বিশেষ নির্দেশনা:</h4>
-        <ul>
-          <li>১.অন্যথা প্রতি মাসের কিস্তি প্রতি মাসে পরিশোধ করিতে হইবে</li>
-          <li>২.আপনি বিকাশ, নগদ এর মাধ্যমে কিস্তি পরিশোধ করতে পারবেন</li>
-          <li>
-            ৩.আপনি ব্যাংক এর মাধ্যমে লোন এর টাকা উত্তোলন করতে পারবেন
-          </li>
-        </ul>
-      </div>
-
-      {/* Footer Signatures */}
-      <div className="signatures px-4">
-        <div>
-          <p>___________________</p>
-          <p>গ্রাহক স্বাক্ষর</p>
-        </div>
-        <div>
-          <p>___________________</p>
-          <p>ঋণ ব্যবস্থাপক স্বাক্ষর</p>
-        </div>
-      </div>
-
-      {/* Footer */}
-      <div className="footer py-2">
-        <p>
-          লোন আবেদন করার জন্য, ধন্যবাদ <br />
-          লোন সম্পর্কিত কোনো প্রকার তথ্য জানার জন্য আমাদের সাথে যোগাযোগ করুন।
-        </p>
-      </div>
-
     </div>
   );
 }
