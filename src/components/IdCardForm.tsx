@@ -312,6 +312,7 @@ export default function IdCardForm() {
               </p>
             </div>
           </div>
+
           <div className="flex gap-4 mt-6">
             <button
               onClick={handleDownloadImage}
@@ -326,8 +327,9 @@ export default function IdCardForm() {
               style={{ backgroundColor: "#16a34a", color: "#ffffff" }}
             >
               Download as PDF
-            </button>
+            </button> 
           </div>
+
         </div>
       </div>
     </div>
